@@ -1,0 +1,625 @@
+<!--
+@author Kenneth Bruskiewicz
+@author Rudy Kong
+@author Richard Bruskiewich
+-->
+
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/resources&quot;,&quot;THEME&quot;:&quot;kb2&quot;}">
+ </head> 
+ <body> 
+  <vaadin-vertical-layout> 
+   <vaadin-vertical-layout style-name="black-background" _id="titleLayout"> 
+    <vaadin-label _id="mainTitleLabel"> 
+     <h1 style="font-size: 5em; font-weight: bold; text-align: center; letter-spacing: 0.1em; padding-top: 1em; margin-bottom: 0em; color: white;">FAQ</h1> 
+    </vaadin-label> 
+    <vaadin-label _id="subTitleLabel"> 
+     <h3 style="font-weight: bold; text-align: center; letter-spacing: 0.1em; padding-bottom: 2em; color: white;">FREQUENTLY ASKED QUESTIONS</h3> 
+    </vaadin-label> 
+   </vaadin-vertical-layout> 
+   <vaadin-tab-sheet style-name="equal-width-tabs framed faq-tabsheet" responsive _id="faqTabSheet"> 
+    <tab caption="Getting Started" selected> 
+     <vaadin-vertical-layout style-name="faq-layout" size-full _id="guideLayout"> 
+      <vaadin-vertical-layout style-name="faq-row-layout"> 
+       <vaadin-label style-name="faq-label text-centered" plain-text>
+         NEW TO KNOWLEDGE.BIO? 
+       </vaadin-label> 
+       <vaadin-label style-name="faq-answer-label text-centered" plain-text>
+         Here is a step-by-step guide 
+       </vaadin-label> 
+      </vaadin-vertical-layout> 
+      <vaadin-horizontal-layout size-full> 
+       <vaadin-label :expand="2"></vaadin-label> 
+       <vaadin-vertical-layout :expand="6"> 
+        <vaadin-horizontal-layout style-name="faq-row-layout" width-full :expand> 
+         <vaadin-image source="theme://images/help/step1.png" style-name="pubmed-img" width="200px" :middle :right :expand></vaadin-image> 
+         <vaadin-label width="100px" plain-text></vaadin-label> 
+         <vaadin-horizontal-layout spacing :expand> 
+          <vaadin-label style-name="step-prefix-label" plain-text>
+            STEP 1 
+          </vaadin-label> 
+          <vaadin-label style-name="step-label" plain-text>
+            Search your concept 
+          </vaadin-label> 
+         </vaadin-horizontal-layout> 
+        </vaadin-horizontal-layout> 
+        <vaadin-horizontal-layout style-name="faq-row-layout" width-full :expand> 
+         <vaadin-image source="theme://images/help/step2.png" style-name="pubmed-img" width="200px" :middle :right :expand></vaadin-image> 
+         <vaadin-label width="100px" plain-text></vaadin-label> 
+         <vaadin-horizontal-layout spacing :expand> 
+          <vaadin-label style-name="step-prefix-label" plain-text :expand="3">
+            STEP 2 
+          </vaadin-label> 
+          <vaadin-label style-name="step-label" plain-text :expand="7">
+            Select a refined concept 
+          </vaadin-label> 
+         </vaadin-horizontal-layout> 
+        </vaadin-horizontal-layout> 
+        <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+         <vaadin-image source="theme://images/help/step3.png" style-name="pubmed-img" width="200px" :middle :right :expand></vaadin-image> 
+         <vaadin-label width="100px" plain-text></vaadin-label> 
+         <vaadin-horizontal-layout spacing :expand> 
+          <vaadin-label style-name="step-prefix-label" plain-text :expand="3">
+            STEP 3 
+          </vaadin-label> 
+          <vaadin-label style-name="step-label" width="200px" plain-text :expand="7">
+            Add nodes to the map by clicking the checkboxes and add to map button 
+          </vaadin-label> 
+         </vaadin-horizontal-layout> 
+        </vaadin-horizontal-layout> 
+        <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+         <vaadin-image source="theme://images/help/step4.png" style-name="pubmed-img" width="200px" :middle :right :expand></vaadin-image> 
+         <vaadin-label width="100px" plain-text></vaadin-label> 
+         <vaadin-horizontal-layout spacing :expand> 
+          <vaadin-label style-name="step-prefix-label" plain-text :expand="3">
+            STEP 4 
+          </vaadin-label> 
+          <vaadin-label style-name="step-label" width="200px" plain-text :expand="7">
+            Rearragne the nodes to your preference 
+          </vaadin-label> 
+         </vaadin-horizontal-layout> 
+        </vaadin-horizontal-layout> 
+        <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+         <vaadin-image source="theme://images/help/step5.png" style-name="pubmed-img" width="200px" :middle :right :expand></vaadin-image> 
+         <vaadin-label width="100px" plain-text></vaadin-label> 
+         <vaadin-horizontal-layout spacing :expand> 
+          <vaadin-label style-name="step-prefix-label" plain-text :expand="3">
+            STEP 5 
+          </vaadin-label> 
+          <vaadin-label style-name="step-label" width="200px" plain-text :expand="7">
+            Find evidence for the concept 
+          </vaadin-label> 
+         </vaadin-horizontal-layout> 
+        </vaadin-horizontal-layout> 
+        <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+         <vaadin-image source="theme://images/help/step6.png" style-name="pubmed-img" width="200px" :middle :right :expand></vaadin-image> 
+         <vaadin-label width="100px" plain-text></vaadin-label> 
+         <vaadin-horizontal-layout spacing :expand> 
+          <vaadin-label style-name="step-prefix-label" plain-text :expand="3">
+            STEP 6 
+          </vaadin-label> 
+          <vaadin-label style-name="step-label" width="200px" plain-text :expand="7">
+            Select a sentence to open its PubMed article 
+          </vaadin-label> 
+         </vaadin-horizontal-layout> 
+        </vaadin-horizontal-layout> 
+        <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+         <vaadin-image source="theme://images/help/step7.png" style-name="pubmed-img" width="200px" :middle :right :expand></vaadin-image> 
+         <vaadin-label width="100px" plain-text></vaadin-label> 
+         <vaadin-horizontal-layout spacing :expand> 
+          <vaadin-label style-name="step-prefix-label" plain-text :expand="3">
+            STEP 7 
+          </vaadin-label> 
+          <vaadin-label style-name="step-label" plain-text :expand="7">
+            Read the PubMed article 
+          </vaadin-label> 
+         </vaadin-horizontal-layout> 
+        </vaadin-horizontal-layout>
+        <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+         <vaadin-image source="theme://images/libraryButton.png" style-name="pubmed-img" width="200px" :middle :right :expand></vaadin-image> 
+         <vaadin-label width="100px" plain-text></vaadin-label> 
+         <vaadin-horizontal-layout spacing :expand> 
+          <vaadin-label style-name="step-prefix-label" plain-text :expand="3">
+            STEP 8 
+          </vaadin-label> 
+          <vaadin-label style-name="step-label" width="200px" plain-text :expand="7">
+            Discover and load concept maps saved in the public library. 
+          </vaadin-label> 
+         </vaadin-horizontal-layout> 
+        </vaadin-horizontal-layout>
+        <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+         <vaadin-image source="theme://images/MyAccount.png" style-name="pubmed-img" width="200px" :middle :right :expand></vaadin-image> 
+         <vaadin-label width="100px" plain-text></vaadin-label> 
+         <vaadin-horizontal-layout spacing :expand> 
+          <vaadin-label style-name="step-prefix-label" plain-text :expand="3">
+            STEP 9 
+          </vaadin-label> 
+          <vaadin-label style-name="step-label" width="200px" plain-text :expand="7">
+            (Optional) Create a user account to manage your maps privately or share them selectively. 
+            With a user account, you can also assert and persist your own knowledge statements 
+            (with evidence) to your concept maps.
+          </vaadin-label> 
+         </vaadin-horizontal-layout> 
+        </vaadin-horizontal-layout>
+       </vaadin-vertical-layout> 
+       <vaadin-label :expand="2"></vaadin-label> 
+      </vaadin-horizontal-layout> 
+     </vaadin-vertical-layout> 
+    </tab> 
+    <tab caption="Concept"> 
+     <vaadin-vertical-layout style-name="faq-layout" _id="generalTabLayout"> 
+      <vaadin-vertical-layout style-name="faq-row-layout" spacing> 
+       <vaadin-label style-name="faq-question-label text-centered" :middle :center>
+         What is a Concept? 
+       </vaadin-label> 
+       <vaadin-label style-name="faq-answer-label" :middle :center> 
+        <p>A <em>concept</em> is the core data manipulated by Knowledge.Bio to represent ideas about phenomena in the world. Most of the concepts in the system are related to biomedical subjects - for example, diseases, genes, and drugs - although the system relates these concepts to others such as people, methods, processes, etc.</p> 
+       </vaadin-label> 
+      </vaadin-vertical-layout> 
+      <vaadin-vertical-layout style-name="faq-row-layout" spacing> 
+       <vaadin-label style-name="faq-question-label text-centered" :middle :center>
+         Are there any filters to refine the search results? 
+       </vaadin-label> 
+       <vaadin-label style-name="faq-answer-label" :middle :center> 
+        <p>Yes! There are two options. 1. The <strong>filter by</strong> drop-down menu which allows you to filter concepts based on their types. 2. The <em>text field</em> to the right of the drop-down menu (<strong>Find concepts</strong>, <strong>Search sentences</strong>). It allows you to type keywords and then filter the result based on matching words.</p> 
+       </vaadin-label> 
+      </vaadin-vertical-layout> 
+     </vaadin-vertical-layout> 
+    </tab> 
+    <tab caption="The Knowledge.Bio Desktop"> 
+     <vaadin-vertical-layout style-name="faq-layout" size-full _id="tabsLayout"> 
+      <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+       <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
+         WHAT IS IT? 
+       </vaadin-label> 
+       <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
+       <vaadin-label style-name="faq-answer-label" :expand="4"> 
+        <p>The 3 tabs on the left side of the Knowledge.Bio desktop - the <strong>Relations</strong>, <strong>Reference Evidence</strong>, and <strong>PubMed Abstract</strong> tab - provide you ways to find concepts, link them to their evidence, and allow you to directly access the associated pubmed articles.
+        The left side of the desktop displays a graphical representation of the concepts and relations of personal interest that you collect from the Relations table (see <strong>Concept Map</strong> FAQ).</p> 
+       </vaadin-label> 
+      </vaadin-horizontal-layout> 
+      <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+       <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
+         RELATIONS TAB 
+       </vaadin-label> 
+       <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
+       <vaadin-vertical-layout spacing :expand="4"> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           What are the Subject and Object columns? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label" :expand="4"> 
+          <p>Subject and object refer to the concepts that are connected to each other. Their relationship is shown in the predicate column.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           What is the Relation column? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label" :expand="4"> 
+          <p>The relation column represents how the subject and objects are connected using defined semantic relationships such as the 
+          <a href="http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-486#Sec26" target="_blank">Semantic Medline Database <em>Ontological Predicate Definitions</em></a>
+          or perhaps <a href="https://www.wikidata.org/wiki/Wikidata:Glossary#Property">WikiData Properties</a>.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           What is the Evidence column for? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label" :expand="4"> 
+          <p>To access the articles related to the chosen concept. Simply click on the green buttons under the <strong>Evidence</strong> column (the number represents the number of related articles).</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           I don’t see any evidence column! What do I do? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label" :expand="4"> 
+          <p>The table most likely has been clipped to fit your screen resolution which causes parts of it to be hidden. A horizontal scrollbar should appear automatically to allow you to access the rest of the table. </p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How do I find more information about the subject or object? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label" :expand="4"> 
+          <p>When clicking on the subject or object in the table, it will bring up a pop-up window that shows basic information such as its definition, name, type, and <em>Concept Universal Identifier</em> (CUI). CUI is the identifier assigned to a concept by an authority that was the source of the definition. The pop-up window also gives the option to add the concept to the map as well as showing the related articles.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How do I add or delete nodes on the map? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label" :expand="4"> 
+          <p>To add nodes, click on the check boxes in the table, and then click the <strong>Add to Map</strong> button. Alternatively, you can add a node to the map by clicking on any of the concepts under the <em>Subject</em> or <em>Object</em> column to open up a pop-up window with an <strong>Add to Map</strong> button as well.<br><br>To delete nodes, just select it on the map and a pop-up window should appear, giving you the option to delete the node.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How to find related terms connected to a concept? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label" :expand="4"> 
+          <p>Click on your chosen subject or object to bring up the pop-up window. Click the <strong>Show Relations</strong> button.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing size-full> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How do I find articles related to my searched concept? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label" :expand="4"> 
+          <p>Click the green buttons under the <strong>Evidence</strong> column. It will take you to the <em>Reference Evidence</em> tab which lists all the related article links in the table. Click on any of them will take you to the <em>PubMed Abstract</em> tab where you will be able to view the article.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+       </vaadin-vertical-layout> 
+      </vaadin-horizontal-layout> 
+      <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+       <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
+         CITATION EVIDENCE TAB 
+       </vaadin-label> 
+       <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
+       <vaadin-vertical-layout spacing :expand="4"> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           There is nothing under the Reference tab! 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>In order to see evidence and references, select a concept by clicking it from the table under the <em>Relations</em> tab.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           What are the long numbers under the Reference column for? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>They represent the PMID (PubMed IDentifier) that index the journal references in <a href="http://www.ncbi.nlm.nih.gov/pubmed" target="_blank">PubMed.</a></p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           Can I rearrange the articles by date? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Yes! Simply click on the <em>Publication Date</em> column header and it should order the articles from the newest to the oldest, or vice versa.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           Where do these articles come from and how are they chosen? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>The evidence is searched among the PubMed articles using text-mining technologies to find abstracts that have the mentioned concepts.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+       </vaadin-vertical-layout> 
+      </vaadin-horizontal-layout> 
+      <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+       <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
+         PUBMED ABSTRACT TAB 
+       </vaadin-label> 
+       <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
+       <vaadin-vertical-layout spacing :expand="4"> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How do I access the articles? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>The <em>Reference</em> tab contains links to all the PubMed articles related to your chosen concept. Clicking on one of the sentences under the <em>Sentence</em> column will then direct you to the PubMed article. </p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           Can l read the article in a separate window? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Yes! Clicking on the <strong>Show Abstract in New Window</strong> button located above the article to make it easier to read.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           What is the "Show Associated Concept Relations" button for? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Clicking it will take you back to the <em>Relations</em> tab to list the concepts that are related to the PubMed article you are reading.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+       </vaadin-vertical-layout> 
+      </vaadin-horizontal-layout> 
+     </vaadin-vertical-layout> 
+    </tab> 
+    <tab caption="Concept Map"> 
+     <vaadin-vertical-layout style-name="faq-layout" _id="mapTabLayout"> 
+      <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+       <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
+         WHAT IS IT? 
+       </vaadin-label> 
+       <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
+       <vaadin-vertical-layout spacing :expand="4"> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>The map is used as a visual representation for the relationships between subjects and objects. It does this by adding <em>nodes</em> to the map to represent the subjects and objects, and <em>edges</em> (the arrows) to represent their relationships.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+       </vaadin-vertical-layout> 
+      </vaadin-horizontal-layout> 
+      <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+       <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
+         NAVIGATION
+       </vaadin-label> 
+       <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
+       <vaadin-vertical-layout spacing :expand="4"> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How do I zoom in and out of the map? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Use the scroll wheel or  <img src="VAADIN/themes/kb2/images/slider.png" alt="Slider" style="margin-bottom: -4px; height: 10%; width: 10%;"/>  to zoom in and out of your map.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How do I move the map? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Click and drag on a blank space to move the map around.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How do I change the position of the nodes? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Click and drag on the specific nodes to move them.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How can I find out more about a node? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Click on a node will bring up a pop-up window that shows its basic information (such as its name and type) as well as options to show its relations in the concept tables under the <em>Relations</em> tab. The window also allows you to delete the node from the map.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+       </vaadin-vertical-layout> 
+      </vaadin-horizontal-layout> 
+      <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+       <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
+         GENERAL 
+       </vaadin-label> 
+       <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
+       <vaadin-vertical-layout spacing :expand="4"> 
+       <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           I saved a map on my computer. How do I upload it on my map? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>To load a map from your computer, make sure you have previously saved it as a <strong>.kb</strong> file and click on  <img src="VAADIN/themes/kb2/images/uploadButton.png" alt="Upload Button" style="margin-bottom: -7px; height: 8%; width: 8%;"/>.</p>
+         </vaadin-label> 
+        </vaadin-vertical-layout>
+       <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How do I save the map and how do I access it? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Click on  <img src="VAADIN/themes/kb2/images/saveButton.png" alt="Save Button" style="margin-bottom: -7px; height: 8%; width: 8%;"/>  to save the map.</p>
+          <p>You can save your concept map in several formats: <strong>kb</strong>, <strong>sif</strong>, <strong>jpeg</strong>, or <strong>tsv</strong>. Each format has a purpose: </p> 
+          <ul> 
+           <li><p><strong>.kb</strong> - a file format specific to Knowledge.Bio that records all the content and layout details about a map and can be reloaded into the application again to be edited.</p>
+           <ul>
+      		 <img src="VAADIN/themes/kb2/images/save_not_loggedin.png" alt="Saving while not logged in"/>
+      		 <ul>
+      		 	<li>1: The name of the archive, set by the user.</li>
+     		 	<li>2: A description of what is contained in the archive.</li>
+     		 	<li>3: List of archives you can see.</li>
+      		 </ul>
+         	 <li>Here, you also have the option to save a '.kb' formatted map to the Knowledge.Bio online public library, to share the map with others, by clicking on the "Save to Library" button. You may export it directly to your local drive with the "Export" button (not shown).</li>
+			 <img src="VAADIN/themes/kb2/images/save_loggedin.png" alt="Saving while logged in"/>
+			<ul>
+      		 	<li>1: The name of the archive, set by the user.</li>
+     		 	<li>2: A description of what is contained in the archive.</li>
+     		 	<li>3: List of archives you can see.</li>
+     		 	<li>4: The group you want to share share your archive with (leave empty if you just want to share it with yourself and no one else.)</li>
+     		 	<li>5: Option to share with the public, or just with a group (or just with yourself if the group is unspecified.)</li>
+     		 	<li>6: Maps that only you or those in your group can see are filed under "Personal Maps". "All Maps" shows both public and personal maps.</li>
+      		 </ul>
+          	<li>When logged in you have two additional options of specifying whether or not you want the map to be publically visible, and what group of persons with accounts on Knowledge.Bio you wish to share your map with.</li>
+           	<li>Clicking on a map under "Personal Maps" or "All Maps" redirects you to a preview pane for that map, including an image of its contents, and the option to either add it to your session's graph (without overwriting its current contents), or export it to your local drive.</li>
+           </ul>
+           </li> 
+           <li><p><strong>.sif</strong> - the standard <a href="http://www.cytoscape.org/" target="_blank">Cytoscape</a> file format.</p></li> 
+           <li><p><strong>.jpeg</strong> - an image file format.</p></li> 
+           <li><p><strong>.tsv</strong> - a tab delimited text file format similar to <strong>.sif</strong>, except with the addition of unique concept identifiers.</p></li> 
+          </ul> 
+          <p></p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How to I clear the map? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>The  <img src="VAADIN/themes/kb2/images/clearButton.png" alt="Clear Button" style="margin-bottom: -7px; height: 8%; width: 8%;"/>  allows you to clear the map along with <em>your current searches</em> in the concept tables. Be careful, once you clear the page, all information will be lost.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout>
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           I saved a map in the public library. How do I load it on my map? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>To load a map from the Knowledge.Bio public library, make sure you have previously saved it as a <strong>.kb</strong> file and click on  <img src="VAADIN/themes/kb2/images/libraryButton.png" alt="Library Button" style="margin-bottom: -7px; height: 8%; width: 8%;"/>.</p>
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           I lost my map... how can I find it again? / How can I center it? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Click  <img src="VAADIN/themes/kb2/images/centerButton.png" alt="Center Button" style="margin-bottom: -7px; height: 8%; width: 8%;"/>  to reposition your graph in the middle and fill the view.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout>
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           Are there pre-set options of how to rearrange the nodes? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>You can rearrange the nodes by selecting a layout from  <img src="VAADIN/themes/kb2/images/layoutSelect.png" alt="Layout Select" style="margin-bottom: -7px; height: 10%; width: 10%;"/>. The <strong>Manual</strong> option allows you to manually change the placement of the nodes while the other options will automatically rearrange the nodes for you. (You can still move the nodes around on any of the pre-settings)</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           Can I change the background color? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>The map offers two options: dark and light. This can be changed through  <img src="VAADIN/themes/kb2/images/bgColorSelect.png" alt="Background Color Select" style="margin-bottom: -8px; height: 8%; width: 8%;"/>.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           What do the colors of the nodes represent? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Each node has a color to differentiate the group they belong to. Click on  <img src="VAADIN/themes/kb2/images/legendButton.png" alt="Legend Button" style="margin-bottom: -5px; height: 12%; width: 12%;"/>  to see the legend as shown below.</p> 
+          <img src="VAADIN/themes/kb2/images/legend.png" alt="Legend" style="height: 30%; width: 30%;"/>
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+       </vaadin-vertical-layout> 
+      </vaadin-horizontal-layout> 
+     </vaadin-vertical-layout> 
+    </tab> 
+    <tab caption="Accounts"> 
+     <vaadin-vertical-layout style-name="faq-layout" _id="accountTabLayout"> 
+      <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+       <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
+         USER ACCOUNTS
+       </vaadin-label> 
+       <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
+       <vaadin-vertical-layout spacing :expand="4"> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           Why do I need an account? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>A user account in Knowledge.Bio lets you save concept maps you create under your name. Additionally, you may have your own collection of private maps that you can selectively share with others. And finally, being logged into an account lets you add custom relationships to the database reflecting your knowledge, and new pieces of evidence on existing knowledge or relationships in Knowledge.Bio.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How do I create an account?
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Click on the <b>Login</b> button in the sidebar. There will be a link, <b>Sign Up</b>. Click on it and follow the instructions.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How do I login? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Click on the <b>Login</b> button in the sidebar and follow the instructions.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How do I logout? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>If you are logged in, the place where the <b>Login</b> button was previously will now state <b>Logout</b>. Click on the <b>Logout</b> button to sign out of the application and be returned to the initial page.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           Forgot your password? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Click on the <b>Login</b> button. On the login screen there will be a link, "Forgot your password?". Click on it and follow the options for recovery.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+       </vaadin-vertical-layout> 
+      </vaadin-horizontal-layout>
+      
+            <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+       <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
+		MANAGING NODES AND EDGES
+       </vaadin-label> 
+       <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
+       <vaadin-vertical-layout spacing :expand="4"> 
+       
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+		How do I remove an element from the graph?
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>When you click on a node in the graph, a popup menu appears. Here there are actions that you can take with respect to the node. Click on <b>Delete</b> to remove the node and all its connected relations from the graph. You can still put them back by searching for the concept again and using the <b>Add to Map</b> button.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+		Where can I find the properties of a particular concept I have on the graph?
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Click on the node to produce a popup menu for the concept. Press <b>Show Properties</b>. A popup should appear showing the properties for that concept, similarly to if you selected it on the Concept Table.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout>
+        
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+         I have loaded/created a map and I want to see the evidence for a relation without having to look up the concept directly. How can I do this?
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Every edge displayed on the map is clickable, producing a popup menu. For edges there will be a <b>Show Evidence</b> button. Clicking on it will bring you to the "Evidence" table, showing the sentences giving evidence to the relationship.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+         Can I put my own relationships on the graph?/Can I add my own evidence that a knowledge relationship statement is true?
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Yes, through the <em>User Annotation feature</em> you can not only add new pieces of evidence for existing relationship statements, 
+			but also add new relationship statements to the database.
+			You must create a user account and be logged in to access this feature.
+			First click on a node to bring up the popup menu. Then click on the "Annotate" button.
+			A new menu should appear with several fields, allowing you to select which relationship on the graph you wish to add evidence to.
+			The "Source" field and "Target" fields refer to the end of the edge and tip of the edge, respectively. "Relation" refers to the type of relation and its name.
+			The "Source" and "Target" fields derive from the nodes that area already on the graph. If you wish to use a concept that you have not yet 
+			put on the graph, select <b>More nodes...</b> from one of their menus and search for the concept, in a similar process to finding a concept for the application at large.
+			Every new annotation must have evidence given for it. Use the "Description" field to give justification for the relationship, 
+			and the "URI" field for a link (like a URL or a PMID) to the source of your justification.
+			You may establish whether or not other users can see your annotation, using the "Public" checkbox.
+			After all of these fields are filled out, you may click <b>Submit</b>. If the annotation was created by you, it should be loaded up to the database and put onto your graph.
+          </p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+		My map looks like a hairball. Is there any way that I can organize it?
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Yes! Knowledge.Bio allows for the clustering of nodes together in the graph with shared properties or with a certain type of relationship. These clusters may be added and reversed as you wish.
+          
+          First click on the node and bring up the popup menu. Then click on <b>Cluster</b>.
+          
+          Another menu should appear allowing you to create constraints to be matched against in the current map. You can add properties and their keywords to the list, as well as select a Relation predicate from a drop-down menu.
+          
+          Altogether, they form a way of sorting the graph into a "cluster", i.e., a collection of related nodes abstracted into a single one. The nodes that match the cluster will be hidden and their edges reconnected to the central node.
+          
+          If a node is acting as the central concept of a cluster, then to uncluster what is remapped to that concept, click on it, and press the <b>Uncluster</b> button.
+          
+          Note that as you add more concepts to the concept map, they may not appear yet a new edge connects to the central node of an existing cluster.
+          </p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        
+       </vaadin-vertical-layout> 
+      </vaadin-horizontal-layout> 
+      
+      
+     </vaadin-vertical-layout> 
+    </tab> 
+   </vaadin-tab-sheet> 
+  </vaadin-vertical-layout>  
+ </body>
+</html>

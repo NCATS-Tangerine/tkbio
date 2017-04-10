@@ -1,0 +1,24 @@
+These are just some basic notes about *manual* deployment of KB2 
+to an AWS EC2 instance running Ubuntu, directly as a Spring Boot Jar. 
+Note that WAR deployment to, say, a Tomcat Web Application container, 
+is likely more robust for production deployment, and thus, to be preferred.
+
+1. Ensure that all the system software is updated (sudo apt-get update / upgrade)
+
+2. Ensure that Neo4j is installed (sudo apt-get install neo4j). 
+   Ensure that the dbms.connector.http.address=0.0.0.0 is uncommented in /etc/neo4j/neo4j.conf.
+   Start up the server(?) and (remotely, from your machine) load the server with some (sample) data(?).
+
+3. Ensure that NGINX is installed (if you wish to proxy the server). Check that proxy settings are pointing to the localhost:8080 where KB2 will run.
+
+4. Git clone the KB2 source tree somewhere convenient (e.g. in /opt).
+
+5. gradle --refresh-dependancies clean install
+
+6. *Manually* add the VAADIN themes folder, from /kb2/web/src/webapp, to the /kb2/web/build/libs/web*.jar # Note: not yet sure how to automate this part
+
+7. (Optionally) put a symbolic link (kb2.jar?) to the jar in user home(?)
+
+8.  Run the software: jar -jar kb2.jar >kb2_`date -I`.out 2>&1 &
+
+9. Make sure that the AWS firewall is open up to your machine... go to the site...

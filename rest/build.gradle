@@ -1,0 +1,34 @@
+// KB2.1 REST Web API Build File
+
+archivesBaseName  = 'kb2-rest'
+description       = 'Knowledge.Bio Release 2.4 REST Web Services Front End'
+
+evaluationDependsOn(':core')
+
+apply plugin: 'war'
+
+bootRepackage {
+    mainClass = 'bio.knowledge.rest.RestApplication'
+}
+
+dependencies {
+
+    compile project(':core')
+	
+	compile "org.springframework.boot:spring-boot-starter-hateoas:$springBootVersion"
+    
+    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    
+	providedRuntime "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
+}
+
+jar {
+    manifest {
+        attributes("Main-Class": "bio.knowledge.rest.RestApplication")
+    }
+}
+
+war {
+	from 'src/main/webapp'
+}
+

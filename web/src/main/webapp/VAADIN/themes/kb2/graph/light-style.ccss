@@ -1,0 +1,153 @@
+/*
+@author Kenneth Bruskiewicz
+@author Rudy Kong
+*/
+
+/* NOTA BENE: Specificity rules are ignored in Cytoscape styling. So selectors must be "flat" rather than hierarchical. */
+node {
+	text-valign: center;
+	color: black;
+	min-zoomed-font-size: 2px;
+}
+
+/* We assume only nodes can have parents in our schema, so no group selector is necessary. */
+/* ! === falsey operator (under Javascript convention) */
+[!parent] {
+    content: data(name);
+}
+
+/* ? === truthy operator (under Javascript convention) */
+[?parent] {
+	content: data(semtype);
+}
+
+$node > node {
+    text-background-opacity: 0;
+    text-border-width: 0;
+    text-border-opacity: 0;
+    text-background-shape: roundrectangle;
+    text-border-color: #000;
+	text-valign: top;
+    text-halign: center;
+	font-size: 23px;
+	
+	/* background-color: #A6BEF6;
+	background-opacity: 0.66; */
+	
+	background-color: white;
+	border-width : 3px;
+	border-style : dashed;
+	border-color: #000;
+}
+
+edge {
+  	content: data(label);
+	color: black;
+	font-size: 10px; 
+	min-zoomed-font-size: 2px;
+	width: 2;
+	target-arrow-shape: triangle;
+	/*text-outline-width: 1px;*/
+	/*text-outline-color: white;*/
+	line-color: #404040;
+	target-arrow-color: #404040;
+	edge-text-rotation: autorotate;
+	text-background-color: white;
+	text-background-opacity: 1;
+	text-background-shape: roundrectangle;
+}
+
+:selected {
+	background-color: #484848;
+	line-color: cyan;
+    target-arrow-color: cyan;
+    source-arrow-color: cyan;
+}
+
+.faded {
+    opacity: 0.75;
+    text-opacity: 1;
+}
+
+[semgroup="GENE"] {
+    background-color: #4060FF;
+}
+
+[semgroup="CHEM"] {
+    background-color: #00FF00;
+}
+
+[semgroup="PHYS"] {
+    background-color: #FF9800;
+}
+
+[semgroup="DISO"] {
+    background-color: #FF0000;
+}
+
+[semgroup="ANAT"] {
+	background-color: #FF5722;
+}
+
+[semgroup="CONC"] {
+	background-color: #E91E63;
+}
+
+[semgroup="DEVI"] {
+	background-color: #9C27B0;
+}
+
+[semgroup="GEOG"] {
+	background-color: #673AB7;
+}
+
+[semgroup="LIVB"] {
+	background-color: #C0C000;
+}
+
+[semgroup="OBJC"] {
+	background-color: #2196F3;
+}
+
+[semgroup="OCCU"] {
+	background-color: #00BCD4;
+}
+
+[semgroup="ORGA"] {
+	background-color: #FFEB3B;
+}
+
+[semgroup="PHEN"] {
+	background-color: #009688;
+}
+
+[semgroup="PHYS"] {
+	background-color: #4CAF50;
+}
+
+[semgroup="PROC"] {
+	background-color: #8BC34A;
+}
+
+[active_node="yes"] {
+	color: red;
+	shape: star;
+	font-size: 25px;
+	font-weight: bold;
+	text-outline-color: white;
+	text-outline-width: 2px;
+	width: 50px;
+	height: 50px;
+}
+
+[active_edge="yes"] {
+	color: red;
+	font-size: 15px;
+	font-weight: bold;
+	width: 3;
+	line-color: red;
+	target-arrow-color: red;
+	text-background-color: white;
+	text-background-opacity: 1;
+	text-background-shape: roundrectangle;
+}

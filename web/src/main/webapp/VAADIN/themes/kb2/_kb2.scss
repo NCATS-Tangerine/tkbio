@@ -1,0 +1,792 @@
+/*
+@author Kenneth Bruskiewicz
+@author Rudy Kong
+*/
+
+// Global variable overrides. Must be declared before importing Valo.
+
+// Defines the plaintext font size, weight and family. Font size affects general component sizing.
+//$v-font-size: 16px;
+//$v-font-weight: 300;
+//$v-font-family: "Open Sans", sans-serif;
+
+// Defines the border used by all components.
+//$v-border: 1px solid (v-shade 0.7);
+//$v-border-radius: 4px;
+
+// Affects the color of some component elements, e.g Button, Panel title, etc
+//$v-background-color: hsl(210, 0%, 98%);
+// Affects the color of content areas, e.g  Panel and Window content, TextField input etc
+//$v-app-background-color: $v-background-color;
+
+// Affects the visual appearance of all components
+//$v-gradient: v-linear 8%;
+//$v-bevel-depth: 30%
+//$v-shadow-opacity: 5%;
+
+// Defines colors for indicating status (focus, success, failure)
+//$v-focus-color: valo-focus-color(); // Calculates a suitable color automatically
+//$v-friendly-color: #2c9720;
+//$v-error-indicator-color: #ed473b;
+
+// For more information, see: https://vaadin.com/book/-/page/themes.valo.html
+// Example variants can be copy/pasted from https://vaadin.com/wiki/-/wiki/Main/Valo+Examples
+
+// Overrides global variables for the Valo theme
+$v-font-size: 9.5px;
+
+$v-border-radius: 2px;
+
+$v-app-background-color: $color-white;
+
+$v-gradient: false;
+$v-bevel: false;
+
+$v-focus-color: $color-grey;
+
+// Local KB2 colors
+$color-teal:  #008080;
+$color-green: #5cb85c;
+
+// Import variables
+@import "components/variables";
+
+// Import the mixins styles for components, such as layouts, windows, buttons, etc.
+@import "components/main";
+@import "components/resets";
+
+// Import the valo theme
+@import "../valo/valo.scss";
+
+@mixin kb2 {
+  	@include valo;
+
+  	// Insert your own theme rules here
+  	@include resets;
+  
+  	//--Buttons--//
+	#aboutBtn, #helpBtn, #contactBtn {
+		background-color: transparent; 
+		&:hover {
+			color: $color-white;
+		}
+	}
+	
+	.concept-detail-button {
+		background-color: transparent;
+		border: none;
+		box-shadow: none;
+		text-align: left;
+		color: $color-teal; 
+		font-weight: bold;
+		&:hover {
+			color: $color-white;
+		}
+	}
+	
+	.v-grid-column-header-content {
+		text-align: center;
+	}
+	
+	.landingpage-search-button {
+		& .v-icon {
+			font-size: 15px;
+		}
+	}
+	
+	.pagecontrol-button, .page-button {
+		color: $page-button-color;
+		background: $control-button-background-color;
+		border: none;
+		
+		@include valo-button-quiet-style();
+		
+		&:hover {
+			border: none;
+			@include valo-gradient($color: $control-button-background-color);
+		}
+	}
+
+	.v-button-pagecontrol-button.v-disabled {
+		color: rgba(0, 0, 0, 0.7);
+		background: none;
+		border: none;
+	}
+	
+	.current-page-button {
+		visibility: visible;
+		color: $color-black;
+		background: none;
+		border: none;
+		font-weight: bold;
+	}
+	
+	.current-page-size {
+		@extend .current-page-button;
+		color: $color-black;
+		
+		&:hover {
+			@include valo-gradient($color: $control-button-background-color);
+		}
+	}	
+	
+	.sidebar-home-button {
+		.v-icon {
+			width: 50px;
+		}
+	}
+	
+	.v-upload .v-button {
+		text-align: center;
+		vertical-align: center;
+		height: 33px;
+	}
+	
+	.map-button {
+		font-size: 18px;
+		vertical-align: center;
+	}
+	
+
+	.forgot-your-password-button, .sign-up-button, .create-account-button, .continue-button {
+		font-size: 12px;
+	}
+	
+	.login-button {
+		font-size: 12px;
+		margin-top: -5px;
+	}
+	
+	.button-margin-top {
+		margin-top: 5px;
+	}
+
+//--Links and Labels--//
+	.v-link-custom {
+		color:#9D9D9D;
+		font-size: 140%;
+		text-decoration:none !important;
+	}
+	
+	.v-link:hover {
+		color:#FFF;
+	}
+	
+	.v-green {
+		color:#5CB85C;
+		font-weight:bold;
+		font-size:24px;
+	}
+	
+	.v-title {
+		color:white;
+		font-weight:bold;
+		font-size:24px;
+	}
+	
+	.v-select{
+		background-color:#696969;
+		color: white;
+		
+	}
+	
+	.v-select select{
+		background-color:#696969;
+		background-image:none !important;
+		color: white;
+		border-color:#555555;
+		box-shadow:none !important;
+	}
+	
+	.v-label {
+		color:$color-black;
+		font-size: $v-font-size;
+		text-decoration:none !important;
+	}
+	
+	.page-status-label {
+		font-size: 90%;
+		padding-left: 10px;
+	}
+	
+	.page-entries-label {
+		font-size: 90%;
+	}
+	
+	.more-details-title .v-label {
+		font-size: large;
+	}
+	
+	.predication-label {
+		font-weight: bold;
+		font-size: 150%;
+		text-align: center;
+	}
+	
+	.pubmed-article-label {
+		min-width: 300px;
+		text-align: center;
+	}
+	
+	.page-header-label {
+		text-align: center;
+		letter-spacing: 0.1em;
+		font-size: 6em;
+		font-weight: bold;
+	}
+	
+	.about-title-label h1{
+		@extend .page-header-label;
+		
+		padding-top: 2em;
+		margin-top: 0px; 
+		margin-bottom: 10px;
+	}
+	
+	.about-slogan-label {
+		text-align: center;
+		font-size: 1.5em;
+		font-weight: bold;
+		color: $v-focus-color;
+		
+		margin-top: 10px;
+	}
+	
+	.contact-us-header-label {
+		@extend .page-header-label;
+		margin-top: 2em;
+		margin-bottom: 2em;
+	}
+	
+	.section-header-label {
+		@include kb-section-header(4em, $color-green);
+	}
+	
+	.idea-header-label {
+		@extend .section-header-label;
+		color: #ffffff;
+		margin-top: 0px;
+	}
+	
+	.suggestion-label {
+		@extend .section-header-label;
+		font-size: 2.5em;
+		color: $color-black;
+	}
+	
+	.affiliations-label {
+		@extend .section-header-label;
+		color: $color-black;
+		padding-bottom: 1em;
+	}
+	
+	.usecase-layout .v-vertical {
+		.v-label {
+			margin-bottom: 1.5em;
+		}
+		
+	 	.section-header-label {
+			text-align: left;
+			color: $color-green-light;
+			margin-bottom: 0.5em;
+		}
+	}
+	
+	.section-content-label {
+		font-size: 1.5em;
+		font-weight: bold;
+		text-align: center;
+	}
+	
+	.section-content-label-left {
+		font-size: 1.5em;
+		font-weight: bold;
+		text-align: left;
+		line-height: 2em;
+		color: #e6e6e6;
+	}
+	
+	.idea-content-label {
+		@extend .section-content-label;
+		color: #cccccc;
+		padding: 0.5em 2em;
+		line-height: 2em;
+	}
+	
+	.kb-intro-label {
+		margin-bottom: 1.3em;
+	}
+	
+	.faq-label {
+		@include kb-section-header($fontSize: 3em);
+		text-align: left;
+	}
+	
+	.faq-question-label {
+		@include kb-section-header($fontSize: 2em);
+		font-weight: bold;
+		text-align: left;
+	}
+	
+	.faq-answer-label {
+		@include kb-section-header($fontSize: 1.5em);
+		font-weight: normal;
+		text-align: left;
+		& > p {
+			margin-top: 0em;
+		}
+	}
+	
+	.step-label {
+		@include kb-section-header($fontSize: 1.5em);
+		font-weight: bold;
+		text-align: left;
+	}
+	
+	.step-prefix-label {
+		@extend .step-label;
+		color: $color-green;
+	}
+	
+	.landingpage-title-label {
+		@include kb-section-header($fontSize: 4em, $color: $color-white);
+		letter-spacing: 0.1em;
+	}
+	
+	.landingpage-question-label {
+		@include kb-section-header($fontSize: 3em);
+		font-weight: bold;
+		text-align: left;
+		color: $color-green-mild;
+	}
+	
+	.landingpage-answer-label {
+		@include kb-section-header($fontSize: 1.5em);
+		font-weight: normal;
+		text-align: left;
+		color: $color-black;
+	}
+	
+	.landingpage-step-prefix-label {
+		@include kb-section-header($fontSize: 6em);
+		font-weight: bold;
+		color: $color-green-mild;
+	}
+	
+	.landingpage-step-label {
+		@extend .landingpage-answer-label;
+		font-weight: bold;
+		color: #666666;
+	}
+	
+	.landingpage-usecase-header-label {
+		@include kb-section-header(4em, $color-green-pale);
+	}
+	
+	.current-concept-label {
+		font-weight: bold;
+		font-size:   160%;
+		color: $color-teal;
+		
+		&:hover {
+			color: lighten($color-teal, 25%);
+		}
+	}
+	
+	.data-table-label-regular {
+		color: $color-teal;
+	}
+	
+	.data-table-label-highlight {
+		color: $color-green;
+	}
+	
+	.login-label, .create-account-label, .recover-password-label {
+		font-size: 50px;
+		color: $color-green;
+	}
+	
+	.dont-have-account-label, .step2-details-label {
+		font-size: 12px;
+	}
+
+	.error-message-label {
+		font-size: 12px;
+		color: #ed473b;
+		text-align: center;
+	}
+	
+	.step1-label, .step2-label {
+		font-size: 15px;
+	}
+
+	.alert-window-label {
+		font-size: 13px;
+		text-align: center;
+//		font-weight: bold;
+	}
+	
+//--Textfields--//
+	.main-search-field {
+		background-color: $color-main-search-field;
+		color: $color-white;
+		
+		&[class*="prompt"] {		
+			color: $color-white;
+		}
+	}
+	
+	.username-textfield, .login-password-textfield, .email-textfield {
+		text-align: center;
+		font-size: 12px;
+		margin-top: -5px;
+	}
+	
+	.firstname-textfield, .lastname-textfield, .new-email-textfield, .password-textfield {
+		text-align: left;
+		font-size: 12px;
+		margin-top: -5px;
+	}
+	
+//--Loading Bar--//
+	
+	.v-loading-indicator {
+		background-color: #00FF00;
+		height: 10px;
+	}
+	
+	.v-loading-indicator-wait {
+		background-color: #FF8C00 ;
+		height: 10px;
+	}
+	
+//--Captions--//
+	.v-caption-username-textfield, .v-caption-login-password-textfield, .v-caption-firstname-textfield, .v-caption-lastname-textfield, .v-caption-new-email-textfield, .v-caption-password-textfield, .v-caption-email-textfield {
+		font-size: 12px;
+	}
+	
+	.v-caption-margin-left {
+		margin-left: 5px;
+		margin-top: 3px;
+	}
+
+//--Layouts, Backgrounds--//  	
+
+  	.v-header {
+  		border-color:#101010;
+  		background-color:$color-black;
+  	}
+  	
+  	.nav-brand{
+  		padding-left: 15px;
+  		padding-top: 15px;
+  		padding-bottom: 10px;
+  	}
+  	
+  	.nav-about{
+  		padding-right:15px;
+  		padding-top:15px;
+  		padding-bottom: 10px;
+  	}
+  	  	
+  	#cm-panel-dark{
+  		background-color:#333;
+  	}
+  	
+  	#cm-panel-light{
+  		background-color:#fff;
+  	}
+  	
+	.semanticfilter-nav.v-margin-bottom {
+		padding-bottom: floor($v-unit-size/2);
+	}
+	
+	.concept-search-window .table-layout {
+		padding-top: 5px;
+	}
+	
+	.kb-description-layout {
+		padding: 0px 50px;
+		margin-bottom: 100px;
+	}
+	
+	.usecase-layout {
+		@extend .kb-description-layout;
+		margin-bottom: 25px;
+		
+		padding-top: 50px;
+		padding-bottom: 50px;
+		background-color: $color-black;
+	}
+	
+	.idea-content-layout {
+		background-color: $color-black;
+		padding-top: 2em;
+		padding-bottom: 6em;
+	}
+	
+	.suggestion-layout {
+		padding: 3em;
+	}
+	
+	.section-content-layout {
+		padding: 4em 6em;
+	}
+	
+	.affiliation-content-layout {
+		@extend .section-content-layout;
+		background-color: #d9d9d9;
+	}
+	
+	.collabration-content-layout {
+		@extend .section-content-layout;
+		background-color: #f2f2f2;
+	}
+	
+	.disclaimer-content-layout {
+		@extend .section-content-layout;
+		margin-bottom: 6em;
+	}
+	
+	.node-popup-button-layout {
+		padding-top: 0.5em;
+	}
+	
+	$content-padding: 10em;
+	.faq-layout {
+		padding-left: $content-padding;
+		padding-right: $content-padding;
+		padding-top: 4em;
+	}	
+	
+	.faq-row-layout {
+		padding-top: 3em;
+		padding-bottom: 4em;
+	}
+	
+	.landingpage-step-layout {
+		padding-top: 4em;
+		padding-bottom: 4em;
+	}	
+	
+	.landingpage-layout {
+		background-image: url("images/welcome_background.png");
+		background-attachment: fixed;
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+	
+	.landingpage-label-layout {
+		max-width: 900px;
+	}
+	
+	.landingpage-usecase-layout {
+		padding-top: 4em;
+		padding-bottom: 4em;
+		max-width: 1000px;
+	}
+	
+	.current-concept-popup-layout {
+  		max-width: 70em;
+  	}
+	
+	.login-layout, .create-account-layout, .recover-password-layout {
+		background-color: $color-black;
+	}
+	
+	.bottom-vertical-layout {
+		margin-top: 15px;
+	}
+	
+	.subHorizontal-layout {
+		width: 100%;
+		text-align: center;
+	}
+
+//--Grid--//
+	.v-grid-row-selected .v-grid-cell {
+		background-color: #e1e1e1 !important;
+		background-image: none !important;
+		border-color: #dddddd !important;
+		color: black !important;
+	}
+	
+	.v-grid-cell-selected {
+		background-color: #dddddd !important;
+	}
+	
+	.v-grid-cell {
+		@include listview-cell;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+		&.type-cell, &.library-cell, &.evidence-cell {
+			text-align: center;
+			.v-nativebutton {
+				@include native-square-button;
+				&:hover {
+					background-color: $color-grey;
+				}
+			}
+		}
+		&.relation-cell,  &.publication-date-cell {
+			text-align: center;
+		}		
+	}
+	
+	.grid-margin-left {
+		margin-left: 50px;
+	}
+
+	.grid-button-style {
+		/* This makes the button look like a Vaadin NativeButton, even though its not */
+		background: none !important;
+		border: none;
+		padding: 0 !important;
+		color: #008080;
+		cursor: pointer;
+		text-align: center;
+
+		/* This makes the button have ellipsis */
+		overflow: hidden !important;
+		white-space: nowrap !important;
+		text-overflow: ellipsis !important;
+	}
+
+//--Tabsheet--//
+	.v-tabsheet-tabitemcell .v-tabsheet-tabitem-selected .v-caption.v-caption {
+		color: $color-black;
+		font-weight: bold;
+	}
+	
+	.InvisibleButton {
+		display: none;
+	}
+	
+	.faq-tabsheet {
+		& .v-tabsheet-tabitemcell .v-caption .v-captiontext {
+			font-size: 1.3em;
+		}
+	}
+	
+	.margin-left {
+		margin-left: 5px;
+	}
+	
+	.margin-top {
+		margin-top: 3px;
+	}
+	
+//--Window and panels--//
+	.concept-details-window {
+		max-width: 30%;
+	}
+ 	
+ 	.moreInfoWindow{
+ 		background-color: #BCED91 !important;
+ 		color: white;
+ 		padding-left:15px;
+  		padding-right:15px;
+  		padding-top:15px;
+  		padding-bottom: 10px;
+ 	}
+	
+	.pubmed-article-window {
+		max-width: 80%;
+		padding: 0px;
+	}
+	
+	.concept-search-window .v-panel{
+  		border-width: 0px;
+  		background-color: $v-app-background-color;
+  	}
+	
+  	.v-window-backColor {
+  		margin: 2px;
+  		padding: 0px;
+  		background-color: #474747;
+	}
+	
+	//--images--//
+	.kb-image {
+		max-width: 100%;
+		height: auto;
+	}
+	
+	.pubmed-img {
+		@extend .kb-image;
+		width: 100%;
+	}
+	
+	.usecase-img {
+		@extend .pubmed-img;
+	}
+
+	.map-preview-image {
+		background-color:black !important;
+	}
+	
+	//--General--//
+	.text-white {
+  		color: $color-white;
+	}
+	
+	.text-black {
+		color: $color-black;
+	}	
+	
+	.text-light {
+		color: #e6e6e6;
+	}
+	
+	.bold {
+		font-weight: bold;
+	}
+	
+	.text-centered {
+		text-align: center;
+	}
+	
+	.text-align-right {
+		text-align: right;
+	}
+	
+	.text-align-left {
+		text-align: left;
+	}
+	
+	.has-letter-spacing {
+		letter-spacing: 0.1em;
+	}
+	
+	.padding-bottom {
+		padding-bottom: 1.2em;
+	}
+	
+	.no-padding {
+		padding: 0em;
+	}
+	
+	.max-width-full {
+		max-width: 100%;
+	}
+	
+	.black-background {
+		background-color: $color-black;
+	}
+	
+	.lightgrey-background {
+		background-color: #E8E8E8;
+	}
+	
+	.no-border-radius-right {
+		border-top-right-radius: 0px;
+		border-bottom-right-radius: 0px;
+	}
+	
+	.no-border-radius-left {
+		border-top-left-radius: 0px;
+		border-bottom-left-radius: 0px;
+	}
+}

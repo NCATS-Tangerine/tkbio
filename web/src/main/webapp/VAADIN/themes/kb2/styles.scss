@@ -1,0 +1,16 @@
+/*
+@author Kenneth Bruskiewicz
+@author Rudy Kong
+*/
+
+@import "designs.scss";
+@import "addons.scss";
+@import "kb2.scss";
+@import "legend.scss";
+
+/* This file prefixes all rules with the theme name to avoid causing conflicts with other themes. */
+/* The actual styles should be defined in kb2.scss */
+.kb2 {
+  @include addons;
+  @include kb2;
+}

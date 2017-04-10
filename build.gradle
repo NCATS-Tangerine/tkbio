@@ -1,0 +1,174 @@
+// KB2.1 Main Meta-Project Root Build File
+
+ext.apacheHTTPClientVersion  = '4.5.2'
+ext.springCoreVersion        = '4.3.2.RELEASE'
+ext.jacksonXmlVersion        = '2.8.1'
+ext.logbackCoreVersion       = '1.1.7'
+ext.springBootVersion        = '1.3.7.RELEASE'
+ext.springDataNeo4jVersion   = '4.1.2.RELEASE'
+ext.springNeo4jVersion       = '3.0.4'
+ext.springNeo4jOGMVersion    = '2.0.3'
+ext.vaadinSharedVersion      = '7.6.5'
+
+buildscript {
+    ext {
+        springBootVersion = '1.3.5.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+        maven { url "https://repo.spring.io/libs-release" }
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion") 
+        classpath("io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE")
+        classpath("com.eriwen:gradle-css-plugin:2.12.0")
+    }
+}
+
+allprojects {
+
+	// Version 3.0 revised the domain model in a significant manner to make it more flexible
+	
+	// March 26, 2017 Reference release of Knowledge.Bio
+    version = '3.1.1'  // Apr 3, 2017 - fixed concept map node deletion bug  
+    
+    apply plugin: 'maven'
+    apply plugin: 'java'
+    apply plugin: 'eclipse-wtp'
+    apply plugin: 'spring-boot'
+    apply plugin: 'io.spring.dependency-management'
+		
+	group = 'bio.knowledge'
+	
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+    
+    repositories {
+	    mavenCentral()
+	    mavenLocal()
+	    maven { url "https://repo.spring.io/libs-release" }
+	    maven { url 'http://repo.spring.io/milestone' }
+	    maven { url 'http://repo.spring.io/libs-snapshot' }
+	    maven { url "https://m2.neo4j.org" }
+	    maven { url 'http://maven.vaadin.com/vaadin-addons' }
+	    maven { url "http://mvnrepository.com/" }
+    }
+    
+    uploadArchives {
+	    repositories {
+	        mavenDeployer {
+	            pom {
+	                project {
+	                    parent {
+	                        groupId "org.springframework.boot"
+	                        artifactId "spring-boot-starter-parent"
+	                        version "$springBootVersion"
+	                    }
+	                }
+	            }
+	        }
+	    }
+	}
+    
+    dependencies {
+
+    	compile "commons-collections:commons-collections:3.2"
+		compile 'org.apache.commons:commons-lang3:3.4'
+		compile "org.apache.httpcomponents:httpclient:$apacheHTTPClientVersion"
+				
+		compile "com.fasterxml.jackson.core:jackson-core:$jacksonXmlVersion"
+		compile "com.fasterxml.jackson.core:jackson-annotations:$jacksonXmlVersion"
+		compile "com.fasterxml.jackson.core:jackson-databind:$jacksonXmlVersion"
+				
+		compile "ch.qos.logback:logback-core:$logbackCoreVersion"
+		compile "ch.qos.logback:logback-classic:$logbackCoreVersion"
+		compile "ch.qos.logback:logback-access:$logbackCoreVersion"
+
+    	compile "org.springframework:spring-core:$springCoreVersion"
+    	compile "org.springframework:spring-context:$springCoreVersion"
+    	compile "org.springframework:spring-context-support:$springCoreVersion"
+    	compile "org.springframework:spring-aop:$springCoreVersion"
+    	compile "org.springframework:spring-beans:$springCoreVersion"
+    	compile "org.springframework:spring-expression:$springCoreVersion"
+    	compile "org.springframework:spring-test:$springCoreVersion"
+    	compile "org.springframework:spring-tx:$springCoreVersion"
+    	compile "org.springframework:spring-web:$springCoreVersion"
+    	compile "org.springframework:spring-webmvc:$springCoreVersion"
+    	
+    	compile "org.springframework.boot:spring-boot:$springBootVersion"
+    	compile "org.springframework.boot:spring-boot-actuator:$springBootVersion"
+    	compile "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
+    	
+    	compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
+    	compile "org.springframework.boot:spring-boot-starter-logging:$springBootVersion"
+    	compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    	compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+    	compile "org.springframework.boot:spring-boot-starter-mail:$springBootVersion"
+   		compile "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
+
+	   	compile "org.neo4j:neo4j-codegen:$springNeo4jVersion"
+	   	compile "org.neo4j:neo4j:$springNeo4jVersion"
+	    compile "org.neo4j:neo4j-kernel:$springNeo4jVersion"
+	    compile "org.neo4j:neo4j-io:$springNeo4jVersion"
+	    
+	    compile "org.neo4j:neo4j-ogm-core:$springNeo4jOGMVersion"
+	    compile "org.neo4j:neo4j-ogm-http-driver:$springNeo4jOGMVersion"
+	    compile "org.neo4j:neo4j-ogm-embedded-driver:$springNeo4jOGMVersion"
+	    compile "org.neo4j:neo4j-ogm-bolt-driver:$springNeo4jOGMVersion"
+
+    	compile "org.springframework.data:spring-data-neo4j:$springDataNeo4jVersion"
+		
+		compile 'com.vaadin:vaadin-spring-boot-starter:1.0.0'
+
+		testCompile 'junit:junit:4.12'
+		compile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    }
+    
+	dependencyManagement {
+		imports { 
+			mavenBom "org.springframework.cloud:spring-cloud-starter-parent:Angel.SR3" 
+			mavenBom 'org.springframework.data:spring-data-releasetrain:Hopper-SR1'
+			mavenBom "com.vaadin:vaadin-bom:$vaadinSharedVersion" 
+		}
+	}
+	
+    jar {
+        from sourceSets.main.allSource
+        manifest.attributes provider: 'STAR Informatics'
+    }
+}
+
+evaluationDependsOn(':dataloader')
+evaluationDependsOn(':rest')
+evaluationDependsOn(':web')
+
+configurations {
+    providedRuntime
+    all*.exclude group: '', module: 'servlet-api'
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if(it.requested.name == 'org.objectweb.asm') {
+            it.useTarget 'org.ow2.asm:asm:5.0.3'
+        }
+    }
+}
+
+dependencies {
+	compile project(':dataloader')
+	compile project(':rest')
+	compile project(':web')
+}
+
+eclipse {
+    classpath {
+         containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+         containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.12'
+}

@@ -1,0 +1,6 @@
+<module>
+<inherits name="com.vaadin.DefaultWidgetSet"/>
+<source path='client'/>
+    <inherits name="bio.knowledge.web.widgetset.Kb2Widgetset" />
+    <inherits name="com.vaadin.addon.responsive.ResponsiveWidgetSet" />
+</module>

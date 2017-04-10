@@ -1,0 +1,44 @@
+// Overrides various valo's default components' styles
+@mixin resets {
+	// valo buttons
+	.v-button {
+		color: $color-white;
+		background: $button-background-color;
+	    border-color: #555555;
+	    
+	    &:hover {
+	    	background: darken($button-background-color, 10%);
+	    }
+	    
+	    &.v-disabled {
+	    	color: $color-white;
+	    }
+	    
+	    .v-pressed {
+	    	border-color: $color-black;
+	    }
+	 }
+		
+	.initial-launch-button {
+		font-weight: bold;
+		font-size: 1.5em;
+		letter-spacing: 0.1em;
+	}
+	
+	// native buttons
+	.v-nativebutton {
+		border: 0px;
+		background-color: transparent;
+		color: $color-teal;
+		font-weight: bold;
+		&:hover {
+			color: $color-black;
+		}
+	}
+	
+	// valo window
+	.v-window {
+		@include kb-window;
+		padding: 10px 20px 10px 20px;
+	}
+}

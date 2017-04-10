@@ -1,0 +1,23 @@
+// KB2.1 Data Loader Build File
+
+archivesBaseName  = 'kb2-dataloader'
+description = 'Knowledge.Bio Release 2.1 Neo4j Database Data Loader Application'
+
+evaluationDependsOn(':core')
+
+dependencies {
+
+    compile project(':core')
+
+    compile("org.springframework:spring-context:4.2.6.RELEASE")
+    
+    compile 'javax.validation:validation-api:1.1.0.Final'
+    compile 'org.hibernate:hibernate-validator:5.2.2.Final'
+    compile 'commons-cli:commons-cli:1.1'
+}
+
+jar {
+    manifest {
+        attributes("Main-Class": "bio.knowledge.dataloader.DataLoader")
+    }
+}

@@ -1,0 +1,4 @@
+// KB2.1 Domain Models Build File
+
+archivesBaseName  = 'kb2-models'
+description       = 'Knowledge.Bio Domain Model Interfaces and Classes'

@@ -1,0 +1,1 @@
+$wnd.bio_knowledge_web_mycomponent_MyComponentWidgetset.runAsyncCallback2('kgb(1606,1,Z_d);_.Jd=function khc(){j2b((!c2b&&(c2b=new o2b),c2b),this.a.d)};dVd(Jk)(2);\n//# sourceURL=bio.knowledge.web.mycomponent.MyComponentWidgetset-2.js\n')

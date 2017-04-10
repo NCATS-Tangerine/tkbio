@@ -1,0 +1,94 @@
+node {
+	content: data(name);
+	text-valign: center;
+	color: black;
+	min-zoomed-font-size : 5px;
+	text-outline-width: 1px;
+	text-outline-color: white;
+	background-color: #A8A8A8;
+}
+edge {
+  	content: data(label);
+	color: black;
+	text-outline-width: 1;
+	text-outline-color: white;
+	font-size : 10px; 
+	min-zoomed-font-size: 5px;
+	width: 2;
+	target-arrow-shape: triangle;
+	line-color: brown;
+	target-arrow-color: brown;
+	source-arrow-color: brown;
+}
+:selected {
+	background-color: #484848;
+	line-color: cyan;
+    target-arrow-color: cyan;
+    source-arrow-color: cyan;
+}
+.faded {
+    opacity: 0.75;
+    text-opacity: 1;
+}
+
+[semgroup="GENE"] {
+    background-color:#4060FF;
+}
+
+[semgroup="CHEM"] {
+    background-color:#00FF00;
+}
+
+[semgroup="PHYS"] {
+    background-color:#FF9800;
+}
+
+[semgroup="DISO"] {
+    background-color:#FF0000;
+}
+
+[semgroup="ANAT"] {
+	background-color:#FF5722;
+}
+
+[semgroup="CONC"] {
+	background-color:#E91E63;
+
+}
+
+[semgroup="DEVI"] {
+	background-color:#9C27B0;
+}
+
+[semgroup="GEOG"] {
+	background-color:#673AB7;
+}
+
+[semgroup="LIVB"] {
+	background-color:#C0C000;
+}
+
+[semgroup="OBJC"] {
+	background-color:#2196F3;
+}
+
+[semgroup="OCCU"] {
+	background-color:#00BCD4;
+}
+
+[semgroup="ORGA"] {
+	background-color:#FFEB3B;
+}
+
+[semgroup="PHEN"] {
+	background-color:#009688;
+}
+
+[semgroup="PHYS"] {
+	background-color:#4CAF50;
+}
+
+[semgroup="PROC"] {
+	background-color:#8BC34A;
+}
+}

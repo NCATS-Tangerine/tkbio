@@ -1,0 +1,33 @@
+<!-- @author Rudy Kong -->
+
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;kb2&quot;}">
+ </head> 
+ <body> 
+  <vaadin-vertical-layout size-full> 
+   <vaadin-vertical-layout style-name="create-account-layout" height="150px"> 
+    <vaadin-label style-name="create-account-label" size-auto plain-text :middle :center>
+      CREATE YOUR ACCOUNT 
+    </vaadin-label> 
+   </vaadin-vertical-layout> 
+   <vaadin-vertical-layout style-name="bottom-vertical-layout" spacing height="96.05%" margin :expand> 
+    <vaadin-text-field caption="Enter your first name" style-name="firstname-textfield" width="330px" height="30px" _id="firstnameField" :middle :center></vaadin-text-field> 
+    <vaadin-text-field caption="Enter your last name" style-name="lastname-textfield" width="330px" height="30px" _id="secondnameField" :middle :center></vaadin-text-field> 
+    <vaadin-text-field caption="Enter your email" style-name="new-email-textfield" width="330px" height="30px" _id="emailfield" :middle :center></vaadin-text-field> 
+    <vaadin-text-field caption="Enter your username" style-name="new-email-textfield" width="330px" height="30px" _id="usernamefield" :middle :center></vaadin-text-field> 
+    <vaadin-password-field caption="Enter your password" style-name="password-textfield" width="330px" height="30px" _id="firstPassword" :middle :center></vaadin-password-field> 
+    <vaadin-password-field caption="Enter your password again" style-name="password-textfield" width="330px" height="30px" _id="secondPassword" :middle :center></vaadin-password-field> 
+    <vaadin-vertical-layout width="330px" height="60px" :middle :center> 
+     <vaadin-button style-name="create-account-button" width-full height="30px" plain-text _id="createButton" :middle :center :expand>
+       CREATE ACCOUNT 
+     </vaadin-button> 
+    </vaadin-vertical-layout> 
+    <vaadin-label style-name="error-message-label" _id="errorLabel" :center>
+      Error 
+    </vaadin-label> 
+   </vaadin-vertical-layout> 
+  </vaadin-vertical-layout>  
+ </body>
+</html>

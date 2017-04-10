@@ -1,0 +1,50 @@
+@mixin kb-window-header {
+	.v-window-outerheader {
+		background-color: $color-green;
+	}
+		
+	.v-window-header {
+		color: white;
+		font-weight: bold;
+	}
+	
+	.v-window-closebox {
+		background-color: $color-green;
+		color: white;
+	}
+
+	.v-window-maximizebox {
+		background-color: $color-green;
+		color: white;
+	}
+	
+	.v-window-restorebox {
+		background-color: $color-green;
+		color: white;
+	}
+}
+
+@mixin kb-window {
+	@include kb-window-header;
+	background-color: $v-app-background-color;
+}
+
+@mixin kb-section-header($fontSize: 2em, $color:$color-black) {
+	font-size: $fontSize;
+	font-weight: bold;
+	text-align: center;
+	color: $color;
+}
+
+@mixin listview-cell {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+@mixin native-square-button {
+	background-color: $color-green;
+  	width: 5em;
+    color: white;
+    text-decoration: none;
+}

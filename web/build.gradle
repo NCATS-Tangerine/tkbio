@@ -1,0 +1,72 @@
+// KB2.1 Web Application Build File
+
+archivesBaseName  = 'kb2-web'
+description       = 'Knowledge.Bio Release 2.1 Web Desktop Application'
+
+/* gradle-vaadin plugin https://github.com/johndevs/gradle-vaadin-plugin*/
+//apply from: 'http://plugins.jasoft.fi/vaadin.plugin'
+
+apply plugin: 'war'
+
+evaluationDependsOn(':core')
+
+buildscript {
+    ext {
+        springBootVersion = '1.3.5.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+        maven { url "https://repo.spring.io/libs-release" }
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion") 
+        classpath("io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE")
+        classpath("com.eriwen:gradle-css-plugin:2.12.0")
+    }
+}
+
+configurations {
+    providedRuntime
+    all*.exclude group: '', module: 'servlet-api'
+}
+
+dependencies {
+
+    compile project(':core')
+    
+    compile 'javax.portlet:portlet-api:2.0'
+
+	compile 'com.google.code.gson:gson:2.6.2'
+
+	compile 'javax.servlet:jsp-api:2.0'
+    compile 'javax.validation:validation-api:1.1.0.Final'
+
+//	From the tutorial: http://docs.stormpath.com/java/servlet-plugin/quickstart.html#try-it
+    compile 'com.stormpath.sdk:stormpath-servlet-plugin:1.0.4'
+    
+    // Vaadin-specific, including widgetset compiler, dependencies
+    compile "com.vaadin:vaadin-shared:$vaadinSharedVersion"
+    compile "com.vaadin:vaadin-server:$vaadinSharedVersion"
+    compile "com.vaadin:vaadin-themes:$vaadinSharedVersion"
+    compile "com.vaadin:vaadin-client:$vaadinSharedVersion"
+    compile "com.vaadin:vaadin-client-compiler:$vaadinSharedVersion"
+    compile 'com.vaadin.addon.responsive:responsive:1.0.0.alpha4'
+    compile "org.vaadin.addon:confirmdialog:2.1.3"
+    
+	providedRuntime "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
+	
+	// https://mvnrepository.com/artifact/org.vaadin.addons/googleanalyticstracker
+	compile 'org.vaadin.addons:googleanalyticstracker:2.1.0'
+	
+}
+
+jar {
+    manifest {
+        attributes("Main-Class": "bio.knowledge.web.Application")
+    }
+}
+
+war {
+	from 'src/main/webapp'
+}

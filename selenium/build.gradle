@@ -1,0 +1,19 @@
+// KB2.1 Neo4j Selenium Sample Unit Tests Build File
+
+ext.seleniumVersion = '2.53.0'
+
+repositories {
+    maven { url "http://repo1.maven.org/maven2/org/seleniumhq/selenium/"}
+}
+
+dependencies {
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    
+    testCompile "org.seleniumhq.selenium:selenium-java:$seleniumVersion"
+    
+    // http://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-firefox-driver
+	testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
+
+	// http://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-chrome-driver
+	testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
+}

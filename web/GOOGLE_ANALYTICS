@@ -1,0 +1,4 @@
+To configure Google Analytics you need to set the following properties in your production application.properties file"
+
+* application.hostname
+* google.tracking_id

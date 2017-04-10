@@ -1,0 +1,183 @@
+/*
+@author Kenneth Bruskiewicz
+@author Rudy Kong
+*/
+
+/* NOTA BENE: Specificity rules are ignored in Cytoscape styling. So selectors must be "flat" rather than hierarchical. */
+layout {
+	padding: 10;
+}
+
+node {
+    text-valign: center;
+    color: white;
+    min-zoomed-font-size: 2px;
+}
+
+/* We assume only nodes can have parents, so no group selector is necessary. */
+/* ! === falsey operator (under Javascript convention) */
+[!parent] {
+    content: data(name);
+}
+
+/* ? === truthy operator (under Javascript convention) */
+[?parent] {
+	content: data(semtype);
+}
+
+$node > node {
+    text-background-opacity: 0;
+    text-border-width: 0;
+    text-border-opacity: 0;
+    text-background-shape: roundrectangle;
+    text-border-color: #000;
+	text-valign: top;
+    text-halign: center;
+	font-size: 23px;
+	
+/* 	background-color: #A6BEF6;
+	background-opacity: 0.66; */
+	
+	background-color: #333;
+	border-width : 3px;
+	border-style : dashed;
+	border-color: #FFF;
+}
+
+edge {
+	content: data(label);
+	color: white;
+	font-size: 10px;
+	min-zoomed-font-size: 2px;
+	width: 2;
+	target-arrow-shape: triangle;
+	line-color: #D3D3D3;
+	target-arrow-color: #D3D3D3;
+	edge-text-rotation: autorotate;
+	text-background-color: #333;
+	text-background-opacity: 1;
+	text-background-shape: roundrectangle;
+}
+
+:selected {
+    background-color: white;
+    line-color: cyan;
+    target-arrow-color: cyan;
+    source-arrow-color: cyan;
+}
+
+.faded {            
+	opacity: 0.75;
+    text-opacity: 1;
+}
+
+[semgroup="GENE"] {
+    background-color: #4060FF;
+}
+
+[semgroup="CHEM"] {
+    background-color: #00FF00;
+}
+
+[semgroup="PHYS"] {
+    background-color: #FF9800;
+}
+
+[semgroup="DISO"] {
+    background-color: #FF0000;
+}
+
+[semgroup="ANAT"] {
+	background-color: #FF5722;
+}
+
+[semgroup="CONC"] {
+	background-color: #E91E63;
+}
+
+[semgroup="DEVI"] {
+	background-color: #9C27B0;
+}
+
+[semgroup="ACTI"] {
+    background-color: #FF9800;
+}
+
+[semgroup="ANAT"] {
+	background-color: #FF5722;
+}
+
+[semgroup="CHEM"] {
+    background-color: #00FF00;
+}
+
+[semgroup="CONC"] {
+	background-color: #E91E63;
+}
+
+[semgroup="DEVI"] {
+	background-color: #9C27B0;
+}
+
+[semgroup="DISO"] {
+    background-color: #FF0000;
+}
+
+[semgroup="GENE"] {
+    background-color: #4060FF;
+}
+
+[semgroup="GEOG"] {
+	background-color: #673AB7;
+}
+
+[semgroup="LIVB"] {
+	background-color: #C0C000;
+}
+
+[semgroup="OBJC"] {
+	background-color: #2196F3;
+}
+
+[semgroup="OCCU"] {
+	background-color: #00BCD4;
+}
+
+[semgroup="ORGA"] {
+	background-color: #FFEB3B;
+}
+
+[semgroup="PHEN"] {
+	background-color: #009688;
+}
+
+[semgroup="PHYS"] {
+	background-color: #4CAF50;
+}
+
+[semgroup="PROC"] {
+	background-color: #8BC34A;
+}
+
+[active_node="yes"] {
+	color: yellow;
+	shape: star;
+	font-size: 25px;
+	font-weight: bold;
+	text-outline-color: black;
+	text-outline-width: 2px;
+	width: 50px;
+	height: 50px;
+}
+
+[active_edge="yes"] {
+	color: yellow;
+	font-size: 15px;
+	font-weight: bold;
+	width: 3;
+	line-color: yellow;
+	target-arrow-color: yellow;
+	text-background-color: #333;
+	text-background-opacity: 1;
+	text-background-shape: roundrectangle;
+}

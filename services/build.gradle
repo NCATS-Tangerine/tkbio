@@ -1,0 +1,18 @@
+// KB2.1 3rd Party Web Data Services Build File
+
+ext.apacheJena  = '3.1.0'
+
+archivesBaseName  = 'kb2-services'
+description       = 'Knowledge.Bio Release 2.1 3rd Party DataSource Services Backend'
+
+evaluationDependsOn(':database')
+
+dependencies {
+	compile project(':database')
+	
+    compile 'org.json:json:20160212'
+	compile 'com.googlecode.json-simple:json-simple:1.1.1'
+	
+	// https://mvnrepository.com/artifact/org.apache.jena/jena-arq
+	compile "org.apache.jena:jena-arq:$apacheJena"
+}

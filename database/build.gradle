@@ -1,0 +1,10 @@
+// KB2.1 Neo4j Database Interface Build File
+
+archivesBaseName  = 'kb2-database'
+description       = 'Knowledge.Bio Release 2.1 Neo4j Database Middleware'
+
+evaluationDependsOn(':models')
+
+dependencies {
+	compile project(':models')
+}

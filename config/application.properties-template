@@ -1,0 +1,122 @@
+#-------------------------------------------------------------------------------
+# The MIT License (MIT)
+#
+# Copyright (c) 2015-16 Scripps Institute (USA) - Dr. Benjamin Good
+#                       STAR Informatics / Delphinai Corporation (Canada) - Dr. Richard Bruskiewich
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#-------------------------------------------------------------------------------
+##
+# Knowledge.Bio Application Properties
+#
+# Logging
+#
+logging.level.bio.knowledge=DEBUG
+#logging.level.org.springframework.data=ERROR
+#logging.level.org.neo4j.ogm=ERROR
+#
+# Profiles
+#
+#
+# Global debug flag
+#
+debug = false
+#
+# Vaadin Servlet production mode
+# WARNING: SETTING THIS FLAG TO 'TRUE' MAY
+# BADLY BREAK KNOWLEDGE.BIO AT THE PRESENT TIME... NOT SURE WHY!?!
+#
+# vaadin.servlet.production-mode=false
+#
+# Email configuration
+#
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.protocol=smtp
+spring.mail.properties.subject=Knowledge.Bio
+
+#
+# YOU HAVE A CHOICE TO EITHER RUN NEO4J ON YOUR LOCAL ("HOST") MACHINE
+# OR TO RUN IT WITHIN A VAGRANT VIRTUAL MACHINE.  FOR THE FORMER, USE 
+# THE FIRST SET OF URL'S (PROPERLY SET TO YOUR NEO4J USER NAME AND PASSWORD)
+# FOR THE LATTER, USE THE SECOND SET OF CONFIGURATION PARAMETERS.
+#
+# Note: set this URI to your Neo4j database hostname, if not localhost
+#       also set your username and password if not 'neo4j' for both
+#
+neo4j.url=http://localhost:7474
+neo4j.username=neo4j
+neo4j.password=neo4j
+#
+# Vagrant VM configured Neo4j Connection Parameters
+#
+# neo4j.url=http://localhost:7474
+# neo4j.username=neo4j
+# neo4j.password=vagrant
+#
+# Email configuration
+#
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.protocol=smtp
+spring.mail.properties.subject=Knowledge.Bio
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=<your username>
+spring.mail.password=<your password>
+spring.mail.protocol=smtp
+spring.mail.from=<admin source email address>
+spring.mail.subject=User Registration
+#
+# the 'from' string can be a comma-delimited list of
+# administrative addresses toward which to send notifications
+# 
+spring.mail.properties.from=<your admin email>
+
+#
+# StormPath User Authentication
+# See https://stormpath.com documentation about the Java API
+#
+stormpath.application.href = https://api.stormpath.com/v1/applications/<your Stormpath application id>
+#stormpath.web.login.nextUri = /#!home
+
+# Keep these confidential!
+stormpath.client.apiKey.id = <your apiKey id>
+stormpath.client.apiKey.secret = <your apiKey secret>
+
+#
+# Your Stormpath Application Account name here
+#
+stormpath.application.name = Knowledge.Bio
+
+#
+# Optional. Customized templates (if Stormpath defaults not taken...)
+#
+#stormpath.web.change.view   = templates/account/change
+#stormpath.web.forgot.view   = templates/account/forgot
+#stormpath.web.login.view    = templates/account/login
+#stormpath.web.register.view = templates/account/register
+#stormpath.web.verify.view   = templates/account/verify
+
+#
+# Google Analytics properties
+#
+application.hostname=knowledge.bio
+google.tracking_id=<your Google tracking id>
+

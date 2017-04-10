@@ -1,0 +1,85 @@
+/* @author Rudy Kong */
+
+.container {
+	display: table;
+	text-align: center;
+	margin: 3px;
+}
+
+.circle {
+	display: table-cell;
+	vertical-align: middle;
+	width: 35px;
+	height: 35px;
+	-moz-border-radius: 30px;
+	-webkit-border-radius: 30px;
+	border-radius: 30px;
+}
+
+.label {
+	display: table-cell;
+	vertical-align: middle;
+	font-size: 12px;
+	padding: 5px;
+	color: white;
+}
+
+.ACTI {
+	background: #FF9800;
+}
+
+.ANAT {
+	background: #FF5722;
+}
+
+.CHEM {
+	background: #00FF00;
+}
+
+.CONC {
+	background: #E91E63;
+}
+
+.DEVI {
+	background: #9C27B0;
+}
+
+.DISO {
+	background: #FF0000;
+}
+
+.GENE {
+	background: #4060FF;
+}
+
+.GEOG {
+	background: #673AB7;
+}
+
+.LIVB {
+	background: #C0C000;
+}
+
+.OBJC {
+	background: #2196F3;
+}
+
+.OCCU {
+	background: #00BCD4;
+}
+
+.ORGA {
+	background: #FFEB3B;
+}
+
+.PHEN {
+	background: #009688;
+}
+
+.PHYS {
+	background: #4CAF50;
+}
+
+.PROC {
+	background: #8BC34A;
+}
