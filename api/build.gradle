@@ -1,5 +1,5 @@
 archivesBaseName  = 'tkbio-api'
-description       = 'Translator Knowledge.Bio API Middleware'
+description       = 'NCATS Translator Knowledge.Bio (TKBio) API Middleware'
 
 //evaluationDependsOn(':services')
 

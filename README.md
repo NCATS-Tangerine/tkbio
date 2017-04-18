@@ -1,65 +1,46 @@
-#License#
+#The NCAT "Translator" Knowledge.Bio Release 4.0 Java Implementation#
 
-The MIT License (MIT)
+This is the Knowledge.Bio Java-based web application for discovering, navigating, harvesting and organizing conceptual maps of (biomedical) research knowledge.
 
-Copyright (c) 2015-17, Scripps Institute (USA) - Dr. Benjamin Good;  STAR Informatics / Delphinai Corporation (Canada) - Dr. Richard Bruskiewich
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
- 
-This is the Knowledge.Bio web application front end GUI presentation layer, 
-built with the Java Vaadin (Designer) User Interface framework.
- 
-STAR Informatics/Delphinai Corporation Team, Port Moody, BC, Canada:	
- 
-	Dr. Richard Bruskiewich, CEO (2015 - present)
-	Kenneth Huellas-Bruskiewicz  (2015 - present)
-	Farzin Ahmed (2015 - 2016)
-	Chandan Kumar Mishra (2016)
-	Jarielle Lim (2016)
-	Yinglun "Colin" Qiao (2016)
-	Lance Hannestad (2016)
-	Rudy Kong Tin Lun (2016)
- 			
-in collaboration with 
+The software is a US National Institute of Health funded project initiated in 2015, as a collaboration between 
 
 The Scripps Research Institute (TSRI), San Diego, CA, USA:
 
 	Dr. Benjamin Good, Project Owner
 
-and the
-
-Lawrence Berkeley Laboratory, San Francisco, CA, USA:
+and the Canadian firm
+ 
+STAR Informatics/Delphinai Corporation Team, Port Moody, BC, Canada:	
+ 
+	Dr. Richard Bruskiewich, CEO (2015 - present)
+	Kenneth Huellas-Bruskiewicz  (2015 - present)
+	Lance Hannestad (2016,2017)
+	Farzin Ahmed (2015 - 2016)
+	Chandan Kumar Mishra (2016)
+	Jarielle Lim (2016)
+	Yinglun "Colin" Qiao (2016)
+	Rudy Kong Tin Lun (2016)
+ 			
+The current (2017) effort to extend Knowledge.Bio as a tool for the NIH NCATS Translator initiative, is a collaboration with 
 
 	Dr. Christopher Mungall
-	 
 
-##The NCAT "Translator" Knowledge.Bio Release 4.0 Java Implementation##
+of the Lawrence Berkeley Laboratory, San Francisco, CA, USA, with direct funding brokered by NCATS Principal Investigator, 
 
-The Knowledge.Bio Version 4.0 is a multi-project Gradle build of components, as defined in several subdirectories.
+	Dr. Christopher Chute
+	
+and others at the INSTITUTE for CLINICAL & TRANSLATIONAL RESEARCH (ICTR), Johns Hopkins University – School of Medicine, Baltimore, MD, USA. 
 
 ##Pre-Requisites##
 
-The Knowledge.bio project is a Java-based project based on the Spring Framework, especially, Spring Boot, the Neo4j graph database, connected to Spring via the Spring Data Neo4j using a Neo4j Object Graph Mapping (OGM), plus a Vaadin web graphical user interface front end. The current release dependencies for this technology stack is recorded in the tkbio master build.gradle file.
+The Knowledge.Bio Version 4.0 is a multi-project Gradle build of Java components, as defined in several subdirectories, and based on the Spring Framework, especially, Spring Boot, the Neo4j graph database, connected to Spring via the Spring Data Neo4j using a Neo4j Object Graph Mapping (OGM), plus a Vaadin web graphical user interface front end. The current release dependencies for this technology stack is recorded in the tkbio master build.gradle file.
 
-The application has been developed within the Eclipse J2EE IDE platform. Your mileage may vary for other Java IDE's.
+The application has been developed within the Eclipse J2EE IDE platform. Your mileage may vary for other Java IDE's.   Core prerequisites to build the system within Eclipse include:
 
-Before attempting to run the software, you should generally install a local copy of Neo4j community edition on your development machine (again, see the build.gradle file for the current release of Neo4j being used).
+* Java 8 JDK or better
+* Gradle (recent release)
+
+Most other dependencies are imported by the Gradle build process.  However, before attempting to run the software, you should generally install a local copy of Neo4j community edition on your development machine (again, see the build.gradle file for the preferred current release of Neo4j being used).
 
 ##How to Install and Run Locally##
 
