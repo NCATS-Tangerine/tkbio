@@ -1,0 +1,507 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Translator Knowledge.Bio API",
+        "version": "4.0.1",
+        "contact": {
+            "responsibleDeveloper": "Richard Bruskiewich",
+            "responsibleOrganization": "STAR Informatics/Delphinai Corporation",
+            "url": "http://starinformatics.com",
+            "email": "richard@starinformatics.com"
+        },
+        "description": "Documentation of the Translator Knowledge.Bio (TKBio) knowledge sources\nquery web service application programming interfaces. Learn more about\n[TKBio](https://github.com/STARInformatics/tkbio)\n"
+    },
+    "host": "knowledge.bio",
+    "basePath": "/api",
+    "schemes": [
+        "http"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "tags": [
+        {
+            "name": "concepts",
+            "description": "Query for a concept list"
+        },
+        {
+            "name": "xrefs",
+            "description": "Queries for concept cross-references"
+        },
+        {
+            "name": "statements",
+            "description": "Query for concept-relationship statements"
+        }
+    ],
+    "paths": {
+        "/concepts": {
+            "get": {
+                "description": "Retrieves a (paged) list of concepts in the system\n",
+                "tags": [
+                    "concepts"
+                ],
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "search string to match against concept names",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "description": "(1-based) number of the page to be returned in a paged set of query\nresults\n",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "number of concepts per page to be returned in a paged set of query\nresults\n",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "textFilter",
+                        "in": "query",
+                        "description": "text filter to apply against set of concepts matched by the\nmain search string\n",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "semanticType",
+                        "in": "query",
+                        "description": "semanticType filter to apply against set of concepts matched by the\nmain search string\n",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "operationId": "getConcepts",
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "source": {
+                                        "type": "string",
+                                        "description": "knowledge source name"
+                                    },
+                                    "id": {
+                                        "type": "string",
+                                        "description": "object identifier for the concept in the specified knowledge\nsource database\n"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "description": "canonical human readable name of the concept\n"
+                                    },
+                                    "semanticType": {
+                                        "type": "string",
+                                        "description": "concept semantic type\n"
+                                    },
+                                    "synonyms": {
+                                        "type": "array",
+                                        "description": "list of synonyms for concept\n",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "definition": {
+                                        "type": "string",
+                                        "description": "concept definition\n"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful response with concept list returned\n",
+                        "examples": {
+                            "application/json": [
+                                {
+                                    "source": "wikidata",
+                                    "id": "wd:brca1",
+                                    "name": "BRCA1",
+                                    "semanticType": "gene",
+                                    "synonyms": [],
+                                    "definition": "Breast cancer susceptibility gene"
+                                },
+                                {
+                                    "id": "ma:brca1",
+                                    "name": "BRCA1",
+                                    "semanticType": "gene",
+                                    "synonyms": [],
+                                    "definition": "Breast cancer gene 1"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/xrefs/{conceptId}": {
+            "get": {
+                "description": "Retrieves a list of cross-referencing identifiers associated with an specifically identified concept, typically, a concept selected from the list of concepts originally returned by a /concepts API call. This API call will typically be run against the same KS (only) from which the originally selected concept was retrieved.\n",
+                "tags": [
+                    "xrefs"
+                ],
+                "parameters": [
+                    {
+                        "name": "conceptId",
+                        "in": "path",
+                        "description": "local object identifier of the concept to be matched",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "operationId": "getConceptXRefs",
+                "responses": {
+                    "200": {
+                        "description": "Successful response returns a list of cross-reference identifiers\nassociated with the specified conceptId (maybe an empty list?)\n",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "source": {
+                                        "type": "string"
+                                    },
+                                    "id": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": [
+                                {
+                                    "source": "wikidata",
+                                    "id": 12345
+                                },
+                                {
+                                    "source": "monarch",
+                                    "id": 67890
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/xrefs": {
+            "post": {
+                "description": "Posts a list of cross-reference identifiers to a given KS endpoint, initiating a query session\n",
+                "tags": [
+                    "xrefs"
+                ],
+                "parameters": [
+                    {
+                        "name": "identifiers",
+                        "in": "body",
+                        "description": "list of cross-reference identifiers to be used in a search for equivalent\nconcepts\n",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "required": [
+                                    "source",
+                                    "id"
+                                ],
+                                "properties": {
+                                    "source": {
+                                        "type": "string"
+                                    },
+                                    "id": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "operationId": "postXRefQuery",
+                "responses": {
+                    "201": {
+                        "description": "Successful response returns the identifier of a newly initiated query session\n",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "queryId": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": {
+                                "queryId": 12345
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "description": "Retrieves the list of concepts with that match one or more cross-references posted in the previously initiated query session. This new list of concepts is returned with the full list of their associated cross-references.\n",
+                "tags": [
+                    "xrefs"
+                ],
+                "parameters": [
+                    {
+                        "name": "queryId",
+                        "in": "query",
+                        "description": "identifier of the query session established by prior POST'ing of a\nlist of cross-references identifiers of interest\n",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "operationId": "getXRefConcepts",
+                "responses": {
+                    "200": {
+                        "description": "Successful response returns a list of concepts with one or more matches to query session cross-reference identifiers\n",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "source": {
+                                        "type": "string"
+                                    },
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "xrefs": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "source": {
+                                                    "type": "string"
+                                                },
+                                                "id": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": [
+                                {
+                                    "source": "wikidata",
+                                    "id": 12345,
+                                    "xrefs": [
+                                        {
+                                            "source": "monarch",
+                                            "id": 67890
+                                        }
+                                    ]
+                                },
+                                {
+                                    "source": "monarch",
+                                    "id": 67890,
+                                    "xrefs": [
+                                        {
+                                            "source": "wikidata",
+                                            "id": 12345
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/statements": {
+            "post": {
+                "description": "Posts a list of concept identifiers to a given KS endpoint, initiating a query session for concept-relation statement retrieval\n",
+                "tags": [
+                    "statements"
+                ],
+                "parameters": [
+                    {
+                        "name": "identifiers",
+                        "in": "body",
+                        "description": "list of concept identifiers to be used in a search for associated concept-relation statements\n",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "required": [
+                                    "source",
+                                    "id"
+                                ],
+                                "properties": {
+                                    "source": {
+                                        "type": "string"
+                                    },
+                                    "id": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "operationId": "postStatementQuery",
+                "responses": {
+                    "201": {
+                        "description": "Successful response returns the identifier of a newly initiated query session\n",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "queryId": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": {
+                                "queryId": 567890
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "description": "Retrieves a paged list of concept-relations with either the subject or object concept matching the list of concepts previously POST'ed into the specified query session\n",
+                "tags": [
+                    "statements"
+                ],
+                "parameters": [
+                    {
+                        "name": "queryId",
+                        "in": "query",
+                        "description": "identifier of the query session established by prior POST'ing of a\nlist of concept identifiers of interest\n",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "description": "(1-based) number of the page to be returned in a paged set of query\nresults\n",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "number of concepts per page to be returned in a paged set of query\nresults\n",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "textFilter",
+                        "in": "query",
+                        "description": "text filter to apply against the subject, predicate or object names of the set of concept-relations matched by the main concept search\n",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "semanticType",
+                        "in": "query",
+                        "description": "semanticType filter to apply against the subject, predicate or object names of the set of concept-relations matched by the main concept search\nmain search string\n",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "operationId": "getStatements",
+                "responses": {
+                    "200": {
+                        "description": "Successful response returns a list of concept-relations with one or more matches to query session concept identifiers\n",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "source": {
+                                        "type": "string"
+                                    },
+                                    "id": {
+                                        "type": "string",
+                                        "description": "predicate identifiers"
+                                    },
+                                    "subject": {
+                                        "type": "object",
+                                        "properties": {
+                                            "source": {
+                                                "type": "string"
+                                            },
+                                            "id": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "predicate": {
+                                        "type": "object",
+                                        "properties": {
+                                            "source": {
+                                                "type": "string"
+                                            },
+                                            "id": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "object": {
+                                        "type": "object",
+                                        "properties": {
+                                            "source": {
+                                                "type": "string"
+                                            },
+                                            "id": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "evidence": {
+                                        "type": "object",
+                                        "properties": {
+                                            "source": {
+                                                "type": "string"
+                                            },
+                                            "id": {
+                                                "type": "string"
+                                            },
+                                            "count": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": [
+                                {
+                                    "source": "semmeddb",
+                                    "id": 12345,
+                                    "subject": {
+                                        "source": "wikidata",
+                                        "id": 67890
+                                    },
+                                    "predicate": {
+                                        "source": "wikidata",
+                                        "id": 666
+                                    },
+                                    "object": {
+                                        "source": "wikidata",
+                                        "id": 12345
+                                    },
+                                    "evidence": {
+                                        "source": "semmeddb",
+                                        "id": 999999,
+                                        "count": 10
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
