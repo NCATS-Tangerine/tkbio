@@ -1,7 +1,7 @@
 ## Vagrant instructions:
 		* Install Vagrant with an associated a virtualization application (e.g. VirtualBox, VMWare, etc.) on your local machine.
 
-		* Go to the export directory and unzip the jdk1.8.0_91.zip and the neo4j-community-3.0.1.zip inside the directory.
+		* You need to download fresh copies of the Oracle JDK release 1.8 and Neo4j Community Server 3.* (where * should be a recent version, e.g. 3.0.3) and unzip these inside the 'export' directory of the main project root
 
 		* Using Eclipse, make **copies** of all the "*.properties-template" files located in web/src/main/resources, as the corresponding *.properties files, and customize internal settings to suit your local installation.
 		
