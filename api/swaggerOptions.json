@@ -1,0 +1,4 @@
+{
+"basePackage":"bio.knowledge",
+"configPackage":"bio.knowledge.config"
+}
