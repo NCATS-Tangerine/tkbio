@@ -1,5 +1,5 @@
 archivesBaseName  = 'tkbio-core'
-description       = 'Translator Knowledge.Bio Core Spring Service Layer Middleware'
+description       = 'NCATS Translator Knowledge.Bio (TKBio) Core Spring Service Layer Middleware'
 
 evaluationDependsOn(':services')
 

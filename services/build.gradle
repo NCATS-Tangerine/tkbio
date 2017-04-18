@@ -1,9 +1,7 @@
-// KB2.1 3rd Party Web Data Services Build File
-
 ext.apacheJena  = '3.1.0'
 
-archivesBaseName  = 'kb2-services'
-description       = 'Knowledge.Bio Release 2.1 3rd Party DataSource Services Backend'
+archivesBaseName  = 'tkbio-services'
+description       = 'NCATS Translator Knowledge.Bio (TKBio) 3rd Party DataSource Services Backend'
 
 evaluationDependsOn(':database')
 

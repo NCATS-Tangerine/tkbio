@@ -1,4 +1,4 @@
-// KB2.1 Neo4j Selenium Sample Unit Tests Build File
+// NCATS Translator Knowledge.Bio (TKBio) Selenium Sample Unit Tests Build File
 
 ext.seleniumVersion = '2.53.0'
 

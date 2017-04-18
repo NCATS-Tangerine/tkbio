@@ -1,4 +1,2 @@
-// KB2.1 Domain Models Build File
-
-archivesBaseName  = 'kb2-models'
-description       = 'Knowledge.Bio Domain Model Interfaces and Classes'
+archivesBaseName  = 'tkbio-models'
+description       = 'NCATS Translator Knowledge.Bio (TKBio) Domain Model Interfaces and Classes'

@@ -1,4 +1,4 @@
-// KB2.1 Main Meta-Project Root Build File
+// NCATS Translator Knowledge.Bio (TKBio) Main Meta-Project Root Build File
 
 ext.apacheHTTPClientVersion  = '4.5.2'
 ext.springCoreVersion        = '4.3.2.RELEASE'
