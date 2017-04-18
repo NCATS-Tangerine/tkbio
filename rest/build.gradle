@@ -1,7 +1,5 @@
-// KB2.1 REST Web API Build File
-
-archivesBaseName  = 'kb2-rest'
-description       = 'Knowledge.Bio Release 2.4 REST Web Services Front End'
+archivesBaseName  = 'tkbio-rest'
+description       = 'NCATS Translator Knowledge.Bio (TKBio) REST Web Services Front End'
 
 evaluationDependsOn(':core')
 
