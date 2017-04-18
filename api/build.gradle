@@ -1,0 +1,8 @@
+archivesBaseName  = 'tkbio-api'
+description       = 'Translator Knowledge.Bio API Middleware'
+
+//evaluationDependsOn(':services')
+
+dependencies {
+//	compile project(':services')
+}
