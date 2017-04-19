@@ -23,7 +23,10 @@ Start your server as an simple java application, something like
 
 	java -jar target/swagger-spring-1.0.0.jar 
 
-You can view the api documentation in swagger-ui by pointing to  
-http://localhost:8080/  
+You can view the api documentation in swagger-ui by pointing to
+  
+	http://localhost:8080/api
+
+
 
 Change default port value in application.properties
