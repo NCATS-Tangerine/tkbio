@@ -1,7 +1,5 @@
-// KB2.1 Web Application Build File
-
-archivesBaseName  = 'kb2-web'
-description       = 'Knowledge.Bio Release 2.1 Web Desktop Application'
+archivesBaseName  = 'tkbio-web'
+description       = 'NCATS Translator Knowledge.Bio (TKBio) Web Desktop Application'
 
 /* gradle-vaadin plugin https://github.com/johndevs/gradle-vaadin-plugin*/
 //apply from: 'http://plugins.jasoft.fi/vaadin.plugin'

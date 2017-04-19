@@ -1,7 +1,5 @@
-// KB2.1 Core Service Middleware Build File
-
-archivesBaseName  = 'kb2-core'
-description       = 'Knowledge.Bio Release 2.1 Core Service Middleware'
+archivesBaseName  = 'tkbio-core'
+description       = 'NCATS Translator Knowledge.Bio (TKBio) Core Spring Service Layer Middleware'
 
 evaluationDependsOn(':services')
 

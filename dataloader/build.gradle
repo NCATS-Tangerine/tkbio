@@ -1,7 +1,5 @@
-// KB2.1 Data Loader Build File
-
-archivesBaseName  = 'kb2-dataloader'
-description = 'Knowledge.Bio Release 2.1 Neo4j Database Data Loader Application'
+archivesBaseName  = 'tkbio-dataloader'
+description       = 'NCATS Translator Knowledge.Bio (TKBio) Neo4j Database Data Loader Application'
 
 evaluationDependsOn(':core')
 
