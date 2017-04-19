@@ -3,6 +3,8 @@ info:
   title: Translator Knowledge.Bio API
   version: 4.0.2
   contact:
+    responsibleDeveloper: Richard Bruskiewich
+    responsibleOrganization: STAR Informatics/Delphinai Corporation
     url: 'http://starinformatics.com'
     email: richard@starinformatics.com
   description: |
@@ -90,11 +92,11 @@ paths:
           examples:
             application/json:
               - source: wikidata
-                id: 'wd:brca1'
-                name: BRCA1
+                id: 'Q14883734'
+                name: WRN
                 semanticType: gene
                 synonyms: []
-                definition: Breast cancer susceptibility gene
+                definition: Werner Syndrome Gene
                 details: []
   /concepts:
     get:
@@ -103,7 +105,7 @@ paths:
       tags:
         - concepts
       parameters:
-        - name: query
+        - name: textFilter
           in: query
           description: >-
             string of comma delimited keywords to match against concept names
