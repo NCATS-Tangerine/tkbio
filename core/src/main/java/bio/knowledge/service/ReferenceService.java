@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import bio.knowledge.database.repository.ReferenceRepository;
-import bio.knowledge.model.Reference;
+import bio.knowledge.model.neo4j.Neo4jReference;
 
 /**
  * @author Richard
@@ -45,7 +45,7 @@ public class ReferenceService {
 	 * @param uri
 	 * @return
 	 */
-	public Reference findByUri(String uri) {
+	public Neo4jReference findByUri(String uri) {
 		return referenceRepository.findByUri(uri);
 	}
 
@@ -53,7 +53,7 @@ public class ReferenceService {
 	 * @param reference
 	 * @return
 	 */
-	public Reference save(Reference reference) {
+	public Neo4jReference save(Neo4jReference reference) {
 		return referenceRepository.save(reference);
 	}
 	

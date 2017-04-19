@@ -44,8 +44,8 @@ import bio.knowledge.database.repository.core.Neo4jOntologyTermRepository;
 import bio.knowledge.model.core.ModelException;
 import bio.knowledge.model.core.Ontology;
 import bio.knowledge.model.core.OntologyTerm;
-import bio.knowledge.model.core.neo4j.Neo4jOntology;
-import bio.knowledge.model.core.neo4j.Neo4jOntologyTerm;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractOntology;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractOntologyTerm;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
 import bio.knowledge.service.core.OntologyTermService;
 
@@ -70,19 +70,19 @@ public class Neo4jOntologyTermService
 	public OntologyTerm createInstance(Object... args) {
 		
 		if(args.length==2)
-			return new Neo4jOntologyTerm(
+			return new Neo4jAbstractOntologyTerm(
 							(Ontology)args[0], 
 							(String)args[1] // Name
 						);
 		
 		else if(args.length==3)
-			return new Neo4jOntologyTerm(
+			return new Neo4jAbstractOntologyTerm(
 							(Ontology)args[0],
 							(String)args[1], // Name
 							(String)args[2]	 // Description
 						);
 		else if(args.length==4)
-			return new Neo4jOntologyTerm(
+			return new Neo4jAbstractOntologyTerm(
 							(Ontology)args[0],
 							(String)args[1], // Accession Id
 							(String)args[2], // Name
@@ -129,7 +129,7 @@ public class Neo4jOntologyTermService
 				// Ontology ontology is assumed in 
 				// this Neo4j application to be a Neo4jOntology
 				term = ontologyTermRepository.
-						   findByOntologyAndNameEquals( (Neo4jOntology)ontology, termName ) ;
+						   findByOntologyAndNameEquals( (Neo4jAbstractOntology)ontology, termName ) ;
 				
 				// Cache the term if found...
 				if( term != null ) {
@@ -202,8 +202,8 @@ public class Neo4jOntologyTermService
 		// (by name) if it exists, otherwise, create and cache it
 		OntologyTerm ontologyTerm = getOntologyTermByAccessionId( accessionId ) ;
 		if( ontologyTerm == null ) {
-			ontologyTerm = new Neo4jOntologyTerm( ontology, termName, definition ) ;
-			ontologyTerm = ontologyTermRepository.save( (Neo4jOntologyTerm)ontologyTerm ) ;
+			ontologyTerm = new Neo4jAbstractOntologyTerm( ontology, termName, definition ) ;
+			ontologyTerm = ontologyTermRepository.save( (Neo4jAbstractOntologyTerm)ontologyTerm ) ;
 			termCatalog.put(termName, ontologyTerm) ;
 		}
 		return ontologyTerm ;

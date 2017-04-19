@@ -33,14 +33,14 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import bio.knowledge.model.core.neo4j.Neo4jExternalDatabase;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractExternalDatabase;
 
 @Repository
 public interface Neo4jExternalDatabaseRepository
-	extends GraphRepository<Neo4jExternalDatabase> {
+	extends GraphRepository<Neo4jAbstractExternalDatabase> {
 
 	@Query("MATCH (r:ExternalDatabase) RETURN r")
-	Iterable<Neo4jExternalDatabase> getExternalDatabases() ;
+	Iterable<Neo4jAbstractExternalDatabase> getExternalDatabases() ;
 
 	/**
 	 * @param databaseName
@@ -50,7 +50,7 @@ public interface Neo4jExternalDatabaseRepository
 			+ " WHERE db.name = {databaseName}"
 			+ " RETURN db"
 		)
-	Neo4jExternalDatabase findUniqueByNameEquals(@Param("databaseName")String databaseName);
+	Neo4jAbstractExternalDatabase findUniqueByNameEquals(@Param("databaseName")String databaseName);
 
 	/**
 	 * @param filter
@@ -73,5 +73,5 @@ public interface Neo4jExternalDatabaseRepository
 			      + " LOWER(database.description) CONTAINS LOWER({filter})"
 			+ " RETURN database"
 		)
-	List<Neo4jExternalDatabase> findByNameLikeIgnoreCase(@Param("filter")String filter, Pageable pageable);
+	List<Neo4jAbstractExternalDatabase> findByNameLikeIgnoreCase(@Param("filter")String filter, Pageable pageable);
 }

@@ -42,7 +42,7 @@ import org.springframework.stereotype.Service;
 import bio.knowledge.database.repository.core.Neo4jExternalDatabaseRepository;
 import bio.knowledge.model.core.ExternalDatabase;
 import bio.knowledge.model.core.ModelException;
-import bio.knowledge.model.core.neo4j.Neo4jExternalDatabase;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractExternalDatabase;
 import bio.knowledge.service.core.ExternalDatabaseService;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
 
@@ -63,16 +63,16 @@ public class Neo4jExternalDatabaseService
 	public ExternalDatabase createInstance(Object... args) {
 		
 		if(args.length==1)
-			return new Neo4jExternalDatabase((String)args[0]); // Name
+			return new Neo4jAbstractExternalDatabase((String)args[0]); // Name
 		
 		else if(args.length==2)
-			return new Neo4jExternalDatabase(
+			return new Neo4jAbstractExternalDatabase(
 							(String)args[0], // Name
 							(String)args[1]  // Description
 						);
 		
 		else if(args.length==3)
-			return new Neo4jExternalDatabase(
+			return new Neo4jAbstractExternalDatabase(
 							(String)args[0], // Name
 							(String)args[1], // Description
 							(String)args[2]	 // URL
@@ -117,8 +117,8 @@ public class Neo4jExternalDatabaseService
     	// Fields: source(ExternalDatabase), name, description, url, version
     	ExternalDatabase database = getDatabaseByName( name ) ;
 		if( database == null ) {
-			database = new Neo4jExternalDatabase( name, description, url ) ;
-			database = databaseRepository.save( (Neo4jExternalDatabase)database ) ;
+			database = new Neo4jAbstractExternalDatabase( name, description, url ) ;
+			database = databaseRepository.save( (Neo4jAbstractExternalDatabase)database ) ;
 		}
 		if(!databaseCatalog.containsKey( name )) {
 			databaseCatalog.put( name , database ) ;

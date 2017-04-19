@@ -23,46 +23,49 @@
  * THE SOFTWARE.
  *-------------------------------------------------------------------------------
  */
-package bio.knowledge.database.repository;
+package bio.knowledge.model.neo4j;
 
-import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
-import org.springframework.data.repository.query.Param;
-
-import bio.knowledge.model.neo4j.Neo4jReference;
+import org.neo4j.ogm.annotation.NodeEntity;
 
 /**
  * @author Richard
+ * 
+ * Reified node for statements of conceptual relations, which are now inspired
+ * by the notion of WikiData RDF statement triples, embellished with associated Evidence
  *
  */
-public interface ReferenceRepository extends GraphRepository<Neo4jReference> {
+@NodeEntity(label="Statement")
+public class Neo4jGeneralStatement extends Neo4jAbstractStatement {
+	
+	protected Neo4jGeneralStatement() {
+		super();
+	}
 
-	/**
-	 * 
-	 */
-	@Query( "DROP CONSTRAINT ON (reference:Reference)"
-		  + " ASSERT reference.pmid IS UNIQUE")
-	void dropUniqueConstraintOnReferencePmid();
+	public Neo4jGeneralStatement(String name){
+		super(name);
+	}
+	
+	public Neo4jGeneralStatement(
+    		String accessionId,
+    		Neo4jPredicate predicate
+    ) {
+    	super(accessionId, predicate);
+    }
+	   
+	public Neo4jGeneralStatement(
+    		String accessionId,
+    		Neo4jConcept subject,
+    		Neo4jPredicate predicate,
+    		Neo4jConcept object
+    ) {
+    	super(accessionId, subject, predicate, object) ;
+    }
 
-	/**
-	 * 
-	 */
-	@Query( "DROP INDEX ON :Reference(pmid)")
-	void dropIndexOnReferencePmid();
-
-	/**
-	 * 
-	 * @param pmid String PubMed identifier
-	 * @return matching Reference
-	 */
-	@Query( "MATCH (reference:Reference)"
-			+ " WHERE reference.pmid = {pmid}"
-			+ " RETURN reference")
-	Neo4jReference findByPmid(  @Param("pmid") String pmid ) ;
-
-	/**
-	 * @param uri
-	 * @return
-	 */
-	Neo4jReference findByUri(String uri);
+	public Neo4jGeneralStatement(
+    		String accessionId,
+    		String predicateName
+    ) {
+    	super(accessionId,predicateName) ;
+    }
+	
 }

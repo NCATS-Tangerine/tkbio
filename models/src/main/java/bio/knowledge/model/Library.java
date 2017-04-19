@@ -33,14 +33,14 @@ import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
 import bio.knowledge.model.core.IdentifiedEntity;
-import bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity;
 
 /**
  * @author Richard
  * 
  */
 @NodeEntity(label="Library")
-public class Library extends Neo4jIdentifiedEntity {
+public class Library extends Neo4jAbstractIdentifiedEntity {
 	
 	private Integer numberOfArchivedMaps = 0;
 

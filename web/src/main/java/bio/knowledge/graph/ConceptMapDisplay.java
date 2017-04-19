@@ -51,9 +51,9 @@ import bio.knowledge.graph.jsonmodels.Elements;
 import bio.knowledge.graph.jsonmodels.Layout;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.Nodes;
-import bio.knowledge.model.Annotation;
-import bio.knowledge.model.Statement;
+import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 import bio.knowledge.web.ui.DesktopUI;
 
 @JavaScript({
@@ -616,9 +616,9 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 	 * @param relationLabel
 	 */
 	
-	public void addEdgeToConceptMap(Statement statement) {
+	public void addEdgeToConceptMap(Neo4jGeneralStatement statement) {
 		// any statement pre-processing goes here
-		Annotation annotation = statement.getEvidence().getAnnotations().stream().collect(Collectors.toList()).get(0);
+		Neo4jAnnotation annotation = statement.getEvidence().getAnnotations().stream().collect(Collectors.toList()).get(0);
 		String description;
 		String uri;
 		if(annotation != null) {

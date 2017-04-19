@@ -37,8 +37,8 @@ import bio.knowledge.model.core.IdentifiedEntity;
  * but Neo4j doesn't really like abstract classes for @NodeEntity tagged classes
  */
 @NodeEntity(label="IdentifiedEntity")
-public class Neo4jIdentifiedEntity 
-	extends Neo4jDatabaseEntity implements IdentifiedEntity {
+public class Neo4jAbstractIdentifiedEntity 
+	extends Neo4jAbstractDatabaseEntity implements IdentifiedEntity {
 
     /**
      */
@@ -61,21 +61,21 @@ public class Neo4jIdentifiedEntity
      */
     private String synonyms = "" ;
     
-	public Neo4jIdentifiedEntity() {
+	public Neo4jAbstractIdentifiedEntity() {
         super();
     }
     
-    public Neo4jIdentifiedEntity( String name ) {
+    public Neo4jAbstractIdentifiedEntity( String name ) {
     	super() ;
         this.name = name;
     }
 
-    public Neo4jIdentifiedEntity(String name, String description) {
+    public Neo4jAbstractIdentifiedEntity(String name, String description) {
     	this(name) ;
         this.description = description ;
     }
     
-    public Neo4jIdentifiedEntity( String accessionId, String name, String description ) {
+    public Neo4jAbstractIdentifiedEntity( String accessionId, String name, String description ) {
     	this(name,description) ;
         this.accessionId = accessionId ;
         this.uri = RdfUtil.resolveUri(accessionId);

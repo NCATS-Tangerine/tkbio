@@ -33,14 +33,14 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity; 
+import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity; 
 
 @Repository
 public interface Neo4jIdentifierEntityRepository
-	extends GraphRepository<Neo4jIdentifiedEntity> {
+	extends GraphRepository<Neo4jAbstractIdentifiedEntity> {
 
 	@Query("MATCH (identifier:IdentifiedEntity) RETURN identifier")
-	Iterable<Neo4jIdentifiedEntity> getIdentifiedEntities() ;
+	Iterable<Neo4jAbstractIdentifiedEntity> getIdentifiedEntities() ;
 
 	/**
 	 * 
@@ -51,7 +51,7 @@ public interface Neo4jIdentifierEntityRepository
 			+ " WHERE identifier.name = {name})"
 			+ " RETURN identifier"
 		)
-	List<Neo4jIdentifiedEntity> findByName(@Param("name")String name);
+	List<Neo4jAbstractIdentifiedEntity> findByName(@Param("name")String name);
 
 	/**
 	 * @param filter string for approximate matching to name of IdentifiedEntity instances
@@ -74,6 +74,6 @@ public interface Neo4jIdentifierEntityRepository
 			      + " LOWER(identifier.description) CONTAINS LOWER({filter})"
 			+ " RETURN identifier"
 		)
-	List<Neo4jIdentifiedEntity> findByNameLikeIgnoreCase(@Param("filter")String filter, Pageable pageable);
+	List<Neo4jAbstractIdentifiedEntity> findByNameLikeIgnoreCase(@Param("filter")String filter, Pageable pageable);
 	
 }

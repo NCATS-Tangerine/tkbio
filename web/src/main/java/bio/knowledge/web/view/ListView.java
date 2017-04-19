@@ -92,17 +92,17 @@ import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.graph.jsonmodels.Node;
-import bio.knowledge.model.Annotation;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.DomainModelException;
-import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
-import bio.knowledge.model.Predicate;
 import bio.knowledge.model.SemanticGroup;
-import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.OntologyTerm;
+import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.neo4j.Neo4jEvidence;
+import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
+import bio.knowledge.model.neo4j.Neo4jPredicate;
 import bio.knowledge.model.organization.ContactForm;
 import bio.knowledge.model.umls.SemanticType;
 import bio.knowledge.service.AnnotationService;
@@ -878,7 +878,7 @@ public class ListView extends BaseView {
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
 			for (Object item: items) {
 				
-				Statement statement = (Statement) item;
+				Neo4jGeneralStatement statement = (Neo4jGeneralStatement) item;
 				
 				Neo4jConcept subject       = statement.getSubject() ;
 				String predicateLabel = statement.getRelation().getName();
@@ -1058,10 +1058,10 @@ public class ListView extends BaseView {
 					
 				case RELATIONS:
 
-					Optional<Evidence> evidenceOpt = query.getCurrentEvidence() ;
+					Optional<Neo4jEvidence> evidenceOpt = query.getCurrentEvidence() ;
 					if ( evidenceOpt.isPresent() ) {
-						Evidence evidence = evidenceOpt.get() ;
-						Statement statement = evidence.getStatement() ;
+						Neo4jEvidence evidence = evidenceOpt.get() ;
+						Neo4jGeneralStatement statement = evidence.getStatement() ;
 						if( statement != null ) {
 							String subject      = statement.getSubject().getName();
 							String object       = statement.getObject().getName();
@@ -1390,8 +1390,8 @@ public class ListView extends BaseView {
 
 			// if (propertyId.equals(COL_ID_RELATION)) {
 			if (propertyId.equals(COL_ID_RELATION)) {
-				if (value instanceof Predicate) {
-					definition = ((Predicate) value).getDescription();
+				if (value instanceof Neo4jPredicate) {
+					definition = ((Neo4jPredicate) value).getDescription();
 					description = "<span style=\"font-weight: bold;\">" + name + ": " + "</span>" + definition;
 				}
 			}
@@ -1679,9 +1679,9 @@ public class ListView extends BaseView {
 	
 	// Handler for Concept details in various data tables
 	private void onConceptDetailsSelection(RendererClickEvent event, ConceptRole role) {
-		Statement statement = (Statement) event.getItemId();
+		Neo4jGeneralStatement statement = (Neo4jGeneralStatement) event.getItemId();
 		Neo4jConcept subject = statement.getSubject();
-		Predicate predicate = statement.getRelation();
+		Neo4jPredicate predicate = statement.getRelation();
 		Neo4jConcept object = statement.getObject();
 
 		RelationSearchMode searchMode = query.getRelationSearchMode();
@@ -1902,7 +1902,7 @@ public class ListView extends BaseView {
 			}
 		});
 
-		registry.setMapping(ViewName.RELATIONS_VIEW, new BeanItemContainer<Statement>(Statement.class),
+		registry.setMapping(ViewName.RELATIONS_VIEW, new BeanItemContainer<Neo4jGeneralStatement>(Neo4jGeneralStatement.class),
 				statementService, new String[] { "subject|*", COL_ID_RELATION, "object|*", "evidence|*" }, null);
 
 		registry.addSelectionHandler(ViewName.RELATIONS_VIEW, COL_ID_SUBJECT,
@@ -1914,7 +1914,7 @@ public class ListView extends BaseView {
 		registry.addSelectionHandler(ViewName.RELATIONS_VIEW, COL_ID_EVIDENCE, event -> {
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
 
-			Statement selectedStatement = (Statement) event.getItemId();
+			Neo4jGeneralStatement selectedStatement = (Neo4jGeneralStatement) event.getItemId();
 			query.setCurrentStatement(selectedStatement);
 
 			_logger.trace("Display Evidence for " + selectedStatement.getName());
@@ -1923,7 +1923,7 @@ public class ListView extends BaseView {
 		});
 
 		registry.setMapping(ViewName.EVIDENCE_VIEW, 
-				new BeanItemContainer<Annotation>(Annotation.class),
+				new BeanItemContainer<Neo4jAnnotation>(Neo4jAnnotation.class),
 				annotationService,
 				new String[] { /* "reference|*", */"publicationDate", "supportingText|*" /* ,"evidenceCode" */ }, 
 				null, 
@@ -1933,7 +1933,7 @@ public class ListView extends BaseView {
 				ViewName.EVIDENCE_VIEW, 
 				COL_ID_SUPPORTING_TEXT, 
 				event -> {
-					Annotation annotation = (Annotation) event.getItemId();
+					Neo4jAnnotation annotation = (Neo4jAnnotation) event.getItemId();
 		
 					_logger.trace("Display PubMed Reference for Annotation " + annotation.toString() + "...");
 		

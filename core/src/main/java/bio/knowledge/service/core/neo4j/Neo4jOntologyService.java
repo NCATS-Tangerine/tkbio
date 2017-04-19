@@ -42,7 +42,7 @@ import org.springframework.stereotype.Service;
 import bio.knowledge.database.repository.core.Neo4jOntologyRepository;
 import bio.knowledge.model.core.ModelException;
 import bio.knowledge.model.core.Ontology;
-import bio.knowledge.model.core.neo4j.Neo4jOntology;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractOntology;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
 import bio.knowledge.service.core.OntologyService;
 
@@ -61,7 +61,7 @@ public class Neo4jOntologyService
 	public Ontology createInstance(Object... args) {
 		
 		if(args.length==3)
-			return new Neo4jOntology(
+			return new Neo4jAbstractOntology(
 							(String)args[0], // Source 'accessionId'
 							(String)args[1], // Name
 							(String)args[2]	 // Description
@@ -100,8 +100,8 @@ public class Neo4jOntologyService
     	// Fields: source(ExternalDatabase), name, description, url, version
 		Ontology ontology = getOntologyByName( name ) ;
 		if( ontology == null ) {
-			ontology = new Neo4jOntology( source, name, description ) ;
-			ontology = ontologyRepository.save( (Neo4jOntology)ontology ) ;
+			ontology = new Neo4jAbstractOntology( source, name, description ) ;
+			ontology = ontologyRepository.save( (Neo4jAbstractOntology)ontology ) ;
 		}
 		return ontology ;
     }

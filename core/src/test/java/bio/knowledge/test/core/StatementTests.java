@@ -42,15 +42,14 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import bio.knowledge.model.Reference;
 import bio.knowledge.model.SemanticGroup;
-import bio.knowledge.model.Evidence;
 import bio.knowledge.model.EvidenceCode;
-import bio.knowledge.model.Predicate;
-import bio.knowledge.model.Statement;
+import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.neo4j.Neo4jConcept;
-import bio.knowledge.model.Annotation;
-
+import bio.knowledge.model.neo4j.Neo4jEvidence;
+import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
+import bio.knowledge.model.neo4j.Neo4jPredicate;
+import bio.knowledge.model.neo4j.Neo4jReference;
 import bio.knowledge.service.AnnotationService;
 
 import bio.knowledge.database.repository.ReferenceRepository;
@@ -103,7 +102,7 @@ public class StatementTests {
 		+---------+-----------+------------+----------+-------+
 		*/
 		public final String PMID5905393 = "5905393" ;
-		public final Reference PMID5905393_REFERENCE = new Reference("PubMed Citation for PMID "+PMID5905393) ; 
+		public final Neo4jReference PMID5905393_REFERENCE = new Neo4jReference("PubMed Citation for PMID "+PMID5905393) ; 
 		
 		/*
 		+-------------+---------+------+--------+--------------------------------------------------------------+
@@ -113,11 +112,11 @@ public class StatementTests {
 		+-------------+---------+------+--------+--------------------------------------------------------------+
 
 		 */
-		public final Annotation GLYP_UMBL_ANNOTATION = 
+		public final Neo4jAnnotation GLYP_UMBL_ANNOTATION = 
 				annotationService.createInstance(
 						"kba:3668220", 
 						"Glycoprotein level in umbilical arterial and venous blood", 
-						Annotation.Type.Title,
+						Neo4jAnnotation.Type.Title,
 						EvidenceCode.IC,
 						null
 				) ;
@@ -138,7 +137,7 @@ public class StatementTests {
 	public void testReferenceModelPersistance() {
 		
 		ReferenceTestData referenceTestData = new ReferenceTestData() ;
-		Reference guCit = referenceTestData.PMID5905393_REFERENCE ;
+		Neo4jReference guCit = referenceTestData.PMID5905393_REFERENCE ;
 		
 		// Sanity check
 		assertNotNull(guCit.getYearPublished()) ;
@@ -152,7 +151,7 @@ public class StatementTests {
 		System.out.println("Reference NodeId (after saving):\t"+guCit.getId()) ;
 
 		// retrieve reference by PMID
-		Reference c = referenceRepository.findByPmid(  referenceTestData.PMID5905393 ) ;
+		Neo4jReference c = referenceRepository.findByPmid(  referenceTestData.PMID5905393 ) ;
 		
 		assertNotNull(c) ;
 		
@@ -254,12 +253,12 @@ public class StatementTests {
 		// Reference should exist and be added to the Annotation?
 		System.out.println("Reference NodeId (before saving):\t"+referenceTestData.PMID5905393_REFERENCE.getId()) ;
 
-		Reference UMBL_REFERENCE =
+		Neo4jReference UMBL_REFERENCE =
 				referenceRepository.save( referenceTestData.PMID5905393_REFERENCE );
 		
 		System.out.println("Reference NodeId (after saving):\t"+UMBL_REFERENCE.getId()) ;
 		
-		Annotation glyp2umbl = referenceTestData.GLYP_UMBL_ANNOTATION ;
+		Neo4jAnnotation glyp2umbl = referenceTestData.GLYP_UMBL_ANNOTATION ;
 		glyp2umbl.setReference(UMBL_REFERENCE);
 		
 		System.out.println("Annotation NodeId (before saving):\t"+glyp2umbl.getId()) ;
@@ -268,11 +267,11 @@ public class StatementTests {
 		
 		System.out.println("Annotation NodeId (after saving):\t"+glyp2umbl.getId()) ;
 		
-		Reference reference = referenceRepository.findByPmid( referenceTestData.PMID5905393 ) ;
+		Neo4jReference reference = referenceRepository.findByPmid( referenceTestData.PMID5905393 ) ;
 		
 		assertNotNull(reference) ;
 		
-		Annotation annotation = annotationRepository.findByReference(reference) ;
+		Neo4jAnnotation annotation = annotationRepository.findByReference(reference) ;
 		
 		assertNotNull(annotation) ;
 		
@@ -321,7 +320,7 @@ public class StatementTests {
 		// Reference should exist and be added to the Annotation?
 		System.out.println("Reference NodeId (before saving):\t"+referenceTestData.PMID5905393_REFERENCE.getId()) ;
 
-		Reference UMBL_REFERENCE =
+		Neo4jReference UMBL_REFERENCE =
 				referenceRepository.save( referenceTestData.PMID5905393_REFERENCE );
 		
 		System.out.println("Reference NodeId (after saving):\t"+UMBL_REFERENCE.getId()) ;
@@ -331,13 +330,13 @@ public class StatementTests {
 		
 		System.out.println("Annotation NodeId (before saving):\t"+referenceTestData.GLYP_UMBL_ANNOTATION.getId()) ;
 
-		Annotation GLYP_UMBL_SENTENCE = 
+		Neo4jAnnotation GLYP_UMBL_SENTENCE = 
 				annotationRepository.save( referenceTestData.GLYP_UMBL_ANNOTATION ) ; 
 
 		System.out.println("Annotation NodeId (after saving):\t"+GLYP_UMBL_SENTENCE.getId()) ;
 
 		// Annotation should exist before Evidence link is created?
-		Evidence GLYP_UMBL_EVIDENCE = new Evidence() ;
+		Neo4jEvidence GLYP_UMBL_EVIDENCE = new Neo4jEvidence() ;
 		GLYP_UMBL_EVIDENCE.addAnnotation(GLYP_UMBL_SENTENCE) ;
 
 		System.out.println("Evidence NodeId (before saving):\t"+GLYP_UMBL_EVIDENCE.getId()) ;
@@ -362,14 +361,14 @@ public class StatementTests {
 		 */
 		
 		System.out.println("Statement:");
-		Predicate predicate = predicateRepository.findPredicateByName("LOCATION_OF");
+		Neo4jPredicate predicate = predicateRepository.findPredicateByName("LOCATION_OF");
 		if( predicate == null ) {
 			// should not be run twice?
-			predicate = new Predicate("LOCATION_OF") ;
+			predicate = new Neo4jPredicate("LOCATION_OF") ;
 			predicate = predicateRepository.save(predicate) ;
 		}
 		
-		Statement UMBL_LOCATION_OF_GLYP = new Statement( "540408", csUmbArt, predicate, csGProt ) ;
+		Neo4jGeneralStatement UMBL_LOCATION_OF_GLYP = new Neo4jGeneralStatement( "540408", csUmbArt, predicate, csGProt ) ;
 		UMBL_LOCATION_OF_GLYP.setEvidence(GLYP_UMBL_EVIDENCE);
 		
 		System.out.println("NodeId (before saving):\t"+UMBL_LOCATION_OF_GLYP.getId()) ;
@@ -378,7 +377,7 @@ public class StatementTests {
 		
 		System.out.println("NodeId (after saving):\t"+UMBL_LOCATION_OF_GLYP.getId()) ;
 		
-		Statement p = statementRepository.findOne(UMBL_LOCATION_OF_GLYP.getId()) ;
+		Neo4jGeneralStatement p = statementRepository.findOne(UMBL_LOCATION_OF_GLYP.getId()) ;
 		
 		assertNotNull(p) ;
 		
@@ -406,17 +405,17 @@ public class StatementTests {
 		assertEquals( object.getAccessionId(),  origObject.getAccessionId() ) ;
 		System.out.println( "Object accession id: "+object.getAccessionId());
 		
-		Evidence evidence = p.getEvidence() ;
+		Neo4jEvidence evidence = p.getEvidence() ;
 		assertNotNull(evidence) ;
 		System.out.println("Evidence id:\t"+evidence.getId()) ;
 		
 		assertTrue("Statement has some evidence?",!evidence.getAnnotations().isEmpty()) ;
 		
-		for( Annotation annotation : evidence.getAnnotations() ) {
+		for( Neo4jAnnotation annotation : evidence.getAnnotations() ) {
 			System.out.println("Evidence Annotation found:\t"+annotation.getAccessionId()) ;
 			assertEquals( annotation.getId(), GLYP_UMBL_SENTENCE.getId() ) ;
 			
-			Reference reference = annotation.getReference();
+			Neo4jReference reference = annotation.getReference();
 			assertEquals( reference.getId(), UMBL_REFERENCE.getId() ) ;
 			System.out.println("Annotation Reference found:\t"+reference.getAccessionId()) ;
 			
@@ -424,7 +423,7 @@ public class StatementTests {
 		}
 		
 		System.out.println("\nDirect dump of current statements:\n");
-		for(Statement s : statementRepository.getStatements()) {
+		for(Neo4jGeneralStatement s : statementRepository.getStatements()) {
 			System.out.println("Statement: "+s.getName());
 			
 			subjects = p.getSubjects() ;
@@ -433,7 +432,7 @@ public class StatementTests {
 			subject = subjects.get(0) ;
 			System.out.println("Subject accessionId: "+subject.getAccessionId());
 			
-			Predicate relation = p.getRelation();
+			Neo4jPredicate relation = p.getRelation();
 			System.out.println("Relation: "+relation.getName());
 			
 			objects = p.getObjects() ;

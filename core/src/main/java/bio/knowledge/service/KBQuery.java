@@ -28,13 +28,13 @@ package bio.knowledge.service;
 import java.util.Optional;
 import java.util.Set;
 
-import bio.knowledge.model.Annotation;
 import bio.knowledge.model.ConceptMapArchive;
-import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
-import bio.knowledge.model.Statement;
+import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.neo4j.Neo4jEvidence;
+import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 
 /**
  * @author Richard
@@ -122,40 +122,40 @@ public interface KBQuery {
 
 	/**
 	 * 
-	 * @param Statement currently displayed
+	 * @param Neo4jGeneralStatement currently displayed
 
 	 */
-	public void setCurrentStatement( Statement statement ) ;
+	public void setCurrentStatement( Neo4jGeneralStatement statement ) ;
 	
 	/**
 	 * 
 	 * @return optional of Statement currently for display
 	 */
-	public Optional< Statement > getCurrentStatement() ;
+	public Optional< Neo4jGeneralStatement > getCurrentStatement() ;
 	
 	/**
 	 * 
-	 * @param Evidence currently displayed
+	 * @param Neo4jEvidence currently displayed
 	 */
-	public void setCurrentEvidence( Evidence evidence ) ;
+	public void setCurrentEvidence( Neo4jEvidence evidence ) ;
 	
 	/**
 	 * 
 	 * @return optional of Evidence currently for display
 	 */
-	public Optional< Evidence > getCurrentEvidence() ;
+	public Optional< Neo4jEvidence > getCurrentEvidence() ;
 
 	/**
 	 * 
-	 * @param Annotation currently selected
+	 * @param Neo4jAnnotation currently selected
 	 */
-	public void setCurrentAnnotation( Annotation annotation ) ;
+	public void setCurrentAnnotation( Neo4jAnnotation annotation ) ;
 	
 	/**
 	 * 
 	 * @return optional of Annotation currently selected
 	 */
-	public Optional< Annotation > getCurrentAnnotation() ;
+	public Optional< Neo4jAnnotation > getCurrentAnnotation() ;
 	
 	/**
 	 * 

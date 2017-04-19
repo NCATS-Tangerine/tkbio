@@ -33,24 +33,24 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import bio.knowledge.model.core.neo4j.Neo4jOntology;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractOntology;
 
 @Repository
 public interface Neo4jOntologyRepository
-	extends GraphRepository<Neo4jOntology> {
+	extends GraphRepository<Neo4jAbstractOntology> {
 
 	/**
 	 * 
 	 * @return
 	 */
 	@Query("MATCH (ontology:Ontology) RETURN ontology")
-	Iterable<Neo4jOntology> getOntology() ;
+	Iterable<Neo4jAbstractOntology> getOntology() ;
 
 	/**
 	 * @param ontologyName
 	 * @return
 	 */
-	Neo4jOntology findUniqueByNameEquals(String ontologyName);
+	Neo4jAbstractOntology findUniqueByNameEquals(String ontologyName);
 
 	/**
 	 * @param filter string for approximate matching to name of IdentifiedEntity instances
@@ -73,5 +73,5 @@ public interface Neo4jOntologyRepository
 			      + " LOWER(ontology.description) CONTAINS LOWER({filter})"
 			+ " RETURN ontology"
 		)
-	List<Neo4jOntology> findByNameLikeIgnoreCase(@Param("filter")String filter, Pageable pageable);
+	List<Neo4jAbstractOntology> findByNameLikeIgnoreCase(@Param("filter")String filter, Pageable pageable);
 }

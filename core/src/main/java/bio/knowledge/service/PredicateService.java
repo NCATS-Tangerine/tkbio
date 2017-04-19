@@ -41,9 +41,9 @@ import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.datasource.DataSourceRegistry;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
-import bio.knowledge.model.Predicate;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
+import bio.knowledge.model.neo4j.Neo4jPredicate;
 import bio.knowledge.service.Cache.CacheLocation;
 
 /**
@@ -69,7 +69,7 @@ public class PredicateService {
      * @param name
      * @return
      */
-    public Predicate findPredicateByName(String name) {
+    public Neo4jPredicate findPredicateByName(String name) {
     	// Normalize to upper case
     	name = name.toUpperCase() ;
     	return predicateRepository.findPredicateByName(name) ;
@@ -79,7 +79,7 @@ public class PredicateService {
      * 
      * @return
      */
-    public List<Predicate> findAllPredicates() {
+    public List<Neo4jPredicate> findAllPredicates() {
     	return predicateRepository.findAllPredicates() ;
     }
     
@@ -88,7 +88,7 @@ public class PredicateService {
      * @param predicate
      * @return
      */
-    public Predicate annotate(Predicate predicate) {
+    public Neo4jPredicate annotate(Neo4jPredicate predicate) {
     	
     	String accId = predicate.getAccessionId();
     	
@@ -106,12 +106,12 @@ public class PredicateService {
 		CacheLocation cacheLocation = 
 				cache.searchForEntity( "Predicate", nameSpace, new String[] {objectId} );
 		
-		Predicate cachedPredicate = (Predicate)cacheLocation.getEntity();
+		Neo4jPredicate cachedPredicate = (Neo4jPredicate)cacheLocation.getEntity();
 		
 		if (cachedPredicate == null) {
 			
 			// Not cached... then first, attempt to retrieve it from the local database
-			Predicate databasePredicate = 
+			Neo4jPredicate databasePredicate = 
 					predicateRepository.findPredicateByAccessionId(accId);
 			
 			if( databasePredicate == null ) {

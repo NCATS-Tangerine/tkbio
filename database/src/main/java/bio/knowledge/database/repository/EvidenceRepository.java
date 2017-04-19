@@ -29,13 +29,13 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
-import bio.knowledge.model.Evidence;
+import bio.knowledge.model.neo4j.Neo4jEvidence;
 
 /**
  * @author Richard
  *
  */
-public interface EvidenceRepository extends GraphRepository<Evidence> {
+public interface EvidenceRepository extends GraphRepository<Neo4jEvidence> {
 	
 	@Query("MERGE (evidence:Evidence:IdentifiedEntity:DatabaseEntity { accessionId : \"kbe:\"+{evidenceId} }) "
 			+"ON CREATE SET "
@@ -47,9 +47,9 @@ public interface EvidenceRepository extends GraphRepository<Evidence> {
 			+"evidence.versionDate = timestamp(), "
 			+"evidence.version = TOINT(\"1\")"
 			+"RETURN evidence")
-	public Evidence createByEvidenceId(@Param("evidenceId") String evidenceId);
+	public Neo4jEvidence createByEvidenceId(@Param("evidenceId") String evidenceId);
 	
 	@Query("MATCH (evidence:Evidence:IdentifiedEntity:DatabaseEntity { accessionId : \"kbe:\"+{evidenceId} }) RETURN evidence")
-	public Evidence findByEvidenceId(@Param("evidenceId") String evidenceId);
+	public Neo4jEvidence findByEvidenceId(@Param("evidenceId") String evidenceId);
 	
 }

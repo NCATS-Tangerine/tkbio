@@ -25,24 +25,24 @@
  */
 package bio.knowledge.model.annotation;
 
-import bio.knowledge.model.Evidence;
-import bio.knowledge.model.Predicate;
-import bio.knowledge.model.Statement;
 import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.neo4j.Neo4jEvidence;
+import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
+import bio.knowledge.model.neo4j.Neo4jPredicate;
 
-public class UserStatement extends Statement {
+public class UserStatement extends Neo4jGeneralStatement {
 
 	private String description;
 	private String uriEvidence;
 
-	public UserStatement(String statementId, Neo4jConcept subject, Predicate predicate,
+	public UserStatement(String statementId, Neo4jConcept subject, Neo4jPredicate predicate,
 			Neo4jConcept object, String description, String uriEvidence) {
 		super(statementId, subject, predicate, object);
 		setSubject(subject);
 		setObject(object);
 		this.description = description;
 		this.uriEvidence = uriEvidence;
-    	this.evidence = new Evidence();
+    	this.evidence = new Neo4jEvidence();
 	}
 	
 //	public UserAnnotation(String predicationLabel, String sourceId, String targetId, String description, String uriEvidence) {
@@ -74,11 +74,11 @@ public class UserStatement extends Statement {
 		this.uriEvidence = uriEvidence;
 	}
 	
-	public Evidence getEvidence() {
+	public Neo4jEvidence getEvidence() {
 		return this.evidence;
 	}
 	
-	public void setEvidence(Evidence evidence) {
+	public void setEvidence(Neo4jEvidence evidence) {
 		this.evidence = evidence;
 	}
 	

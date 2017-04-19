@@ -34,10 +34,10 @@ import org.springframework.stereotype.Repository;
 
 import bio.knowledge.model.core.AnnotatedEntity;
 import bio.knowledge.model.core.Feature;
-import bio.knowledge.model.core.neo4j.Neo4jFeature;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractFeature;
 
 @Repository
-public interface Neo4jFeatureRepository extends GraphRepository<Neo4jFeature> {
+public interface Neo4jFeatureRepository extends GraphRepository<Neo4jAbstractFeature> {
 
 	/**
 	 * @param owner

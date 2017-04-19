@@ -23,46 +23,45 @@
  * THE SOFTWARE.
  *-------------------------------------------------------------------------------
  */
-package bio.knowledge.database.repository;
+package bio.knowledge.model.neo4j;
 
-import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
-import org.springframework.data.repository.query.Param;
+import org.neo4j.ogm.annotation.NodeEntity;
 
-import bio.knowledge.model.neo4j.Neo4jReference;
+@NodeEntity(label="UserStatement")
+public class Neo4jUserStatement extends Neo4jAbstractStatement {
+	
+	String userId;
+	
+	protected Neo4jUserStatement() {
+		super();
+	}
 
-/**
- * @author Richard
- *
- */
-public interface ReferenceRepository extends GraphRepository<Neo4jReference> {
+	public Neo4jUserStatement(String name, String userId) {
+		super(name);
+		setUserId(userId);	
+	}
 
-	/**
-	 * 
-	 */
-	@Query( "DROP CONSTRAINT ON (reference:Reference)"
-		  + " ASSERT reference.pmid IS UNIQUE")
-	void dropUniqueConstraintOnReferencePmid();
+	public Neo4jUserStatement(String accessionId, Neo4jPredicate predicate, String userId) {
+		super(accessionId, predicate);
+		setUserId(userId);	
+	}
 
-	/**
-	 * 
-	 */
-	@Query( "DROP INDEX ON :Reference(pmid)")
-	void dropIndexOnReferencePmid();
+	public Neo4jUserStatement(String accessionId, Neo4jConcept subject, Neo4jPredicate predicate, Neo4jConcept object, String userId) {
+		super(accessionId, subject, predicate, object);
+		setUserId(userId);	
+	}
 
-	/**
-	 * 
-	 * @param pmid String PubMed identifier
-	 * @return matching Reference
-	 */
-	@Query( "MATCH (reference:Reference)"
-			+ " WHERE reference.pmid = {pmid}"
-			+ " RETURN reference")
-	Neo4jReference findByPmid(  @Param("pmid") String pmid ) ;
+	public Neo4jUserStatement(String accessionId, String predicateName, String userId) {
+		super(accessionId, predicateName);
+		setUserId(userId);	
+	}
+	
+	public String getUserId() {
+		return this.userId;
+	}
+	
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
-	/**
-	 * @param uri
-	 * @return
-	 */
-	Neo4jReference findByUri(String uri);
 }

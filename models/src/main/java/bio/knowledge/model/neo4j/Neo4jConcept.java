@@ -31,9 +31,10 @@ import java.util.Set;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
-import bio.knowledge.model.core.neo4j.Neo4jAnnotatedEntity;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractAnnotatedEntity;
 
 /**
  * @author Richard Bruskiewich
@@ -43,7 +44,7 @@ import bio.knowledge.model.core.neo4j.Neo4jAnnotatedEntity;
  * 
  */
 @NodeEntity(label="Concept")
-public class Neo4jConcept extends Neo4jAnnotatedEntity {
+public class Neo4jConcept extends Neo4jAbstractAnnotatedEntity implements Concept {
 
 	public static final String SEMGROUP_FIELD_START = "[" ;
 	public static final String SEMGROUP_FIELD_END   = "]" ;
@@ -93,131 +94,143 @@ public class Neo4jConcept extends Neo4jAnnotatedEntity {
     	this.semanticGroup = semgroup ;
     }
 
-	/**
-     * 
-     * @param the Concept Semantic Group 
-     * Should generally be set at node creation, but sometimes not?
-     */
-    public void setSemanticGroup(SemanticGroup semgroup) {
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#setSemanticGroup(bio.knowledge.model.SemanticGroup)
+	 */
+    @Override
+	public void setSemanticGroup(SemanticGroup semgroup) {
     	this.semanticGroup = semgroup ;
     }
     
-	/**
-     * 
-     * @return the Explicit Concept SemanticGroup 
-     */
-    public SemanticGroup getSemanticGroup() {
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#getSemanticGroup()
+	 */
+    @Override
+	public SemanticGroup getSemanticGroup() {
     	if(semanticGroup==null) {
     		return SemanticGroup.OBJC;
     	}
     	return semanticGroup ;
     }
 
-	/**
-	 * @return the usage of the Concept in Statements
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#getUsage()
 	 */
+	@Override
 	public Long getUsage() {
 		return usage;
 	}
 
-	/**
-	 * @param usage to set counting the number of Concept used in Statements
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#setUsage(java.lang.Long)
 	 */
+	@Override
 	public void setUsage(Long usage) {
 		this.usage = usage;
 	}
 	
-	/**
-	 * @param increment to add to count of the number of Concept used in Statements
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#incrementUsage(java.lang.Long)
 	 */
+	@Override
 	public void incrementUsage(Long increment) {
 		this.usage += increment;
 	}
 	
-	/**
-	 * @param increment by one the count of the number of Concept used in Statements
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#incrementUsage()
 	 */
+	@Override
 	public void incrementUsage() {
 		this.usage += 1;
 	}
 	
-	/**
-	 * 
-	 * @param library of archived ConceptMaps associated with the Concept
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#setLibrary(bio.knowledge.model.Library)
 	 */
+	@Override
 	public void setLibrary( Library library ) {
 		this.library = library;
 	}
 
-	/**
-	 * @return Library of archived ConceptMaps associated with the Concept
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#getLibrary()
 	 */
+	@Override
 	public Library getLibrary() {
 		return library;
 	}
 	
-    /**
-	 * @return the Genetic Home References identifier (for genes and disorders)
+    /* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#getGhr()
 	 */
+	@Override
 	public String getGhr() {
 		return ghr;
 	}
 
-	/**
-	 * @param ghr the Genetic Home References identifier to set
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#setGhr(java.lang.String)
 	 */
+	@Override
 	public void setGhr(String ghr) {
 		this.ghr = ghr;
 	}
 	
-	/**
-	 * 
-	 * @return the Human Metabolome DataBase identifier (as a string)
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#getHmdbId()
 	 */
+	@Override
 	public String getHmdbId() {
 		return hmdbId ;
 	}
 	
-	/**
-	 * @param hmdbId the Human Metabolome DataBase identifier (as a string) to set
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#setHmdbId(java.lang.String)
 	 */
+	@Override
 	public void setHmdbId(String hmdbId) {
 		this.hmdbId = hmdbId;
 	}	
 
-	/**
-	 * @return any associated identifier for Chemical Entities of Biological Interest (ChEBI)
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#getChebi()
 	 */
+	@Override
 	public String getChebi() {
 		return chebi;
 	}
 
-	/**
-	 * @param chebi associated identifier for Chemical Entities of Biological Interest (ChEBI)
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#setChebi(java.lang.String)
 	 */
+	@Override
 	public void setChebi(String chebi) {
 		this.chebi = chebi;
 	}
 
-	/**
-     * 
-     * @return
-     */
-    public Set<String> getCrossReferences() {
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#getCrossReferences()
+	 */
+    @Override
+	public Set<String> getCrossReferences() {
     	return dbLinks ;
     }
     
-	/**
-     * 
-     * @return
-     */
-    public Set<String> getTerms() {
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#getTerms()
+	 */
+    @Override
+	public Set<String> getTerms() {
     	return terms ;
     }
     
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
+	 */
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#toString()
 	 */
 	@Override
     public String toString() {

@@ -53,14 +53,14 @@ import com.vaadin.ui.Window;
 
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.NodeData;
-import bio.knowledge.model.Annotation;
-import bio.knowledge.model.Annotation.Type;
+import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.neo4j.Neo4jConcept;
-import bio.knowledge.model.Evidence;
+import bio.knowledge.model.neo4j.Neo4jEvidence;
+import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
+import bio.knowledge.model.neo4j.Neo4jPredicate;
+import bio.knowledge.model.neo4j.Neo4jReference;
+import bio.knowledge.model.neo4j.Neo4jAnnotation.Type;
 import bio.knowledge.model.EvidenceCode;
-import bio.knowledge.model.Predicate;
-import bio.knowledge.model.Reference;
-import bio.knowledge.model.Statement;
 import bio.knowledge.service.AnnotationService;
 import bio.knowledge.service.Cache;
 import bio.knowledge.service.ConceptService;
@@ -245,7 +245,7 @@ public class ConceptMapPopupWindow {
 		String targetName = targetConcept.getName();
 
 		// TODO: How to handle the User's Annotation case here?
-		Statement selectedStatement = 
+		Neo4jGeneralStatement selectedStatement = 
 				statementService.findbySourceAndTargetAccessionId(sourceId, targetId, label);
 
 		// Create buttons related to node popup
@@ -304,7 +304,7 @@ public class ConceptMapPopupWindow {
 		
 		// create the collections necessary for the menus
 		// predicate
-		List<Predicate> predicateCollection = predicateService.findAllPredicates();
+		List<Neo4jPredicate> predicateCollection = predicateService.findAllPredicates();
 
 		// graph nodes
 		// because it's essentially json data we need to manufacture the new
@@ -387,8 +387,8 @@ public class ConceptMapPopupWindow {
 			}
 
 			String relationLabel;
-			if (((Predicate) comboBoxPredicate.getValue()) != null) {
-				relationLabel = ((Predicate) comboBoxPredicate.getValue()).getName();
+			if (((Neo4jPredicate) comboBoxPredicate.getValue()) != null) {
+				relationLabel = ((Neo4jPredicate) comboBoxPredicate.getValue()).getName();
 			} else {
 				// open up the search box?
 				relationLabel = "";
@@ -402,10 +402,10 @@ public class ConceptMapPopupWindow {
 			String uri = uriEvidenceText.getValue();
 
 			String statementId = String.valueOf(edgeId);
-			Predicate relation = (Predicate) comboBoxPredicate.getValue();
+			Neo4jPredicate relation = (Neo4jPredicate) comboBoxPredicate.getValue();
 
 			// assert the Statement
-			Statement statement = 
+			Neo4jGeneralStatement statement = 
 					statementService.findbySourceAndTargetAccessionId(sourceId, targetId, relationLabel);
 
 			// statement doesn't exist in database
@@ -425,11 +425,11 @@ public class ConceptMapPopupWindow {
 				}
 
 				// add this to the database
-				statement = new Statement(statementId,
+				statement = new Neo4jGeneralStatement(statementId,
 						conceptService.getDetailsByAccessionId(sourceId).get(), relation,
 						conceptService.getDetailsByAccessionId(targetId).get());
 
-				Evidence evidence = evidenceService.createByEvidenceId(evidenceId);
+				Neo4jEvidence evidence = evidenceService.createByEvidenceId(evidenceId);
 				statement.setEvidence(evidence);
 
 				// not putting this back into the statement object might have been a bit of a problem
@@ -440,9 +440,9 @@ public class ConceptMapPopupWindow {
 			// statement should no longer be null here no matter what the case.
 			if (statement != null) {
 				// May have seen this Reference before?
-				Reference reference = referenceService.findByUri(uri);
+				Neo4jReference reference = referenceService.findByUri(uri);
 				if (reference == null) {
-					reference = new Reference();
+					reference = new Neo4jReference();
 					reference.setUri(uri);
 
 					// User citation is given today's date
@@ -456,10 +456,10 @@ public class ConceptMapPopupWindow {
 
 				// Wonder how the annotationId should be consistently computed?
 				String annotationId = "kba:" + String.valueOf((description + uri).hashCode());
-				Annotation annotation = annotationService.findByAccessionId(annotationId);
+				Neo4jAnnotation annotation = annotationService.findByAccessionId(annotationId);
 				
 				if (annotation == null) {
-					annotation = new Annotation(annotationId, description, Type.Remark, EvidenceCode.IC, reference);
+					annotation = new Neo4jAnnotation(annotationId, description, Type.Remark, EvidenceCode.IC, reference);
 					if(((DesktopUI) UI.getCurrent()).getAuthenticationManager().isUserAuthenticated()) {
 						annotation.setUserId(((DesktopUI) UI.getCurrent()).getAuthenticationManager().getCurrentUser().getId());					
 					}
@@ -468,7 +468,7 @@ public class ConceptMapPopupWindow {
 				}
 
 				// Hopefully Statement.evidence is not null here!
-				Evidence evidence = statement.getEvidence();
+				Neo4jEvidence evidence = statement.getEvidence();
 				// ..update and save?
 				evidence.addAnnotation(annotation);
 				evidenceService.save(evidence);

@@ -34,13 +34,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
-import bio.knowledge.model.Annotation;
 import bio.knowledge.model.ConceptMapArchive;
-import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
-import bio.knowledge.model.Statement;
+import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.neo4j.Neo4jEvidence;
+import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 
 /**
  * @author Richard
@@ -198,14 +198,14 @@ public class KBQueryImpl implements KBQuery {
 		return selectedConcept;
 	}
 
-	private Optional< Statement > currentStatement = Optional.empty() ;
+	private Optional< Neo4jGeneralStatement > currentStatement = Optional.empty() ;
 	
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCurrentStatement(bio.knowledge.model.semmeddb.Statement)
 	 */
 	@Override
-	public void setCurrentStatement(Statement statement) {
-		Evidence evidence = statement.getEvidence();
+	public void setCurrentStatement(Neo4jGeneralStatement statement) {
+		Neo4jEvidence evidence = statement.getEvidence();
 		this.currentEvidence  = Optional.of(evidence) ;
 		this.currentStatement = Optional.of(statement);
 	}
@@ -214,17 +214,17 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#getCurrentStatement()
 	 */
 	@Override
-	public Optional<Statement> getCurrentStatement() {
+	public Optional<Neo4jGeneralStatement> getCurrentStatement() {
 		return currentStatement;
 	}
 
-	private Optional< Evidence > currentEvidence = Optional.empty() ;
+	private Optional< Neo4jEvidence > currentEvidence = Optional.empty() ;
 	
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCurrentEvidence(java.util.Set)
 	 */
 	@Override
-	public void setCurrentEvidence( Evidence evidence ) {
+	public void setCurrentEvidence( Neo4jEvidence evidence ) {
 		currentEvidence = Optional.of(evidence) ;
 	}
 
@@ -232,17 +232,17 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#getCurrentEvidence()
 	 */
 	@Override
-	public Optional< Evidence > getCurrentEvidence() {
+	public Optional< Neo4jEvidence > getCurrentEvidence() {
 		return currentEvidence;
 	}
 
-	private Optional< Annotation > currentAnnotation = Optional.empty() ;
+	private Optional< Neo4jAnnotation > currentAnnotation = Optional.empty() ;
 	
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCurrentAnnotation(bio.knowledge.model.semmeddb.Annotation)
 	 */
 	@Override
-	public void setCurrentAnnotation(Annotation annotation) {
+	public void setCurrentAnnotation(Neo4jAnnotation annotation) {
 		this.currentAnnotation = Optional.of(annotation) ; 
 	}
 
@@ -250,7 +250,7 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#getCurrentAnnotation()
 	 */
 	@Override
-	public Optional<Annotation> getCurrentAnnotation() {
+	public Optional<Neo4jAnnotation> getCurrentAnnotation() {
 		return currentAnnotation;
 	}
 	

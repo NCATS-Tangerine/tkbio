@@ -1,73 +1,94 @@
-/*-------------------------------------------------------------------------------
- * The MIT License (MIT)
- *
- * Copyright (c) 2015-16 Scripps Institute (USA) - Dr. Benjamin Good
- *                       STAR Informatics / Delphinai Corporation (Canada) - Dr. Richard Bruskiewich
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *-------------------------------------------------------------------------------
- */
 package bio.knowledge.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
+import java.util.List;
 
 import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.neo4j.Neo4jEvidence;
+import bio.knowledge.model.neo4j.Neo4jPredicate;
 
-/**
- * @author Richard
- * 
- * Reified node for statements of conceptual relations, which are now inspired
- * by the notion of WikiData RDF statement triples, embellished with associated Evidence
- *
- */
-@NodeEntity(label="Statement")
-public class Statement extends AbstractStatement {
-	
-	protected Statement() {
-		super();
-	}
+public interface Statement {
 
-	public Statement(String name){
-		super(name);
-	}
-	
-	public Statement(
-    		String accessionId,
-    		Predicate predicate
-    ) {
-    	super(accessionId, predicate);
-    }
-	   
-	public Statement(
-    		String accessionId,
-    		Neo4jConcept subject,
-    		Predicate predicate,
-    		Neo4jConcept object
-    ) {
-    	super(accessionId, subject, predicate, object) ;
-    }
+	/**
+	 * 
+	 * @param subject to be added to the Statement
+	 */
+	void addSubject(Neo4jConcept subject);
 
-	public Statement(
-    		String accessionId,
-    		String predicateName
-    ) {
-    	super(accessionId,predicateName) ;
-    }
-	
+	/**
+	 * @param subjects set to be added with the Statement
+	 */
+	void setSubjects(List<Neo4jConcept> subjects);
+
+	/**
+	 * @return subjects associated with the Statement
+	 */
+	List<Neo4jConcept> getSubjects();
+
+	/**
+	 * 
+	 * @param subject
+	 */
+	void setSubject(Neo4jConcept subject);
+
+	/**
+	 * 
+	 * @return
+	 */
+	Neo4jConcept getSubject();
+
+	/**
+	 * @param predicate the predicate to set
+	 */
+	void setRelation(Neo4jPredicate relation);
+
+	/**
+	 * @return the predicate
+	 */
+	Neo4jPredicate getRelation();
+
+	/**
+	 * 
+	 * @param subject to be added to the Statement
+	 */
+	void addObject(Neo4jConcept object);
+
+	/**
+	 * @param objects set to be added with the Statement
+	 */
+	void setObjects(List<Neo4jConcept> objects);
+
+	/**
+	 * @return objects associated with the Statement
+	 */
+	List<Neo4jConcept> getObjects();
+
+	/**
+	 * 
+	 * @param object
+	 */
+	void setObject(Neo4jConcept object);
+
+	/**
+	 * 
+	 * @return
+	 */
+	Neo4jConcept getObject();
+
+	/**
+	 * 
+	 * @param evidence to be associated with the Statement
+	 */
+	void setEvidence(Neo4jEvidence evidence);
+
+	/**
+	 * @return associated Evidence (e.g. References) supporting the Statement
+	 */
+	Neo4jEvidence getEvidence();
+
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity#toString()
+	 */
+	String toString();
+
 }

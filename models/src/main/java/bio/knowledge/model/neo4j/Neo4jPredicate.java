@@ -23,47 +23,32 @@
  * THE SOFTWARE.
  *-------------------------------------------------------------------------------
  */
-package bio.knowledge.model;
+package bio.knowledge.model.neo4j;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 
-import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.Predicate;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity;
 
-@NodeEntity(label="UserStatement")
-public class UserStatement extends AbstractStatement {
+/**
+ * @author Richard
+ *
+ */
+@NodeEntity(label="Predicate")
+public class Neo4jPredicate extends Neo4jAbstractIdentifiedEntity implements Predicate {
 	
-	String userId;
+	public Neo4jPredicate() { }
 	
-	protected UserStatement() {
-		super();
-	}
-
-	public UserStatement(String name, String userId) {
-		super(name);
-		setUserId(userId);	
-	}
-
-	public UserStatement(String accessionId, Predicate predicate, String userId) {
-		super(accessionId, predicate);
-		setUserId(userId);	
-	}
-
-	public UserStatement(String accessionId, Neo4jConcept subject, Predicate predicate, Neo4jConcept object, String userId) {
-		super(accessionId, subject, predicate, object);
-		setUserId(userId);	
-	}
-
-	public UserStatement(String accessionId, String predicateName, String userId) {
-		super(accessionId, predicateName);
-		setUserId(userId);	
+	public Neo4jPredicate( String name ) {
+		super(name) ;
 	}
 	
-	public String getUserId() {
-		return this.userId;
+	public Neo4jPredicate( String name, String description ) {
+		super(name,description) ;
 	}
 	
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public Neo4jPredicate( String predicateId, String name, String description ) {
+		super( predicateId, name, description ) ;
 	}
-
+	
 }

@@ -35,22 +35,22 @@ import bio.knowledge.model.core.ExternalDatabase;
 import bio.knowledge.model.core.Ontology;
 
 @NodeEntity(label="ExternalDatabase")
-public class Neo4jExternalDatabase 
-	extends Neo4jIdentifiedEntity implements ExternalDatabase {
+public class Neo4jAbstractExternalDatabase 
+	extends Neo4jAbstractIdentifiedEntity implements ExternalDatabase {
 
-	public Neo4jExternalDatabase() {
+	public Neo4jAbstractExternalDatabase() {
         super();
     }
 
-    public Neo4jExternalDatabase( String name ) {
+    public Neo4jAbstractExternalDatabase( String name ) {
 		super(name);
 	}
 
-    public Neo4jExternalDatabase( String name, String description ) {
+    public Neo4jAbstractExternalDatabase( String name, String description ) {
 		super(name,description);
 	}
     
-    public Neo4jExternalDatabase( String name, String description, String url ) {
+    public Neo4jAbstractExternalDatabase( String name, String description, String url ) {
 		super(name,description);
 		this.url = url ;
 	}
@@ -105,7 +105,7 @@ public class Neo4jExternalDatabase
     /**
      */
 	@Relationship( type="SOURCE", direction=Relationship.INCOMING )
-	private Set<Neo4jOntology> ontology = new HashSet<Neo4jOntology>();
+	private Set<Neo4jAbstractOntology> ontology = new HashSet<Neo4jAbstractOntology>();
 
 	/**
 	 * 
@@ -122,6 +122,6 @@ public class Neo4jExternalDatabase
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void setOntology( Set<Ontology> newOntology ) {
-		ontology = (Set<Neo4jOntology>)(Set)newOntology ;
+		ontology = (Set<Neo4jAbstractOntology>)(Set)newOntology ;
     }
 }
