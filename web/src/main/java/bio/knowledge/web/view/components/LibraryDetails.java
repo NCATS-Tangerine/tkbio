@@ -45,9 +45,11 @@ import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.database.repository.ConceptMapArchiveRepository;
+import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.web.ui.DesktopUI;
+
 
 public class LibraryDetails extends VerticalLayout {
 	
@@ -55,21 +57,29 @@ public class LibraryDetails extends VerticalLayout {
 	
 	private AuthenticationContext context;
 
+	// these aren't autowired because this is not a spring @component.
+	// TODO: Refactor into Spring Component?
 	private KBQuery query;
-	private ConceptMapArchiveRepository conceptMapArchiveRepository;
+	private ConceptMapArchiveService conceptMapArchiveService;
+	
 	private ClickListener onGoBackClickListener;
 	
+	String userId;
+	boolean isPublic;
+	
 	public LibraryDetails(
-			KBQuery query,
-			ConceptMapArchiveRepository conceptMapArchiveRepository, 
 			ConceptMapArchive map,
+			KBQuery query,
+			ConceptMapArchiveService conceptMapArchiveService,
 			AuthenticationContext context,
 			ClickListener onGoBackClickListener
 	) {
 		this.onGoBackClickListener = onGoBackClickListener;
 		this.context = context;
 		this.query = query;
-		this.conceptMapArchiveRepository = conceptMapArchiveRepository;
+		this.conceptMapArchiveService = conceptMapArchiveService;
+		this.userId = map.getAuthorsAccountId();
+		this.isPublic = map.isPublic();
 		this.setSizeFull();
 
 		update(map);
@@ -198,7 +208,8 @@ public class LibraryDetails extends VerticalLayout {
 			public void valueChange(ValueChangeEvent event) {
 				if (mapCreatedByCurrntUser(map)) {
 					map.setComments(commentsField.getValue());
-					conceptMapArchiveRepository.save(map);
+					
+					conceptMapArchiveService.save(map, userId, isPublic);
 				}
 			}
 
