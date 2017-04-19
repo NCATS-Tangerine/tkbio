@@ -70,14 +70,13 @@ public class LibraryDetails extends VerticalLayout {
 	public LibraryDetails(
 			ConceptMapArchive map,
 			KBQuery query,
-			ConceptMapArchiveService conceptMapArchiveService,
 			AuthenticationContext context,
 			ClickListener onGoBackClickListener
 	) {
 		this.onGoBackClickListener = onGoBackClickListener;
 		this.context = context;
 		this.query = query;
-		this.conceptMapArchiveService = conceptMapArchiveService;
+		this.conceptMapArchiveService = ((DesktopUI) UI.getCurrent()).getConceptMapArchiveService();
 		this.userId = map.getAuthorsAccountId();
 		this.isPublic = map.isPublic();
 		this.setSizeFull();

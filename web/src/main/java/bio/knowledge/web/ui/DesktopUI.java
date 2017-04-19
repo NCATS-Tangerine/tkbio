@@ -85,7 +85,6 @@ import com.vaadin.ui.Window;
 import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.authentication.UserProfile;
-import bio.knowledge.database.repository.ConceptMapArchiveRepository;
 import bio.knowledge.graph.ConceptMapDisplay;
 import bio.knowledge.graph.jsonmodels.Edge;
 import bio.knowledge.graph.jsonmodels.EdgeData;
@@ -155,9 +154,6 @@ public class DesktopUI extends UI implements MessageService {
 
 	@Autowired
 	Registry registry;
-
-	@Autowired
-	private ConceptMapArchiveRepository conceptMapArchiveRepository;
 
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -1377,7 +1373,7 @@ public class DesktopUI extends UI implements MessageService {
 			conceptMapLibraryWindow.setCaption(caption);
 		};
 
-		LibraryDetails libraryDetails = new LibraryDetails(map, query, conceptMapArchiveService, context, goBack);
+		LibraryDetails libraryDetails = new LibraryDetails(map, query, context, goBack);
 
 		conceptMapLibraryWindow.setCaption("Concept Map Details");
 		conceptMapLibraryWindow.setContent(libraryDetails);
@@ -1509,7 +1505,7 @@ public class DesktopUI extends UI implements MessageService {
 					conceptMapLibraryWindow = new Window();
 					UserProfile userProfile = getAuthenticationManager().getCurrentUser();
 					String userId = userProfile != null ? userProfile.getId() : null;
-					LibraryDetails libraryDetails = new LibraryDetails(map, query, conceptMapArchiveService, context,
+					LibraryDetails libraryDetails = new LibraryDetails(map, query, context,
 							event -> {
 								conceptMapLibraryWindow.close();
 							});
