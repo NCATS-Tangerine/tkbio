@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Translator Knowledge.Bio API
-  version: 4.0.1
+  version: 4.0.2
   contact:
     url: 'http://starinformatics.com'
     email: richard@starinformatics.com
@@ -17,12 +17,85 @@ produces:
   - application/json
 tags:
   - name: concepts
-    description: Query for a concept list
+    description: Queries for concepts
   - name: xrefs
     description: Queries for concept cross-references
   - name: statements
-    description: Query for concept-relationship statements
+    description: Queries for concept-relationship statements
+  - name: evidence
+    description: Queries for references cited as evidence for statements
 paths:
+  '/concepts/{conceptId}':
+    get:
+      description: |
+        Retrieves details for a specified concepts in the system
+      tags:
+        - concepts
+      parameters:
+        - name: conceptId
+          in: path
+          description: local identifier of concept of interest
+          required: true
+          type: integer
+      operationId: getConceptDetails
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                source:
+                  type: string
+                  description: |
+                    knowledge source name
+                id:
+                  type: string
+                  description: |
+                    object identifier for the concept in the specified knowledge
+                    source database
+                name:
+                  type: string
+                  description: |
+                    canonical human readable name of the concept
+                semanticType:
+                  type: string
+                  description: |
+                    concept semantic type
+                synonyms:
+                  type: array
+                  description: |
+                    list of synonyms for concept
+                  items:
+                    type: string
+                definition:
+                  type: string
+                  description: |
+                    concept definition
+                details:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      tag:
+                        type: string
+                        description: |
+                          property name
+                      value:
+                        type: string
+                        description: |
+                          property value
+          description: |
+            Successful response with concept details returned
+          examples:
+            application/json:
+              - source: wikidata
+                id: 'wd:brca1'
+                name: BRCA1
+                semanticType: gene
+                synonyms: []
+                definition: Breast cancer susceptibility gene
+                details: []
   /concepts:
     get:
       description: |
@@ -30,9 +103,11 @@ paths:
       tags:
         - concepts
       parameters:
-        - name: search
+        - name: query
           in: query
-          description: search string to match against concept names
+          description: >-
+            string of comma delimited keywords to match against concept names
+            and aliases
           required: true
           type: string
         - name: pageNumber
@@ -49,18 +124,11 @@ paths:
             results
           required: false
           type: integer
-        - name: textFilter
-          in: query
-          description: |
-            text filter to apply against set of concepts matched by the
-            main search string
-          required: false
-          type: string
         - name: semanticType
           in: query
-          description: |
-            semanticType filter to apply against set of concepts matched by the
-            main search string
+          description: >
+            string of comma-delimited semantic type names to apply against set
+            of concepts matched by the main search string
           required: false
           type: string
       operationId: getConcepts
@@ -392,3 +460,63 @@ paths:
                   source: semmeddb
                   id: 999999
                   count: 10
+  '/evidence/{evidenceId}':
+    get:
+      description: >
+        Retrieves a (paged) list of references cited as evidence for a specified
+        statement
+      tags:
+        - evidence
+      parameters:
+        - name: evidenceId
+          in: path
+          description: identifier of evidence subset of cited references
+          required: true
+          type: integer
+        - name: pageNumber
+          in: query
+          description: |
+            (1-based) number of the page to be returned in a paged set of query
+            results
+          required: false
+          type: integer
+        - name: pageSize
+          in: query
+          description: |
+            number of concepts per page to be returned in a paged set of query
+            results
+          required: false
+          type: integer
+        - name: textFilter
+          in: query
+          description: |
+            text filter to apply against set of concepts matched by the
+            main search string
+          required: false
+          type: string
+      operationId: getEvidence
+      responses:
+        '200':
+          description: |
+            successful call returns a list of cited references
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                source:
+                  type: string
+                  description: |
+                    evidence source name e.g. pubmed
+                id:
+                  type: string
+                  description: |
+                    object identifier for the cited reference
+                name:
+                  type: string
+                  description: |
+                    canonical human readable title of the cited reference
+                publicationDate:
+                  type: string
+                  description: |
+                    publication date of reference (yyyy-mm-dd)
