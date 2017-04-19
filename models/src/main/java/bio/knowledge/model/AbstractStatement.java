@@ -32,16 +32,17 @@ import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
 
 import bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 
 public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
 	@Relationship( type="SUBJECT" )
-    private List<Concept> subjects = new ArrayList<Concept>() ;
+    private List<Neo4jConcept> subjects = new ArrayList<Neo4jConcept>() ;
     
 	@Relationship( type="RELATION" )
     private Predicate relation ;
 
 	@Relationship( type="OBJECT" )
-    private List<Concept> objects = new ArrayList<Concept>() ;
+    private List<Neo4jConcept> objects = new ArrayList<Neo4jConcept>() ;
 	
 	/*
 	 *  The Transient subject and object attributes here
@@ -50,10 +51,10 @@ public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
 	 */
 	
 	@Transient
-	private Concept subject ;
+	private Neo4jConcept subject ;
 	
 	@Transient
-	private Concept object ;
+	private Neo4jConcept object ;
 
     @Relationship( type="EVIDENCE" )
 	protected Evidence evidence ;
@@ -96,9 +97,9 @@ public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
      */
     protected AbstractStatement(
     		String accessionId,
-    		Concept subject,
+    		Neo4jConcept subject,
     		Predicate predicate,
-    		Concept object
+    		Neo4jConcept object
     ) {
     	super(accessionId,subject.getName()+" - "+predicate.getName()+" -> "+object.getName(),"") ;
     	setSubject(subject);
@@ -126,23 +127,23 @@ public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
 	 * 
 	 * @param subject to be added to the Statement
 	 */
-	public void addSubject(Concept subject) {
+	public void addSubject(Neo4jConcept subject) {
 		if(subjects==null)
-			subjects = new ArrayList<Concept>() ;
+			subjects = new ArrayList<Neo4jConcept>() ;
 		subjects.add(subject);
 	}
 	
 	/**
 	 * @param subjects set to be added with the Statement
 	 */
-	public void setSubjects(List<Concept> subjects) {
+	public void setSubjects(List<Neo4jConcept> subjects) {
 		this.subjects = subjects;
 	}
 
 	/**
 	 * @return subjects associated with the Statement
 	 */
-	public List<Concept> getSubjects() {
+	public List<Neo4jConcept> getSubjects() {
 		return subjects;
 	}
 	
@@ -150,7 +151,7 @@ public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
 	 * 
 	 * @param subject
 	 */
-	public  void setSubject(Concept subject) {
+	public  void setSubject(Neo4jConcept subject) {
 		addSubject(subject);
 		this.subject = subject ;
 	}
@@ -159,7 +160,7 @@ public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
 	 * 
 	 * @return
 	 */
-	public Concept getSubject() {
+	public Neo4jConcept getSubject() {
 		return subject ;
 	}
 
@@ -181,23 +182,23 @@ public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
 	 * 
 	 * @param subject to be added to the Statement
 	 */
-	public void addObject(Concept object) {
+	public void addObject(Neo4jConcept object) {
 		if(objects==null)
-			objects = new ArrayList<Concept>() ;
+			objects = new ArrayList<Neo4jConcept>() ;
 		objects.add(object);
 	}
 	
 	/**
 	 * @param objects set to be added with the Statement
 	 */
-	public void setObjects(List<Concept> objects) {
+	public void setObjects(List<Neo4jConcept> objects) {
 		this.objects = objects;
 	}
 
 	/**
 	 * @return objects associated with the Statement
 	 */
-	public List<Concept> getObjects() {
+	public List<Neo4jConcept> getObjects() {
 		return objects;
 	}
 	
@@ -205,7 +206,7 @@ public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
 	 * 
 	 * @param object
 	 */
-	public void setObject(Concept object) {
+	public void setObject(Neo4jConcept object) {
 		addObject(object);
 		this.object = object ;
 	}
@@ -214,7 +215,7 @@ public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
 	 * 
 	 * @return
 	 */
-	public Concept getObject() {
+	public Neo4jConcept getObject() {
 		return object ;
 	}
 	

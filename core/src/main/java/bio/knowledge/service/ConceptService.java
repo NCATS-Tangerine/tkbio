@@ -54,7 +54,6 @@ import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.datasource.DataSourceRegistry;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.RdfUtil;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.core.Feature;
@@ -62,6 +61,7 @@ import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
 import bio.knowledge.model.datasource.SimpleResult;
 import bio.knowledge.model.datasource.SimpleResultSet;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.service.Cache.CacheLocation;
 import bio.knowledge.service.core.FeatureService;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
@@ -73,7 +73,7 @@ import bio.knowledge.service.wikidata.WikiDataService;
  */
 @Service
 public class ConceptService 
-	extends IdentifiedEntityServiceImpl<Concept>
+	extends IdentifiedEntityServiceImpl<Neo4jConcept>
 	implements DataServiceUtility {
 	
 	private Logger _logger = LoggerFactory.getLogger(ConceptService.class);
@@ -105,10 +105,10 @@ public class ConceptService
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])
 	 */
 	@Override
-	public Concept createInstance(Object... args) {
+	public Neo4jConcept createInstance(Object... args) {
 		if (args.length == 2)
 			if (args[0] instanceof SemanticGroup) {
-				return new Concept(
+				return new Neo4jConcept(
 						(SemanticGroup)   args[0], // SemanticGroup
 						(String)          args[1]  // Concept.name
 				);
@@ -117,7 +117,7 @@ public class ConceptService
 		
 		else if (args.length == 3)
 			if (args[1] instanceof SemanticGroup) {
-				return new Concept(
+				return new Neo4jConcept(
 						(String)        args[0], // Concept.accessionId
 						(SemanticGroup) args[1], // SemanticGroup
 						(String)        args[2]  // Concept.name
@@ -128,20 +128,20 @@ public class ConceptService
 			throw new RuntimeException("Invalid number of ConceptService.createInstance() arguments?");
 	}
 
-    private List<Concept> Concepts = new ArrayList<Concept>() ;
+    private List<Neo4jConcept> Concepts = new ArrayList<Neo4jConcept>() ;
     
 	//@Autowired
 	//private GraphDatabaseService graphDb;
     
-    private Stream<Concept> getConceptStream() {
-    	List<Concept> Concepts = new ArrayList<Concept>() ;
-    	for(Concept c : conceptRepository.getConcepts()) {
+    private Stream<Neo4jConcept> getConceptStream() {
+    	List<Neo4jConcept> Concepts = new ArrayList<Neo4jConcept>() ;
+    	for(Neo4jConcept c : conceptRepository.getConcepts()) {
     		Concepts.add(c) ;
     	}
     	return Concepts.stream() ;
     }
     
-    public List<Concept> getConcepts() {
+    public List<Neo4jConcept> getConcepts() {
     	if(Concepts.isEmpty()) {
     		Concepts = getConceptStream().sorted().collect(toList()) ;
     	}
@@ -152,7 +152,7 @@ public class ConceptService
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#getIdentifiers()
 	 */
 	@Override
-	public List<Concept> getIdentifiers() {
+	public List<Neo4jConcept> getIdentifiers() {
 		return getConcepts();
 	}
 
@@ -161,21 +161,21 @@ public class ConceptService
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Page<Concept> getIdentifiers(Pageable pageable) {
-		return (Page<Concept>)(Page)conceptRepository.findAll(pageable);
+	public Page<Neo4jConcept> getIdentifiers(Pageable pageable) {
+		return (Page<Neo4jConcept>)(Page)conceptRepository.findAll(pageable);
 	}
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#findByNameLike(java.lang.String, org.springframework.data.domain.Pageable)
 	 */
 	@Override
-	public Page<Concept> findByNameLike(String filter, Pageable pageable) {
+	public Page<Neo4jConcept> findByNameLike(String filter, Pageable pageable) {
 		_logger.trace("Inside ConceptService.findByNameLike()");
 		return findAllFiltered(filter,pageable);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private Page<Concept> findAllFiltered(String filter, Pageable pageable) {
+	private Page<Neo4jConcept> findAllFiltered(String filter, Pageable pageable) {
 		String searchString = query.getCurrentQueryText();
 		if ( 
 				searchString == null 
@@ -216,11 +216,11 @@ public class ConceptService
 						new String[] { searchString, conceptCodes, pageKey }
 				);
 		
-		List<Concept> searchedConceptResult = new ArrayList<>();
+		List<Neo4jConcept> searchedConceptResult = new ArrayList<>();
 		// Is key present ? then fetch it from cache
 		// List<Concept> cachedResult = (List<Concept>) cache.getResultSetCache().get(cacheKey);
 		
-		List<Concept> cachedResult = (List<Concept>)cacheLocation.getResultSet();
+		List<Neo4jConcept> cachedResult = (List<Neo4jConcept>)cacheLocation.getResultSet();
 		
 		// Is key present ? then fetch it from cache
 		if (cachedResult == null) {
@@ -256,7 +256,7 @@ public class ConceptService
 		} else {
 			searchedConceptResult = cachedResult;
 		}
-		return (Page<Concept>) (Page) new PageImpl(searchedConceptResult);
+		return (Page<Neo4jConcept>) (Page) new PageImpl(searchedConceptResult);
 	}
 
 	/* (non-Javadoc)
@@ -266,7 +266,7 @@ public class ConceptService
 	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#findAll(org.springframework.data.domain.Pageable)
 	 */
 	@Override
-	public Page<Concept> findAll(Pageable pageable) {
+	public Page<Neo4jConcept> findAll(Pageable pageable) {
 		_logger.trace("Inside ConceptService.findAll()");
 		/*
 		 *  "findAll()" for the initial concept search is not really "findAll" of all concepts
@@ -370,9 +370,9 @@ public class ConceptService
 	 * @param definition of the Concept indexed by the source and id
 	 * @return previous definition if existing, or null
 	 */
-	public Feature addDefinition( Concept concept, String source, String id, String definition ) {
+	public Feature addDefinition( Neo4jConcept concept, String source, String id, String definition ) {
 		Feature existingDefinition = getDefinition( concept, source ) ;
-		featureService.createFeature( (Concept)concept, id, source, definition ) ;
+		featureService.createFeature( (Neo4jConcept)concept, id, source, definition ) ;
 		return existingDefinition ;
 	}
 
@@ -380,7 +380,7 @@ public class ConceptService
 	 * @param source Abbreviation of authority
 	 * @return definition Feature of the Concept, associated with the SAB
 	 */
-	public Feature getDefinition( Concept concept, String sab ) {
+	public Feature getDefinition( Neo4jConcept concept, String sab ) {
 		List<Feature> features = featureService.findFeaturesByTagName( concept, sab ) ;
 		if(features.isEmpty()) return null ;
 		return features.get(0) ;
@@ -418,7 +418,7 @@ public class ConceptService
 	 * @param concept
 	 * @return
 	 */
-	public String getCanonicalDescription( Concept concept ) {
+	public String getCanonicalDescription( Neo4jConcept concept ) {
 		String description = "" ;
 		return description;
 	}
@@ -427,7 +427,7 @@ public class ConceptService
 	 * @param cui of the Concept to match
 	 * @return
 	 */
-	public Concept findByAccessionId(String accessionId) {
+	public Neo4jConcept findByAccessionId(String accessionId) {
 		return conceptRepository.findByAccessionId(accessionId);
 	}
 	
@@ -435,9 +435,9 @@ public class ConceptService
 	 * @param ConceptId
 	 * @return Concept
 	 */
-	public Optional<Concept> getDetailsByConceptAccessionId(String accessionId) {
+	public Optional<Neo4jConcept> getDetailsByConceptAccessionId(String accessionId) {
 		
-		Concept concept = conceptRepository.findByAccessionId(accessionId) ;
+		Neo4jConcept concept = conceptRepository.findByAccessionId(accessionId) ;
 		
 		/*  // deprecated complexity!
 		if(RdfUtil.getQualifier(conceptId).isEmpty()) {
@@ -475,7 +475,7 @@ public class ConceptService
 	 * @param resultSet
 	 * @return
 	 */
-	public Concept processData( String nameSpace, ResultSet resultSet ) {
+	public Neo4jConcept processData( String nameSpace, ResultSet resultSet ) {
 		return wikiDataService.createWikiDataItem(resultSet) ;
 	}
 	
@@ -483,9 +483,9 @@ public class ConceptService
 	 * Method to retrieve remote data about a 
 	 * node in a Qualified external namespace
 	 */
-	private Concept getQualifiedDataItem(String qualifiedId) {
+	private Neo4jConcept getQualifiedDataItem(String qualifiedId) {
 		
-		Concept dataItem = null ;
+		Neo4jConcept dataItem = null ;
 		
 		String[] idPart  = qualifiedId.split("\\:") ;
 		String nameSpace = idPart[0];
@@ -499,7 +499,7 @@ public class ConceptService
 		
 		// Is key present ? then fetch it from cache
 		//Concept cachedResult = (Concept)cache.getEntityCache().get(cacheKey);
-		Concept cachedResult = (Concept)cacheLocation.getEntity();
+		Neo4jConcept cachedResult = (Neo4jConcept)cacheLocation.getEntity();
 		
 		if (cachedResult == null) {
 			
@@ -555,10 +555,10 @@ public class ConceptService
 	 * @param ConceptId
 	 * @return Concept
 	 */
-	public Optional<Concept> getDetailsByAccessionId(String accessionId) {
+	public Optional<Neo4jConcept> getDetailsByAccessionId(String accessionId) {
 		
 		// Try first to find this item in the local database(?)
-		Concept concept = conceptRepository.findByAccessionId(accessionId);
+		Neo4jConcept concept = conceptRepository.findByAccessionId(accessionId);
 		if(concept==null) {
 			/* 
 			 * This is a qualified URI identifying a local data item, 
@@ -634,10 +634,10 @@ public class ConceptService
 	 */
 	public void getDescription( Function<ResultSet,Void> handler ) throws Exception {
 		
-		Optional<Concept> cscOpt = query.getCurrentSelectedConcept();
+		Optional<Neo4jConcept> cscOpt = query.getCurrentSelectedConcept();
 		if (!cscOpt.isPresent()) return;
 		
-		Concept concept = cscOpt.get();
+		Neo4jConcept concept = cscOpt.get();
 		String name = concept.getName();
 		
 		SemanticGroup conceptType = concept.getSemanticGroup() ;
@@ -756,10 +756,10 @@ public class ConceptService
 	 */
 	public void getFullDetails( Function<ResultSet,Void> handler ) throws Exception {
 		
-		Optional<Concept> optCSC = query.getCurrentSelectedConcept();
+		Optional<Neo4jConcept> optCSC = query.getCurrentSelectedConcept();
 		if (!optCSC.isPresent()) return;
 		
-		Concept concept = optCSC.get() ;
+		Neo4jConcept concept = optCSC.get() ;
 		
 		Map<String, Object> args = new HashMap<String, Object>();
 		
@@ -815,7 +815,7 @@ public class ConceptService
 	/**
 	 * @param concept
 	 */
-	public Concept save(Concept concept) {
+	public Neo4jConcept save(Neo4jConcept concept) {
 		return conceptRepository.save(concept) ;
 	}
 	
@@ -824,7 +824,7 @@ public class ConceptService
      * @param predicate
      * @return
      */
-    public Concept annotate(String accessionId) {
+    public Neo4jConcept annotate(String accessionId) {
 
     	if(accessionId.isEmpty()) {
     		_logger.warn(
@@ -839,17 +839,17 @@ public class ConceptService
 		String nameSpace = idPart[0];
 		String objectId  = idPart[1];
 		
-		Concept concept = null;
+		Neo4jConcept concept = null;
 		
 		CacheLocation cacheLocation = 
 				cache.searchForEntity( "Concept", nameSpace, new String[] {objectId} );
 		
-		Concept cachedConcept = (Concept)cacheLocation.getEntity();
+		Neo4jConcept cachedConcept = (Neo4jConcept)cacheLocation.getEntity();
 		
 		if (cachedConcept == null) {
 			
 			// Not cached... then first, attempt to retrieve it from the local database
-			Optional<Concept> databaseConceptOpt = 
+			Optional<Neo4jConcept> databaseConceptOpt = 
 						getDetailsByConceptAccessionId(accessionId);
 			
 			if(databaseConceptOpt.isPresent()) {

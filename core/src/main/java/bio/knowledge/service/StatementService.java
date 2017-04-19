@@ -52,7 +52,6 @@ import bio.knowledge.datasource.DataServiceUtility;
 import bio.knowledge.datasource.DataSourceRegistry;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.RdfUtil;
@@ -60,6 +59,7 @@ import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.wikidata.WikiDataPropertySemanticType;
 import bio.knowledge.service.Cache.CacheLocation;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
@@ -122,9 +122,9 @@ public class StatementService
 		else if (args.length == 4)
 			return new Statement(
 					(String) args[0],  		  // Statement AccessionId
-					(Concept) args[1],        // Subject
+					(Neo4jConcept) args[1],        // Subject
 					(Predicate) args[2],      // Predicate
-					(Concept) args[3]         // Object
+					(Neo4jConcept) args[3]         // Object
 			);
 		else
 			throw new RuntimeException("Invalid StatementService.createInstance() arguments?");
@@ -186,7 +186,7 @@ public class StatementService
 		/*
 		 * Searches are constrained to the currently selected currentQueryConcept; 
 		 */
-		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
+		Optional<Neo4jConcept> currentConceptOpt = query.getCurrentQueryConcept();
 		Optional<Set<SemanticGroup>> currentConceptTypes = query.getConceptTypes();
 		
 		if (!currentConceptOpt.isPresent()) return null;
@@ -203,7 +203,7 @@ public class StatementService
 			}
 		}
 
-		Concept concept = currentConceptOpt.get() ;
+		Neo4jConcept concept = currentConceptOpt.get() ;
 		String accessionId = concept.getAccessionId() ;
 		
 		// this is key used for caching purpose,(conceptId + Selected SemanticType + textFilter + pageable)
@@ -245,7 +245,7 @@ public class StatementService
 				
 				// fill  subject relationship
 				if (entry.get("subject") != null) {
-					Concept subject = (Concept) entry.get("subject");
+					Neo4jConcept subject = (Neo4jConcept) entry.get("subject");
 					statement.setSubject(subject);
 				}
 				if (entry.get("relation") != null) {
@@ -255,7 +255,7 @@ public class StatementService
 				}
 				// fill object relationship
 				if (entry.get("object") != null) {
-					Concept object = (Concept) entry.get("object");
+					Neo4jConcept object = (Neo4jConcept) entry.get("object");
 					statement.setObject(object);
 				}
 				
@@ -372,7 +372,7 @@ public class StatementService
 		Map<String, Object> entry = result.get(0);
 		Statement statement = (Statement)entry.get("statement");
 
-		Concept subject = (Concept) entry.get("subject");
+		Neo4jConcept subject = (Neo4jConcept) entry.get("subject");
 		if (subject != null) {
 			statement.setSubject(subject);
 		}
@@ -383,7 +383,7 @@ public class StatementService
 			statement.setRelation(relation);
 		}
 		
-		Concept object = (Concept) entry.get("object");
+		Neo4jConcept object = (Neo4jConcept) entry.get("object");
 		if (object != null) {
 			statement.setObject(object);
 		}
@@ -408,10 +408,10 @@ public class StatementService
 	 */
 	private long countHelper(String filter) {
 
-		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
+		Optional<Neo4jConcept> currentConceptOpt = query.getCurrentQueryConcept();
 		if (!currentConceptOpt.isPresent()) return 0L;
 		
-		Concept concept = currentConceptOpt.get() ;
+		Neo4jConcept concept = currentConceptOpt.get() ;
 		String accessionId = concept.getAccessionId();
 		
 		Optional<Set<SemanticGroup>> currentConceptTypes = query.getConceptTypes();
@@ -527,13 +527,13 @@ public class StatementService
 				// statement object without any relationships
 				Statement statement = (Statement) entry.get("statement");
 				
-				statement.setSubject((Concept) entry.get("subject"));
+				statement.setSubject((Neo4jConcept) entry.get("subject"));
 				
 				Predicate relation = (Predicate) entry.get("relation");
 				relation = predicateService.annotate(relation) ;
 				statement.setRelation(relation);
 				
-				statement.setObject((Concept) entry.get("object"));
+				statement.setObject((Neo4jConcept) entry.get("object"));
 				
 				Evidence evidence = (Evidence)entry.get("evidence");
 				if ( evidence == null) {
@@ -630,14 +630,14 @@ public class StatementService
 	/**
 	 * @return
 	 */
-	public Concept getCanonicalSubject(Statement p) {
+	public Neo4jConcept getCanonicalSubject(Statement p) {
 		
-		List<Concept> subjects = p.getSubjects() ;
+		List<Neo4jConcept> subjects = p.getSubjects() ;
 		
 		// might trigger a NPE in caller?
 		if( subjects==null || subjects.size()==0 ) return null ; 
 		
-		Optional<Concept> currentConcept = query.getCurrentQueryConcept();
+		Optional<Neo4jConcept> currentConcept = query.getCurrentQueryConcept();
 		if (!currentConcept.isPresent()) return subjects.get(0) ;
 
 		// else, heuristic?
@@ -651,14 +651,14 @@ public class StatementService
 	 * @param p 
 	 * @return
 	 */
-	public Concept getCanonicalObject(Statement p) {
+	public Neo4jConcept getCanonicalObject(Statement p) {
 		
-		List<Concept> objects = p.getObjects() ;
+		List<Neo4jConcept> objects = p.getObjects() ;
 		
 		// might trigger a NPE in caller?
 		if( objects==null || objects.size()==0 ) return null ; 
 		
-		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
+		Optional<Neo4jConcept> currentConceptOpt = query.getCurrentQueryConcept();
 		if (!currentConceptOpt.isPresent()) return objects.get(0) ;
 
 		// else, heuristic?
@@ -673,7 +673,7 @@ public class StatementService
 	
 	private void runQuery(
 			String serviceName,
-			Concept concept, 
+			Neo4jConcept concept, 
 			Function<? super ResultSet, ? extends Void> resultHandler 
 	) {
 		DataService dataService = 
@@ -691,7 +691,7 @@ public class StatementService
 	// simple runQuery with paging of results
 	private void runQuery(
 			String serviceName,
-			Concept concept, String filter, Pageable pageable, 
+			Neo4jConcept concept, String filter, Pageable pageable, 
 			Function<? super ResultSet, ? extends Void> resultHandler 
 	) {
 		DataService dataService = 
@@ -716,7 +716,7 @@ public class StatementService
 	
 	private Void loadWikiDataResults( 
 			ResultSet rs, 
-			Concept subject, 
+			Neo4jConcept subject, 
 			List<Statement> statements 
 	) {
 		rs.stream().forEach(r->{
@@ -756,17 +756,17 @@ public class StatementService
 				String propValueId = RdfUtil.getObjectId(propValue) ;
 				String qualifiedPropValueId = wikiDataType.getDefaultQualifier()+propValueId ;
 
-				Optional<Class<? extends Concept>> nodeTypeOpt = 
+				Optional<Class<? extends Neo4jConcept>> nodeTypeOpt = 
 						wikiDataType.getNodeType() ;
 				
-				Concept wikiItem ;
+				Neo4jConcept wikiItem ;
 				if(nodeTypeOpt.isPresent()) {
-					Class<? extends Concept> nodeType = nodeTypeOpt.get() ;
+					Class<? extends Neo4jConcept> nodeType = nodeTypeOpt.get() ;
 					wikiItem = nodeType.newInstance() ;
 					wikiItem.setName(propValueId);
 				} else
 					wikiItem = 
-						new Concept( 
+						new Neo4jConcept( 
 								qualifiedPropValueId,
 								SemanticGroup.PHEN,
 								propValueId 
@@ -808,8 +808,8 @@ public class StatementService
 		return (Void)null ;
 	}
 	
-	private Concept getCurrentConcept() {
-		Optional<Concept> selectedConceptOpt = query.getCurrentSelectedConcept();
+	private Neo4jConcept getCurrentConcept() {
+		Optional<Neo4jConcept> selectedConceptOpt = query.getCurrentSelectedConcept();
 		if (!selectedConceptOpt.isPresent()) return null;
 		return selectedConceptOpt.get();
 	}	
@@ -819,7 +819,7 @@ public class StatementService
 
 		List<Statement> statements = new ArrayList<>();
 
-		Concept concept = getCurrentConcept();
+		Neo4jConcept concept = getCurrentConcept();
 
 		if(concept!=null) {
 
@@ -884,7 +884,7 @@ public class StatementService
 	 */
 	private long countByWikiData(String filter) {
 		
-		Concept concept = getCurrentConcept() ;
+		Neo4jConcept concept = getCurrentConcept() ;
 		
 		// Access WikiData here and count properties matched by filter
 		

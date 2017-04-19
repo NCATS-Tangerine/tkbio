@@ -44,11 +44,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import bio.knowledge.model.Reference;
 import bio.knowledge.model.SemanticGroup;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.EvidenceCode;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Statement;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.Annotation;
 
 import bio.knowledge.service.AnnotationService;
@@ -170,12 +170,12 @@ public class StatementTests {
 		/*
 		 * N-glycanase 1
 		 */
-		public Concept NGLY1 ;
+		public Neo4jConcept NGLY1 ;
 		
 		/*
 		 * RAD23B B Concept gene
 		 */
-		public Concept RAD23B ;
+		public Neo4jConcept RAD23B ;
 
 		/*
 		+------------+----------+------+-------------------------------+------+------+-----------+
@@ -184,7 +184,7 @@ public class StatementTests {
 		|      22087 | C0041632 | UMLS | Structure of umbilical artery | NULL | NULL |         0 |
 		+------------+----------+------+-------------------------------+------+------+-----------+
 		 */
-		public Concept UMBART ;
+		public Neo4jConcept UMBART ;
 		
 		/*
 		+------------+----------+------+----------------+------+------+-----------+
@@ -193,7 +193,7 @@ public class StatementTests {
 		|       9284 | C0017968 | UMLS | Glycoproteins  | NULL | NULL |         0 |
 		+------------+----------+------+----------------+------+------+-----------+
 		 */
-		public Concept C0017968 ;
+		public Neo4jConcept C0017968 ;
 		
 		/* Implicitome
 		+------------+----------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------+
@@ -208,18 +208,18 @@ public class StatementTests {
 		|        54 |        744 | WIKI  | a67558f4-5c2c-11df-b0cb-001517ac506c |
 		+-----------+------------+-------+--------------------------------------+
 		*/
-		public Concept C0000744 ;
+		public Neo4jConcept C0000744 ;
 		
 		public TestData() {
-			NGLY1  = new Concept("55768",SemanticGroup.GENE,"NGLY1");
-			RAD23B = new Concept("5887",SemanticGroup.GENE,"RAD23B");
+			NGLY1  = new Neo4jConcept("55768",SemanticGroup.GENE,"NGLY1");
+			RAD23B = new Neo4jConcept("5887",SemanticGroup.GENE,"RAD23B");
 			
-			UMBART = new Concept("C0041632",SemanticGroup.ANAT,"Structure of umbilical artery");
+			UMBART = new Neo4jConcept("C0041632",SemanticGroup.ANAT,"Structure of umbilical artery");
 			
-			C0017968 = new Concept( "C0017968",SemanticGroup.CHEM,"Glycoproteins");
+			C0017968 = new Neo4jConcept( "C0017968",SemanticGroup.CHEM,"Glycoproteins");
 			C0017968.setDescription("NCI_NCI-GLOSS,A protein that has sugar molecules attached to it.");
 			
-			C0000744 = new Concept( "C0000744",SemanticGroup.DISO,"Abetalipoproteinemia" );
+			C0000744 = new Neo4jConcept( "C0000744",SemanticGroup.DISO,"Abetalipoproteinemia" );
 			C0000744.setDescription( "An autosomal recessive disorder of lipid metabolism. "+
 									"It is caused by mutation of the microsomal triglyceride "+
 									"transfer protein that catalyzes the transport of lipids "+
@@ -240,8 +240,8 @@ public class StatementTests {
 		  +--------------------+------------+---------+-------+------+
 		 */
 		TestData geneTestdata = new TestData() ;
-		Concept ngly1 = conceptRepository.save(geneTestdata.NGLY1) ;
-		Concept ngly1_saved = conceptRepository.findByAccessionId(geneTestdata.NGLY1.getAccessionId()) ;
+		Neo4jConcept ngly1 = conceptRepository.save(geneTestdata.NGLY1) ;
+		Neo4jConcept ngly1_saved = conceptRepository.findByAccessionId(geneTestdata.NGLY1.getAccessionId()) ;
 		assertEquals("Finding what I saved:",ngly1.getId(),ngly1_saved.getId());
 	}
 	
@@ -296,11 +296,11 @@ public class StatementTests {
 		*/
 		
 		TestData metadata = new TestData() ;
-		Concept csGProt  = conceptRepository.save(metadata.C0017968) ;
-		Concept csUmbArt = conceptRepository.save(metadata.UMBART) ;
+		Neo4jConcept csGProt  = conceptRepository.save(metadata.C0017968) ;
+		Neo4jConcept csUmbArt = conceptRepository.save(metadata.UMBART) ;
 
 		System.out.println("Concepts:");
-		for (Concept cs : new Concept[] { csGProt, csUmbArt }) {
+		for (Neo4jConcept cs : new Neo4jConcept[] { csGProt, csUmbArt }) {
 			System.out.println(cs);
 		}
 		
@@ -385,11 +385,11 @@ public class StatementTests {
 		System.out.println( "\nTesting findOne() of UMBL_LOCATION_OF_GLYP:");
 		assertEquals( p.getId(), UMBL_LOCATION_OF_GLYP.getId() ) ;
 		
-		List<Concept> subjects = p.getSubjects() ;
+		List<Neo4jConcept> subjects = p.getSubjects() ;
 		assertNotNull(subjects) ;
 		assertTrue("Statement has subjects?",!subjects.isEmpty()) ;
-		Concept subject = subjects.get(0) ;
-		Concept origSubject = UMBL_LOCATION_OF_GLYP.getSubjects().get(0);
+		Neo4jConcept subject = subjects.get(0) ;
+		Neo4jConcept origSubject = UMBL_LOCATION_OF_GLYP.getSubjects().get(0);
 		assertEquals( subject.getId(), origSubject.getId() ) ;
 		assertEquals( subject.getAccessionId(), origSubject.getAccessionId() ) ;
 		System.out.println( "Subject accession id: "+subject.getAccessionId());
@@ -397,11 +397,11 @@ public class StatementTests {
 		assertEquals( p.getRelation(), UMBL_LOCATION_OF_GLYP.getRelation() ) ;
 		System.out.println( "Relation Name: "+UMBL_LOCATION_OF_GLYP.getRelation().getName() );
 		
-		List<Concept> objects = p.getObjects() ;
+		List<Neo4jConcept> objects = p.getObjects() ;
 		assertNotNull(objects) ;
 		assertTrue("Statement has objects?",!objects.isEmpty()) ;
-		Concept object = objects.get(0) ;
-		Concept origObject = UMBL_LOCATION_OF_GLYP.getObjects().get(0);
+		Neo4jConcept object = objects.get(0) ;
+		Neo4jConcept origObject = UMBL_LOCATION_OF_GLYP.getObjects().get(0);
 		assertEquals( object.getId(),  origObject.getId() ) ;
 		assertEquals( object.getAccessionId(),  origObject.getAccessionId() ) ;
 		System.out.println( "Object accession id: "+object.getAccessionId());

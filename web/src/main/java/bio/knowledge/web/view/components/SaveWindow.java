@@ -63,9 +63,9 @@ import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.authentication.exceptions.AuthenticationException;
 import bio.knowledge.graph.ConceptMapDisplay;
 import bio.knowledge.graph.ContentRequester;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Library;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.service.Cache;
 import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
@@ -244,7 +244,7 @@ public class SaveWindow extends Window {
 	}
 	
 	private void generateArchive(String jsonContent, String pngContent, ConceptMapArchive archive) {
-		Concept concept = query.getCurrentQueryConcept().get();
+		Neo4jConcept concept = query.getCurrentQueryConcept().get();
 		jsonContent = MessageFormat.format(skeleton, concept.getName(), concept.getAccessionId(), jsonContent);
 		
 		// first clear node ids
@@ -317,7 +317,7 @@ public class SaveWindow extends Window {
 				conceptMapDisplay.requestContent(new ContentRequester() {
 					@Override
 					public void processRequestedContent(String jsonContent, String pngContent) {
-						Concept concept = query.getCurrentQueryConcept().get();
+						Neo4jConcept concept = query.getCurrentQueryConcept().get();
 						jsonContent = MessageFormat.format(skeleton, concept.getName(), concept.getAccessionId(), jsonContent);
 						
 						// first clear node ids

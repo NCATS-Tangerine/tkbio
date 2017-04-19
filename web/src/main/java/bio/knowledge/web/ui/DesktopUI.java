@@ -93,10 +93,10 @@ import bio.knowledge.graph.jsonmodels.Layout;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.NodeData;
 import bio.knowledge.model.Annotation;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.service.AuthenticationState;
 import bio.knowledge.service.Cache;
 import bio.knowledge.service.ConceptMapArchiveService;
@@ -266,13 +266,13 @@ public class DesktopUI extends UI implements MessageService {
 	@Autowired 
 	Cache cache;
 
-	private Optional<Concept> currentConcept ;
+	private Optional<Neo4jConcept> currentConcept ;
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public Concept getCurrentConcept() {
+	public Neo4jConcept getCurrentConcept() {
 		return currentConcept.get();
 	}
 
@@ -312,7 +312,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * 
 	 * @param concept
 	 */
-	public void addNodeToConceptMap(Concept concept) {
+	public void addNodeToConceptMap(Neo4jConcept concept) {
 		getConceptMap().addNodeToConceptMap(concept);
 	}
 	
@@ -321,7 +321,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * @param sourceNode
 	 * @param targetNode
 	 */
-	public void addEdgeToConceptMap( Concept sourceNode, Concept targetNode ) {
+	public void addEdgeToConceptMap( Neo4jConcept sourceNode, Neo4jConcept targetNode ) {
 		getConceptMap().getElements().getEdges().addEdge(
 				new Edge( sourceNode.getAccessionId(), targetNode.getAccessionId() ));
 	}
@@ -332,7 +332,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * @param targetNode
 	 * @param label
 	 */
-	public void addEdgeToConceptMap( Concept sourceNode, Concept targetNode, String label ) {
+	public void addEdgeToConceptMap( Neo4jConcept sourceNode, Neo4jConcept targetNode, String label ) {
 		getConceptMap().addEdgeToConceptMap(sourceNode, targetNode, label, "", "");
 	}
 
@@ -463,7 +463,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * highlight the seed node
 	 * @param currentConcept
 	 */
-	public void setHighlightedNode(Concept currentConcept) {
+	public void setHighlightedNode(Neo4jConcept currentConcept) {
 		// Removing highlights from previous concept node
 		if (lastHighlightNodeId != null) {
 			highlightNode(HighlightStatus.NO);
@@ -482,7 +482,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * TODO: replace setCurrentConceptTitle with setConceptInSession
 	 * @param currentConcept
 	 */
-    private void setConceptInSession( Concept currentConcept ) {
+    private void setConceptInSession( Neo4jConcept currentConcept ) {
     	setCurrentConceptTitle(currentConcept.getName());
     	setHighlightedNode(currentConcept);
     }
@@ -517,7 +517,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * @param target
 	 * @param label
 	 */
-	public void setHighlightedEdge(Concept source, Concept target, String label) {
+	public void setHighlightedEdge(Neo4jConcept source, Neo4jConcept target, String label) {
 
 		// Removing highlights from previous concept edge
 		if (lastHighlightEdgeId != 0) {
@@ -583,7 +583,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * @param concept
 	 * @param mode
 	 */
-    public void queryUpdate( Concept concept, RelationSearchMode mode ) {
+    public void queryUpdate( Neo4jConcept concept, RelationSearchMode mode ) {
         
         String conceptName = concept.getName() ;
         
@@ -622,7 +622,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * 
 	 * @param concept
 	 */
-	private void setConceptLabelDescription(Concept concept) {
+	private void setConceptLabelDescription(Neo4jConcept concept) {
 
 		VerticalLayout popupLayout = getDesktop().getPopUpLayout();
 
@@ -1252,10 +1252,10 @@ public class DesktopUI extends UI implements MessageService {
 			desktopView.getCmLayoutSelect().setValue(MANUAL_CM_LAYOUT);
 
 			// set current concept
-			Optional<Concept> conceptOpt = conceptService.getDetailsByAccessionId(accessionId) ;
+			Optional<Neo4jConcept> conceptOpt = conceptService.getDetailsByAccessionId(accessionId) ;
 			
 			if(conceptOpt.isPresent()) {
-				Concept cst = conceptOpt.get() ;
+				Neo4jConcept cst = conceptOpt.get() ;
 				query.setCurrentQueryConceptById( cst.getId().toString() );
 				
 				if (query.getCurrentQueryConcept().isPresent()) {

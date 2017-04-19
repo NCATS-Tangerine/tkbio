@@ -27,6 +27,8 @@ package bio.knowledge.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 
+import bio.knowledge.model.neo4j.Neo4jConcept;
+
 @NodeEntity(label="UserStatement")
 public class UserStatement extends AbstractStatement {
 	
@@ -46,7 +48,7 @@ public class UserStatement extends AbstractStatement {
 		setUserId(userId);	
 	}
 
-	public UserStatement(String accessionId, Concept subject, Predicate predicate, Concept object, String userId) {
+	public UserStatement(String accessionId, Neo4jConcept subject, Predicate predicate, Neo4jConcept object, String userId) {
 		super(accessionId, subject, predicate, object);
 		setUserId(userId);	
 	}

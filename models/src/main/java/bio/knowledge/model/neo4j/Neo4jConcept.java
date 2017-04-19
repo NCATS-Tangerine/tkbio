@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  *-------------------------------------------------------------------------------
  */
-package bio.knowledge.model;
+package bio.knowledge.model.neo4j;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,6 +31,8 @@ import java.util.Set;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import bio.knowledge.model.Library;
+import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.core.neo4j.Neo4jAnnotatedEntity;
 
 /**
@@ -41,7 +43,7 @@ import bio.knowledge.model.core.neo4j.Neo4jAnnotatedEntity;
  * 
  */
 @NodeEntity(label="Concept")
-public class Concept extends Neo4jAnnotatedEntity {
+public class Neo4jConcept extends Neo4jAnnotatedEntity {
 
 	public static final String SEMGROUP_FIELD_START = "[" ;
 	public static final String SEMGROUP_FIELD_END   = "]" ;
@@ -77,16 +79,16 @@ public class Concept extends Neo4jAnnotatedEntity {
     
     private Set<String> terms = new HashSet<String>() ;
     
-    protected Concept() {
+    protected Neo4jConcept() {
     	super() ;
     }
     
-    public Concept( SemanticGroup semgroup, String name ) {
+    public Neo4jConcept( SemanticGroup semgroup, String name ) {
     	super(name) ;
     	this.semanticGroup = semgroup ;
     }
 
-    public Concept( String accessionId, SemanticGroup semgroup, String name ) {
+    public Neo4jConcept( String accessionId, SemanticGroup semgroup, String name ) {
     	super(accessionId,name,"") ;
     	this.semanticGroup = semgroup ;
     }

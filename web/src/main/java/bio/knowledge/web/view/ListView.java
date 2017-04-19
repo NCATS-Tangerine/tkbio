@@ -93,7 +93,6 @@ import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.model.Annotation;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.DomainModelException;
 import bio.knowledge.model.Evidence;
@@ -103,6 +102,7 @@ import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.OntologyTerm;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.organization.ContactForm;
 import bio.knowledge.model.umls.SemanticType;
 import bio.knowledge.service.AnnotationService;
@@ -880,9 +880,9 @@ public class ListView extends BaseView {
 				
 				Statement statement = (Statement) item;
 				
-				Concept subject       = statement.getSubject() ;
+				Neo4jConcept subject       = statement.getSubject() ;
 				String predicateLabel = statement.getRelation().getName();
-				Concept object        = statement.getObject() ;
+				Neo4jConcept object        = statement.getObject() ;
 				
 				// Unusual case of missing data (mostly in sample data?)
 				if( subject == null || object == null ) continue ;
@@ -892,9 +892,9 @@ public class ListView extends BaseView {
 				ui.addEdgeToConceptMap(subject, object, predicateLabel);
 				
 				// just in case, reset the currently active highlighted node(?)
-				Optional<Concept> selectedConceptOpt = query.getCurrentSelectedConcept();
+				Optional<Neo4jConcept> selectedConceptOpt = query.getCurrentSelectedConcept();
 				if (selectedConceptOpt.isPresent()) { 
-					Concept concept = selectedConceptOpt.get();
+					Neo4jConcept concept = selectedConceptOpt.get();
 					ui.setHighlightedNode(concept) ;
 				}
 			}
@@ -1043,7 +1043,7 @@ public class ListView extends BaseView {
 
 		// currentQueryConcept might be empty
 		// and/or ignored for some views
-		Optional<Concept> currentQueryConcept = query.getCurrentQueryConcept(); 
+		Optional<Neo4jConcept> currentQueryConcept = query.getCurrentQueryConcept(); 
 		
 		if (viewName.equals(ViewName.EVIDENCE_VIEW)) {
 
@@ -1094,7 +1094,7 @@ public class ListView extends BaseView {
 				
 				case BY_CONCEPT:
 			        if( currentQueryConcept.isPresent() ) {
-						Concept concept = currentQueryConcept.get() ;
+						Neo4jConcept concept = currentQueryConcept.get() ;
 			        	target = concept.getName()+" ["+concept.getSemanticGroup().getDescription()+"]" ;
 			        	title += "for Concept" ;
 			        } else
@@ -1138,7 +1138,7 @@ public class ListView extends BaseView {
 
 				case RELATIONS:
 					if (currentQueryConcept.isPresent()) {
-						Concept concept = currentQueryConcept.get();
+						Neo4jConcept concept = currentQueryConcept.get();
 						dataTableLabel = formatDataTableLabel("Relations for Concept ",
 								concept.getName() + " (as " + concept.getSemanticGroup().getDescription() + ")");
 					} // else
@@ -1148,9 +1148,9 @@ public class ListView extends BaseView {
 				case WIKIDATA:
 					// For WikiData retrieval, it is the currently selected concept
 					// that is of interest...
-					Optional<Concept> currentSelectedConcept = query.getCurrentSelectedConcept();
+					Optional<Neo4jConcept> currentSelectedConcept = query.getCurrentSelectedConcept();
 					if (currentSelectedConcept.isPresent()) {
-						Concept concept = currentSelectedConcept.get();
+						Neo4jConcept concept = currentSelectedConcept.get();
 	
 						dataTableLabel = formatDataTableLabel("Data Properties for Concept", concept.getName());
 					} else
@@ -1396,16 +1396,16 @@ public class ListView extends BaseView {
 				}
 			}
 
-			int tfstart = name.lastIndexOf(Concept.SEMGROUP_FIELD_START);
+			int tfstart = name.lastIndexOf(Neo4jConcept.SEMGROUP_FIELD_START);
 			if (tfstart != -1) {
-				int tfend = name.lastIndexOf(Concept.SEMGROUP_FIELD_END);
+				int tfend = name.lastIndexOf(Neo4jConcept.SEMGROUP_FIELD_END);
 				if (tfend != -1) {
 					String semtypeCode = name.substring(tfstart + 1, tfend);
 					description = name.substring(0, tfstart);
 					try {
 						SemanticType semtype = SemanticType.lookUpByCode(semtypeCode);
-						description += " " + Concept.SEMGROUP_FIELD_START + semtype.getDescription()
-								+ Concept.SEMGROUP_FIELD_END;
+						description += " " + Neo4jConcept.SEMGROUP_FIELD_START + semtype.getDescription()
+								+ Neo4jConcept.SEMGROUP_FIELD_END;
 					} catch (DomainModelException dme) {
 						// code not recognized...fail silently
 					}
@@ -1666,7 +1666,7 @@ public class ListView extends BaseView {
 		SUBJECT, OBJECT;
 	}
 
-	private void selectionContext(DesktopUI ui, PopupWindow conceptDetailsWindow, Concept selectedConcept) {
+	private void selectionContext(DesktopUI ui, PopupWindow conceptDetailsWindow, Neo4jConcept selectedConcept) {
 		ui.queryUpdate(selectedConcept, RelationSearchMode.RELATIONS);
 		conceptDetailsWindow.close();
 		ui.gotoStatementsTable();
@@ -1680,9 +1680,9 @@ public class ListView extends BaseView {
 	// Handler for Concept details in various data tables
 	private void onConceptDetailsSelection(RendererClickEvent event, ConceptRole role) {
 		Statement statement = (Statement) event.getItemId();
-		Concept subject = statement.getSubject();
+		Neo4jConcept subject = statement.getSubject();
 		Predicate predicate = statement.getRelation();
-		Concept object = statement.getObject();
+		Neo4jConcept object = statement.getObject();
 
 		RelationSearchMode searchMode = query.getRelationSearchMode();
 		if (searchMode.equals(RelationSearchMode.WIKIDATA) && role.equals(ConceptRole.OBJECT)) {
@@ -1704,7 +1704,7 @@ public class ListView extends BaseView {
 
 			String predicateLabel;
 
-			Concept selectedConcept;
+			Neo4jConcept selectedConcept;
 
 			if (role.equals(ConceptRole.SUBJECT)) {
 				selectedConcept = subject;
@@ -1792,7 +1792,7 @@ public class ListView extends BaseView {
 		// view used for searching while creating a user annotation
 		registry.setMapping(
 				ViewName.ANNOTATIONS_VIEW, 
-				new BeanItemContainer<Concept>(Concept.class),
+				new BeanItemContainer<Neo4jConcept>(Neo4jConcept.class),
 				// TODO: use the cache to get the results
 				conceptService, 
 				new String[] { "name|*", "type" }, 
@@ -1803,7 +1803,7 @@ public class ListView extends BaseView {
 			ViewName.ANNOTATIONS_VIEW, 
 			"name", 
 			event -> {
-				Concept concept = (Concept) event.getItemId();
+				Neo4jConcept concept = (Neo4jConcept) event.getItemId();
 				DesktopUI ui = (DesktopUI) UI.getCurrent();
 	
 				ui.addNodeToConceptMap(concept);
@@ -1836,14 +1836,14 @@ public class ListView extends BaseView {
 		// concepts view
 		registry.setMapping(
 				ViewName.CONCEPTS_VIEW,
-				new BeanItemContainer<Concept>(Concept.class), 
+				new BeanItemContainer<Neo4jConcept>(Neo4jConcept.class), 
 				conceptService,
 				new String[] { "name|*", "semanticGroup", "synonyms|*", "library|*" },
 				null, 
 				null);
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "name", event -> {
-			Concept concept = (Concept) event.getItemId();
+			Neo4jConcept concept = (Neo4jConcept) event.getItemId();
 
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
 
@@ -1869,7 +1869,7 @@ public class ListView extends BaseView {
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "synonyms",e->{/*NOP*/});
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "library", event -> {
-			Concept concept = (Concept) event.getItemId();
+			Neo4jConcept concept = (Neo4jConcept) event.getItemId();
 
 			// Ignore ConceptSemanticType entries with empty libraries
 			Library library = concept.getLibrary();

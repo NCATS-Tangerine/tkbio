@@ -35,12 +35,12 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
 import bio.knowledge.model.Annotation;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 
 /**
  * @author Richard
@@ -72,7 +72,7 @@ public class KBQueryImpl implements KBQuery {
 	@Autowired
 	private ConceptService conceptService ;
 
-	private Optional<Concept> queryConcept = Optional.empty() ;
+	private Optional<Neo4jConcept> queryConcept = Optional.empty() ;
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCurrentQueryConcept(bio.knowledge.model.Concept)
@@ -87,7 +87,7 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#getCurrentQueryConcept()
 	 */
 	@Override
-	public Optional<Concept> getCurrentQueryConcept() {
+	public Optional<Neo4jConcept> getCurrentQueryConcept() {
 		return queryConcept;
 	}
 	
@@ -175,17 +175,17 @@ public class KBQueryImpl implements KBQuery {
 		return currentImportedMaps;
 	}
 
-	private Optional<Concept> selectedConcept = Optional.empty() ;
+	private Optional<Neo4jConcept> selectedConcept = Optional.empty() ;
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCurrentQueryConcept(bio.knowledge.model.Concept)
 	 */
 	@Override
-	public void setCurrentSelectedConcept(Concept query) {
+	public void setCurrentSelectedConcept(Neo4jConcept query) {
 		if(query==null)
 			selectedConcept = Optional.empty() ;
 		else {
-			String identifier = ((Concept)query).getAccessionId();
+			String identifier = ((Neo4jConcept)query).getAccessionId();
 			selectedConcept = conceptService.getDetailsByConceptAccessionId(identifier) ;
 		}
 	}
@@ -194,7 +194,7 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#getCurrentQueryConcept()
 	 */
 	@Override
-	public Optional<Concept> getCurrentSelectedConcept() {
+	public Optional<Neo4jConcept> getCurrentSelectedConcept() {
 		return selectedConcept;
 	}
 
@@ -396,7 +396,7 @@ public class KBQueryImpl implements KBQuery {
 
 	private ConceptSearchMode conceptSearchMode = ConceptSearchMode.DEFAULT ;
 
-	private Concept lastSelectedConcept;
+	private Neo4jConcept lastSelectedConcept;
 	
 	@Override
 	public void setConceptSearchMode(ConceptSearchMode mode) {
@@ -409,12 +409,12 @@ public class KBQueryImpl implements KBQuery {
 	}
 
 	@Override
-	public void setLastSelectedConcept(Concept concept) {
+	public void setLastSelectedConcept(Neo4jConcept concept) {
 		this.lastSelectedConcept = concept;
 	}
 
 	@Override
-	public Concept getLastSelectedConcept() {
+	public Neo4jConcept getLastSelectedConcept() {
 		// TODO Auto-generated method stub
 		return lastSelectedConcept;
 	}

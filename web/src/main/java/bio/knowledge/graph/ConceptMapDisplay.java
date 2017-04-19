@@ -52,8 +52,8 @@ import bio.knowledge.graph.jsonmodels.Layout;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.Nodes;
 import bio.knowledge.model.Annotation;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.Statement;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.web.ui.DesktopUI;
 
 @JavaScript({
@@ -521,7 +521,7 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 	 * 
 	 * @param concept
 	 */
-	public void addNodeToConceptMap(Concept concept) {
+	public void addNodeToConceptMap(Neo4jConcept concept) {
 	
 		// create the new node from the passed-in data
 		Node newNode = new Node(concept.getAccessionId(), concept.getName(), concept.getSemanticGroup().name(), "add");
@@ -631,7 +631,7 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 		this.addEdgeToConceptMap(statement.getSubject(), statement.getObject(), statement.getRelation().getName(), description, uri);
 	}
 	
-	public void addEdgeToConceptMap(Concept subject, Concept object, String relationLabel, String description, String uri) {
+	public void addEdgeToConceptMap(Neo4jConcept subject, Neo4jConcept object, String relationLabel, String description, String uri) {
 		Edge newEdge = new Edge( subject.getAccessionId(), object.getAccessionId(), relationLabel );
 		// any edge pre-processing would go here.
 		newEdge.getData().setDescription(description);

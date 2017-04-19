@@ -27,6 +27,8 @@ package bio.knowledge.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 
+import bio.knowledge.model.neo4j.Neo4jConcept;
+
 /**
  * @author Richard
  * 
@@ -54,9 +56,9 @@ public class Statement extends AbstractStatement {
 	   
 	public Statement(
     		String accessionId,
-    		Concept subject,
+    		Neo4jConcept subject,
     		Predicate predicate,
-    		Concept object
+    		Neo4jConcept object
     ) {
     	super(accessionId, subject, predicate, object) ;
     }

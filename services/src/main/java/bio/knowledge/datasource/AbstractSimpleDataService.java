@@ -28,8 +28,8 @@ package bio.knowledge.datasource;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 
 /**
  * @author Richard
