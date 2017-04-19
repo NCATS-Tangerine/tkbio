@@ -13,8 +13,8 @@ else
 	java -jar swagger-codegen-cli.jar generate	\
 	-i $1						\
 	-l spring					\
-	--model-package bio.knowledge.model		\
-	--api-package bio.knowledge.api			\
+	--model-package bio.knowledge.server.model	\
+	--api-package bio.knowledge.server.api		\
 	-c swaggerOptions.json				\
 	--skip-overwrite
 fi

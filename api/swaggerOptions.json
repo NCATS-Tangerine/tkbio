@@ -1,4 +1,4 @@
 {
-"basePackage":"bio.knowledge",
-"configPackage":"bio.knowledge.config"
+"basePackage":"bio.knowledge.server",
+"configPackage":"bio.knowledge.server.configuration"
 }
