@@ -117,13 +117,12 @@ public class SaveWindow extends Window {
 			Mapping mapping,
 			ConceptMapDisplay conceptMapDisplay, 
 			Navigator navigator, 
-			ConceptMapArchiveService conceptMapArchiveService,
 			Cache cache) {
 		
 		this.defaultName = defaultName;
 		this.cache = cache;
 		this.conceptMapDisplay = conceptMapDisplay;
-		this.conceptMapArchiveService = conceptMapArchiveService;
+		this.conceptMapArchiveService = ((DesktopUI) UI.getCurrent()).getConceptMapArchiveService();
 		this.query = query;
 		this.mapping = mapping;
 		this.navigator = navigator;

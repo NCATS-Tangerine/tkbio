@@ -1353,7 +1353,7 @@ public class DesktopUI extends UI implements MessageService {
 		}
 
 		SaveWindow saveWindow = new SaveWindow(getCurrentConceptMapName(), query, context,
-				registry.getMapping(ViewName.LIBRARY_VIEW), cm, applicationNavigator, conceptMapArchiveService, cache);
+				registry.getMapping(ViewName.LIBRARY_VIEW), cm, applicationNavigator, cache);
 
 		this.addWindow(saveWindow);
 
