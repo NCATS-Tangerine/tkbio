@@ -9,7 +9,7 @@ import javax.validation.constraints.*;
 /**
  * ConceptsconceptIdDetails
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-19T13:50:33.049-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-19T14:17:46.341-07:00")
 
 public class ConceptsconceptIdDetails   {
   @JsonProperty("tag")
