@@ -85,7 +85,6 @@ import com.vaadin.ui.Window;
 import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.authentication.UserProfile;
-import bio.knowledge.database.repository.ConceptMapArchiveRepository;
 import bio.knowledge.graph.ConceptMapDisplay;
 import bio.knowledge.graph.jsonmodels.Edge;
 import bio.knowledge.graph.jsonmodels.EdgeData;
@@ -157,11 +156,8 @@ public class DesktopUI extends UI implements MessageService {
 	Registry registry;
 
 	@Autowired
-	private ConceptMapArchiveRepository conceptMapArchiveRepository;
-
-	@Autowired
 	AuthenticationManager authenticationManager;
-	
+
 	/**
 	 * 
 	 * @return
@@ -172,7 +168,7 @@ public class DesktopUI extends UI implements MessageService {
 
 	@Autowired
 	private AuthenticationContext context;
-	
+
 	/**
 	 * 
 	 * @return
@@ -180,16 +176,17 @@ public class DesktopUI extends UI implements MessageService {
 	public AuthenticationContext getAuthenticationContext() {
 		return context;
 	}
-	
+
 	@Autowired
 	private AuthenticationState authenticationState;
+
 	public AuthenticationState getAuthenticationState() {
 		return authenticationState;
 	}
 
 	@Autowired
 	private SpringViewProvider viewProvider;
-	
+
 	/**
 	 * 
 	 * @return
@@ -197,7 +194,7 @@ public class DesktopUI extends UI implements MessageService {
 	public SpringViewProvider getViewProvider() {
 		return viewProvider;
 	}
-	
+
 	/**
 	 * 
 	 * @param navigationState
@@ -210,12 +207,14 @@ public class DesktopUI extends UI implements MessageService {
 	private MessageSource messageSource;
 
 	@Autowired
-	private ConceptService conceptService; 
+	private ConceptService conceptService;
 
 	@Override
 	/*
 	 * (non-Javadoc)
-	 * @see bio.knowledge.service.core.MessageService#getMessage(java.lang.String)
+	 * 
+	 * @see
+	 * bio.knowledge.service.core.MessageService#getMessage(java.lang.String)
 	 */
 	public String getMessage(String id) {
 
@@ -235,7 +234,10 @@ public class DesktopUI extends UI implements MessageService {
 	@Override
 	/*
 	 * (non-Javadoc)
-	 * @see bio.knowledge.service.core.MessageService#getMessage(java.lang.String, java.lang.String)
+	 * 
+	 * @see
+	 * bio.knowledge.service.core.MessageService#getMessage(java.lang.String,
+	 * java.lang.String)
 	 */
 	public String getMessage(String id, String tag) {
 
@@ -261,13 +263,13 @@ public class DesktopUI extends UI implements MessageService {
 	}
 
 	@Autowired
-	private KBQuery query ;
-	
-	@Autowired 
+	private KBQuery query;
+
+	@Autowired
 	Cache cache;
 
-	private Optional<Concept> currentConcept ;
-	
+	private Optional<Concept> currentConcept;
+
 	/**
 	 * 
 	 * @return
@@ -277,7 +279,7 @@ public class DesktopUI extends UI implements MessageService {
 	}
 
 	private DesktopView desktopView = new DesktopView();
-	
+
 	/**
 	 * 
 	 * @return
@@ -287,7 +289,7 @@ public class DesktopUI extends UI implements MessageService {
 	}
 
 	private ConceptMapDisplay cm = new ConceptMapDisplay();
-	
+
 	/**
 	 * 
 	 * @return the current ConceptMapDisplay
@@ -295,7 +297,7 @@ public class DesktopUI extends UI implements MessageService {
 	public ConceptMapDisplay getConceptMap() {
 		return cm;
 	}
-	
+
 	/**
 	 * 
 	 * @return true if ConceptMap contains any elements
@@ -307,7 +309,7 @@ public class DesktopUI extends UI implements MessageService {
 	static final String DEFAULT_CM_LAYOUT = "Breadth First";
 	static final String DEFAULT_CM_COLOR = "Dark";
 	public static final String MANUAL_CM_LAYOUT = "Manual";
-	
+
 	/**
 	 * 
 	 * @param concept
@@ -315,30 +317,30 @@ public class DesktopUI extends UI implements MessageService {
 	public void addNodeToConceptMap(Concept concept) {
 		getConceptMap().addNodeToConceptMap(concept);
 	}
-	
+
 	/**
 	 * 
 	 * @param sourceNode
 	 * @param targetNode
 	 */
-	public void addEdgeToConceptMap( Concept sourceNode, Concept targetNode ) {
-		getConceptMap().getElements().getEdges().addEdge(
-				new Edge( sourceNode.getAccessionId(), targetNode.getAccessionId() ));
+	public void addEdgeToConceptMap(Concept sourceNode, Concept targetNode) {
+		getConceptMap().getElements().getEdges()
+				.addEdge(new Edge(sourceNode.getAccessionId(), targetNode.getAccessionId()));
 	}
-	
+
 	/**
 	 * 
 	 * @param sourceNode
 	 * @param targetNode
 	 * @param label
 	 */
-	public void addEdgeToConceptMap( Concept sourceNode, Concept targetNode, String label ) {
+	public void addEdgeToConceptMap(Concept sourceNode, Concept targetNode, String label) {
 		getConceptMap().addEdgeToConceptMap(sourceNode, targetNode, label, "", "");
 	}
 
 	@Autowired
 	private ConceptMapPopupWindow popUp;
-	
+
 	/**
 	 * 
 	 * @return
@@ -348,7 +350,7 @@ public class DesktopUI extends UI implements MessageService {
 	}
 
 	private Window conceptSearchWindow = null;
-	
+
 	/**
 	 * 
 	 * @return
@@ -356,7 +358,7 @@ public class DesktopUI extends UI implements MessageService {
 	public Window getConceptSearchWindow() {
 		return this.conceptSearchWindow;
 	}
-	
+
 	/**
 	 * 
 	 * @param newConceptSearchWindow
@@ -364,7 +366,7 @@ public class DesktopUI extends UI implements MessageService {
 	public void setConceptSearchWindow(Window newConceptSearchWindow) {
 		this.conceptSearchWindow = newConceptSearchWindow;
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -376,7 +378,7 @@ public class DesktopUI extends UI implements MessageService {
 	}
 
 	private Window conceptMapLibraryWindow = null;
-	
+
 	/**
 	 * 
 	 */
@@ -388,7 +390,7 @@ public class DesktopUI extends UI implements MessageService {
 	}
 
 	private PopupWindow conceptSemanticWindow = null;
-	
+
 	/**
 	 * 
 	 */
@@ -398,7 +400,7 @@ public class DesktopUI extends UI implements MessageService {
 			conceptSemanticWindow = null;
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -416,7 +418,7 @@ public class DesktopUI extends UI implements MessageService {
 		TabSheet tabsheet = desktopView.getDataTabSheet();
 		tabsheet.setSelectedTab(relationsTab);
 	}
-	
+
 	/**
 	 * 
 	 * @param conceptName
@@ -428,10 +430,9 @@ public class DesktopUI extends UI implements MessageService {
 		// + "<span style=\"color:#ffffff;font-weight:bold;\">" + conceptName +
 		// "</span>");
 	}
-	
-	
-    private String lastHighlightNodeId = null;
-    
+
+	private String lastHighlightNodeId = null;
+
 	private enum HighlightStatus {
 		YES("yes"), NO("no");
 
@@ -441,10 +442,11 @@ public class DesktopUI extends UI implements MessageService {
 			this.text = text;
 		}
 	}
-	
+
 	/**
 	 * 
 	 * updating the data of the node
+	 * 
 	 * @param yesOrNo
 	 */
 	private void highlightNode(HighlightStatus yesOrNo) {
@@ -457,10 +459,11 @@ public class DesktopUI extends UI implements MessageService {
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * highlight the seed node
+	 * 
 	 * @param currentConcept
 	 */
 	public void setHighlightedNode(Concept currentConcept) {
@@ -476,26 +479,28 @@ public class DesktopUI extends UI implements MessageService {
 		lastHighlightNodeId = currentConcept.getAccessionId();
 		highlightNode(HighlightStatus.YES);
 	}
-    
+
 	/**
 	 * 
 	 * TODO: replace setCurrentConceptTitle with setConceptInSession
+	 * 
 	 * @param currentConcept
 	 */
-    private void setConceptInSession( Concept currentConcept ) {
-    	setCurrentConceptTitle(currentConcept.getName());
-    	setHighlightedNode(currentConcept);
-    }
-    
-//    private void setConceptInSession( Boolean concept ) {
-//    	initConceptLabel();
-//    }
-    
+	private void setConceptInSession(Concept currentConcept) {
+		setCurrentConceptTitle(currentConcept.getName());
+		setHighlightedNode(currentConcept);
+	}
+
+	// private void setConceptInSession( Boolean concept ) {
+	// initConceptLabel();
+	// }
+
 	private int lastHighlightEdgeId = 0;
-	
+
 	/**
 	 * 
 	 * updating the data of the edge
+	 * 
 	 * @param yesOrNo
 	 */
 	private void highlightEdge(HighlightStatus yesOrNo) {
@@ -509,10 +514,11 @@ public class DesktopUI extends UI implements MessageService {
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * highlight the edge
+	 * 
 	 * @param source
 	 * @param target
 	 * @param label
@@ -528,8 +534,7 @@ public class DesktopUI extends UI implements MessageService {
 		lastHighlightEdgeId = (source.getAccessionId() + target.getAccessionId() + label).hashCode();
 		highlightEdge(HighlightStatus.YES);
 	}
-	
-	
+
 	/**
 	 * 
 	 */
@@ -542,35 +547,34 @@ public class DesktopUI extends UI implements MessageService {
 		if (stmtOpt.isPresent()) {
 
 			Statement statement = stmtOpt.get();
-			//query.setCurrentStatement(statement);
-			
-            // highlight the edge according to the predication
-			setHighlightedEdge(statement.getSubject(), statement.getObject(), statement.getRelation().getName());
-			
-			VerticalLayout referenceTab = desktopView.getEvidenceTab() ;
+			// query.setCurrentStatement(statement);
 
-			Navigator navigator = new Navigator(this,referenceTab);
+			// highlight the edge according to the predication
+			setHighlightedEdge(statement.getSubject(), statement.getObject(), statement.getRelation().getName());
+
+			VerticalLayout referenceTab = desktopView.getEvidenceTab();
+
+			Navigator navigator = new Navigator(this, referenceTab);
 			navigator.addProvider(viewProvider);
-			navigator.navigateTo(ViewName.LIST_VIEW+"/"+ViewName.EVIDENCE_VIEW);
+			navigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.EVIDENCE_VIEW);
 
 			TabSheet tabsheet = desktopView.getDataTabSheet();
 			tabsheet.setSelectedTab(referenceTab);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param annotation
 	 */
 	public void displayReference(Annotation annotation) {
-		
-		query.setCurrentAnnotation( annotation ) ;
-		
-		VerticalLayout referenceTab = desktopView.getReferenceTab() ;
-		
-		Navigator navigator = 
-				new Navigator(this,desktopView.getReferenceLayout());
-		
+
+		query.setCurrentAnnotation(annotation);
+
+		VerticalLayout referenceTab = desktopView.getReferenceTab();
+
+		Navigator navigator = new Navigator(this, desktopView.getReferenceLayout());
+
 		navigator.addProvider(viewProvider);
 		navigator.navigateTo(ReferenceView.NAME);
 
@@ -583,30 +587,31 @@ public class DesktopUI extends UI implements MessageService {
 	 * @param concept
 	 * @param mode
 	 */
-    public void queryUpdate( Concept concept, RelationSearchMode mode ) {
-        
-        String conceptName = concept.getName() ;
-        
-        _logger.info("Selecting ListView item '" + conceptName + "' for processing?");
-     
-        query.setRelationSearchMode(mode);
-        
-        // I should probably only reset the current query concept when
-        // I am intending to reset the current table of RELATIONS relations
-        // TODO: review if any action is required with other RelationSearchModes?
-        switch(mode) {
-	        case RELATIONS:
-	        	query.setCurrentQueryConceptById(concept.getAccessionId());
-	        	break ;
-	        default:
-	        	// do nothing?
-        }
-        
-        setConceptInSession(concept);
-        
-        try {
-        	query.setCurrentSelectedConcept(concept);
-       	
+	public void queryUpdate(Concept concept, RelationSearchMode mode) {
+
+		String conceptName = concept.getName();
+
+		_logger.info("Selecting ListView item '" + conceptName + "' for processing?");
+
+		query.setRelationSearchMode(mode);
+
+		// I should probably only reset the current query concept when
+		// I am intending to reset the current table of RELATIONS relations
+		// TODO: review if any action is required with other
+		// RelationSearchModes?
+		switch (mode) {
+		case RELATIONS:
+			query.setCurrentQueryConceptById(concept.getAccessionId());
+			break;
+		default:
+			// do nothing?
+		}
+
+		setConceptInSession(concept);
+
+		try {
+			query.setCurrentSelectedConcept(concept);
+
 			setConceptLabelDescription(concept);
 
 		} catch (Exception e) {
@@ -614,10 +619,9 @@ public class DesktopUI extends UI implements MessageService {
 		}
 	}
 
-	
 	@Autowired
 	WikiDetailsHandler wd_handler;
-	
+
 	/**
 	 * 
 	 * @param concept
@@ -633,7 +637,7 @@ public class DesktopUI extends UI implements MessageService {
 
 		popupLayout.setVisible(true);
 		popupLayout.removeAllComponents();
-		
+
 		// create view without content
 		PopupView currentConceptPopupView = new PopupView(concept.getName(), null);
 		currentConceptPopupView.setHideOnMouseOut(false);
@@ -663,11 +667,11 @@ public class DesktopUI extends UI implements MessageService {
 				});
 			}
 		});
-		
+
 		popupLayout.addComponent(currentConceptPopupView);
 		popupLayout.setComponentAlignment(currentConceptPopupView, Alignment.MIDDLE_CENTER);
 	}
-	
+
 	/**
 	 * clear the map
 	 */
@@ -675,7 +679,7 @@ public class DesktopUI extends UI implements MessageService {
 		cm.clearGraph();
 		updateCurrentConceptMapName(null);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -708,7 +712,7 @@ public class DesktopUI extends UI implements MessageService {
 		// Setting Default layout while clearing map
 		desktopView.getCmLayoutSelect().setValue(DEFAULT_CM_LAYOUT);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -716,14 +720,14 @@ public class DesktopUI extends UI implements MessageService {
 		initConceptLabel();
 		initConceptLabelDescription();
 	}
-	
+
 	/**
 	 * 
 	 */
 	private void initConceptLabel() {
 		setCurrentConceptTitle(FIELD_ERROR);
 	}
-	
+
 	/**
 	 * 
 	 * @param dialog
@@ -736,7 +740,7 @@ public class DesktopUI extends UI implements MessageService {
 			clearMap();
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param dialog
@@ -744,28 +748,28 @@ public class DesktopUI extends UI implements MessageService {
 	private void newQueryButtonHandler(ConfirmDialog dialog) {
 		if (dialog.isConfirmed()) {
 
-			ConfirmDialog
-					.show(this, "Save Concept Map?", "<span style='text-align:center;'>Save work before reloading?</span>",
-							"Yes", "No", cd -> saveAndClearMapHandler(cd))
-					.setContentMode(ConfirmDialog.ContentMode.HTML);
+			ConfirmDialog.show(this, "Save Concept Map?",
+					"<span style='text-align:center;'>Save work before reloading?</span>", "Yes", "No",
+					cd -> saveAndClearMapHandler(cd)).setContentMode(ConfirmDialog.ContentMode.HTML);
 
 		} else if (dialog.isCanceled()) {
 			_logger.trace("User cancels 'New' operation");
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param event
 	 */
 	private void newQueryConfirmation(ClickEvent event) {
-		if(conceptMapIsEmpty()) return;
+		if (conceptMapIsEmpty())
+			return;
 		ConfirmDialog.show(this, "New Graph", "<span style='text-align:center;'>Clear the graph?</span>", "OK",
 				"Cancel", cd -> newQueryButtonHandler(cd)).setContentMode(ConfirmDialog.ContentMode.HTML);
 	}
 
 	private PopupWindow landingPagePopup = null;
-	
+
 	/**
 	 * 
 	 */
@@ -785,11 +789,11 @@ public class DesktopUI extends UI implements MessageService {
 
 	@Value("${application.hostname:'none'}")
 
-	private String application_hostname ; // for testing on localhost set "none"
-	
+	private String application_hostname; // for testing on localhost set "none"
+
 	@Value("${google.tracking_id:''}")
-	private String google_tracking_id ; // e.g. "UA-87942746-1"
-	
+	private String google_tracking_id; // e.g. "UA-87942746-1"
+
 	/**
 	 * initialize the desktop view
 	 */
@@ -878,7 +882,7 @@ public class DesktopUI extends UI implements MessageService {
 					.execute("document.getElementsByClassName('gwt-FileUpload')[0].setAttribute('accept', '.kb')");
 		});
 
-        // save map to library
+		// save map to library
 		desktopView.getSaveBtn().addClickListener(e -> saveMap(false));
 
 		// search map library names with search text
@@ -889,15 +893,16 @@ public class DesktopUI extends UI implements MessageService {
 			cm.alignToCenter();
 		});
 
-        // set zoom for map using a slider
+		// set zoom for map using a slider
 		Slider zoomSlider = desktopView.getZoomSlider();
 		zoomSlider.addValueChangeListener(new ValueChangeListener() {
 			/**
 			 *
 			 */
 			private static final long serialVersionUID = 1L;
-			
-            // when the value on the slider changes, the zoom is set to the new value
+
+			// when the value on the slider changes, the zoom is set to the new
+			// value
 			public void valueChange(ValueChangeEvent event) {
 				double value = (Double) zoomSlider.getValue();
 				cm.setZoom(value);
@@ -906,9 +911,9 @@ public class DesktopUI extends UI implements MessageService {
 
 		// display the legend in a pop up window
 		desktopView.getShowLegendBtn().addClickListener(e -> {
-            // if there is no legend pop up window already opened
+			// if there is no legend pop up window already opened
 			if (legend == null) {
-                // get the x and y coordinates where the mouse is clicked
+				// get the x and y coordinates where the mouse is clicked
 				int x = e.getClientX();
 				int y = e.getClientY();
 				legend = new Window("Legend");
@@ -954,7 +959,7 @@ public class DesktopUI extends UI implements MessageService {
 				legend.setContent(subContent);
 				legend.setDraggable(false);
 			} else {
-                // there is already a legend opened, so close it
+				// there is already a legend opened, so close it
 				legend.close();
 				legend = null;
 			}
@@ -966,7 +971,7 @@ public class DesktopUI extends UI implements MessageService {
 
 		initConceptMap();
 	}
-	
+
 	/**
 	 * 
 	 * @param tab
@@ -994,7 +999,7 @@ public class DesktopUI extends UI implements MessageService {
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param searchField
@@ -1006,17 +1011,16 @@ public class DesktopUI extends UI implements MessageService {
 		searchBtn.setEnabled(false);
 
 		String queryText = desktopView.getSearch().getValue();
-		
+
 		// RMB: March 1, 2017 - empty queries seem too problematic now
 		// so we ignore them again!
-		
+
 		if (queryText == null || queryText.trim().isEmpty()) {
-			ConfirmDialog.show(
-					this, 
-					"<span style='text-align:center;'>Please type in a non-empty query string in the search box</span>",  
-					cd -> {}
-			).setContentMode(ConfirmDialog.ContentMode.HTML);
-			
+			ConfirmDialog.show(this,
+					"<span style='text-align:center;'>Please type in a non-empty query string in the search box</span>",
+					cd -> {
+					}).setContentMode(ConfirmDialog.ContentMode.HTML);
+
 			searchBtn.setEnabled(true);
 			searchField.clear();
 			return;
@@ -1025,12 +1029,12 @@ public class DesktopUI extends UI implements MessageService {
 		queryText = queryText.trim();
 
 		query.setCurrentQueryText(queryText);
-		
-		// Semantic type constraint in Concept-by-text results listing should initial be empty 
+
+		// Semantic type constraint in Concept-by-text results listing should
+		// initial be empty
 		query.setInitialConceptTypes(new HashSet<SemanticGroup>());
-		
-		ConceptSearchResults currentSearchResults = 
-				new ConceptSearchResults( viewProvider, ViewName.CONCEPTS_VIEW);
+
+		ConceptSearchResults currentSearchResults = new ConceptSearchResults(viewProvider, ViewName.CONCEPTS_VIEW);
 		conceptSearchWindow = new Window();
 		conceptSearchWindow.setCaption("Concepts Matched by Key Words");
 		conceptSearchWindow.addStyleName("concept-search-window");
@@ -1056,14 +1060,14 @@ public class DesktopUI extends UI implements MessageService {
 
 		UI.getCurrent().addWindow(conceptSearchWindow);
 	}
-	
+
 	/**
 	 * 
 	 */
 	private void initConceptLabelDescription() {
 		setConceptLabelDescription(null);
 	}
-	
+
 	/**
 	 * 
 	 * @param event
@@ -1080,7 +1084,7 @@ public class DesktopUI extends UI implements MessageService {
 		cm.resizeGraphCanvas();
 
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -1102,12 +1106,12 @@ public class DesktopUI extends UI implements MessageService {
 		// He's willing to accept the UI consequences!
 		// splitPanel.setLocked(true);
 		splitPanel.setLocked(false);
-		
+
 		splitPanel.addStyleName("main-splitpanel");
 		splitPanel.addSplitPositionChangeListener(e -> desktopSplitPanelPositionHandler(e));
 
 	}
-	
+
 	/**
 	 * 
 	 * @param name
@@ -1127,7 +1131,7 @@ public class DesktopUI extends UI implements MessageService {
 
 		return null;
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -1182,6 +1186,7 @@ public class DesktopUI extends UI implements MessageService {
 
 	/**
 	 * Opens popup window and navigates to view when btn clicked
+	 * 
 	 * @param btn
 	 * @param view
 	 */
@@ -1208,16 +1213,13 @@ public class DesktopUI extends UI implements MessageService {
 
 	}
 
-	private static final String REGEX_CST_Id = 
-			Pattern.quote("<RootConceptId>") + 
-			"(.*?)" + Pattern.quote("</RootConceptId>") ;
+	private static final String REGEX_CST_Id = Pattern.quote("<RootConceptId>") + "(.*?)"
+			+ Pattern.quote("</RootConceptId>");
 	private static final Pattern REGEX_CST_Id_Pattern = Pattern.compile(REGEX_CST_Id);
-	
-	private static final String REGEX_version = 
-			Pattern.quote("<version>") + 
-			"(.*?)" + Pattern.quote("</version>") ;
+
+	private static final String REGEX_version = Pattern.quote("<version>") + "(.*?)" + Pattern.quote("</version>");
 	private static final Pattern REGEX_version_Pattern = Pattern.compile(REGEX_version);
-	
+
 	/**
 	 * @author Chandan Mishra (cmishra@sfu.ca) Starting load functionality
 	 * @param content
@@ -1228,36 +1230,36 @@ public class DesktopUI extends UI implements MessageService {
 
 		if (version_matcher.find()) {
 			String id = version_matcher.group(1);
-			if(!id.equals("3.0")) {
-				new Notification("Sorry - can only load kb file format version 3.0",
-						Notification.Type.ERROR_MESSAGE).show(Page.getCurrent());
-				return ;
+			if (!id.equals("3.0")) {
+				new Notification("Sorry - can only load kb file format version 3.0", Notification.Type.ERROR_MESSAGE)
+						.show(Page.getCurrent());
+				return;
 			}
-			
+
 		} else {
-			new Notification("Cannot detect kb format version?",
-					Notification.Type.ERROR_MESSAGE).show(Page.getCurrent());
-			return ;
+			new Notification("Cannot detect kb format version?", Notification.Type.ERROR_MESSAGE)
+					.show(Page.getCurrent());
+			return;
 		}
-		
+
 		Matcher cst_matcher = REGEX_CST_Id_Pattern.matcher(content);
 		if (cst_matcher.find()) {
 			// calling import concept map
 			cm.importConceptMap(content);
-			
+
 			String id = cst_matcher.group(1);
 			String accessionId = id.replaceAll(",", "");
-			
+
 			// Setting manual layout while loading
 			desktopView.getCmLayoutSelect().setValue(MANUAL_CM_LAYOUT);
 
 			// set current concept
-			Optional<Concept> conceptOpt = conceptService.getDetailsByAccessionId(accessionId) ;
-			
-			if(conceptOpt.isPresent()) {
-				Concept cst = conceptOpt.get() ;
-				query.setCurrentQueryConceptById( cst.getId().toString() );
-				
+			Optional<Concept> conceptOpt = conceptService.getDetailsByAccessionId(accessionId);
+
+			if (conceptOpt.isPresent()) {
+				Concept cst = conceptOpt.get();
+				query.setCurrentQueryConceptById(cst.getId().toString());
+
 				if (query.getCurrentQueryConcept().isPresent()) {
 					setCurrentConceptTitle(query.getCurrentQueryConcept().get().getName());
 				}
@@ -1269,7 +1271,7 @@ public class DesktopUI extends UI implements MessageService {
 					Notification.Type.ERROR_MESSAGE).show(Page.getCurrent());
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param map
@@ -1278,7 +1280,7 @@ public class DesktopUI extends UI implements MessageService {
 		updateCurrentConceptMapName(map.getName());
 		loadMap(map.getConceptMapJson());
 	}
-	
+
 	/**
 	 * 
 	 * @param file
@@ -1292,7 +1294,7 @@ public class DesktopUI extends UI implements MessageService {
 		}
 		loadMap(content);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -1331,7 +1333,7 @@ public class DesktopUI extends UI implements MessageService {
 
 	@Autowired
 	private ConceptMapArchiveService conceptMapArchiveService;
-	
+
 	/**
 	 * 
 	 * @return
@@ -1339,7 +1341,7 @@ public class DesktopUI extends UI implements MessageService {
 	public ConceptMapArchiveService getConceptMapArchiveService() {
 		return this.conceptMapArchiveService;
 	}
-	
+
 	/**
 	 * 
 	 * @param isClearMap
@@ -1349,15 +1351,15 @@ public class DesktopUI extends UI implements MessageService {
 		if (!query.getCurrentQueryConcept().isPresent()) {
 			return true;
 		}
-		
+
 		SaveWindow saveWindow = new SaveWindow(getCurrentConceptMapName(), query, context,
-				registry.getMapping(ViewName.LIBRARY_VIEW), cm, applicationNavigator, conceptMapArchiveService, cache);
+				registry.getMapping(ViewName.LIBRARY_VIEW), cm, applicationNavigator, cache);
 
 		this.addWindow(saveWindow);
 
 		return true;
 	}
-	
+
 	/**
 	 * 
 	 * @param map
@@ -1371,12 +1373,12 @@ public class DesktopUI extends UI implements MessageService {
 			conceptMapLibraryWindow.setCaption(caption);
 		};
 
-		LibraryDetails libraryDetails = new LibraryDetails(query, conceptMapArchiveRepository, map, context, goBack);
+		LibraryDetails libraryDetails = new LibraryDetails(map, query, context, goBack);
 
 		conceptMapLibraryWindow.setCaption("Concept Map Details");
 		conceptMapLibraryWindow.setContent(libraryDetails);
 	}
-	
+
 	/**
 	 * 
 	 * @param userId
@@ -1395,7 +1397,7 @@ public class DesktopUI extends UI implements MessageService {
 		conceptMapLibraryWindow.setCaption("User Details");
 		conceptMapLibraryWindow.setContent(userDetails);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -1439,7 +1441,7 @@ public class DesktopUI extends UI implements MessageService {
 	}
 
 	private Navigator applicationNavigator;
-	
+
 	/**
 	 * 
 	 * @return
@@ -1451,35 +1453,35 @@ public class DesktopUI extends UI implements MessageService {
 	@Override
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.vaadin.ui.UI#init(com.vaadin.server.VaadinRequest)
 	 */
-	protected void init(VaadinRequest request) {		
-		GoogleAnalyticsTracker ga_tracker = 
-				new GoogleAnalyticsTracker( google_tracking_id, application_hostname, "/#!" );
-		_logger.info("google_tracking_id: "+ google_tracking_id);
+	protected void init(VaadinRequest request) {
+		GoogleAnalyticsTracker ga_tracker = new GoogleAnalyticsTracker(google_tracking_id, application_hostname, "/#!");
+		_logger.info("google_tracking_id: " + google_tracking_id);
 		_logger.info("application_hostname: " + application_hostname);
-		
+
 		ga_tracker.extend(this);
-		
+
 		initializeDesktopView();
 
-		ApplicationLayout applicationLayout = 
-				new ApplicationLayout( authenticationManager, context );
+		ApplicationLayout applicationLayout = new ApplicationLayout(authenticationManager, context);
 
 		this.loginView = applicationLayout.getLoginView();
-		
+
 		// Note: the DesktopView is initialized within this UI class, so
 		// it is easier to just add the view here.
 		registerView(applicationLayout);
-		
+
 		/*
-		 *  attach the Google Analytics tracker to the Navigator to automatically track all views
+		 * attach the Google Analytics tracker to the Navigator to automatically
+		 * track all views
 		 *
-         * To use the tracker without the Navigator, just call the
-         * tracker.trackPageview(pageId) separately when tracking is needed.
+		 * To use the tracker without the Navigator, just call the
+		 * tracker.trackPageview(pageId) separately when tracking is needed.
 		 */
 		applicationNavigator.addViewChangeListener(ga_tracker);
-		
+
 		setContent(applicationLayout);
 
 		// Here we manage redirecting the application to other views upon the
@@ -1501,9 +1503,12 @@ public class DesktopUI extends UI implements MessageService {
 						user != null ? user.getIdsOfGroupsBelongedTo() : new String[0]);
 				if (map != null) {
 					conceptMapLibraryWindow = new Window();
-					LibraryDetails libraryDetails = new LibraryDetails(query, conceptMapArchiveRepository, map, context, event -> {
-						conceptMapLibraryWindow.close();
-					});
+					UserProfile userProfile = getAuthenticationManager().getCurrentUser();
+					String userId = userProfile != null ? userProfile.getId() : null;
+					LibraryDetails libraryDetails = new LibraryDetails(map, query, context,
+							event -> {
+								conceptMapLibraryWindow.close();
+							});
 					UI.getCurrent().addWindow(conceptMapLibraryWindow);
 					conceptMapLibraryWindow.setContent(libraryDetails);
 					conceptMapLibraryWindow.setModal(true);
@@ -1512,7 +1517,7 @@ public class DesktopUI extends UI implements MessageService {
 					conceptMapLibraryWindow.center();
 					conceptMapLibraryWindow.setWidth(45.0f, Unit.EM);
 					conceptMapLibraryWindow.setHeight(56.0f, Unit.EM);
-					
+
 				} else {
 					Notification.show("No concept map with the name \"" + conceptMapName
 							+ "\" was found. You may need to login to view this map.", Type.WARNING_MESSAGE);
@@ -1538,7 +1543,7 @@ public class DesktopUI extends UI implements MessageService {
 	}
 
 	private LoginView loginView;
-	
+
 	/**
 	 * 
 	 * @return
@@ -1546,7 +1551,7 @@ public class DesktopUI extends UI implements MessageService {
 	public LoginView getLoginView() {
 		return this.loginView;
 	}
-	
+
 	/**
 	 * 
 	 * @param applicationLayout
@@ -1559,7 +1564,7 @@ public class DesktopUI extends UI implements MessageService {
 	}
 
 	private String currentConceptMapName = "";
-	
+
 	/**
 	 * 
 	 * @param name
@@ -1567,7 +1572,7 @@ public class DesktopUI extends UI implements MessageService {
 	public void updateCurrentConceptMapName(String name) {
 		this.currentConceptMapName = name;
 	}
-	
+
 	/**
 	 * 
 	 * @return
