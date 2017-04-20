@@ -210,10 +210,10 @@ paths:
       tags:
         - xrefs
       parameters:
-        - name: identifiers
+        - name: xi
           in: query
           description: |
-            list of cross-reference identifiers to be used in a search for equivalent concepts
+            list of cross-reference identifiers (xi) to be used in a search for equivalent concepts
           required: true
           type: array
           items:
@@ -222,8 +222,7 @@ paths:
       responses:
         '200':
           description: >
-            Successful response returns a list of concepts with one or more
-            matches to query cross-reference identifiers
+            Successful response returns a list of identifiers of concepts matching at least one identifier in the input list of cross-reference identifiers. Each concept identifier is returned with  the full list of associated cross-reference identifiers known to the given Knowledge Source.
           schema:
             type: array
             items:
@@ -253,7 +252,7 @@ paths:
         - name: ci
           in: query
           description: |
-            list of concept identifiers to be used in a search for associated concept-relation statements
+            list of concept identifiers (ci) to be used in a search for associated concept-relation statements
           required: true
           type: array
           items:
