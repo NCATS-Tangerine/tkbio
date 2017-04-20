@@ -1,11 +1,11 @@
 archivesBaseName  = 'tkbio-api'
 description       = 'NCATS Translator Knowledge.Bio (TKBio) API Middleware'
 
-//evaluationDependsOn(':core')
+evaluationDependsOn(':database')
 
 dependencies {
-
-//    compile project(':core')
+	
+	compile project(':database')
 
     compile("org.springframework:spring-context:4.2.6.RELEASE")
 
