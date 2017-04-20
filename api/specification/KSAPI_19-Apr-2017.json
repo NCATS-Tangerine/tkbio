@@ -325,7 +325,7 @@
                 }
             },
             "get": {
-                "description": "Retrieves the list of concepts with that match one or more cross-references posted in the previously initiated query session. This new list of concepts is returned with the full list of their associated cross-references.\n",
+                "description": "Retrieves the list of identifiers of concepts that match one or more cross-references posted in the previously initiated query session. This new list of concept identifierss is returned with the full list of their associated cross-reference identifiers.\n",
                 "tags": [
                     "xrefs"
                 ],
