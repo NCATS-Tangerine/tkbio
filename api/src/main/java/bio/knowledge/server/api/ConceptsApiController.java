@@ -7,9 +7,6 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,8 +26,22 @@ public class ConceptsApiController implements ConceptsApi {
 	private ConceptRepository conceptRepository ;
 
     public ResponseEntity<List<InlineResponse200>> getConceptDetails(@ApiParam(value = "local identifier of concept of interest",required=true ) @PathVariable("conceptId") Integer conceptId) {
-        // do some magic!
-        return new ResponseEntity<List<InlineResponse200>>(HttpStatus.OK);
+    	List<InlineResponse200> responses = new ArrayList<InlineResponse200>();
+    	
+    	Concept concept = conceptRepository.apiGetConceptById(conceptId);
+    	
+    	if (concept != null) {
+	    	InlineResponse200 response = new InlineResponse200();
+	    	response.setDefinition(concept.getDescription());
+	    	response.setId(String.valueOf(concept.getId()));
+	    	response.setName(concept.getName());
+	    	response.setSemanticType(concept.getSemanticGroup().name());
+	    	response.setSynonyms(Arrays.asList(concept.getSynonyms().split("\\|")));
+	    	
+	    	responses.add(response);
+    	}
+    	
+        return ResponseEntity.ok(responses);
     }
 
     public ResponseEntity<List<InlineResponse2001>> getConcepts( @NotNull @ApiParam(value = "string of comma delimited keywords to match against concept names and aliases", required = true) @RequestParam(value = "textFilter", required = true) String textFilter,
@@ -38,80 +49,31 @@ public class ConceptsApiController implements ConceptsApi {
          @ApiParam(value = "number of concepts per page to be returned in a paged set of query results ") @RequestParam(value = "pageSize", required = false) Integer pageSize,
          @ApiParam(value = "string of comma-delimited semantic type names to apply against set of concepts matched by the main search string ") @RequestParam(value = "semanticType", required = false) String semanticType) {
     	
-    	System.out.println("MAGIC: " + textFilter);
+    	if (pageNumber == null || pageNumber < 0) { pageNumber = 0; }
+    	if (pageSize == null || pageSize < 1) { pageSize = 10; }
     	
-    	Pageable pageable = new Pageable() {
-
-			@Override
-			public int getPageNumber() {
-				return pageNumber;
-			}
-
-			@Override
-			public int getPageSize() {
-				return pageSize;
-			}
-
-			@Override
-			public int getOffset() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public Sort getSort() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public Pageable next() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public Pageable previousOrFirst() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public Pageable first() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public boolean hasPrevious() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-    		
-    	};
+    	List<Concept> concepts;
     	
-    	List<Concept> concepts = conceptRepository.findByNameLikeIgnoreCase(textFilter, pageable);
+    	if (semanticType == null) {
+    		concepts = conceptRepository.apiGetConcepts(textFilter, pageNumber, pageSize);
+    	} else {
+    		concepts = conceptRepository.apiGetConceptsByType(textFilter, semanticType, pageNumber, pageSize);
+    	}
+    	
     	List<InlineResponse2001> responses = new ArrayList<InlineResponse2001>();
     	
     	for (Concept concept : concepts) {
     		InlineResponse2001 response = new InlineResponse2001();
+    		
     		response.setId(String.valueOf(concept.getId()));
     		response.setName(concept.getName());
     		response.setSemanticType(concept.getSemanticGroup().name());
-    		response.setSynonyms(Arrays.asList(concept.getSynonyms().split(" ")));
+    		response.setDefinition(concept.getDescription());
+    		response.setSynonyms(Arrays.asList(concept.getSynonyms().split("\\|")));
     		
     		responses.add(response);
     	}
     	
-    	InlineResponse2001 response = new InlineResponse2001();
-    	response.setId("123");
-    	response.setName("abc");
-    	response.setSemanticType("some kind of thing");
-    	response.setSource("source");
-    	response.setSynonyms(null);
-    	responses.add(response);
-    	
     	return ResponseEntity.ok(responses);
     }
-
 }

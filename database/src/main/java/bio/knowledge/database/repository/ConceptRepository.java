@@ -133,6 +133,41 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 			" LIMIT {1}.pageSize"
 	)
 	public List<Concept> findByNameLikeIgnoreCase( @Param("filter") String filter, Pageable pageable );
+	
+	@Query("MATCH (concept:Concept) WHERE ID(concept) = {localId} RETURN concept;")
+	public Concept apiGetConceptById(@Param("localId") Integer localId);
+	
+	@Query(
+			" MATCH (concept:Concept) " +
+			" WHERE " +
+			"   LOWER(concept.name)     CONTAINS LOWER({filter}) OR " +
+			"   LOWER(concept.synonyms) CONTAINS LOWER({filter}) " +
+			" RETURN concept " +
+			" SKIP  {pageNumber} * {pageSize} " +
+			" LIMIT {pageSize} "
+	)
+	public List<Concept> apiGetConcepts(
+			@Param("filter") String filter,
+			@Param("pageNumber") Integer pageNumber,
+			@Param("pageSize") Integer pageSize
+	);
+	
+	@Query(
+			" MATCH (concept:Concept) " +
+			" WHERE " +
+			"   ( LOWER(concept.name)   CONTAINS LOWER({filter}) OR " +
+			"   LOWER(concept.synonyms) CONTAINS LOWER({filter}) ) " +
+			"   AND concept.semanticGroup = {semanticGroup} " +
+			" RETURN concept " +
+			" SKIP  {pageNumber} * {pageSize} " +
+			" LIMIT {pageSize} "
+	)
+	public List<Concept> apiGetConceptsByType(
+			@Param("filter") String filter,
+			@Param("semanticGroup") String semanticGroup,
+			@Param("pageNumber") Integer pageNumber,
+			@Param("pageSize") Integer pageSize
+	);
 
 	/**
 	 * @param name
