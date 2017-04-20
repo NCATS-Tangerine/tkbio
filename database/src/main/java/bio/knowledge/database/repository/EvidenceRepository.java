@@ -25,6 +25,8 @@
  */
 package bio.knowledge.database.repository;
 
+import java.util.List;
+
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
@@ -51,5 +53,19 @@ public interface EvidenceRepository extends GraphRepository<Evidence> {
 	
 	@Query("MATCH (evidence:Evidence:IdentifiedEntity:DatabaseEntity { accessionId : \"kbe:\"+{evidenceId} }) RETURN evidence")
 	public Evidence findByEvidenceId(@Param("evidenceId") String evidenceId);
+	
+	@Query(
+			" MATCH (evidence:Evidence:IdentifiedEntity:DatabaseEntity) " +
+			" WHERE ID(evidence) = {evidenceId} " +
+			" RETURN evidence " +
+			" SKIP  {pageNumber} * {pageSize} " +
+			" LIMIT {pageSize} "
+			
+	)
+	public List<Evidence> apiGetEvidence(
+		@Param("evidenceId") String evidenceId,
+		@Param("pageNumber") Integer pageNumber,
+		@Param("pageSize") Integer pageSize
+	);
 	
 }
