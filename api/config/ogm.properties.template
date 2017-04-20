@@ -23,21 +23,14 @@
 # THE SOFTWARE.
 #-------------------------------------------------------------------------------
 #
+# OGM Driver specification - MANDATORY!
+# 
 driver=org.neo4j.ogm.drivers.http.driver.HttpDriver
 #
-# YOU HAVE A CHOICE TO EITHER RUN NEO4J ON YOUR LOCAL ("HOST") MACHINE
-# OR TO RUN IT WITHIN A VAGRANT VIRTUAL MACHINE.  FOR THE FORMER, USE 
-# THE FIRST SET OF URL'S (PROPERLY SET TO YOUR NEO4J USER NAME AND PASSWORD)
-# FOR THE LATTER, USE THE SECOND SET OF CONFIGURATION PARAMETERS.
+# OGM configuration for Neo4j server
 #
-# Note: set this URI to your Neo4j database hostname, if not localhost
-#       also set your username and password if not 'neo4j' for both
-#
-
-#URI=http://neo4j:neo4j@localhost:7474
-URI=http://neo4j:Kappan0w1edgeB10@52.44.23.54:7474
-
+URI=http://<username>:<password>@<ip>:7474
 #
 # OGM configuration for use in the Vagrant VM
 #
-# URI=http://neo4j:vagrant@localhost:7474
+#URI=http://neo4j:vagrant@localhost:7474

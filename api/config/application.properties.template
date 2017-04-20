@@ -1,0 +1,14 @@
+springfox.documentation.swagger.v2.path=/api-docs
+server.contextPath=/api
+server.port=8080
+spring.jackson.date-format=bio.knowledge.server.RFC3339DateFormat
+spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false
+
+#################################################################
+# Knowledge.Bio 
+#
+# Neo4j 3.1 server instance 
+#
+neo4j.url=http://<hostip>:7474
+neo4j.username=<username>
+neo4j.password=<password>
