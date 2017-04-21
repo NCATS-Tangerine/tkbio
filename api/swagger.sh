@@ -16,5 +16,6 @@ else
 	--model-package bio.knowledge.server.model	\
 	--api-package bio.knowledge.server.api		\
 	-c swaggerOptions.json				\
+	-o server
 #	--skip-overwrite
 fi
