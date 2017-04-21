@@ -1,6 +1,7 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
+import bio.knowledge.server.model.InlineResponse2001DataPage;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
@@ -11,117 +12,148 @@ import javax.validation.constraints.*;
 /**
  * InlineResponse2001
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-20T17:24:29.683-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-21T09:24:51.811-07:00")
 
 public class InlineResponse2001   {
-  @JsonProperty("id")
-  private String id = null;
+  @JsonProperty("keywords")
+  private List<String> keywords = new ArrayList<String>();
 
-  @JsonProperty("name")
-  private String name = null;
+  @JsonProperty("semanticGroups")
+  private List<String> semanticGroups = new ArrayList<String>();
 
-  @JsonProperty("semanticType")
-  private String semanticType = null;
+  @JsonProperty("pageNumber")
+  private Integer pageNumber = null;
 
-  @JsonProperty("synonyms")
-  private List<String> synonyms = new ArrayList<String>();
+  @JsonProperty("pageSize")
+  private Integer pageSize = null;
 
-  @JsonProperty("definition")
-  private String definition = null;
+  @JsonProperty("totalEntries")
+  private Integer totalEntries = null;
 
-  public InlineResponse2001 id(String id) {
-    this.id = id;
+  @JsonProperty("dataPage")
+  private List<InlineResponse2001DataPage> dataPage = new ArrayList<InlineResponse2001DataPage>();
+
+  public InlineResponse2001 keywords(List<String> keywords) {
+    this.keywords = keywords;
+    return this;
+  }
+
+  public InlineResponse2001 addKeywordsItem(String keywordsItem) {
+    this.keywords.add(keywordsItem);
     return this;
   }
 
    /**
-   * object identifier for the concept in the specified knowledge source database 
-   * @return id
+   * Get keywords
+   * @return keywords
   **/
-  @ApiModelProperty(value = "object identifier for the concept in the specified knowledge source database ")
-  public String getId() {
-    return id;
+  @ApiModelProperty(value = "")
+  public List<String> getKeywords() {
+    return keywords;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  public void setKeywords(List<String> keywords) {
+    this.keywords = keywords;
   }
 
-  public InlineResponse2001 name(String name) {
-    this.name = name;
+  public InlineResponse2001 semanticGroups(List<String> semanticGroups) {
+    this.semanticGroups = semanticGroups;
+    return this;
+  }
+
+  public InlineResponse2001 addSemanticGroupsItem(String semanticGroupsItem) {
+    this.semanticGroups.add(semanticGroupsItem);
     return this;
   }
 
    /**
-   * canonical human readable name of the concept 
-   * @return name
+   * Get semanticGroups
+   * @return semanticGroups
   **/
-  @ApiModelProperty(value = "canonical human readable name of the concept ")
-  public String getName() {
-    return name;
+  @ApiModelProperty(value = "")
+  public List<String> getSemanticGroups() {
+    return semanticGroups;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setSemanticGroups(List<String> semanticGroups) {
+    this.semanticGroups = semanticGroups;
   }
 
-  public InlineResponse2001 semanticType(String semanticType) {
-    this.semanticType = semanticType;
+  public InlineResponse2001 pageNumber(Integer pageNumber) {
+    this.pageNumber = pageNumber;
     return this;
   }
 
    /**
-   * concept semantic type 
-   * @return semanticType
+   * Get pageNumber
+   * @return pageNumber
   **/
-  @ApiModelProperty(value = "concept semantic type ")
-  public String getSemanticType() {
-    return semanticType;
+  @ApiModelProperty(value = "")
+  public Integer getPageNumber() {
+    return pageNumber;
   }
 
-  public void setSemanticType(String semanticType) {
-    this.semanticType = semanticType;
+  public void setPageNumber(Integer pageNumber) {
+    this.pageNumber = pageNumber;
   }
 
-  public InlineResponse2001 synonyms(List<String> synonyms) {
-    this.synonyms = synonyms;
-    return this;
-  }
-
-  public InlineResponse2001 addSynonymsItem(String synonymsItem) {
-    this.synonyms.add(synonymsItem);
+  public InlineResponse2001 pageSize(Integer pageSize) {
+    this.pageSize = pageSize;
     return this;
   }
 
    /**
-   * list of synonyms for concept 
-   * @return synonyms
+   * Get pageSize
+   * @return pageSize
   **/
-  @ApiModelProperty(value = "list of synonyms for concept ")
-  public List<String> getSynonyms() {
-    return synonyms;
+  @ApiModelProperty(value = "")
+  public Integer getPageSize() {
+    return pageSize;
   }
 
-  public void setSynonyms(List<String> synonyms) {
-    this.synonyms = synonyms;
+  public void setPageSize(Integer pageSize) {
+    this.pageSize = pageSize;
   }
 
-  public InlineResponse2001 definition(String definition) {
-    this.definition = definition;
+  public InlineResponse2001 totalEntries(Integer totalEntries) {
+    this.totalEntries = totalEntries;
     return this;
   }
 
    /**
-   * concept definition 
-   * @return definition
+   * Get totalEntries
+   * @return totalEntries
   **/
-  @ApiModelProperty(value = "concept definition ")
-  public String getDefinition() {
-    return definition;
+  @ApiModelProperty(value = "")
+  public Integer getTotalEntries() {
+    return totalEntries;
   }
 
-  public void setDefinition(String definition) {
-    this.definition = definition;
+  public void setTotalEntries(Integer totalEntries) {
+    this.totalEntries = totalEntries;
+  }
+
+  public InlineResponse2001 dataPage(List<InlineResponse2001DataPage> dataPage) {
+    this.dataPage = dataPage;
+    return this;
+  }
+
+  public InlineResponse2001 addDataPageItem(InlineResponse2001DataPage dataPageItem) {
+    this.dataPage.add(dataPageItem);
+    return this;
+  }
+
+   /**
+   * Get dataPage
+   * @return dataPage
+  **/
+  @ApiModelProperty(value = "")
+  public List<InlineResponse2001DataPage> getDataPage() {
+    return dataPage;
+  }
+
+  public void setDataPage(List<InlineResponse2001DataPage> dataPage) {
+    this.dataPage = dataPage;
   }
 
 
@@ -134,16 +166,17 @@ public class InlineResponse2001   {
       return false;
     }
     InlineResponse2001 inlineResponse2001 = (InlineResponse2001) o;
-    return Objects.equals(this.id, inlineResponse2001.id) &&
-        Objects.equals(this.name, inlineResponse2001.name) &&
-        Objects.equals(this.semanticType, inlineResponse2001.semanticType) &&
-        Objects.equals(this.synonyms, inlineResponse2001.synonyms) &&
-        Objects.equals(this.definition, inlineResponse2001.definition);
+    return Objects.equals(this.keywords, inlineResponse2001.keywords) &&
+        Objects.equals(this.semanticGroups, inlineResponse2001.semanticGroups) &&
+        Objects.equals(this.pageNumber, inlineResponse2001.pageNumber) &&
+        Objects.equals(this.pageSize, inlineResponse2001.pageSize) &&
+        Objects.equals(this.totalEntries, inlineResponse2001.totalEntries) &&
+        Objects.equals(this.dataPage, inlineResponse2001.dataPage);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, semanticType, synonyms, definition);
+    return Objects.hash(keywords, semanticGroups, pageNumber, pageSize, totalEntries, dataPage);
   }
 
   @Override
@@ -151,11 +184,12 @@ public class InlineResponse2001   {
     StringBuilder sb = new StringBuilder();
     sb.append("class InlineResponse2001 {\n");
     
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    semanticType: ").append(toIndentedString(semanticType)).append("\n");
-    sb.append("    synonyms: ").append(toIndentedString(synonyms)).append("\n");
-    sb.append("    definition: ").append(toIndentedString(definition)).append("\n");
+    sb.append("    keywords: ").append(toIndentedString(keywords)).append("\n");
+    sb.append("    semanticGroups: ").append(toIndentedString(semanticGroups)).append("\n");
+    sb.append("    pageNumber: ").append(toIndentedString(pageNumber)).append("\n");
+    sb.append("    pageSize: ").append(toIndentedString(pageSize)).append("\n");
+    sb.append("    totalEntries: ").append(toIndentedString(totalEntries)).append("\n");
+    sb.append("    dataPage: ").append(toIndentedString(dataPage)).append("\n");
     sb.append("}");
     return sb.toString();
   }

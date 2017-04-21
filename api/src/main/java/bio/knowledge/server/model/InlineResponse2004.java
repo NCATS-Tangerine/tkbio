@@ -1,78 +1,133 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
+import bio.knowledge.server.model.InlineResponse2004DataPage;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.ArrayList;
+import java.util.List;
 import javax.validation.constraints.*;
 /**
  * InlineResponse2004
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-20T17:24:29.683-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-21T09:24:51.811-07:00")
 
 public class InlineResponse2004   {
-  @JsonProperty("id")
-  private String id = null;
+  @JsonProperty("keywords")
+  private List<String> keywords = new ArrayList<String>();
 
-  @JsonProperty("name")
-  private String name = null;
+  @JsonProperty("pageNumber")
+  private Integer pageNumber = null;
 
-  @JsonProperty("publicationDate")
-  private String publicationDate = null;
+  @JsonProperty("pageSize")
+  private Integer pageSize = null;
 
-  public InlineResponse2004 id(String id) {
-    this.id = id;
+  @JsonProperty("totalEntries")
+  private Integer totalEntries = null;
+
+  @JsonProperty("dataPage")
+  private List<InlineResponse2004DataPage> dataPage = new ArrayList<InlineResponse2004DataPage>();
+
+  public InlineResponse2004 keywords(List<String> keywords) {
+    this.keywords = keywords;
+    return this;
+  }
+
+  public InlineResponse2004 addKeywordsItem(String keywordsItem) {
+    this.keywords.add(keywordsItem);
     return this;
   }
 
    /**
-   * qualified object evidence identifier for the cited reference 
-   * @return id
+   * Get keywords
+   * @return keywords
   **/
-  @ApiModelProperty(value = "qualified object evidence identifier for the cited reference ")
-  public String getId() {
-    return id;
+  @ApiModelProperty(value = "")
+  public List<String> getKeywords() {
+    return keywords;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  public void setKeywords(List<String> keywords) {
+    this.keywords = keywords;
   }
 
-  public InlineResponse2004 name(String name) {
-    this.name = name;
+  public InlineResponse2004 pageNumber(Integer pageNumber) {
+    this.pageNumber = pageNumber;
     return this;
   }
 
    /**
-   * canonical human readable title of the cited reference 
-   * @return name
+   * Get pageNumber
+   * @return pageNumber
   **/
-  @ApiModelProperty(value = "canonical human readable title of the cited reference ")
-  public String getName() {
-    return name;
+  @ApiModelProperty(value = "")
+  public Integer getPageNumber() {
+    return pageNumber;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setPageNumber(Integer pageNumber) {
+    this.pageNumber = pageNumber;
   }
 
-  public InlineResponse2004 publicationDate(String publicationDate) {
-    this.publicationDate = publicationDate;
+  public InlineResponse2004 pageSize(Integer pageSize) {
+    this.pageSize = pageSize;
     return this;
   }
 
    /**
-   * publication date of reference (yyyy-mm-dd) 
-   * @return publicationDate
+   * Get pageSize
+   * @return pageSize
   **/
-  @ApiModelProperty(value = "publication date of reference (yyyy-mm-dd) ")
-  public String getPublicationDate() {
-    return publicationDate;
+  @ApiModelProperty(value = "")
+  public Integer getPageSize() {
+    return pageSize;
   }
 
-  public void setPublicationDate(String publicationDate) {
-    this.publicationDate = publicationDate;
+  public void setPageSize(Integer pageSize) {
+    this.pageSize = pageSize;
+  }
+
+  public InlineResponse2004 totalEntries(Integer totalEntries) {
+    this.totalEntries = totalEntries;
+    return this;
+  }
+
+   /**
+   * Get totalEntries
+   * @return totalEntries
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getTotalEntries() {
+    return totalEntries;
+  }
+
+  public void setTotalEntries(Integer totalEntries) {
+    this.totalEntries = totalEntries;
+  }
+
+  public InlineResponse2004 dataPage(List<InlineResponse2004DataPage> dataPage) {
+    this.dataPage = dataPage;
+    return this;
+  }
+
+  public InlineResponse2004 addDataPageItem(InlineResponse2004DataPage dataPageItem) {
+    this.dataPage.add(dataPageItem);
+    return this;
+  }
+
+   /**
+   * Get dataPage
+   * @return dataPage
+  **/
+  @ApiModelProperty(value = "")
+  public List<InlineResponse2004DataPage> getDataPage() {
+    return dataPage;
+  }
+
+  public void setDataPage(List<InlineResponse2004DataPage> dataPage) {
+    this.dataPage = dataPage;
   }
 
 
@@ -85,14 +140,16 @@ public class InlineResponse2004   {
       return false;
     }
     InlineResponse2004 inlineResponse2004 = (InlineResponse2004) o;
-    return Objects.equals(this.id, inlineResponse2004.id) &&
-        Objects.equals(this.name, inlineResponse2004.name) &&
-        Objects.equals(this.publicationDate, inlineResponse2004.publicationDate);
+    return Objects.equals(this.keywords, inlineResponse2004.keywords) &&
+        Objects.equals(this.pageNumber, inlineResponse2004.pageNumber) &&
+        Objects.equals(this.pageSize, inlineResponse2004.pageSize) &&
+        Objects.equals(this.totalEntries, inlineResponse2004.totalEntries) &&
+        Objects.equals(this.dataPage, inlineResponse2004.dataPage);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, publicationDate);
+    return Objects.hash(keywords, pageNumber, pageSize, totalEntries, dataPage);
   }
 
   @Override
@@ -100,9 +157,11 @@ public class InlineResponse2004   {
     StringBuilder sb = new StringBuilder();
     sb.append("class InlineResponse2004 {\n");
     
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    publicationDate: ").append(toIndentedString(publicationDate)).append("\n");
+    sb.append("    keywords: ").append(toIndentedString(keywords)).append("\n");
+    sb.append("    pageNumber: ").append(toIndentedString(pageNumber)).append("\n");
+    sb.append("    pageSize: ").append(toIndentedString(pageSize)).append("\n");
+    sb.append("    totalEntries: ").append(toIndentedString(totalEntries)).append("\n");
+    sb.append("    dataPage: ").append(toIndentedString(dataPage)).append("\n");
     sb.append("}");
     return sb.toString();
   }

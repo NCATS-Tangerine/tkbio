@@ -5,22 +5,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.ArrayList;
-import java.util.List;
 import javax.validation.constraints.*;
 /**
- * InlineResponse2002
+ * InlineResponse2003Evidence
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-21T09:24:51.811-07:00")
 
-public class InlineResponse2002   {
+public class InlineResponse2003Evidence   {
   @JsonProperty("id")
   private String id = null;
 
-  @JsonProperty("xrefs")
-  private List<String> xrefs = new ArrayList<String>();
+  @JsonProperty("count")
+  private Integer count = null;
 
-  public InlineResponse2002 id(String id) {
+  public InlineResponse2003Evidence id(String id) {
     this.id = id;
     return this;
   }
@@ -38,27 +36,22 @@ public class InlineResponse2002   {
     this.id = id;
   }
 
-  public InlineResponse2002 xrefs(List<String> xrefs) {
-    this.xrefs = xrefs;
-    return this;
-  }
-
-  public InlineResponse2002 addXrefsItem(String xrefsItem) {
-    this.xrefs.add(xrefsItem);
+  public InlineResponse2003Evidence count(Integer count) {
+    this.count = count;
     return this;
   }
 
    /**
-   * Get xrefs
-   * @return xrefs
+   * Get count
+   * @return count
   **/
   @ApiModelProperty(value = "")
-  public List<String> getXrefs() {
-    return xrefs;
+  public Integer getCount() {
+    return count;
   }
 
-  public void setXrefs(List<String> xrefs) {
-    this.xrefs = xrefs;
+  public void setCount(Integer count) {
+    this.count = count;
   }
 
 
@@ -70,23 +63,23 @@ public class InlineResponse2002   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2002 inlineResponse2002 = (InlineResponse2002) o;
-    return Objects.equals(this.id, inlineResponse2002.id) &&
-        Objects.equals(this.xrefs, inlineResponse2002.xrefs);
+    InlineResponse2003Evidence inlineResponse2003Evidence = (InlineResponse2003Evidence) o;
+    return Objects.equals(this.id, inlineResponse2003Evidence.id) &&
+        Objects.equals(this.count, inlineResponse2003Evidence.count);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, xrefs);
+    return Objects.hash(id, count);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2002 {\n");
+    sb.append("class InlineResponse2003Evidence {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    xrefs: ").append(toIndentedString(xrefs)).append("\n");
+    sb.append("    count: ").append(toIndentedString(count)).append("\n");
     sb.append("}");
     return sb.toString();
   }

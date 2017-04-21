@@ -5,22 +5,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.ArrayList;
-import java.util.List;
 import javax.validation.constraints.*;
 /**
- * InlineResponse2002
+ * InlineResponse2003Subject
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-21T09:24:51.811-07:00")
 
-public class InlineResponse2002   {
+public class InlineResponse2003Subject   {
   @JsonProperty("id")
   private String id = null;
 
-  @JsonProperty("xrefs")
-  private List<String> xrefs = new ArrayList<String>();
+  @JsonProperty("name")
+  private String name = null;
 
-  public InlineResponse2002 id(String id) {
+  public InlineResponse2003Subject id(String id) {
     this.id = id;
     return this;
   }
@@ -38,27 +36,22 @@ public class InlineResponse2002   {
     this.id = id;
   }
 
-  public InlineResponse2002 xrefs(List<String> xrefs) {
-    this.xrefs = xrefs;
-    return this;
-  }
-
-  public InlineResponse2002 addXrefsItem(String xrefsItem) {
-    this.xrefs.add(xrefsItem);
+  public InlineResponse2003Subject name(String name) {
+    this.name = name;
     return this;
   }
 
    /**
-   * Get xrefs
-   * @return xrefs
+   * human readable label of concept
+   * @return name
   **/
-  @ApiModelProperty(value = "")
-  public List<String> getXrefs() {
-    return xrefs;
+  @ApiModelProperty(value = "human readable label of concept")
+  public String getName() {
+    return name;
   }
 
-  public void setXrefs(List<String> xrefs) {
-    this.xrefs = xrefs;
+  public void setName(String name) {
+    this.name = name;
   }
 
 
@@ -70,23 +63,23 @@ public class InlineResponse2002   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2002 inlineResponse2002 = (InlineResponse2002) o;
-    return Objects.equals(this.id, inlineResponse2002.id) &&
-        Objects.equals(this.xrefs, inlineResponse2002.xrefs);
+    InlineResponse2003Subject inlineResponse2003Subject = (InlineResponse2003Subject) o;
+    return Objects.equals(this.id, inlineResponse2003Subject.id) &&
+        Objects.equals(this.name, inlineResponse2003Subject.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, xrefs);
+    return Objects.hash(id, name);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2002 {\n");
+    sb.append("class InlineResponse2003Subject {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    xrefs: ").append(toIndentedString(xrefs)).append("\n");
+    sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("}");
     return sb.toString();
   }

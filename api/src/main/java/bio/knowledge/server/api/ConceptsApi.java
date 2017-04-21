@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import javax.validation.constraints.*;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-20T17:24:29.683-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-21T09:24:51.811-07:00")
 
 @Api(value = "concepts", description = "the concepts API")
 public interface ConceptsApi {
@@ -27,18 +27,18 @@ public interface ConceptsApi {
     @RequestMapping(value = "/concepts/{conceptId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<InlineResponse200>> getConceptDetails(@ApiParam(value = "local identifier of concept of interest",required=true ) @PathVariable("conceptId") String conceptId);
+    ResponseEntity<List<InlineResponse200>> getConceptDetails(@ApiParam(value = "local object identifier of concept of interest",required=true ) @PathVariable("conceptId") String conceptId);
 
 
-    @ApiOperation(value = "", notes = "Retrieves a (paged) list of concepts in the system ", response = InlineResponse2001.class, responseContainer = "List", tags={ "concepts", })
+    @ApiOperation(value = "", notes = "Retrieves a (paged) list of concepts in the system ", response = InlineResponse2001.class, tags={ "concepts", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response with concept list returned ", response = InlineResponse2001.class) })
     @RequestMapping(value = "/concepts",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<InlineResponse2001>> getConcepts( @NotNull @ApiParam(value = "string of comma delimited keywords to match against concept names and aliases", required = true) @RequestParam(value = "textFilter", required = true) String textFilter,
+    ResponseEntity<InlineResponse2001> getConcepts( @NotNull @ApiParam(value = "array of keywords or substrings against which to match concept names and synonyms", required = true) @RequestParam(value = "q", required = true) List<String> q,
+         @ApiParam(value = "array of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt for the full list of codes) ") @RequestParam(value = "sg", required = false) List<String> sg,
          @ApiParam(value = "(1-based) number of the page to be returned in a paged set of query results ") @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-         @ApiParam(value = "number of concepts per page to be returned in a paged set of query results ") @RequestParam(value = "pageSize", required = false) Integer pageSize,
-         @ApiParam(value = "string of comma-delimited semantic type names to apply against set of concepts matched by the main search string ") @RequestParam(value = "semanticType", required = false) String semanticType);
+         @ApiParam(value = "number of concepts per page to be returned in a paged set of query results ") @RequestParam(value = "pageSize", required = false) Integer pageSize);
 
 }

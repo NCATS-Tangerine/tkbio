@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import javax.validation.constraints.*;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-20T17:24:29.683-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-21T09:24:51.811-07:00")
 
 @Api(value = "xrefs", description = "the xrefs API")
 public interface XrefsApi {
@@ -35,6 +35,6 @@ public interface XrefsApi {
     @RequestMapping(value = "/xrefs",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<InlineResponse2002>> getXRefConcepts( @NotNull @ApiParam(value = "list of cross-reference identifiers (xi) to be used in a search for equivalent concepts ", required = true) @RequestParam(value = "xi", required = true) List<String> xi);
+    ResponseEntity<List<InlineResponse2002>> getXRefConcepts( @NotNull @ApiParam(value = "list of cross-reference identifiers to be used in a search for equivalent concepts ", required = true) @RequestParam(value = "xi", required = true) List<String> xi);
 
 }

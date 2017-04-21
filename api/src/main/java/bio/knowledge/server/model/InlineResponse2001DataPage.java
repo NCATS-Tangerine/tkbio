@@ -1,7 +1,6 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-import bio.knowledge.server.model.ConceptsconceptIdDetails;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
@@ -10,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.*;
 /**
- * InlineResponse200
+ * InlineResponse2001DataPage
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-21T09:24:51.811-07:00")
 
-public class InlineResponse200   {
+public class InlineResponse2001DataPage   {
   @JsonProperty("id")
   private String id = null;
 
@@ -30,10 +29,7 @@ public class InlineResponse200   {
   @JsonProperty("definition")
   private String definition = null;
 
-  @JsonProperty("details")
-  private List<ConceptsconceptIdDetails> details = new ArrayList<ConceptsconceptIdDetails>();
-
-  public InlineResponse200 id(String id) {
+  public InlineResponse2001DataPage id(String id) {
     this.id = id;
     return this;
   }
@@ -51,7 +47,7 @@ public class InlineResponse200   {
     this.id = id;
   }
 
-  public InlineResponse200 name(String name) {
+  public InlineResponse2001DataPage name(String name) {
     this.name = name;
     return this;
   }
@@ -69,7 +65,7 @@ public class InlineResponse200   {
     this.name = name;
   }
 
-  public InlineResponse200 semanticGroup(String semanticGroup) {
+  public InlineResponse2001DataPage semanticGroup(String semanticGroup) {
     this.semanticGroup = semanticGroup;
     return this;
   }
@@ -87,12 +83,12 @@ public class InlineResponse200   {
     this.semanticGroup = semanticGroup;
   }
 
-  public InlineResponse200 synonyms(List<String> synonyms) {
+  public InlineResponse2001DataPage synonyms(List<String> synonyms) {
     this.synonyms = synonyms;
     return this;
   }
 
-  public InlineResponse200 addSynonymsItem(String synonymsItem) {
+  public InlineResponse2001DataPage addSynonymsItem(String synonymsItem) {
     this.synonyms.add(synonymsItem);
     return this;
   }
@@ -110,7 +106,7 @@ public class InlineResponse200   {
     this.synonyms = synonyms;
   }
 
-  public InlineResponse200 definition(String definition) {
+  public InlineResponse2001DataPage definition(String definition) {
     this.definition = definition;
     return this;
   }
@@ -128,29 +124,6 @@ public class InlineResponse200   {
     this.definition = definition;
   }
 
-  public InlineResponse200 details(List<ConceptsconceptIdDetails> details) {
-    this.details = details;
-    return this;
-  }
-
-  public InlineResponse200 addDetailsItem(ConceptsconceptIdDetails detailsItem) {
-    this.details.add(detailsItem);
-    return this;
-  }
-
-   /**
-   * Get details
-   * @return details
-  **/
-  @ApiModelProperty(value = "")
-  public List<ConceptsconceptIdDetails> getDetails() {
-    return details;
-  }
-
-  public void setDetails(List<ConceptsconceptIdDetails> details) {
-    this.details = details;
-  }
-
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -160,31 +133,29 @@ public class InlineResponse200   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse200 inlineResponse200 = (InlineResponse200) o;
-    return Objects.equals(this.id, inlineResponse200.id) &&
-        Objects.equals(this.name, inlineResponse200.name) &&
-        Objects.equals(this.semanticGroup, inlineResponse200.semanticGroup) &&
-        Objects.equals(this.synonyms, inlineResponse200.synonyms) &&
-        Objects.equals(this.definition, inlineResponse200.definition) &&
-        Objects.equals(this.details, inlineResponse200.details);
+    InlineResponse2001DataPage inlineResponse2001DataPage = (InlineResponse2001DataPage) o;
+    return Objects.equals(this.id, inlineResponse2001DataPage.id) &&
+        Objects.equals(this.name, inlineResponse2001DataPage.name) &&
+        Objects.equals(this.semanticGroup, inlineResponse2001DataPage.semanticGroup) &&
+        Objects.equals(this.synonyms, inlineResponse2001DataPage.synonyms) &&
+        Objects.equals(this.definition, inlineResponse2001DataPage.definition);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, semanticGroup, synonyms, definition, details);
+    return Objects.hash(id, name, semanticGroup, synonyms, definition);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse200 {\n");
+    sb.append("class InlineResponse2001DataPage {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    semanticGroup: ").append(toIndentedString(semanticGroup)).append("\n");
     sb.append("    synonyms: ").append(toIndentedString(synonyms)).append("\n");
     sb.append("    definition: ").append(toIndentedString(definition)).append("\n");
-    sb.append("    details: ").append(toIndentedString(details)).append("\n");
     sb.append("}");
     return sb.toString();
   }
