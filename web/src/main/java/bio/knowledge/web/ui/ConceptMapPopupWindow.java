@@ -59,7 +59,8 @@ import bio.knowledge.model.neo4j.Neo4jEvidence;
 import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
 import bio.knowledge.model.neo4j.Neo4jReference;
-import bio.knowledge.model.neo4j.Neo4jAnnotation.Type;
+import bio.knowledge.model.Annotation;
+import bio.knowledge.model.Annotation.Type;
 import bio.knowledge.model.EvidenceCode;
 import bio.knowledge.service.AnnotationService;
 import bio.knowledge.service.Cache;
@@ -456,7 +457,7 @@ public class ConceptMapPopupWindow {
 
 				// Wonder how the annotationId should be consistently computed?
 				String annotationId = "kba:" + String.valueOf((description + uri).hashCode());
-				Neo4jAnnotation annotation = annotationService.findByAccessionId(annotationId);
+				Annotation annotation = annotationService.findByAccessionId(annotationId);
 				
 				if (annotation == null) {
 					annotation = new Neo4jAnnotation(annotationId, description, Type.Remark, EvidenceCode.IC, reference);

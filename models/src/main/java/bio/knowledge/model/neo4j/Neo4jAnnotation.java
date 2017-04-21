@@ -30,6 +30,7 @@ import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
 
 import bio.knowledge.model.Annotation;
+import bio.knowledge.model.Reference;
 import bio.knowledge.model.DomainModelException;
 import bio.knowledge.model.EvidenceCode;
 import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity;
@@ -53,41 +54,12 @@ public class Neo4jAnnotation extends Neo4jAbstractIdentifiedEntity implements An
 	// The annotation is always visible to the public by default.
 	private boolean visible = true ;
 	
-
-	/**
-	 * Type of Annotation
-	 */
-	public enum Type {
-		
-		Remark("remark"), 
-		Title("ti"), 
-		Abstract("ab")
-		;
-		
-		private String abbreviation ;
-		
-		Type(String abbreviation){
-			this.abbreviation = abbreviation ;
-		}
-		
-	    public static Type lookUp(String abbreviation) {
-	    	for(Type type: Type.values()) {
-	    		if(type.abbreviation.toLowerCase().equals(abbreviation))
-	    			return type ;
-	    	}
-	    	throw new DomainModelException("Invalid Sentence type abbreviation: "+abbreviation) ;
-	    }
-	    
-	    public String toString() { return name() ; }
-		
-	}
-	
 	private Type type = Type.Remark;
 	
 	private EvidenceCode evidenceCode = EvidenceCode.ND ;
 	
 	@Relationship(type="REFERENCE")
-    private Neo4jReference reference ;
+    private Reference reference ;
     
     Neo4jAnnotation() {}
     
@@ -99,7 +71,7 @@ public class Neo4jAnnotation extends Neo4jAbstractIdentifiedEntity implements An
     public Neo4jAnnotation( 
     		String accessionId, 
     		String annotation,
-    		Neo4jReference reference 
+    		Reference reference 
     ) {
     	super( accessionId, annotation, Type.Remark.name()+":"+EvidenceCode.ND.getLabel() );
     	setType(type);
@@ -118,7 +90,7 @@ public class Neo4jAnnotation extends Neo4jAbstractIdentifiedEntity implements An
     		String annotation, 
     		Type type, 
     		EvidenceCode code, 
-    		Neo4jReference reference 
+    		Reference reference 
     ) {
     	super( accessionId, annotation, type.name()+":"+code.getLabel() );
     	setType(type);
@@ -129,13 +101,12 @@ public class Neo4jAnnotation extends Neo4jAbstractIdentifiedEntity implements An
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.Annotation#getType()
 	 */
-	@Override
 	public Type getType() {
 		return type;
 	}
-
+	
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.Annotation#setType(bio.knowledge.model.Neo4jAnnotation.Type)
+	 * @see bio.knowledge.model.Annotation#setType()
 	 */
 	@Override
 	public void setType(Type type) {
@@ -143,19 +114,19 @@ public class Neo4jAnnotation extends Neo4jAbstractIdentifiedEntity implements An
 	}
 
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.Annotation#setReference(bio.knowledge.model.Reference)
-	 */
-	@Override
-	public void setReference(Neo4jReference reference) {
-		this.reference = reference;
-	}
-
-	/* (non-Javadoc)
 	 * @see bio.knowledge.model.Annotation#getReference()
 	 */
 	@Override
-	public Neo4jReference getReference() {
-		return reference;
+	public Reference getReference() {
+		return this.reference;
+	}
+
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Annotation#setReference()
+	 */
+	@Override
+	public void setReference(Reference reference) {
+		this.reference = reference;
 	}
 	
 	/*

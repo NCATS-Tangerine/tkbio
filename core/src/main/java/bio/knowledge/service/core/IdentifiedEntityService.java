@@ -40,12 +40,6 @@ import bio.knowledge.model.core.IdentifiedEntity;
  */
 public interface IdentifiedEntityService<T extends IdentifiedEntity> {
 	
-	/** 
-	 * @param name of the new instance
-	 * @return a new named instance of this data type
-	 */
-	T createInstance(Object... args) ;
-	
 	/**
 	 * @return a standard ListTablePager implementation for user in Registry mapping.
 	 */

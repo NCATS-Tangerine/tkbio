@@ -11,7 +11,7 @@ public interface Evidence {
 	/**
 	 * @return
 	 */
-	void setStatement(Neo4jGeneralStatement statement);
+	void setStatement(Statement statement);
 
 	/**
 	 * @return
@@ -22,19 +22,19 @@ public interface Evidence {
 	 * 
 	 * @param annotations
 	 */
-	void setAnnotations(Set<Neo4jAnnotation> annotations);
+	void setAnnotations(Set<Annotation> annotations);
 
 	/**
 	 * 
 	 * @param annotation
 	 */
-	void addAnnotation(Neo4jAnnotation annotation);
+	void addAnnotation(Annotation annotation);
 
 	/**
 	 * 
 	 * @return
 	 */
-	Set<Neo4jAnnotation> getAnnotations();
+	Set<Annotation> getAnnotations();
 
 	/**
 	 * @param count of number of Annotations in Evidence
@@ -60,5 +60,7 @@ public interface Evidence {
 	 * 
 	 */
 	int compareTo(IdentifiedEntity other);
+
+	Long getId();
 
 }

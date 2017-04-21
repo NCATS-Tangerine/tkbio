@@ -98,7 +98,6 @@ public class StatementService
 	 * bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.
 	 * lang.Object[])
 	 */
-	@Override
 	public Neo4jGeneralStatement createInstance(Object... args) {
 
 		if (args.length == 1)

@@ -43,6 +43,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.Annotation;
+import bio.knowledge.model.Evidence;
 import bio.knowledge.model.EvidenceCode;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.neo4j.Neo4jConcept;
@@ -113,7 +115,7 @@ public class StatementTests {
 
 		 */
 		public final Neo4jAnnotation GLYP_UMBL_ANNOTATION = 
-				annotationService.createInstance(
+				new Neo4jAnnotation(
 						"kba:3668220", 
 						"Glycoprotein level in umbilical arterial and venous blood", 
 						Neo4jAnnotation.Type.Title,
@@ -277,6 +279,7 @@ public class StatementTests {
 		
 		assertEquals( annotation.getId(),   glyp2umbl.getId() ) ;
 		assertEquals( annotation.getType(),     glyp2umbl.getType() ) ;
+		// TODO: Ids are a database entity property. do these tests need to be generalized? see Reference interface for the call for this Id.
 		assertEquals( annotation.getReference().getId(), glyp2umbl.getReference().getId() ) ;
 		assertEquals( annotation.getReference().getPmid(), referenceTestData.PMID5905393 ) ;
 	}
@@ -405,17 +408,17 @@ public class StatementTests {
 		assertEquals( object.getAccessionId(),  origObject.getAccessionId() ) ;
 		System.out.println( "Object accession id: "+object.getAccessionId());
 		
-		Neo4jEvidence evidence = p.getEvidence() ;
+		Evidence evidence = p.getEvidence() ;
 		assertNotNull(evidence) ;
 		System.out.println("Evidence id:\t"+evidence.getId()) ;
 		
 		assertTrue("Statement has some evidence?",!evidence.getAnnotations().isEmpty()) ;
 		
-		for( Neo4jAnnotation annotation : evidence.getAnnotations() ) {
+		for( Annotation annotation : evidence.getAnnotations() ) {
 			System.out.println("Evidence Annotation found:\t"+annotation.getAccessionId()) ;
 			assertEquals( annotation.getId(), GLYP_UMBL_SENTENCE.getId() ) ;
 			
-			Neo4jReference reference = annotation.getReference();
+			Neo4jReference reference = (Neo4jReference) annotation.getReference();
 			assertEquals( reference.getId(), UMBL_REFERENCE.getId() ) ;
 			System.out.println("Annotation Reference found:\t"+reference.getAccessionId()) ;
 			

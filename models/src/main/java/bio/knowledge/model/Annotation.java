@@ -1,23 +1,48 @@
 package bio.knowledge.model;
 
-import bio.knowledge.model.neo4j.Neo4jReference;
-import bio.knowledge.model.neo4j.Neo4jAnnotation.Type;
+import bio.knowledge.model.Reference;
+import bio.knowledge.model.core.IdentifiedEntity;
 
-public interface Annotation {
+public interface Annotation extends IdentifiedEntity {
 
-	Type getType();
-
+	/**
+	 * Type of Annotation
+	 */
+	public enum Type {
+		
+		Remark("remark"), 
+		Title("ti"), 
+		Abstract("ab");
+		
+		private String abbreviation ;
+		
+		Type(String abbreviation){
+			this.abbreviation = abbreviation ;
+		}
+		
+	    public static Type lookUp(String abbreviation) {
+	    	for(Type type: Type.values()) {
+	    		if(type.abbreviation.toLowerCase().equals(abbreviation))
+	    			return type ;
+	    	}
+	    	throw new DomainModelException("Invalid Sentence type abbreviation: "+abbreviation) ;
+	    }
+	    
+	    public String toString() { return name() ; }
+		
+	}
+	
 	void setType(Type type);
 
 	/**
 	 * @param reference the reference to set
 	 */
-	void setReference(Neo4jReference reference);
+	void setReference(Reference reference);
 
 	/**
 	 * @return the reference
 	 */
-	Neo4jReference getReference();
+	Reference getReference();
 
 	void setPublicationDate(String date);
 

@@ -34,12 +34,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
+import bio.knowledge.model.Annotation;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.neo4j.Neo4jConcept;
-import bio.knowledge.model.neo4j.Neo4jEvidence;
+import bio.knowledge.model.Evidence;
 import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 
 /**
@@ -205,7 +206,7 @@ public class KBQueryImpl implements KBQuery {
 	 */
 	@Override
 	public void setCurrentStatement(Neo4jGeneralStatement statement) {
-		Neo4jEvidence evidence = statement.getEvidence();
+		Evidence evidence = statement.getEvidence();
 		this.currentEvidence  = Optional.of(evidence) ;
 		this.currentStatement = Optional.of(statement);
 	}
@@ -218,13 +219,13 @@ public class KBQueryImpl implements KBQuery {
 		return currentStatement;
 	}
 
-	private Optional< Neo4jEvidence > currentEvidence = Optional.empty() ;
+	private Optional< Evidence > currentEvidence = Optional.empty() ;
 	
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCurrentEvidence(java.util.Set)
 	 */
 	@Override
-	public void setCurrentEvidence( Neo4jEvidence evidence ) {
+	public void setCurrentEvidence( Evidence evidence ) {
 		currentEvidence = Optional.of(evidence) ;
 	}
 
@@ -232,11 +233,11 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#getCurrentEvidence()
 	 */
 	@Override
-	public Optional< Neo4jEvidence > getCurrentEvidence() {
+	public Optional< Evidence > getCurrentEvidence() {
 		return currentEvidence;
 	}
 
-	private Optional< Neo4jAnnotation > currentAnnotation = Optional.empty() ;
+	private Optional<Annotation> currentAnnotation = Optional.empty() ;
 	
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCurrentAnnotation(bio.knowledge.model.semmeddb.Annotation)
@@ -250,7 +251,7 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#getCurrentAnnotation()
 	 */
 	@Override
-	public Optional<Neo4jAnnotation> getCurrentAnnotation() {
+	public Optional<Annotation> getCurrentAnnotation() {
 		return currentAnnotation;
 	}
 	

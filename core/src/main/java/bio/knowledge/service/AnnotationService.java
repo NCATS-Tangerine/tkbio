@@ -38,10 +38,11 @@ import org.springframework.stereotype.Service;
 
 import bio.knowledge.database.repository.AnnotationRepository;
 import bio.knowledge.model.EvidenceCode;
-import bio.knowledge.model.neo4j.Neo4jAnnotation;
+import bio.knowledge.model.Annotation;
+import bio.knowledge.model.Evidence;
+import bio.knowledge.model.Reference;
 import bio.knowledge.model.neo4j.Neo4jEvidence;
-import bio.knowledge.model.neo4j.Neo4jReference;
-import bio.knowledge.model.neo4j.Neo4jAnnotation.Type;
+import bio.knowledge.model.Annotation.Type;
 import bio.knowledge.service.Cache.CacheLocation;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
 
@@ -50,7 +51,7 @@ import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
  *
  */
 @Service
-public class AnnotationService extends IdentifiedEntityServiceImpl<Neo4jAnnotation> {
+public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 	
 	@Autowired
 	private KBQuery query ;
@@ -61,29 +62,12 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Neo4jAnnotati
     @Autowired
 	private AnnotationRepository annotationRepository ;
 
-	/* (non-Javadoc)
-	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])
-	 */
-	@Override
-	public Neo4jAnnotation createInstance(Object... args) {
-		if(args.length==5)
-			return new Neo4jAnnotation(
-		    		(String) args[0],      // accessionId
-		    		(String) args[1],      // name == text of annotation
-		    		(Type)   args[2],      // Annotation.Type
-				    (EvidenceCode) args[3],
-				    (Neo4jReference) args[4]
-			) ;
-		else
-			throw new RuntimeException("Invalid AnnotationPredicationService.createInstance() arguments?") ;
-	}
-   
     /* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#getIdentifiers()
 	 */
 	@Override
-	public List<Neo4jAnnotation> getIdentifiers() {
-		return annotationRepository.getAnnotations();
+	public List<Annotation> getIdentifiers() {
+		return (List<Annotation>)(List)annotationRepository.getAnnotations();
 	}
 
 	/* (non-Javadoc)
@@ -91,15 +75,15 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Neo4jAnnotati
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Page<Neo4jAnnotation> getIdentifiers(Pageable pageable) {
-		return (Page<Neo4jAnnotation>)(Page)annotationRepository.findAll(pageable);
+	public Page<Annotation> getIdentifiers(Pageable pageable) {
+		return (Page<Annotation>)(Page)annotationRepository.findAll(pageable);
 	}
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#findByNameLike(java.lang.String, org.springframework.data.domain.Pageable)
 	 */
 	@Override
-	public Page<Neo4jAnnotation> findByNameLike(String filter, Pageable pageable) {
+	public Page<Annotation> findByNameLike(String filter, Pageable pageable) {
 		if ( !query.getCurrentEvidence().isPresent() ) {
 			switch (query.getRelationSearchMode()) {
 				case PMID:
@@ -119,7 +103,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Neo4jAnnotati
 	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#findAll(org.springframework.data.domain.Pageable)
 	 */
 	@Override
-	public Page<Neo4jAnnotation> findAll(Pageable pageable) {
+	public Page<Annotation> findAll(Pageable pageable) {
 		if( !query.getCurrentEvidence().isPresent() ){
 			switch (query.getRelationSearchMode()) {
 				case PMID:
@@ -182,17 +166,17 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Neo4jAnnotati
 	 * @param annotation
 	 * @return
 	 */
-	public Neo4jReference getReference(Neo4jAnnotation annotation) {
+	public Reference getReference(Annotation annotation) {
 		return  annotationRepository.findReferenceByAnnotation(annotation.getAccessionId()) ;
 	}
 
-	private Page<Neo4jAnnotation> findHelper(String filter, Pageable pageable) {
+	private Page<Annotation> findHelper(String filter, Pageable pageable) {
 
-		Optional<Neo4jEvidence> evidenceOpt = query.getCurrentEvidence() ;
+		Optional<Evidence> evidenceOpt = query.getCurrentEvidence() ;
 
 		if( !evidenceOpt.isPresent() ) return null ;
 
-		Neo4jEvidence evidence = evidenceOpt.get() ;
+		Evidence evidence = evidenceOpt.get() ;
 		
 		Long evidenceId = evidence.getId();
 		String pageKey = new Integer(pageable.hashCode()).toString();
@@ -204,9 +188,9 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Neo4jAnnotati
 				);
 		
 		@SuppressWarnings("unchecked")
-		List<Neo4jAnnotation> cachedResult = (List<Neo4jAnnotation>) cacheLocation.getResultSet();
+		List<Annotation> cachedResult = (List<Annotation>) cacheLocation.getResultSet();
 		
-		List<Neo4jAnnotation> annotations;
+		List<Annotation> annotations;
 		
 		if (cachedResult == null) {
 			
@@ -214,16 +198,18 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Neo4jAnnotati
 			List<Map<String, Object>> data;
 
 			if(filter.trim().isEmpty()){
-				 data = annotationRepository.findByEvidence(evidence, pageable, userId);
+				// TODO: Should we be accessing the repository in this way in a service?
+				data = annotationRepository.findByEvidence((Evidence) evidence, pageable, userId);
 			} else {
-				 data = annotationRepository.findByEvidenceFiltered(evidence, filter, pageable, userId);
+				// TODO: Should we be accessing the repository in this way in a service?
+				data = annotationRepository.findByEvidenceFiltered((Evidence) evidence, filter, pageable, userId);
 			}
 			
 			annotations = new ArrayList<>();
 			
 			for (Map<String, Object> d : data) {
-				Neo4jAnnotation annotation = (Neo4jAnnotation) d.get("annotation");
-				Neo4jReference   reference = (Neo4jReference)  d.get("reference");
+				Annotation annotation = (Annotation) d.get("annotation");
+				Reference   reference = (Reference)  d.get("reference");
 				annotation.setReference(reference);
 				annotations.add(annotation);
 			}
@@ -232,15 +218,15 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Neo4jAnnotati
 		} else {
 			annotations = cachedResult;
 		}
-		return new PageImpl<Neo4jAnnotation>(annotations, pageable, annotations.size());
+		return new PageImpl<Annotation>(annotations, pageable, annotations.size());
 
 	}
 	
 	private long countHelper(String filter) {
 		
-		Optional<Neo4jEvidence> evidenceOpt = query.getCurrentEvidence() ;
+		Optional<Evidence> evidenceOpt = query.getCurrentEvidence() ;
 		if( !evidenceOpt.isPresent() ) return 0 ;
-		Neo4jEvidence evidence = evidenceOpt.get() ;
+		Evidence evidence = evidenceOpt.get() ;
 		
 		Long evidenceId = evidence.getId();
 		// creating cache key using (evidenceId + textFilter)
@@ -271,7 +257,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Neo4jAnnotati
 		return count;
 	}
 
-	private Page<Neo4jAnnotation> findHelperByPMID(String filter, Pageable pageable){
+	private Page<Annotation> findHelperByPMID(String filter, Pageable pageable){
 		
 		Optional<String> currentPmidOpt = query.getCurrentPmid() ;
 		
@@ -284,14 +270,14 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Neo4jAnnotati
 		}else{
 			 data = annotationRepository.findByPMIDFiltered(pmid, filter, pageable);
 		}
-		List<Neo4jAnnotation> results = new ArrayList<>();
+		List<Annotation> results = new ArrayList<>();
 		for (Map<String, Object> d : data) {
-			Neo4jAnnotation annotation       = (Neo4jAnnotation) d.get("annotation");
-			Neo4jReference   fromDbreference = (Neo4jReference)   d.get("reference");
+			Annotation annotation       = (Annotation) d.get("annotation");
+			Reference   fromDbreference = (Reference)   d.get("reference");
 			annotation.setReference(fromDbreference);
 			results.add(annotation);
 		}
-		return new PageImpl<Neo4jAnnotation>(results, pageable, results.size());
+		return new PageImpl<Annotation>(results, pageable, results.size());
 		
 	}
 	
@@ -330,7 +316,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Neo4jAnnotati
 	 * @param annotation
 	 * @return
 	 */
-	public Neo4jAnnotation save(Neo4jAnnotation annotation) {
+	public Annotation save(Annotation annotation) {
 		return annotationRepository.save(annotation);
 	}
 
@@ -338,7 +324,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Neo4jAnnotati
 	 * @param annotationId
 	 * @return
 	 */
-	public Neo4jAnnotation findByAccessionId(String annotationId) {
+	public Annotation findByAccessionId(String annotationId) {
 		return annotationRepository.findByAccessionId(annotationId);
 	}
 }

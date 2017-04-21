@@ -94,6 +94,7 @@ import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.DomainModelException;
+import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.core.IdentifiedEntity;
@@ -1058,9 +1059,9 @@ public class ListView extends BaseView {
 					
 				case RELATIONS:
 
-					Optional<Neo4jEvidence> evidenceOpt = query.getCurrentEvidence() ;
+					Optional<Evidence> evidenceOpt = query.getCurrentEvidence() ;
 					if ( evidenceOpt.isPresent() ) {
-						Neo4jEvidence evidence = evidenceOpt.get() ;
+						Evidence evidence = evidenceOpt.get() ;
 						Neo4jGeneralStatement statement = evidence.getStatement() ;
 						if( statement != null ) {
 							String subject      = statement.getSubject().getName();

@@ -28,7 +28,9 @@ package bio.knowledge.service;
 import java.util.Optional;
 import java.util.Set;
 
+import bio.knowledge.model.Annotation;
 import bio.knowledge.model.ConceptMapArchive;
+import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
@@ -137,13 +139,13 @@ public interface KBQuery {
 	 * 
 	 * @param Neo4jEvidence currently displayed
 	 */
-	public void setCurrentEvidence( Neo4jEvidence evidence ) ;
+	public void setCurrentEvidence( Evidence evidence ) ;
 	
 	/**
 	 * 
 	 * @return optional of Evidence currently for display
 	 */
-	public Optional< Neo4jEvidence > getCurrentEvidence() ;
+	public Optional<Evidence> getCurrentEvidence() ;
 
 	/**
 	 * 
@@ -155,7 +157,7 @@ public interface KBQuery {
 	 * 
 	 * @return optional of Annotation currently selected
 	 */
-	public Optional< Neo4jAnnotation > getCurrentAnnotation() ;
+	public Optional<Annotation> getCurrentAnnotation() ;
 	
 	/**
 	 * 

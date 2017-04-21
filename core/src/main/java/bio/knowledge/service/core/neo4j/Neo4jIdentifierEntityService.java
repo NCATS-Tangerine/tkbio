@@ -59,7 +59,6 @@ public class Neo4jIdentifierEntityService
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])
 	 */
-	@Override
 	public IdentifiedEntity createInstance( Object... args ) {
 		// Use the Neo4jExternalDatabase class as a 
 		// surrogate to create an instance of IdentifiedEntity

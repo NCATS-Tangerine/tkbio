@@ -33,6 +33,8 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
+import bio.knowledge.model.Annotation;
+import bio.knowledge.model.Evidence;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.neo4j.Neo4jEvidence;
 import bio.knowledge.model.neo4j.Neo4jReference;
@@ -41,7 +43,7 @@ import bio.knowledge.model.neo4j.Neo4jReference;
  * @author Richard
  *
  */
-public interface AnnotationRepository extends GraphRepository<Neo4jAnnotation> {
+public interface AnnotationRepository extends GraphRepository<Annotation> {
 
 	/**
 	 * @return
@@ -125,7 +127,7 @@ public interface AnnotationRepository extends GraphRepository<Neo4jAnnotation> {
 			" SKIP  {1}.pageNumber*{1}.pageSize"+
 			" LIMIT {1}.pageSize"
 		  )
-	List<Map<String, Object>> findByEvidence( @Param("evidenceId") Neo4jEvidence evidence, Pageable pageable, @Param("userId") String userId);
+	List<Map<String, Object>> findByEvidence( @Param("evidenceId") Evidence evidence, Pageable pageable, @Param("userId") String userId);
 	
 	
 	@Query( 
@@ -146,7 +148,7 @@ public interface AnnotationRepository extends GraphRepository<Neo4jAnnotation> {
 			" SKIP  {2}.pageNumber*{2}.pageSize"+
 			" LIMIT {2}.pageSize" 
 		  )
-	List<Map<String, Object>> findByEvidenceFiltered( @Param("evidenceId") Neo4jEvidence evidence, @Param("filter")String filter, @Param("pageable") Pageable pageable, @Param("userId") String userId);
+	List<Map<String, Object>> findByEvidenceFiltered( @Param("evidenceId") Evidence evidence, @Param("filter")String filter, @Param("pageable") Pageable pageable, @Param("userId") String userId);
 	
 	/**
 	 * @param evidence
@@ -157,7 +159,7 @@ public interface AnnotationRepository extends GraphRepository<Neo4jAnnotation> {
 			" MATCH (evidence)-[:ANNOTATION]->(annotation:Annotation)"+
 		    " RETURN count(annotation)"
 		  )
-	long countByEvidence( @Param("evidenceId") Neo4jEvidence evidence);
+	long countByEvidence( @Param("evidenceId") Evidence evidence);
 	
 	@Query( 
 			 "MATCH (evidence:Evidence) WHERE id(evidence) = {evidenceId}"+
@@ -166,7 +168,7 @@ public interface AnnotationRepository extends GraphRepository<Neo4jAnnotation> {
 			" LOWER(annotation.description) CONTAINS LOWER({filter})"	+
 		    " RETURN count(annotation)"
 		  )
-	long countByEvidenceFiltered( @Param("evidenceId") Neo4jEvidence evidence, @Param("filter")String filter);
+	long countByEvidenceFiltered( @Param("evidenceId") Evidence evidence, @Param("filter")String filter);
 	
 	@Query( "MATCH (annotation:Annotation)-[:REFERENCE]->(reference:Reference) WHERE reference.pmid = {pmid}"+
 			" RETURN annotation as annotation, reference as reference,(reference.year*365+reference.month*31+reference.day) as publicationDate"+

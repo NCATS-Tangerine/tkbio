@@ -57,7 +57,6 @@ public class Neo4jOntologyService
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.String)
 	 */
-	@Override
 	public Ontology createInstance(Object... args) {
 		
 		if(args.length==3)

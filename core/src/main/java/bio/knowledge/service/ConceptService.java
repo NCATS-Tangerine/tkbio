@@ -104,7 +104,7 @@ public class ConceptService
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])
 	 */
-	@Override
+	
 	public Neo4jConcept createInstance(Object... args) {
 		if (args.length == 2)
 			if (args[0] instanceof SemanticGroup) {

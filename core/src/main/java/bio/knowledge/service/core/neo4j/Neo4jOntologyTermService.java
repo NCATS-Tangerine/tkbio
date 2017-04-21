@@ -66,7 +66,6 @@ public class Neo4jOntologyTermService
     /* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])
 	 */
-	@Override
 	public OntologyTerm createInstance(Object... args) {
 		
 		if(args.length==2)

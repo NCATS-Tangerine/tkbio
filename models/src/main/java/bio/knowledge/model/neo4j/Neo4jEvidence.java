@@ -31,7 +31,9 @@ import java.util.Set;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Evidence;
+import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity;
 
@@ -51,7 +53,7 @@ public class Neo4jEvidence extends Neo4jAbstractIdentifiedEntity implements Evid
 	private Neo4jGeneralStatement statement ;
 	
 	@Relationship( type="ANNOTATION" )
-    private Set<Neo4jAnnotation> annotations = new HashSet<Neo4jAnnotation>() ;
+    private Set<Annotation> annotations = new HashSet<Annotation>() ;
 
 	private Integer count = 0;
 
@@ -61,8 +63,8 @@ public class Neo4jEvidence extends Neo4jAbstractIdentifiedEntity implements Evid
 	 * @see bio.knowledge.model.Evidence#setStatement(bio.knowledge.model.Statement)
 	 */
 	@Override
-	public void setStatement(Neo4jGeneralStatement statement) {
-		this.statement = statement;
+	public void setStatement(Statement statement) {
+		this.statement = (Neo4jGeneralStatement) statement;
 	}
 	
 	/* (non-Javadoc)
@@ -77,7 +79,7 @@ public class Neo4jEvidence extends Neo4jAbstractIdentifiedEntity implements Evid
 	 * @see bio.knowledge.model.Evidence#setAnnotations(java.util.Set)
 	 */
 	@Override
-	public void setAnnotations(Set<Neo4jAnnotation> annotations) {
+	public void setAnnotations(Set<Annotation> annotations) {
 		this.annotations.addAll(annotations);
 	}
 
@@ -85,7 +87,7 @@ public class Neo4jEvidence extends Neo4jAbstractIdentifiedEntity implements Evid
 	 * @see bio.knowledge.model.Evidence#addAnnotation(bio.knowledge.model.neo4j.Neo4jAnnotation)
 	 */
 	@Override
-	public void addAnnotation(Neo4jAnnotation annotation) {
+	public void addAnnotation(Annotation annotation) {
 		this.annotations.add(annotation);
 		incrementCount();
 	}
@@ -94,7 +96,7 @@ public class Neo4jEvidence extends Neo4jAbstractIdentifiedEntity implements Evid
 	 * @see bio.knowledge.model.Evidence#getAnnotations()
 	 */
 	@Override
-	public Set<Neo4jAnnotation> getAnnotations() {
+	public Set<Annotation> getAnnotations() {
 		return annotations;
 	}
 	

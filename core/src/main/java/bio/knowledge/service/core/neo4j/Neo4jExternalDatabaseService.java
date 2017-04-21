@@ -59,7 +59,6 @@ public class Neo4jExternalDatabaseService
     /* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])
 	 */
-	@Override
 	public ExternalDatabase createInstance(Object... args) {
 		
 		if(args.length==1)
