@@ -11,12 +11,9 @@ import javax.validation.constraints.*;
 /**
  * InlineResponse2001
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-19T14:17:46.341-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-20T17:24:29.683-07:00")
 
 public class InlineResponse2001   {
-  @JsonProperty("source")
-  private String source = null;
-
   @JsonProperty("id")
   private String id = null;
 
@@ -31,24 +28,6 @@ public class InlineResponse2001   {
 
   @JsonProperty("definition")
   private String definition = null;
-
-  public InlineResponse2001 source(String source) {
-    this.source = source;
-    return this;
-  }
-
-   /**
-   * knowledge source name
-   * @return source
-  **/
-  @ApiModelProperty(value = "knowledge source name")
-  public String getSource() {
-    return source;
-  }
-
-  public void setSource(String source) {
-    this.source = source;
-  }
 
   public InlineResponse2001 id(String id) {
     this.id = id;
@@ -155,8 +134,7 @@ public class InlineResponse2001   {
       return false;
     }
     InlineResponse2001 inlineResponse2001 = (InlineResponse2001) o;
-    return Objects.equals(this.source, inlineResponse2001.source) &&
-        Objects.equals(this.id, inlineResponse2001.id) &&
+    return Objects.equals(this.id, inlineResponse2001.id) &&
         Objects.equals(this.name, inlineResponse2001.name) &&
         Objects.equals(this.semanticType, inlineResponse2001.semanticType) &&
         Objects.equals(this.synonyms, inlineResponse2001.synonyms) &&
@@ -165,7 +143,7 @@ public class InlineResponse2001   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(source, id, name, semanticType, synonyms, definition);
+    return Objects.hash(id, name, semanticType, synonyms, definition);
   }
 
   @Override
@@ -173,7 +151,6 @@ public class InlineResponse2001   {
     StringBuilder sb = new StringBuilder();
     sb.append("class InlineResponse2001 {\n");
     
-    sb.append("    source: ").append(toIndentedString(source)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    semanticType: ").append(toIndentedString(semanticType)).append("\n");

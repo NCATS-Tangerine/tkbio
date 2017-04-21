@@ -12,12 +12,9 @@ import javax.validation.constraints.*;
 /**
  * InlineResponse200
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-19T14:17:46.341-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-20T17:24:29.683-07:00")
 
 public class InlineResponse200   {
-  @JsonProperty("source")
-  private String source = null;
-
   @JsonProperty("id")
   private String id = null;
 
@@ -35,24 +32,6 @@ public class InlineResponse200   {
 
   @JsonProperty("details")
   private List<ConceptsconceptIdDetails> details = new ArrayList<ConceptsconceptIdDetails>();
-
-  public InlineResponse200 source(String source) {
-    this.source = source;
-    return this;
-  }
-
-   /**
-   * knowledge source name 
-   * @return source
-  **/
-  @ApiModelProperty(value = "knowledge source name ")
-  public String getSource() {
-    return source;
-  }
-
-  public void setSource(String source) {
-    this.source = source;
-  }
 
   public InlineResponse200 id(String id) {
     this.id = id;
@@ -182,8 +161,7 @@ public class InlineResponse200   {
       return false;
     }
     InlineResponse200 inlineResponse200 = (InlineResponse200) o;
-    return Objects.equals(this.source, inlineResponse200.source) &&
-        Objects.equals(this.id, inlineResponse200.id) &&
+    return Objects.equals(this.id, inlineResponse200.id) &&
         Objects.equals(this.name, inlineResponse200.name) &&
         Objects.equals(this.semanticType, inlineResponse200.semanticType) &&
         Objects.equals(this.synonyms, inlineResponse200.synonyms) &&
@@ -193,7 +171,7 @@ public class InlineResponse200   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(source, id, name, semanticType, synonyms, definition, details);
+    return Objects.hash(id, name, semanticType, synonyms, definition, details);
   }
 
   @Override
@@ -201,7 +179,6 @@ public class InlineResponse200   {
     StringBuilder sb = new StringBuilder();
     sb.append("class InlineResponse200 {\n");
     
-    sb.append("    source: ").append(toIndentedString(source)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    semanticType: ").append(toIndentedString(semanticType)).append("\n");

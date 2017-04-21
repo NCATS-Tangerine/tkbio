@@ -5,36 +5,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.ArrayList;
+import java.util.List;
 import javax.validation.constraints.*;
 /**
  * InlineResponse2002
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-19T14:17:46.341-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-20T17:24:29.683-07:00")
 
 public class InlineResponse2002   {
-  @JsonProperty("source")
-  private String source = null;
-
   @JsonProperty("id")
   private String id = null;
 
-  public InlineResponse2002 source(String source) {
-    this.source = source;
-    return this;
-  }
-
-   /**
-   * Get source
-   * @return source
-  **/
-  @ApiModelProperty(value = "")
-  public String getSource() {
-    return source;
-  }
-
-  public void setSource(String source) {
-    this.source = source;
-  }
+  @JsonProperty("xrefs")
+  private List<String> xrefs = new ArrayList<String>();
 
   public InlineResponse2002 id(String id) {
     this.id = id;
@@ -54,6 +38,29 @@ public class InlineResponse2002   {
     this.id = id;
   }
 
+  public InlineResponse2002 xrefs(List<String> xrefs) {
+    this.xrefs = xrefs;
+    return this;
+  }
+
+  public InlineResponse2002 addXrefsItem(String xrefsItem) {
+    this.xrefs.add(xrefsItem);
+    return this;
+  }
+
+   /**
+   * Get xrefs
+   * @return xrefs
+  **/
+  @ApiModelProperty(value = "")
+  public List<String> getXrefs() {
+    return xrefs;
+  }
+
+  public void setXrefs(List<String> xrefs) {
+    this.xrefs = xrefs;
+  }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -64,13 +71,13 @@ public class InlineResponse2002   {
       return false;
     }
     InlineResponse2002 inlineResponse2002 = (InlineResponse2002) o;
-    return Objects.equals(this.source, inlineResponse2002.source) &&
-        Objects.equals(this.id, inlineResponse2002.id);
+    return Objects.equals(this.id, inlineResponse2002.id) &&
+        Objects.equals(this.xrefs, inlineResponse2002.xrefs);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(source, id);
+    return Objects.hash(id, xrefs);
   }
 
   @Override
@@ -78,8 +85,8 @@ public class InlineResponse2002   {
     StringBuilder sb = new StringBuilder();
     sb.append("class InlineResponse2002 {\n");
     
-    sb.append("    source: ").append(toIndentedString(source)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    xrefs: ").append(toIndentedString(xrefs)).append("\n");
     sb.append("}");
     return sb.toString();
   }

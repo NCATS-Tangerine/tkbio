@@ -1,10 +1,6 @@
 package bio.knowledge.server.api;
 
-import bio.knowledge.server.model.Identifiers;
 import bio.knowledge.server.model.InlineResponse2002;
-import bio.knowledge.server.model.InlineResponse2003;
-import bio.knowledge.server.model.InlineResponse201;
-import java.util.List;
 
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
@@ -19,35 +15,26 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import javax.validation.constraints.*;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-19T14:17:46.341-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-20T17:24:29.683-07:00")
 
 @Api(value = "xrefs", description = "the xrefs API")
 public interface XrefsApi {
 
-    @ApiOperation(value = "", notes = "Retrieves a list of cross-referencing identifiers associated with an specifically identified concept, typically, a concept selected from the list of concepts originally returned by a /concepts API call. This API call will typically be run against the same KS (only) from which the originally selected concept was retrieved. ", response = InlineResponse2002.class, responseContainer = "List", tags={ "xrefs", })
+    @ApiOperation(value = "", notes = "Retrieves a list of cross-referencing identifiers associated with an specifically identified concept, typically, a concept selected from the list of concepts originally returned by a /concepts API call. This API call will typically be run against the same KS (only) from which the originally selected concept was retrieved. ", response = String.class, responseContainer = "List", tags={ "xrefs", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Successful response returns a list of cross-reference identifiers associated with the specified conceptId (maybe an empty list?) ", response = InlineResponse2002.class) })
+        @ApiResponse(code = 200, message = "Successful response returns a list of cross-reference identifiers associated with the specified conceptId (maybe an empty list?) ", response = String.class) })
     @RequestMapping(value = "/xrefs/{conceptId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<InlineResponse2002>> getConceptXRefs(@ApiParam(value = "local object identifier of the concept to be matched",required=true ) @PathVariable("conceptId") String conceptId);
+    ResponseEntity<List<String>> getConceptXRefs(@ApiParam(value = "local object identifier of the concept to be matched",required=true ) @PathVariable("conceptId") String conceptId);
 
 
-    @ApiOperation(value = "", notes = "Retrieves the list of concepts with that match one or more cross-references posted in the previously initiated query session. This new list of concepts is returned with the full list of their associated cross-references. ", response = InlineResponse2003.class, responseContainer = "List", tags={ "xrefs", })
+    @ApiOperation(value = "", notes = "Given an input list of cross-reference identifiers, retrieves the list of identifiers of concepts that match one or more cross-references posted in the previously initiated query session. This new list of concept identifierss is returned with the full list of their associated cross-reference identifiers. ", response = InlineResponse2002.class, responseContainer = "List", tags={ "xrefs", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Successful response returns a list of concepts with one or more matches to query session cross-reference identifiers ", response = InlineResponse2003.class) })
+        @ApiResponse(code = 200, message = "Successful response returns a list of identifiers of concepts matching at least one identifier in the input list of cross-reference identifiers. Each concept identifier is returned with  the full list of associated cross-reference identifiers known to the given Knowledge Source. ", response = InlineResponse2002.class) })
     @RequestMapping(value = "/xrefs",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<InlineResponse2003>> getXRefConcepts( @NotNull @ApiParam(value = "identifier of the query session established by prior POST'ing of a list of cross-references identifiers of interest ", required = true) @RequestParam(value = "queryId", required = true) String queryId);
-
-
-    @ApiOperation(value = "", notes = "Posts a list of cross-reference identifiers to a given KS endpoint, initiating a query session ", response = InlineResponse201.class, tags={ "xrefs", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "Successful response returns the identifier of a newly initiated query session ", response = InlineResponse201.class) })
-    @RequestMapping(value = "/xrefs",
-        produces = { "application/json" }, 
-        method = RequestMethod.POST)
-    ResponseEntity<InlineResponse201> postXRefQuery(@ApiParam(value = "list of cross-reference identifiers to be used in a search for equivalent concepts " ,required=true ) @RequestBody List<Identifiers> identifiers);
+    ResponseEntity<List<InlineResponse2002>> getXRefConcepts( @NotNull @ApiParam(value = "list of cross-reference identifiers (xi) to be used in a search for equivalent concepts ", required = true) @RequestParam(value = "xi", required = true) List<String> xi);
 
 }

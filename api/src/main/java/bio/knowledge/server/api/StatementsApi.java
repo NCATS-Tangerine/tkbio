@@ -1,9 +1,6 @@
 package bio.knowledge.server.api;
 
-import bio.knowledge.server.model.Identifiers;
-import bio.knowledge.server.model.InlineResponse2004;
-import bio.knowledge.server.model.InlineResponse201;
-import java.util.List;
+import bio.knowledge.server.model.InlineResponse2003;
 
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
@@ -18,30 +15,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import javax.validation.constraints.*;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-19T14:17:46.341-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-20T17:24:29.683-07:00")
 
 @Api(value = "statements", description = "the statements API")
 public interface StatementsApi {
 
-    @ApiOperation(value = "", notes = "Retrieves a paged list of concept-relations with either the subject or object concept matching the list of concepts previously POST'ed into the specified query session ", response = InlineResponse2004.class, responseContainer = "List", tags={ "statements", })
+    @ApiOperation(value = "", notes = "Given a list of concept identifiers to a given KS endpoint,  retrieves a paged list of concept-relations with either the subject or object concept matching a concept in the input list ", response = InlineResponse2003.class, responseContainer = "List", tags={ "statements", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Successful response returns a list of concept-relations with one or more matches to query session concept identifiers ", response = InlineResponse2004.class) })
+        @ApiResponse(code = 200, message = "Successful response returns a list of concept-relations with one or more matches to query session concept identifiers ", response = InlineResponse2003.class) })
     @RequestMapping(value = "/statements",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<InlineResponse2004>> getStatements( @NotNull @ApiParam(value = "identifier of the query session established by prior POST'ing of a list of concept identifiers of interest ", required = true) @RequestParam(value = "queryId", required = true) String queryId,
+    ResponseEntity<List<InlineResponse2003>> getStatements( @NotNull @ApiParam(value = "list of concept identifiers (ci) to be used in a search for associated concept-relation statements ", required = true) @RequestParam(value = "ci", required = true) List<String> ci,
          @ApiParam(value = "(1-based) number of the page to be returned in a paged set of query results ") @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
          @ApiParam(value = "number of concepts per page to be returned in a paged set of query results ") @RequestParam(value = "pageSize", required = false) Integer pageSize,
          @ApiParam(value = "text filter to apply against the subject, predicate or object names of the set of concept-relations matched by the main concept search ") @RequestParam(value = "textFilter", required = false) String textFilter,
          @ApiParam(value = "semanticType filter to apply against the subject, predicate or object names of the set of concept-relations matched by the main concept search main search string ") @RequestParam(value = "semanticType", required = false) String semanticType);
-
-
-    @ApiOperation(value = "", notes = "Posts a list of concept identifiers to a given KS endpoint, initiating a query session for concept-relation statement retrieval ", response = InlineResponse201.class, tags={ "statements", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "Successful response returns the identifier of a newly initiated query session ", response = InlineResponse201.class) })
-    @RequestMapping(value = "/statements",
-        produces = { "application/json" }, 
-        method = RequestMethod.POST)
-    ResponseEntity<InlineResponse201> postStatementQuery(@ApiParam(value = "list of concept identifiers to be used in a search for associated concept-relation statements " ,required=true ) @RequestBody List<Identifiers> identifiers);
 
 }

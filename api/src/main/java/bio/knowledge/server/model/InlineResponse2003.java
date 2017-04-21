@@ -1,46 +1,33 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-import bio.knowledge.server.model.InlineResponse2002;
+import bio.knowledge.server.model.StatementsEvidence;
+import bio.knowledge.server.model.StatementsSubject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.ArrayList;
-import java.util.List;
 import javax.validation.constraints.*;
 /**
  * InlineResponse2003
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-19T14:17:46.341-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-20T17:24:29.683-07:00")
 
 public class InlineResponse2003   {
-  @JsonProperty("source")
-  private String source = null;
-
   @JsonProperty("id")
   private String id = null;
 
-  @JsonProperty("xrefs")
-  private List<InlineResponse2002> xrefs = new ArrayList<InlineResponse2002>();
+  @JsonProperty("subject")
+  private StatementsSubject subject = null;
 
-  public InlineResponse2003 source(String source) {
-    this.source = source;
-    return this;
-  }
+  @JsonProperty("predicate")
+  private StatementsSubject predicate = null;
 
-   /**
-   * Get source
-   * @return source
-  **/
-  @ApiModelProperty(value = "")
-  public String getSource() {
-    return source;
-  }
+  @JsonProperty("object")
+  private StatementsSubject object = null;
 
-  public void setSource(String source) {
-    this.source = source;
-  }
+  @JsonProperty("evidence")
+  private StatementsEvidence evidence = null;
 
   public InlineResponse2003 id(String id) {
     this.id = id;
@@ -48,10 +35,10 @@ public class InlineResponse2003   {
   }
 
    /**
-   * Get id
+   * predicate identifiers
    * @return id
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "predicate identifiers")
   public String getId() {
     return id;
   }
@@ -60,27 +47,76 @@ public class InlineResponse2003   {
     this.id = id;
   }
 
-  public InlineResponse2003 xrefs(List<InlineResponse2002> xrefs) {
-    this.xrefs = xrefs;
-    return this;
-  }
-
-  public InlineResponse2003 addXrefsItem(InlineResponse2002 xrefsItem) {
-    this.xrefs.add(xrefsItem);
+  public InlineResponse2003 subject(StatementsSubject subject) {
+    this.subject = subject;
     return this;
   }
 
    /**
-   * Get xrefs
-   * @return xrefs
+   * Get subject
+   * @return subject
   **/
   @ApiModelProperty(value = "")
-  public List<InlineResponse2002> getXrefs() {
-    return xrefs;
+  public StatementsSubject getSubject() {
+    return subject;
   }
 
-  public void setXrefs(List<InlineResponse2002> xrefs) {
-    this.xrefs = xrefs;
+  public void setSubject(StatementsSubject subject) {
+    this.subject = subject;
+  }
+
+  public InlineResponse2003 predicate(StatementsSubject predicate) {
+    this.predicate = predicate;
+    return this;
+  }
+
+   /**
+   * Get predicate
+   * @return predicate
+  **/
+  @ApiModelProperty(value = "")
+  public StatementsSubject getPredicate() {
+    return predicate;
+  }
+
+  public void setPredicate(StatementsSubject predicate) {
+    this.predicate = predicate;
+  }
+
+  public InlineResponse2003 object(StatementsSubject object) {
+    this.object = object;
+    return this;
+  }
+
+   /**
+   * Get object
+   * @return object
+  **/
+  @ApiModelProperty(value = "")
+  public StatementsSubject getObject() {
+    return object;
+  }
+
+  public void setObject(StatementsSubject object) {
+    this.object = object;
+  }
+
+  public InlineResponse2003 evidence(StatementsEvidence evidence) {
+    this.evidence = evidence;
+    return this;
+  }
+
+   /**
+   * Get evidence
+   * @return evidence
+  **/
+  @ApiModelProperty(value = "")
+  public StatementsEvidence getEvidence() {
+    return evidence;
+  }
+
+  public void setEvidence(StatementsEvidence evidence) {
+    this.evidence = evidence;
   }
 
 
@@ -93,14 +129,16 @@ public class InlineResponse2003   {
       return false;
     }
     InlineResponse2003 inlineResponse2003 = (InlineResponse2003) o;
-    return Objects.equals(this.source, inlineResponse2003.source) &&
-        Objects.equals(this.id, inlineResponse2003.id) &&
-        Objects.equals(this.xrefs, inlineResponse2003.xrefs);
+    return Objects.equals(this.id, inlineResponse2003.id) &&
+        Objects.equals(this.subject, inlineResponse2003.subject) &&
+        Objects.equals(this.predicate, inlineResponse2003.predicate) &&
+        Objects.equals(this.object, inlineResponse2003.object) &&
+        Objects.equals(this.evidence, inlineResponse2003.evidence);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(source, id, xrefs);
+    return Objects.hash(id, subject, predicate, object, evidence);
   }
 
   @Override
@@ -108,9 +146,11 @@ public class InlineResponse2003   {
     StringBuilder sb = new StringBuilder();
     sb.append("class InlineResponse2003 {\n");
     
-    sb.append("    source: ").append(toIndentedString(source)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    xrefs: ").append(toIndentedString(xrefs)).append("\n");
+    sb.append("    subject: ").append(toIndentedString(subject)).append("\n");
+    sb.append("    predicate: ").append(toIndentedString(predicate)).append("\n");
+    sb.append("    object: ").append(toIndentedString(object)).append("\n");
+    sb.append("    evidence: ").append(toIndentedString(evidence)).append("\n");
     sb.append("}");
     return sb.toString();
   }

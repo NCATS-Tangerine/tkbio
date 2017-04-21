@@ -7,30 +7,27 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
 /**
- * InlineResponse2004
+ * StatementsSubject
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-20T17:24:29.683-07:00")
 
-public class InlineResponse2004   {
+public class StatementsSubject   {
   @JsonProperty("id")
   private String id = null;
 
   @JsonProperty("name")
   private String name = null;
 
-  @JsonProperty("publicationDate")
-  private String publicationDate = null;
-
-  public InlineResponse2004 id(String id) {
+  public StatementsSubject id(String id) {
     this.id = id;
     return this;
   }
 
    /**
-   * qualified object evidence identifier for the cited reference 
+   * Get id
    * @return id
   **/
-  @ApiModelProperty(value = "qualified object evidence identifier for the cited reference ")
+  @ApiModelProperty(value = "")
   public String getId() {
     return id;
   }
@@ -39,40 +36,22 @@ public class InlineResponse2004   {
     this.id = id;
   }
 
-  public InlineResponse2004 name(String name) {
+  public StatementsSubject name(String name) {
     this.name = name;
     return this;
   }
 
    /**
-   * canonical human readable title of the cited reference 
+   * human readable label of concept
    * @return name
   **/
-  @ApiModelProperty(value = "canonical human readable title of the cited reference ")
+  @ApiModelProperty(value = "human readable label of concept")
   public String getName() {
     return name;
   }
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public InlineResponse2004 publicationDate(String publicationDate) {
-    this.publicationDate = publicationDate;
-    return this;
-  }
-
-   /**
-   * publication date of reference (yyyy-mm-dd) 
-   * @return publicationDate
-  **/
-  @ApiModelProperty(value = "publication date of reference (yyyy-mm-dd) ")
-  public String getPublicationDate() {
-    return publicationDate;
-  }
-
-  public void setPublicationDate(String publicationDate) {
-    this.publicationDate = publicationDate;
   }
 
 
@@ -84,25 +63,23 @@ public class InlineResponse2004   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2004 inlineResponse2004 = (InlineResponse2004) o;
-    return Objects.equals(this.id, inlineResponse2004.id) &&
-        Objects.equals(this.name, inlineResponse2004.name) &&
-        Objects.equals(this.publicationDate, inlineResponse2004.publicationDate);
+    StatementsSubject statementsSubject = (StatementsSubject) o;
+    return Objects.equals(this.id, statementsSubject.id) &&
+        Objects.equals(this.name, statementsSubject.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, publicationDate);
+    return Objects.hash(id, name);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2004 {\n");
+    sb.append("class StatementsSubject {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    publicationDate: ").append(toIndentedString(publicationDate)).append("\n");
     sb.append("}");
     return sb.toString();
   }
