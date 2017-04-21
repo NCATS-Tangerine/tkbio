@@ -1,0 +1,639 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Translator Knowledge.Bio API",
+        "version": "4.0.4",
+        "contact": {
+            "responsibleDeveloper": "Richard Bruskiewich",
+            "responsibleOrganization": "STAR Informatics/Delphinai Corporation",
+            "url": "http://starinformatics.com",
+            "email": "richard@starinformatics.com"
+        },
+        "description": "Documentation of the Translator Knowledge.Bio (TKBio) knowledge sources\nquery web service application programming interfaces. Learn more about\n[TKBio](https://github.com/STARInformatics/tkbio)\n"
+    },
+    "host": "knowledge.bio",
+    "basePath": "/api",
+    "schemes": [
+        "http"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "tags": [
+        {
+            "name": "concepts",
+            "description": "Queries for concepts"
+        },
+        {
+            "name": "xrefs",
+            "description": "Queries for concept cross-references"
+        },
+        {
+            "name": "statements",
+            "description": "Queries for concept-relationship statements"
+        },
+        {
+            "name": "evidence",
+            "description": "Queries for references cited as evidence for statements"
+        }
+    ],
+    "paths": {
+        "/concepts/{conceptId}": {
+            "get": {
+                "description": "Retrieves details for a specified concepts in the system\n",
+                "tags": [
+                    "concepts"
+                ],
+                "parameters": [
+                    {
+                        "name": "conceptId",
+                        "in": "path",
+                        "description": "local object identifier of concept of interest",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "operationId": "getConceptDetails",
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string",
+                                        "description": "object identifier for the concept in the specified knowledge\nsource database\n"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "description": "canonical human readable name of the concept\n"
+                                    },
+                                    "semanticGroup": {
+                                        "type": "string",
+                                        "description": "concept semantic type\n"
+                                    },
+                                    "synonyms": {
+                                        "type": "array",
+                                        "description": "list of synonyms for concept\n",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "definition": {
+                                        "type": "string",
+                                        "description": "concept definition\n"
+                                    },
+                                    "details": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "tag": {
+                                                    "type": "string",
+                                                    "description": "property name\n"
+                                                },
+                                                "value": {
+                                                    "type": "string",
+                                                    "description": "property value\n"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful response with concept details returned\n",
+                        "examples": {
+                            "application/json": [
+                                {
+                                    "id": "wd:Q14883734",
+                                    "name": "WRN",
+                                    "semanticGroup": "GENE",
+                                    "synonyms": [],
+                                    "definition": "Werner Syndrome Gene",
+                                    "details": []
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/concepts": {
+            "get": {
+                "description": "Retrieves a (paged) list of concepts in the system\n",
+                "tags": [
+                    "concepts"
+                ],
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "array of keywords or substrings against which to match concept names and synonyms",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sg",
+                        "in": "query",
+                        "description": "array of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt for the full list of codes)\n",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "description": "(1-based) number of the page to be returned in a paged set of query\nresults\n",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "number of concepts per page to be returned in a paged set of query\nresults\n",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "operationId": "getConcepts",
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "keywords": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "semanticGroups": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "pageNumber": {
+                                    "type": "integer"
+                                },
+                                "pageSize": {
+                                    "type": "integer"
+                                },
+                                "totalEntries": {
+                                    "type": "integer"
+                                },
+                                "dataPage": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string",
+                                                "description": "object identifier for the concept in the specified knowledge\nsource database\n"
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "description": "canonical human readable name of the concept\n"
+                                            },
+                                            "semanticGroup": {
+                                                "type": "string",
+                                                "description": "concept semantic type\n"
+                                            },
+                                            "synonyms": {
+                                                "type": "array",
+                                                "description": "list of synonyms for concept\n",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "definition": {
+                                                "type": "string",
+                                                "description": "concept definition\n"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful response with concept list returned\n",
+                        "examples": {
+                            "application/json": {
+                                "keywords": [
+                                    "Diabetes"
+                                ],
+                                "semanticGroups": [
+                                    null
+                                ],
+                                "pageNumber": 3,
+                                "pageSize": 5,
+                                "totalEntries": 20,
+                                "datapage": [
+                                    {
+                                        "id": "wd:Q2898645",
+                                        "name": "Neonatal diabetes mellitus",
+                                        "semanticGroup": "DISO",
+                                        "synonyms": [],
+                                        "definition": "Neonatal diabetes mellitus"
+                                    },
+                                    {
+                                        "id": "wd:Q631361",
+                                        "name": "Diabetic Retinopathy",
+                                        "semanticGroup": "DISO",
+                                        "synonyms": [],
+                                        "definition": "diabetic eye disease when damage occurs to the retina due to diabetes."
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/xrefs/{conceptId}": {
+            "get": {
+                "description": "Retrieves a list of cross-referencing identifiers associated with an specifically identified concept, typically, a concept selected from the list of concepts originally returned by a /concepts API call. This API call will typically be run against the same KS (only) from which the originally selected concept was retrieved.\n",
+                "tags": [
+                    "xrefs"
+                ],
+                "parameters": [
+                    {
+                        "name": "conceptId",
+                        "in": "path",
+                        "description": "local object identifier of the concept to be matched",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "operationId": "getConceptXRefs",
+                "responses": {
+                    "200": {
+                        "description": "Successful response returns a list of cross-reference identifiers\nassociated with the specified conceptId (maybe an empty list?)\n",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "examples": {
+                            "application/json": [
+                                "wd:Q12345 mon:67890"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/xrefs": {
+            "get": {
+                "description": "Given an input list of cross-reference identifiers, retrieves the list of identifiers of concepts that match one or more cross-references posted in the previously initiated query session. This new list of concept identifierss is returned with the full list of their associated cross-reference identifiers.\n",
+                "tags": [
+                    "xrefs"
+                ],
+                "parameters": [
+                    {
+                        "name": "xi",
+                        "in": "query",
+                        "description": "list of cross-reference identifiers to be used in a search for equivalent concepts\n",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "operationId": "getXRefConcepts",
+                "responses": {
+                    "200": {
+                        "description": "Successful response returns a list of identifiers of concepts matching at least one identifier in the input list of cross-reference identifiers. Each concept identifier is returned with  the full list of associated cross-reference identifiers known to the given Knowledge Source.\n",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "xrefs": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": [
+                                {
+                                    "id": "wd:Q12345",
+                                    "xrefs": [
+                                        {
+                                            "id": "mon:67890"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "mon:67890",
+                                    "xrefs": [
+                                        {
+                                            "id": "wd:Q12345"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/statements": {
+            "get": {
+                "description": "Given a list of concept identifiers to a given KS endpoint,  retrieves a paged list of concept-relations with either the subject or object concept matching a concept in the input list\n",
+                "tags": [
+                    "statements"
+                ],
+                "parameters": [
+                    {
+                        "name": "ci",
+                        "in": "query",
+                        "description": "list of concept identifiers (ci) to be used in a search for associated concept-relation statements\n",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "description": "(1-based) number of the page to be returned in a paged set of query\nresults\n",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "number of concepts per page to be returned in a paged set of query\nresults\n",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "keyword filter to apply against the subject, predicate or object names of the set of concept-relations matched by the query seed concept\n",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sg",
+                        "in": "query",
+                        "description": "array of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt for the full list of codes)\n",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "operationId": "getStatements",
+                "responses": {
+                    "200": {
+                        "description": "Successful response returns a list of concept-relations with one or more matches to query session concept identifiers\n",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "keywords": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "semanticGroups": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "pageNumber": {
+                                    "type": "integer"
+                                },
+                                "pageSize": {
+                                    "type": "integer"
+                                },
+                                "totalEntries": {
+                                    "type": "integer"
+                                },
+                                "dataPage": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string",
+                                                "description": "predicate identifiers"
+                                            },
+                                            "subject": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "description": "human readable label of concept"
+                                                    }
+                                                }
+                                            },
+                                            "predicate": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "description": "human readable label of concept"
+                                                    }
+                                                }
+                                            },
+                                            "object": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "description": "human readable label of concept"
+                                                    }
+                                                }
+                                            },
+                                            "evidence": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "count": {
+                                                        "type": "integer"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": {
+                                "keywords": [
+                                    "Neonatal"
+                                ],
+                                "semanticGroups": [
+                                    "GENE"
+                                ],
+                                "pageNumber": 2,
+                                "pageSize": 25,
+                                "totalEntries": 120,
+                                "datapage": [
+                                    {
+                                        "source": "semmeddb",
+                                        "id": 12345,
+                                        "subject": {
+                                            "id": "wd:Q14912054",
+                                            "name": "KCNJ11"
+                                        },
+                                        "predicate": {
+                                            "id": "kbp:10",
+                                            "name": "Causes"
+                                        },
+                                        "object": {
+                                            "id": "wd:Q2898645",
+                                            "name": "Neonatal diabetes mellitus"
+                                        },
+                                        "evidence": {
+                                            "id": "smd:999999",
+                                            "count": 10
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/evidence/{evidenceId}": {
+            "get": {
+                "description": "Retrieves a (paged) list of references cited as evidence for a specified statement\n",
+                "tags": [
+                    "evidence"
+                ],
+                "parameters": [
+                    {
+                        "name": "evidenceId",
+                        "in": "path",
+                        "description": "identifier of evidence subset, of cited references supporting a given concept-relationship statement\n",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "keyword filter to apply against the citation titles of references related to the evidence supporting given concept-relationship statement\n",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "description": "(1-based) number of the page to be returned in a paged set of query\nresults\n",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "number of cited references per page to be returned in a paged set of query\nresults\n",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "operationId": "getEvidence",
+                "responses": {
+                    "200": {
+                        "description": "successful call returns a list of cited references\n",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "keywords": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "pageNumber": {
+                                    "type": "integer"
+                                },
+                                "pageSize": {
+                                    "type": "integer"
+                                },
+                                "totalEntries": {
+                                    "type": "integer"
+                                },
+                                "dataPage": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string",
+                                                "description": "qualified object evidence identifier for the cited reference\n"
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "description": "canonical human readable title of the cited reference\n"
+                                            },
+                                            "publicationDate": {
+                                                "type": "string",
+                                                "description": "publication date of reference (yyyy-mm-dd)\n"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "examples": {
+                            "keywords": [
+                                "hernia"
+                            ],
+                            "pageNumber": 1,
+                            "pageSize": 5,
+                            "totalEntries": 14,
+                            "dataPage": [
+                                {
+                                    "id": "pmid:22781086",
+                                    "name": "Neonatal diabetes mellitus and congenital diaphragmatic hernia coincidence or concurrent etiology?",
+                                    "publicationDate": "212-07-10"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
