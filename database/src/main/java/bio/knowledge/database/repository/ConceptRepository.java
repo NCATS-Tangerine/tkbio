@@ -140,14 +140,14 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 	@Query(
 			" MATCH (concept:Concept) " +
 			" WHERE " +
-			"   LOWER(concept.name)     CONTAINS LOWER({filter}) OR " +
-			"   LOWER(concept.synonyms) CONTAINS LOWER({filter}) " +
+			" ANY (x in {filter} WHERE LOWER(concept.name) CONTAINS LOWER(x)) OR " +
+			" ANY (x in {filter} WHERE LOWER(concept.synonyms) CONTAINS LOWER(x)) " +
 			" RETURN concept " +
 			" SKIP  {pageNumber} * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
 	public List<Concept> apiGetConcepts(
-			@Param("filter") String filter,
+			@Param("filter") String[] filter,
 			@Param("pageNumber") Integer pageNumber,
 			@Param("pageSize") Integer pageSize
 	);
@@ -155,16 +155,18 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 	@Query(
 			" MATCH (concept:Concept) " +
 			" WHERE " +
-			"   ( LOWER(concept.name)   CONTAINS LOWER({filter}) OR " +
-			"   LOWER(concept.synonyms) CONTAINS LOWER({filter}) ) " +
-			"   AND concept.semanticGroup = {semanticGroup} " +
+			" ( " +
+			"     ANY (x IN {filter} WHERE LOWER(concept.name) CONTAINS LOWER(x)) OR " +
+			"     ANY (x IN {filter} WHERE LOWER(concept.synonyms) CONTAINS LOWER(x)) " +
+			" ) " +
+			" AND ANY (x IN {semanticGroups} WHERE LOWER(concept.semanticGroup) = LOWER(x)) " +
 			" RETURN concept " +
 			" SKIP  {pageNumber} * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
 	public List<Concept> apiGetConceptsByType(
-			@Param("filter") String filter,
-			@Param("semanticGroup") String semanticGroup,
+			@Param("filter") String[] filter,
+			@Param("semanticGroups") String[] semanticGroups,
 			@Param("pageNumber") Integer pageNumber,
 			@Param("pageSize") Integer pageSize
 	);
@@ -192,8 +194,8 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 			"WHERE "+
 			"   concept.usage > 0 AND"+
 			"   ( "+
-			"     ALL (x IN {filter} WHERE LOWER(concept.name)     CONTAINS LOWER(x)) OR"+
-			"     ALL (x IN {filter} WHERE LOWER(concept.synonyms) CONTAINS LOWER(x))"+
+			"     ALL (x IN {filter} WHERE LOWER(concept.name)     CONTAINS LOWER(x)) OR "+
+			"     ALL (x IN {filter} WHERE LOWER(concept.synonyms) CONTAINS LOWER(x)) "+
 			"   ) "+
 			"RETURN count(concept)" 
 		)
