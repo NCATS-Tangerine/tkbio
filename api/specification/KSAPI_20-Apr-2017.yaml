@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Translator Knowledge.Bio API
-  version: 4.0.3
+  version: 4.0.4
   contact:
     responsibleDeveloper: Richard Bruskiewich
     responsibleOrganization: STAR Informatics/Delphinai Corporation
@@ -36,7 +36,7 @@ paths:
       parameters:
         - name: conceptId
           in: path
-          description: local identifier of concept of interest
+          description: local object identifier of concept of interest
           required: true
           type: string
       operationId: getConceptDetails
@@ -56,7 +56,7 @@ paths:
                   type: string
                   description: |
                     canonical human readable name of the concept
-                semanticType:
+                semanticGroup:
                   type: string
                   description: |
                     concept semantic type
@@ -89,7 +89,7 @@ paths:
             application/json:
               - id: 'wd:Q14883734'
                 name: WRN
-                semanticType: gene
+                semanticGroup: GENE
                 synonyms: []
                 definition: Werner Syndrome Gene
                 details: []
@@ -100,13 +100,23 @@ paths:
       tags:
         - concepts
       parameters:
-        - name: textFilter
+        - name: q
           in: query
           description: >-
-            string of comma delimited keywords to match against concept names
-            and aliases
+            array of keywords or substrings against which to match concept names
+            and synonyms
           required: true
-          type: string
+          type: array
+          items:
+            type: string
+        - name: sg
+          in: query
+          description: >
+            array of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt for the full list of codes)
+          required: false
+          type: array
+          items:
+            type: string
         - name: pageNumber
           in: query
           description: |
@@ -121,58 +131,76 @@ paths:
             results
           required: false
           type: integer
-        - name: semanticType
-          in: query
-          description: >
-            string of comma-delimited semantic type names to apply against set
-            of concepts matched by the main search string
-          required: false
-          type: string
       operationId: getConcepts
       responses:
         '200':
           schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
+            type: object
+            properties:
+              keywords:
+                type: array
+                items:
                   type: string
-                  description: |
-                    object identifier for the concept in the specified knowledge
-                    source database
-                name:
+              semanticGroups:
+                type: array
+                items:
                   type: string
-                  description: |
-                    canonical human readable name of the concept
-                semanticType:
-                  type: string
-                  description: |
-                    concept semantic type
-                synonyms:
-                  type: array
-                  description: |
-                    list of synonyms for concept
-                  items:
-                    type: string
-                definition:
-                  type: string
-                  description: |
-                    concept definition
+              pageNumber:
+                type: integer
+              pageSize:
+                type: integer
+              totalEntries:
+                type: integer
+              dataPage:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: |
+                        object identifier for the concept in the specified knowledge
+                        source database
+                    name:
+                      type: string
+                      description: |
+                        canonical human readable name of the concept
+                    semanticGroup:
+                      type: string
+                      description: |
+                        concept semantic type
+                    synonyms:
+                      type: array
+                      description: |
+                        list of synonyms for concept
+                      items:
+                        type: string
+                    definition:
+                      type: string
+                      description: |
+                        concept definition
           description: |
             Successful response with concept list returned
           examples:
             application/json:
-              - id: 'wd:brca1'
-                name: BRCA1
-                semanticType: gene
-                synonyms: []
-                definition: Breast cancer susceptibility gene
-              - id: 'ma:brca1'
-                name: BRCA1
-                semanticType: gene
-                synonyms: []
-                definition: Breast cancer gene 1
+              keywords:
+              - Diabetes
+              semanticGroups:
+              - 
+              pageNumber: 3
+              pageSize: 5
+              totalEntries: 20
+              datapage:
+                - id: wd:Q2898645
+                  name: Neonatal diabetes mellitus
+                  semanticGroup: DISO
+                  synonyms: []
+                  definition: Neonatal diabetes mellitus
+                - id: wd:Q631361
+                  name: Diabetic Retinopathy
+                  semanticGroup: DISO
+                  synonyms: []
+                  definition: diabetic eye disease when damage occurs to the retina due to diabetes.
   '/xrefs/{conceptId}':
     get:
       description: >
@@ -213,7 +241,7 @@ paths:
         - name: xi
           in: query
           description: |
-            list of cross-reference identifiers (xi) to be used in a search for equivalent concepts
+            list of cross-reference identifiers to be used in a search for equivalent concepts
           required: true
           type: array
           items:
@@ -271,21 +299,23 @@ paths:
             results
           required: false
           type: integer
-        - name: textFilter
+        - name: q
           in: query
           description: >
-            text filter to apply against the subject, predicate or object names
-            of the set of concept-relations matched by the main concept search
+            keyword filter to apply against the subject, predicate or object names
+            of the set of concept-relations matched by the query seed concept
           required: false
-          type: string
-        - name: semanticType
+          type: array
+          items:
+            type: string
+        - name: sg
           in: query
           description: >
-            semanticType filter to apply against the subject, predicate or
-            object names of the set of concept-relations matched by the main
-            concept search main search string
+            array of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt for the full list of codes)
           required: false
-          type: string
+          type: array
+          items:
+            type: string
       operationId: getStatements
       responses:
         '200':
@@ -293,60 +323,85 @@ paths:
             Successful response returns a list of concept-relations with one or
             more matches to query session concept identifiers
           schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
+            type: object
+            properties:
+              keywords:
+                type: array
+                items:
                   type: string
-                  description: predicate identifiers
-                subject:
+              semanticGroups:
+                type: array
+                items:
+                  type: string
+              pageNumber:
+                type: integer
+              pageSize:
+                type: integer
+              totalEntries:
+                type: integer
+              dataPage:
+                type: array
+                items:
                   type: object
                   properties:
                     id:
                       type: string
-                    name:
-                      type: string
-                      description: human readable label of concept
-                predicate:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    name:
-                      type: string
-                      description: human readable label of concept
-                object:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    name:
-                      type: string
-                      description: human readable label of concept
-                evidence:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    count:
-                      type: integer
+                      description: predicate identifiers
+                    subject:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                          description: human readable label of concept
+                    predicate:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                          description: human readable label of concept
+                    object:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                          description: human readable label of concept
+                    evidence:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        count:
+                          type: integer
           examples:
             application/json:
-              - source: semmeddb
-                id: 12345
-                subject:
-                  id: wd:Q14912054
-                  name: KCNJ11
-                predicate:
-                  id: kbp:10
-                  name: Causes
-                object:
-                  id: wd:Q2898645
-                  name: Neonatal diabetes mellitus
-                evidence:
-                  id: smd:999999
-                  count: 10
+              keywords:
+              - Neonatal
+              semanticGroups:
+              - GENE
+              pageNumber: 2
+              pageSize: 25
+              totalEntries: 120
+              datapage:
+                - source: semmeddb
+                  id: 12345
+                  subject:
+                    id: wd:Q14912054
+                    name: KCNJ11
+                  predicate:
+                    id: kbp:10
+                    name: Causes
+                  object:
+                    id: wd:Q2898645
+                    name: Neonatal diabetes mellitus
+                  evidence:
+                    id: smd:999999
+                    count: 10
   '/evidence/{evidenceId}':
     get:
       description: >
@@ -357,8 +412,15 @@ paths:
       parameters:
         - name: evidenceId
           in: path
-          description: identifier of evidence subset of cited references
+          description: |
+            identifier of evidence subset, of cited references supporting a given concept-relationship statement
           required: true
+          type: string
+        - name: q
+          in: query
+          description: |
+            keyword filter to apply against the citation titles of references related to the evidence supporting given concept-relationship statement
+          required: false
           type: string
         - name: pageNumber
           in: query
@@ -370,36 +432,52 @@ paths:
         - name: pageSize
           in: query
           description: |
-            number of concepts per page to be returned in a paged set of query
+            number of cited references per page to be returned in a paged set of query
             results
           required: false
           type: integer
-        - name: textFilter
-          in: query
-          description: |
-            text filter to apply against set of concepts matched by the
-            main search string
-          required: false
-          type: string
       operationId: getEvidence
       responses:
         '200':
           description: |
             successful call returns a list of cited references
           schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
+            type: object
+            properties:
+              keywords:
+                type: array
+                items:
                   type: string
-                  description: |
-                    qualified object evidence identifier for the cited reference
-                name:
-                  type: string
-                  description: |
-                    canonical human readable title of the cited reference
-                publicationDate:
-                  type: string
-                  description: |
-                    publication date of reference (yyyy-mm-dd)
+              pageNumber:
+                type: integer
+              pageSize:
+                type: integer
+              totalEntries:
+                type: integer
+              dataPage:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: |
+                        qualified object evidence identifier for the cited reference
+                    name:
+                      type: string
+                      description: |
+                        canonical human readable title of the cited reference
+                    publicationDate:
+                      type: string
+                      description: |
+                        publication date of reference (yyyy-mm-dd)
+          examples:
+            keywords:
+              - hernia
+            pageNumber: 1
+            pageSize: 5
+            totalEntries: 14
+            dataPage:
+              - id: pmid:22781086
+                name: Neonatal diabetes mellitus and congenital diaphragmatic hernia coincidence or concurrent etiology?
+                publicationDate: 212-07-10
