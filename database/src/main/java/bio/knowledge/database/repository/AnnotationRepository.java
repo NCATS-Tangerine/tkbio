@@ -35,6 +35,7 @@ import org.springframework.data.repository.query.Param;
 
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Evidence;
+import bio.knowledge.model.Reference;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.neo4j.Neo4jEvidence;
 import bio.knowledge.model.neo4j.Neo4jReference;
@@ -59,7 +60,7 @@ public interface AnnotationRepository extends GraphRepository<Annotation> {
          + " MATCH (annotation:Annotation)-[:REFERENCE]->(reference)"
          + " RETURN annotation" 
     )
-	Neo4jAnnotation findByReference( @Param("referenceId")Neo4jReference reference );
+	Neo4jAnnotation findByReference( @Param("referenceId") Reference reference );
 
 	/**
 	 * 
@@ -84,7 +85,7 @@ public interface AnnotationRepository extends GraphRepository<Annotation> {
 	
 	
 	@Query( "MATCH (annotation:Annotation { accessionId:{accessionId} } )-[:REFERENCE]->(reference:Reference) RETURN reference LIMIT 1")
-	Neo4jReference findReferenceByAnnotation(  @Param("accessionId") String accessionId ) ;
+	Reference findReferenceByAnnotation(  @Param("accessionId") String accessionId ) ;
 
 	/**
 	 * @param filter

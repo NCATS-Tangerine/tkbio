@@ -63,6 +63,7 @@ import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Annotation.Type;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.EvidenceCode;
+import bio.knowledge.model.Reference;
 import bio.knowledge.service.AnnotationService;
 import bio.knowledge.service.Cache;
 import bio.knowledge.service.ConceptService;
@@ -442,8 +443,9 @@ public class ConceptMapPopupWindow {
 			// statement should no longer be null here no matter what the case.
 			if (statement != null) {
 				// May have seen this Reference before?
-				Neo4jReference reference = referenceService.findByUri(uri);
+				Reference reference = referenceService.findByUri(uri);
 				if (reference == null) {
+					// TODO: can we turn this into something more generic?
 					reference = new Neo4jReference();
 					reference.setUri(uri);
 
@@ -453,7 +455,7 @@ public class ConceptMapPopupWindow {
 					reference.setMonthPublished(calendar.get(Calendar.MONTH));
 					reference.setDayPublished(calendar.get(Calendar.DAY_OF_MONTH));
 
-					reference = referenceService.save(reference);
+					reference = referenceService.save((Neo4jReference) reference);
 				}
 
 				// Wonder how the annotationId should be consistently computed?

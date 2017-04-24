@@ -56,4 +56,6 @@ public interface Reference {
 	
 	Long getId();
 
+	void setUri(String uri);
+
 }
