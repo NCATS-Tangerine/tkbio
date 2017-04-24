@@ -150,7 +150,7 @@ public interface KBQuery {
 	 * 
 	 * @param Neo4jAnnotation currently selected
 	 */
-	public void setCurrentAnnotation( Neo4jAnnotation annotation ) ;
+	public void setCurrentAnnotation( Annotation annotation ) ;
 	
 	/**
 	 * 

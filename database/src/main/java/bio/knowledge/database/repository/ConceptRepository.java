@@ -33,6 +33,7 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.neo4j.Neo4jConcept;
 
@@ -132,8 +133,8 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 			" SKIP  {1}.pageNumber*{1}.pageSize"+
 			" LIMIT {1}.pageSize"
 	)
-<<<<<<< HEAD
-	public List<Concept> findByNameLikeIgnoreCase( @Param("filter") String filter, Pageable pageable );
+
+	public List<Neo4jConcept> findByNameLikeIgnoreCase( @Param("filter") String filter, Pageable pageable );
 	
 	@Query("MATCH (concept:Concept) WHERE ID(concept) = {localId} RETURN concept;")
 	public Concept apiGetConceptById(@Param("localId") Integer localId);
@@ -147,7 +148,7 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 			" SKIP  {pageNumber} * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
-	public List<Concept> apiGetConcepts(
+	public List<Neo4jConcept> apiGetConcepts(
 			@Param("filter") String[] filter,
 			@Param("pageNumber") Integer pageNumber,
 			@Param("pageSize") Integer pageSize
@@ -165,15 +166,13 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 			" SKIP  {pageNumber} * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
-	public List<Concept> apiGetConceptsByType(
+	public List<Neo4jConcept> apiGetConceptsByType(
 			@Param("filter") String[] filter,
 			@Param("semanticGroups") String[] semanticGroups,
 			@Param("pageNumber") Integer pageNumber,
 			@Param("pageSize") Integer pageSize
 	);
-=======
-	public List<Neo4jConcept> findByNameLikeIgnoreCase( @Param("filter") String filter, Pageable pageable );
->>>>>>> refactoring_of_concept_from_listview
+
 
 	/**
 	 * @param name

@@ -243,7 +243,7 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#setCurrentAnnotation(bio.knowledge.model.semmeddb.Annotation)
 	 */
 	@Override
-	public void setCurrentAnnotation(Neo4jAnnotation annotation) {
+	public void setCurrentAnnotation(Annotation annotation) {
 		this.currentAnnotation = Optional.of(annotation) ; 
 	}
 

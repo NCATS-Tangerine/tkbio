@@ -31,6 +31,7 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
+import bio.knowledge.model.Evidence;
 import bio.knowledge.model.neo4j.Neo4jEvidence;
 
 /**
@@ -62,7 +63,7 @@ public interface EvidenceRepository extends GraphRepository<Neo4jEvidence> {
 			" LIMIT {pageSize} "
 			
 	)
-	public List<Evidence> apiGetEvidence(
+	public List<Neo4jEvidence> apiGetEvidence(
 		@Param("evidenceId") String evidenceId,
 		@Param("pageNumber") Integer pageNumber,
 		@Param("pageSize") Integer pageSize

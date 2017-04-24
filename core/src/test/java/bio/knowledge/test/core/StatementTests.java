@@ -47,6 +47,7 @@ import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.EvidenceCode;
+import bio.knowledge.model.Predicate;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.neo4j.Neo4jEvidence;
@@ -436,7 +437,7 @@ public class StatementTests {
 			subject = subjects.get(0) ;
 			System.out.println("Subject accessionId: "+subject.getAccessionId());
 			
-			Neo4jPredicate relation = p.getRelation();
+			Predicate relation = p.getRelation();
 			System.out.println("Relation: "+relation.getName());
 			
 			objects = p.getObjects() ;
