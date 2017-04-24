@@ -55,7 +55,7 @@ public class EvidenceApi {
     }
 
     /* Build call for getEvidence */
-    private com.squareup.okhttp.Call getEvidenceCall(String evidenceId, String q, Integer pageNumber, Integer pageSize, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getEvidenceCall(String evidenceId, List<String> q, Integer pageNumber, Integer pageSize, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
@@ -64,7 +64,7 @@ public class EvidenceApi {
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         if (q != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "q", q));
+        localVarQueryParams.addAll(apiClient.parameterToPairs("csv", "q", q));
         if (pageNumber != null)
         localVarQueryParams.addAll(apiClient.parameterToPairs("", "pageNumber", pageNumber));
         if (pageSize != null)
@@ -103,7 +103,7 @@ public class EvidenceApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getEvidenceValidateBeforeCall(String evidenceId, String q, Integer pageNumber, Integer pageSize, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getEvidenceValidateBeforeCall(String evidenceId, List<String> q, Integer pageNumber, Integer pageSize, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'evidenceId' is set
         if (evidenceId == null) {
@@ -130,7 +130,7 @@ public class EvidenceApi {
      * @return InlineResponse2004
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public InlineResponse2004 getEvidence(String evidenceId, String q, Integer pageNumber, Integer pageSize) throws ApiException {
+    public InlineResponse2004 getEvidence(String evidenceId, List<String> q, Integer pageNumber, Integer pageSize) throws ApiException {
         ApiResponse<InlineResponse2004> resp = getEvidenceWithHttpInfo(evidenceId, q, pageNumber, pageSize);
         return resp.getData();
     }
@@ -145,7 +145,7 @@ public class EvidenceApi {
      * @return ApiResponse&lt;InlineResponse2004&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<InlineResponse2004> getEvidenceWithHttpInfo(String evidenceId, String q, Integer pageNumber, Integer pageSize) throws ApiException {
+    public ApiResponse<InlineResponse2004> getEvidenceWithHttpInfo(String evidenceId, List<String> q, Integer pageNumber, Integer pageSize) throws ApiException {
         com.squareup.okhttp.Call call = getEvidenceValidateBeforeCall(evidenceId, q, pageNumber, pageSize, null, null);
         Type localVarReturnType = new TypeToken<InlineResponse2004>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -162,7 +162,7 @@ public class EvidenceApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getEvidenceAsync(String evidenceId, String q, Integer pageNumber, Integer pageSize, final ApiCallback<InlineResponse2004> callback) throws ApiException {
+    public com.squareup.okhttp.Call getEvidenceAsync(String evidenceId, List<String> q, Integer pageNumber, Integer pageSize, final ApiCallback<InlineResponse2004> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
