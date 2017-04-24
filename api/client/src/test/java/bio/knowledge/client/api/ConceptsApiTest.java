@@ -13,13 +13,19 @@
 
 package bio.knowledge.client.api;
 
+import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.InlineResponse200;
 import bio.knowledge.client.model.InlineResponse2001;
+import bio.knowledge.client.model.InlineResponse2001DataPage;
+
 import org.junit.Test;
 import org.junit.Ignore;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +33,18 @@ import java.util.Map;
 /**
  * API tests for ConceptsApi
  */
-@Ignore
+//@Ignore
 public class ConceptsApiTest {
-
-    private final ConceptsApi api = new ConceptsApi();
+    private static final boolean RUNNING_CLIENT_LOCALLY = true;
+    
+	private final static ConceptsApi api = new ConceptsApi();
+    static {
+    	if (RUNNING_CLIENT_LOCALLY) {
+	    	ApiClient apiClient = new ApiClient();
+	    	apiClient.setBasePath("http://localhost:8080/api/");
+	    	api.setApiClient(apiClient);
+    	}
+    }
 
     
     /**
@@ -43,10 +57,16 @@ public class ConceptsApiTest {
      */
     @Test
     public void getConceptDetailsTest() throws ApiException {
-        String conceptId = null;
-        List<InlineResponse200> response = api.getConceptDetails(conceptId);
-
-        // TODO: test validations
+        String conceptId = "3";
+        List<InlineResponse200> responses = api.getConceptDetails(conceptId);
+        
+        assertTrue(responses != null);
+        
+        assertTrue(responses.size() == 1);
+        
+        for (InlineResponse200 response : responses) {
+        	assertTrue(response.getName().equals("INSL3"));
+        }
     }
     
     /**
@@ -59,13 +79,26 @@ public class ConceptsApiTest {
      */
     @Test
     public void getConceptsTest() throws ApiException {
-        List<String> q = null;
-        List<String> sg = null;
-        Integer pageNumber = null;
-        Integer pageSize = null;
+    	String[] filter = {"chocolate", "milk"};
+        List<String> q = Arrays.asList(filter);
+        String[] semanticGroups = {"GENE", "OBJC"};
+        List<String> sg = Arrays.asList(semanticGroups);
+        Integer pageNumber = 0;
+        Integer pageSize = 20;
         InlineResponse2001 response = api.getConcepts(q, sg, pageNumber, pageSize);
-
-        // TODO: test validations
+        
+        assertTrue(response != null);
+        assertTrue(response.getTotalEntries() == 18);
+        
+        boolean milkChocolateFound = false;
+        
+        for (InlineResponse2001DataPage page : response.getDataPage()) {
+        	if (page.getName().equals("Milk chocolate")) {
+        		milkChocolateFound = true;
+        	}
+        }
+        
+        assertTrue(milkChocolateFound);
     }
     
 }
