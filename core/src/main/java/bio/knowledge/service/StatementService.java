@@ -60,6 +60,10 @@ import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
+import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.neo4j.Neo4jEvidence;
+import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
+import bio.knowledge.model.neo4j.Neo4jPredicate;
 import bio.knowledge.model.wikidata.WikiDataPropertySemanticType;
 import bio.knowledge.service.Cache.CacheLocation;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
@@ -98,32 +102,31 @@ public class StatementService
 	 * bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.
 	 * lang.Object[])
 	 */
-	@Override
-	public Statement createInstance(Object... args) {
+	public Neo4jGeneralStatement createInstance(Object... args) {
 
 		if (args.length == 1)
-			return new Statement(
+			return new Neo4jGeneralStatement(
 					(String) args[0]  		  // Statement AccessionId
 			);
 		else if (args.length == 2)
-			if (args[1] instanceof Predicate) {
-				return new Statement(
+			if (args[1] instanceof Neo4jPredicate) {
+				return new Neo4jGeneralStatement(
 						(String) args[0],   // Statement AccessionId
-						(Predicate) args[1] // Predicate by object
+						(Neo4jPredicate) args[1] // Predicate by object
 				);
 			} else if (args[1] instanceof String) {
-				return new Statement(
+				return new Neo4jGeneralStatement(
 						(String) args[0],   // Statement AccessionId
-						(Predicate) args[1] // Predicate by object
+						(Neo4jPredicate) args[1] // Predicate by object
 				);
 			} else
 				throw new RuntimeException("Invalid argument to StatementService.createInstance() ?");
 		
 		else if (args.length == 4)
-			return new Statement(
+			return new Neo4jGeneralStatement(
 					(String) args[0],  		  // Statement AccessionId
 					(Concept) args[1],        // Subject
-					(Predicate) args[2],      // Predicate
+					(Neo4jPredicate) args[2],      // Predicate
 					(Concept) args[3]         // Object
 			);
 		else
@@ -217,7 +220,7 @@ public class StatementService
 
 		// Is key present ? then fetch it from cache
 		//List<Statement> cachedResult = (List<Statement>) cache.getResultSetCache().get(cacheKey);
-		List<Statement> cachedResult = (List<Statement>)cacheLocation.getResultSet();
+		List<Statement> cachedResult = (List<Statement>) cacheLocation.getResultSet();
 
 		List<Statement> statements ;
 		
@@ -227,13 +230,13 @@ public class StatementService
 			
 			if (filter.trim().isEmpty() && !currentConceptTypes.isPresent()) {
 				_logger.trace("Filter Empty : Calling findByConcept ");
-				data = statementRepository.findByConcept(concept, conceptTypeFilter, pageable);
+				data = statementRepository.findByConcept((Neo4jConcept) concept, conceptTypeFilter, pageable);
 
 			} else {
 				_logger.trace("Filter is there : " + filter + " Calling findByConceptFiltered");
 				// splitting for word by word search
 				String[] words = filter.split(SEPARATOR);
-				data = statementRepository.findByConceptFiltered(concept, conceptTypeFilter, words,
+				data = statementRepository.findByConceptFiltered((Neo4jConcept) concept, conceptTypeFilter, words,
 						pageable);
 			}
 			
@@ -260,11 +263,11 @@ public class StatementService
 				}
 				
 				// fill evidence relationship
-				Evidence evidence = (Evidence)entry.get("evidence");
+				Evidence evidence = (Evidence) entry.get("evidence");
 				if ( evidence == null) {
 					// set empty evidence relationship,it means subject and
 					// object available for statement without any evidence
-					evidence =  new Evidence();
+					evidence =  new Neo4jEvidence();
 				}
 				evidence.setStatement(statement);
 				statement.setEvidence(evidence);
@@ -361,7 +364,7 @@ public class StatementService
 		} 
 	}
 
-	public Statement findbySourceAndTargetAccessionId(String sourceAccessionId, String targetAccessionId, String relationName){
+	public Neo4jGeneralStatement findbySourceAndTargetAccessionId(String sourceAccessionId, String targetAccessionId, String relationName){
 
 		List<Map<String, Object>> result = null ;
 		result = statementRepository.
@@ -370,7 +373,7 @@ public class StatementService
 		if(result==null || result.isEmpty()) return null ;
 		
 		Map<String, Object> entry = result.get(0);
-		Statement statement = (Statement)entry.get("statement");
+		Neo4jGeneralStatement statement = (Neo4jGeneralStatement)entry.get("statement");
 
 		Concept subject = (Concept) entry.get("subject");
 		if (subject != null) {
@@ -388,11 +391,11 @@ public class StatementService
 			statement.setObject(object);
 		}
 		
-		Evidence evidence = (Evidence)entry.get("evidence");
+		Neo4jEvidence evidence = (Neo4jEvidence)entry.get("evidence");
 		if ( evidence == null) {
 			// set empty evidence relationship,it means subject and
 			// object available for statement without any evidence
-			evidence =  new Evidence();
+			evidence =  new Neo4jEvidence();
 		}
 		evidence.setStatement(statement);
 		statement.setEvidence(evidence);
@@ -447,7 +450,7 @@ public class StatementService
 		
 		if (filter.trim().isEmpty() &&  !currentConceptTypes.isPresent()) {
 			if (count == null) {
-				count = statementRepository.countByConcept(concept, conceptTypeFilter);
+				count = statementRepository.countByConcept((Neo4jConcept) concept, conceptTypeFilter);
 				_logger.trace("Inside countEntries (From Database) : " + count);
 			}
 			_logger.trace("Inside countEntries (From Cached Result) : " + count);
@@ -456,7 +459,7 @@ public class StatementService
 			if (count == null) {
 				count = statementRepository.
 							countByNameLikeIgnoreCase(
-									concept,
+									(Neo4jConcept) concept,
 									filter.split(" "), 
 									conceptTypeFilter
 							);
@@ -517,7 +520,7 @@ public class StatementService
 		// Is key present ? then fetch it from cache
 		//List<Statement> cachedResult = (List<Statement>) cache.getResultSetCache().get(cacheKey);
 		
-		List<Statement> cachedResult = (List<Statement>)cacheLocation.getResultSet();
+		List<Statement> cachedResult = (List<Statement>) cacheLocation.getResultSet();
 		
 		if (cachedResult == null) {
 				// splitting for word by word search
@@ -525,7 +528,7 @@ public class StatementService
 				data = statementRepository.findByPMID(currentPmidOpt.get(), conceptTypeFilter, words, pageable);
 			for (Map<String, Object> entry : data) {
 				// statement object without any relationships
-				Statement statement = (Statement) entry.get("statement");
+				Neo4jGeneralStatement statement = (Neo4jGeneralStatement) entry.get("statement");
 				
 				statement.setSubject((Concept) entry.get("subject"));
 				
@@ -535,11 +538,11 @@ public class StatementService
 				
 				statement.setObject((Concept) entry.get("object"));
 				
-				Evidence evidence = (Evidence)entry.get("evidence");
+				Neo4jEvidence evidence = (Neo4jEvidence)entry.get("evidence");
 				if ( evidence == null) {
 					// set empty evidence relationship,it means subject and
 					// object available for statement without any evidence
-					evidence =  new Evidence();
+					evidence =  new Neo4jEvidence();
 				}
 				evidence.setStatement(statement);
 				statement.setEvidence(evidence);
@@ -630,7 +633,7 @@ public class StatementService
 	/**
 	 * @return
 	 */
-	public Concept getCanonicalSubject(Statement p) {
+	public Concept getCanonicalSubject(Neo4jGeneralStatement p) {
 		
 		List<Concept> subjects = p.getSubjects() ;
 		
@@ -651,7 +654,7 @@ public class StatementService
 	 * @param p 
 	 * @return
 	 */
-	public Concept getCanonicalObject(Statement p) {
+	public Concept getCanonicalObject(Neo4jGeneralStatement p) {
 		
 		List<Concept> objects = p.getObjects() ;
 		
@@ -737,11 +740,11 @@ public class StatementService
 				
 				propId = RdfUtil.getObjectId(propUri) ;
 				
-				Predicate property = new Predicate( propUri, plPart[0], pdPart[0] ) ;
+				Neo4jPredicate property = new Neo4jPredicate( propUri, plPart[0], pdPart[0] ) ;
 				String propValue = (String) r.get("propValue") ;
 								
 				String statementId = subject.getAccessionId()+"-"+propId+"-"+propValue ;
-				Statement p = new Statement( 
+				Neo4jGeneralStatement p = new Neo4jGeneralStatement( 
 						statementId, // not yet sure what unique id to put here...
 			    		property 
 			    ) ;
@@ -756,17 +759,17 @@ public class StatementService
 				String propValueId = RdfUtil.getObjectId(propValue) ;
 				String qualifiedPropValueId = wikiDataType.getDefaultQualifier()+propValueId ;
 
-				Optional<Class<? extends Concept>> nodeTypeOpt = 
+				Optional<Class<? extends Neo4jConcept>> nodeTypeOpt = 
 						wikiDataType.getNodeType() ;
 				
-				Concept wikiItem ;
+				Neo4jConcept wikiItem ;
 				if(nodeTypeOpt.isPresent()) {
-					Class<? extends Concept> nodeType = nodeTypeOpt.get() ;
+					Class<? extends Neo4jConcept> nodeType = nodeTypeOpt.get() ;
 					wikiItem = nodeType.newInstance() ;
 					wikiItem.setName(propValueId);
 				} else
 					wikiItem = 
-						new Concept( 
+						new Neo4jConcept( 
 								qualifiedPropValueId,
 								SemanticGroup.PHEN,
 								propValueId 
@@ -848,10 +851,10 @@ public class StatementService
 					final List<Statement> newStatements = new ArrayList<>();
 					runQuery( 
 							WikiDataDataSource.WD_CDS_3_ID, 
-							concept,
+							(Neo4jConcept) concept,
 							filter,
 							pageable,
-							(rs)->loadWikiDataResults(rs,concept,newStatements) 
+							(rs)->loadWikiDataResults(rs, (Concept) concept,newStatements) 
 							);
 					statements = newStatements ;
 					break ;
@@ -937,7 +940,7 @@ public class StatementService
 	 * @param statement
 	 * @return
 	 */
-	public Statement save(Statement statement) {
+	public Neo4jGeneralStatement save(Neo4jGeneralStatement statement) {
 		return statementRepository.save(statement);
 	}
 	

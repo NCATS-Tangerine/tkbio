@@ -34,13 +34,13 @@ import bio.knowledge.model.core.Ontology;
 import bio.knowledge.model.core.OntologyTerm;
 
 @NodeEntity(label="OntologyTerm")
-public class Neo4jOntologyTerm 
-	extends Neo4jIdentifiedEntity implements OntologyTerm {
+public class Neo4jAbstractOntologyTerm 
+	extends Neo4jAbstractIdentifiedEntity implements OntologyTerm {
 
     /**
      */
 	@Relationship( type="ONTOLOGY" )
-    private Neo4jOntology ontology;
+    private Neo4jAbstractOntology ontology;
 
     @Transient
     private String ontologyName;
@@ -66,7 +66,7 @@ public class Neo4jOntologyTerm
     @Value("#{ T(java.lang.Boolean).FALSE }")
     private Boolean isRelationship;
 
-	public Neo4jOntologyTerm() {
+	public Neo4jAbstractOntologyTerm() {
         super();
     }
 
@@ -76,7 +76,7 @@ public class Neo4jOntologyTerm
 	 * @param ontology
 	 * @param name
 	 */
-    public Neo4jOntologyTerm( Ontology ontology, String name ) {
+    public Neo4jAbstractOntologyTerm( Ontology ontology, String name ) {
         super(name);
         setOntology( ontology );
         String ns = ontology.getAccessionId() ;
@@ -90,7 +90,7 @@ public class Neo4jOntologyTerm
      * @param name
      * @param definition
      */
-    public Neo4jOntologyTerm(  Ontology ontology, String name, String definition ) {
+    public Neo4jAbstractOntologyTerm(  Ontology ontology, String name, String definition ) {
         this(ontology,name);
         setDescription(definition) ;
     }
@@ -102,7 +102,7 @@ public class Neo4jOntologyTerm
      * @param name
      * @param definition
      */
-    public Neo4jOntologyTerm(  Ontology ontology, String accessionId, String name, String definition ) {
+    public Neo4jAbstractOntologyTerm(  Ontology ontology, String accessionId, String name, String definition ) {
         super(accessionId,name,definition);
         setOntology( ontology );
     }
@@ -125,7 +125,7 @@ public class Neo4jOntologyTerm
 	public void setOntology(Ontology ontology) {
         // ontology "Ontology" is guaranteed to be a 
         // Neo4jOntology within this Neo4j-based application
-        this.ontology = (Neo4jOntology)ontology;
+        this.ontology = (Neo4jAbstractOntology)ontology;
     }
 
 	/* (non-Javadoc)

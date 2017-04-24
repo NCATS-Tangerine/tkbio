@@ -25,90 +25,73 @@
  */
 package bio.knowledge.model.core.neo4j;
 
-import java.util.Set;
-
 import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 
-import bio.knowledge.model.core.Ontology;
-import bio.knowledge.model.core.OntologyContext;
-import bio.knowledge.model.core.OntologyTerm;
+import bio.knowledge.model.core.DataFile;
+import bio.knowledge.model.core.IdentifiedEntity;
 
-@NodeEntity(label="Ontology")
-public class Neo4jOntology 
-	extends Neo4jIdentifiedEntity implements Ontology {
-	
-	public Neo4jOntology() {
+@NodeEntity(label="DataFile")
+public class Neo4jAbstractDataFile 
+	extends Neo4jAbstractIdentifiedEntity implements DataFile {
+
+	public Neo4jAbstractDataFile() {
         super();
     }
 
-    public Neo4jOntology( String source, String name, String description ) {
-		super( source, name, description );
-        this.context = OntologyContext.ANY_CONTEXT ;
+    public Neo4jAbstractDataFile( String prefix, IdentifiedEntity entity ) {
+		super(entity.getName());
+		setDataType(entity) ;
+		this.fileName = standardFileName(prefix, entity);
 	}
-
-    /**
-     */
-    private String model = "*";
     
-
-    /**
-     */
-    private OntologyContext context;
-    
-    /**
-     */
-    @Relationship( type="TERM", direction=Relationship.INCOMING )
-	private Set<Neo4jOntologyTerm> terms ;
-
+	private String fileName;
+	
+    private String dataType;
+  
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.core.Ontology#getModel()
+	 * @see bio.knowledge.model.core.DataFile#getFileName()
 	 */
 	@Override
-	public String getModel() {
-        return this.model;
+	public String getFileName() {
+        return this.fileName;
     }
 
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.core.Ontology#setModel(java.lang.String)
+	 * @see bio.knowledge.model.core.DataFile#setFileName(java.lang.String)
 	 */
 	@Override
-	public void setModel(String model) {
-        this.model = model;
+	public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.core.Ontology#getContext()
+	 * @see bio.knowledge.model.core.DataFile#setDataType(bio.knowledge.model.core.IdentifiedEntity)
 	 */
 	@Override
-	public OntologyContext getContext() {
-        return this.context;
-    }
-
+	public void setDataType(IdentifiedEntity entity){
+		this.dataType = entity.getClass().getSimpleName() ;
+	}
+	
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.core.Ontology#setContext(bio.knowledge.model.core.OntologyContext)
+	 * @see bio.knowledge.model.core.DataFile#setDataType(java.lang.String)
 	 */
 	@Override
-	public void setContext(OntologyContext context) {
-        this.context = context;
+	public void setDataType(String dataType) {
+        this.dataType = dataType;
     }
-
+	
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.core.Ontology#getTerms()
+	 * @see bio.knowledge.model.core.DataFile#getDataType()
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Set<OntologyTerm> getTerms() {
-        return (Set<OntologyTerm>)(Set)terms ;
-        
+	public String getDataType() {
+        return this.dataType;
     }
+	
+    /* (non-Javadoc)
+	 * @see bio.knowledge.model.core.DataFile#toString()
+	 */
+    @Override
+	public String toString() { return getName() ; }
 
-	/* (non-Javadoc)
-	 * @see bio.knowledge.model.core.Ontology#setTerms(java.util.Set)
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public void setTerms(Set<OntologyTerm> newTerms) {
-		terms = (Set<Neo4jOntologyTerm>)(Set)newTerms ;
-    }
 }

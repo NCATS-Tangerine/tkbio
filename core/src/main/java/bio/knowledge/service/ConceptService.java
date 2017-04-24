@@ -62,6 +62,7 @@ import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
 import bio.knowledge.model.datasource.SimpleResult;
 import bio.knowledge.model.datasource.SimpleResultSet;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.service.Cache.CacheLocation;
 import bio.knowledge.service.core.FeatureService;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
@@ -104,11 +105,11 @@ public class ConceptService
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])
 	 */
-	@Override
-	public Concept createInstance(Object... args) {
+	
+	public Neo4jConcept createInstance(Object... args) {
 		if (args.length == 2)
 			if (args[0] instanceof SemanticGroup) {
-				return new Concept(
+				return new Neo4jConcept(
 						(SemanticGroup)   args[0], // SemanticGroup
 						(String)          args[1]  // Concept.name
 				);
@@ -117,7 +118,7 @@ public class ConceptService
 		
 		else if (args.length == 3)
 			if (args[1] instanceof SemanticGroup) {
-				return new Concept(
+				return new Neo4jConcept(
 						(String)        args[0], // Concept.accessionId
 						(SemanticGroup) args[1], // SemanticGroup
 						(String)        args[2]  // Concept.name
@@ -175,6 +176,7 @@ public class ConceptService
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
+	// TODO: I think this is where the refactoring faltered
 	private Page<Concept> findAllFiltered(String filter, Pageable pageable) {
 		String searchString = query.getCurrentQueryText();
 		if ( 
@@ -216,11 +218,11 @@ public class ConceptService
 						new String[] { searchString, conceptCodes, pageKey }
 				);
 		
-		List<Concept> searchedConceptResult = new ArrayList<>();
+		List<Neo4jConcept> searchedConceptResult = new ArrayList<>();
 		// Is key present ? then fetch it from cache
 		// List<Concept> cachedResult = (List<Concept>) cache.getResultSetCache().get(cacheKey);
 		
-		List<Concept> cachedResult = (List<Concept>)cacheLocation.getResultSet();
+		List<Neo4jConcept> cachedResult = (List<Neo4jConcept>) cacheLocation.getResultSet();
 		
 		// Is key present ? then fetch it from cache
 		if (cachedResult == null) {
@@ -239,7 +241,7 @@ public class ConceptService
 							authenticationState.getUserId(),
 							authenticationState.getGroupIds()
 					);
-				}else{
+				} else {
 					searchedConceptResult = conceptRepository.findByNameLikeIgnoreCase(
 							conceptTypes,
 							words,
@@ -256,7 +258,7 @@ public class ConceptService
 		} else {
 			searchedConceptResult = cachedResult;
 		}
-		return (Page<Concept>) (Page) new PageImpl(searchedConceptResult);
+		return new PageImpl(searchedConceptResult);
 	}
 
 	/* (non-Javadoc)
@@ -372,7 +374,7 @@ public class ConceptService
 	 */
 	public Feature addDefinition( Concept concept, String source, String id, String definition ) {
 		Feature existingDefinition = getDefinition( concept, source ) ;
-		featureService.createFeature( (Concept)concept, id, source, definition ) ;
+		featureService.createFeature( concept, id, source, definition ) ;
 		return existingDefinition ;
 	}
 
@@ -816,7 +818,7 @@ public class ConceptService
 	 * @param concept
 	 */
 	public Concept save(Concept concept) {
-		return conceptRepository.save(concept) ;
+		return conceptRepository.save((Neo4jConcept) concept) ;
 	}
 	
     /**
@@ -844,7 +846,7 @@ public class ConceptService
 		CacheLocation cacheLocation = 
 				cache.searchForEntity( "Concept", nameSpace, new String[] {objectId} );
 		
-		Concept cachedConcept = (Concept)cacheLocation.getEntity();
+		Concept cachedConcept = (Concept) cacheLocation.getEntity();
 		
 		if (cachedConcept == null) {
 			
@@ -929,7 +931,7 @@ public class ConceptService
 						 * Save whatever concept with a newly 
 						 * discovered name and semantic group 
 						 */
-						concept = conceptRepository.save(concept) ; 
+						concept = conceptRepository.save((Neo4jConcept) concept) ; 
 					}
 					
 				} catch (InterruptedException | ExecutionException | TimeoutException e) {

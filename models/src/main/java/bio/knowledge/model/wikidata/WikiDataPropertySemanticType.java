@@ -28,8 +28,8 @@ package bio.knowledge.model.wikidata;
 
 import java.util.Optional;
 
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.DomainModelException;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.umls.SemanticType;
 
 /**
@@ -43,29 +43,29 @@ public enum WikiDataPropertySemanticType {
 	P351(null, "idcn","Entrez"),
 	P353(null, "idcn","HGNC.Id"),
 	P354(null, "idcn","HGNC.Symbol"),
-	P492(Concept.class, "dsyn","OMIM"),
-	P593(Concept.class, "gngm","Gene"),
+	P492(Neo4jConcept.class, "dsyn","OMIM"),
+	P593(Neo4jConcept.class, "gngm","Gene"),
 	P594(null, "idcn","Ensembl"),
-	P639(Concept.class, "nusq","RefSeq"),
+	P639(Neo4jConcept.class, "nusq","RefSeq"),
 	P644(null, "idcn",""),
 	P645(null, "idcn",""),
 	P646(null, "idcn","Freebase"),
-	P684(Concept.class, "gngm","wd"),
-	P688(Concept.class, "aapp","wd"),
+	P684(Neo4jConcept.class, "gngm","wd"),
+	P688(Neo4jConcept.class, "aapp","wd"),
 	P692(null, "inpr","GeneAtlas"),
 	P703(null, "clas","wd"),
-	P704(Concept.class, "nusq","Ensembl"),
+	P704(Neo4jConcept.class, "nusq","Ensembl"),
 	P1057(null,"nusq","wd"),
 	P1916(null,"idcn","wd"),
 	P2548(null,"idcn","wd")
 	;
 	
 	private SemanticType semanticType ;
-	private Class<? extends Concept> nodeType ;
+	private Class<? extends Neo4jConcept> nodeType ;
 	private String defaultQualifier ;
 	
 	private WikiDataPropertySemanticType( 
-			Class<? extends Concept> nodeType, 
+			Class<? extends Neo4jConcept> nodeType, 
 			String semanticCode,
 			String qualifier
 	) {
@@ -74,7 +74,7 @@ public enum WikiDataPropertySemanticType {
 		defaultQualifier = qualifier ;
 	}
 	
-	public Optional<Class<? extends Concept>> getNodeType() {
+	public Optional<Class<? extends Neo4jConcept>> getNodeType() {
 		if(nodeType==null)
 			return Optional.empty();
 		else

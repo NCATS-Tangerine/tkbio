@@ -29,7 +29,6 @@ package bio.knowledge.datasource;
 import java.util.Optional;
 import java.util.Set;
 
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.SemanticGroup;
 
 /**

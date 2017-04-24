@@ -29,7 +29,6 @@ package bio.knowledge.datasource;
 import java.util.HashMap;
 import java.util.Map;
 
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.SemanticGroup;
 
 /**

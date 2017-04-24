@@ -38,8 +38,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import bio.knowledge.database.repository.ConceptRepository;
-
 import bio.knowledge.model.Concept;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.service.AuthenticationState;
 
 
@@ -57,7 +57,7 @@ public class ConceptRestController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public Iterable<Concept> getAll() {
-		return conceptRepository.findAll();
+		return (Iterable<Concept>) (Iterable) conceptRepository.findAll();
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "{term}")
@@ -65,7 +65,7 @@ public class ConceptRestController {
 			@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
 			@RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
 		Pageable pageable = new PageRequest(pageNum - 1, pageSize);
-		return conceptRepository.findByNameLikeIgnoreCase(term, pageable);
+		return (Iterable<Concept>) (Iterable) conceptRepository.findByNameLikeIgnoreCase(term, pageable);
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class ConceptRestController {
 		 * So with accountId and groupIds being set to null, only public concept
 		 * maps will be counted.
 		 */
-		List<Concept> result = conceptRepository.findByInitialSearch(words, pageable, null, null);
+		List<Concept> result = (List<Concept>) (List) conceptRepository.findByInitialSearch(words, pageable, null, null);
 		return result;
 	}
 
@@ -127,7 +127,7 @@ public class ConceptRestController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public Concept create(@RequestBody Concept concept) {
-		return conceptRepository.save(concept);
+		return conceptRepository.save((Neo4jConcept) concept);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "{id}")
@@ -141,6 +141,6 @@ public class ConceptRestController {
 		update.setAccessionId(concept.getAccessionId());
 		update.setName(concept.getName());
 		update.setSemanticGroup(concept.getSemanticGroup());
-		return conceptRepository.save(update);
+		return conceptRepository.save((Neo4jConcept) update);
 	}
 }

@@ -57,7 +57,6 @@ public class Neo4jContactFormService
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])
 	 */
-	@Override
 	public ContactForm createInstance(Object... arg0) {
 		// See recordContactForm() below instead...
 		return new Neo4jContactForm();

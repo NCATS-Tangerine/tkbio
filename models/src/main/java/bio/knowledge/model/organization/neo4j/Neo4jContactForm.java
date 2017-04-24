@@ -28,12 +28,12 @@ package bio.knowledge.model.organization.neo4j;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 
-import bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity;
 import bio.knowledge.model.organization.ContactForm;
 
 @NodeEntity(label="ContactForm")
 public class Neo4jContactForm 
-	extends Neo4jIdentifiedEntity implements ContactForm {
+	extends Neo4jAbstractIdentifiedEntity implements ContactForm {
 	
 	public Neo4jContactForm() {
 		super() ;

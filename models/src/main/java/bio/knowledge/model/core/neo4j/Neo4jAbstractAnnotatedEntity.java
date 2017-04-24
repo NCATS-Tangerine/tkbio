@@ -41,27 +41,27 @@ import bio.knowledge.model.core.Feature;
  *
  */
 @NodeEntity(label="AnnotatedEntity")
-public class Neo4jAnnotatedEntity 
-	extends Neo4jIdentifiedEntity implements AnnotatedEntity {
+public class Neo4jAbstractAnnotatedEntity 
+	extends Neo4jAbstractIdentifiedEntity implements AnnotatedEntity {
 
-	public Neo4jAnnotatedEntity() {
+	public Neo4jAbstractAnnotatedEntity() {
         super();
     }
     
-    public Neo4jAnnotatedEntity(String name) {
+    public Neo4jAbstractAnnotatedEntity(String name) {
     	super(name) ;
     }
 
-    public Neo4jAnnotatedEntity(String name, String description) {
+    public Neo4jAbstractAnnotatedEntity(String name, String description) {
     	super(name,description) ;
     }
 	
-    public Neo4jAnnotatedEntity(String accessionId, String name, String description) {
+    public Neo4jAbstractAnnotatedEntity(String accessionId, String name, String description) {
     	super(accessionId,name,description) ;
     }
 	
     @Relationship(type="FEATURE")
-    private Set<Neo4jFeature> features = new HashSet<Neo4jFeature>() ; ;
+    private Set<Neo4jAbstractFeature> features = new HashSet<Neo4jAbstractFeature>() ; ;
 
     /*
      * (non-Javadoc)
@@ -70,7 +70,7 @@ public class Neo4jAnnotatedEntity
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void setFeatures( Set<Feature> newFeatures ) {
-		features = (Set<Neo4jFeature>)(Set)newFeatures ;
+		features = (Set<Neo4jAbstractFeature>)(Set)newFeatures ;
     }
 
     /*

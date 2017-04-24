@@ -32,7 +32,7 @@ import java.util.Set;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity;
 
 /**
  * 
@@ -40,7 +40,7 @@ import bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity;
  *
  */
 @NodeEntity(label="Person")
-public class Person extends Neo4jIdentifiedEntity {
+public class Person extends Neo4jAbstractIdentifiedEntity {
 
     public Person() {
     	super("") ;

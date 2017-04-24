@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import bio.knowledge.database.repository.ReferenceRepository;
 import bio.knowledge.model.Reference;
+import bio.knowledge.model.neo4j.Neo4jReference;
 
 /**
  * @author Richard
@@ -53,8 +54,8 @@ public class ReferenceService {
 	 * @param reference
 	 * @return
 	 */
-	public Reference save(Reference reference) {
-		return referenceRepository.save(reference);
+	public Reference save(Neo4jReference reference) {
+		return (Reference) referenceRepository.save(reference);
 	}
 	
 

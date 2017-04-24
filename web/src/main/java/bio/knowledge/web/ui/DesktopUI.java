@@ -91,11 +91,11 @@ import bio.knowledge.graph.jsonmodels.EdgeData;
 import bio.knowledge.graph.jsonmodels.Layout;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.NodeData;
-import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
+import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.service.AuthenticationState;
 import bio.knowledge.service.Cache;
 import bio.knowledge.service.ConceptMapArchiveService;
@@ -567,6 +567,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * 
 	 * @param annotation
 	 */
+<<<<<<< HEAD
 	public void displayReference(Annotation annotation) {
 
 		query.setCurrentAnnotation(annotation);
@@ -575,6 +576,17 @@ public class DesktopUI extends UI implements MessageService {
 
 		Navigator navigator = new Navigator(this, desktopView.getReferenceLayout());
 
+=======
+	public void displayReference(Neo4jAnnotation annotation) {
+		
+		query.setCurrentAnnotation( annotation ) ;
+		
+		VerticalLayout referenceTab = desktopView.getReferenceTab() ;
+		
+		Navigator navigator = 
+				new Navigator(this,desktopView.getReferenceLayout());
+		
+>>>>>>> refactoring_of_concept_from_listview
 		navigator.addProvider(viewProvider);
 		navigator.navigateTo(ReferenceView.NAME);
 

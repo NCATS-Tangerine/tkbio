@@ -43,7 +43,7 @@ import bio.knowledge.model.core.DatabaseEntity;
  *
  */
 @NodeEntity(label="DatabaseEntity")
-public class Neo4jDatabaseEntity 
+public class Neo4jAbstractDatabaseEntity 
 	implements DatabaseEntity {
 	
     private Long id;
@@ -54,7 +54,7 @@ public class Neo4jDatabaseEntity
     // directly so...store as milliseconds?
     private Long versionDate=Calendar.getInstance().getTimeInMillis();
     
-	public Neo4jDatabaseEntity() {
+	public Neo4jAbstractDatabaseEntity() {
 		super() ;
 		version = 1 ;
 		versionDate = Calendar.getInstance().getTimeInMillis() ;

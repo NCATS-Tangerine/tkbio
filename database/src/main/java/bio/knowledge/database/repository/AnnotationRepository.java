@@ -33,9 +33,12 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
-import bio.knowledge.model.Reference;
-import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Annotation;
+import bio.knowledge.model.Evidence;
+import bio.knowledge.model.Reference;
+import bio.knowledge.model.neo4j.Neo4jAnnotation;
+import bio.knowledge.model.neo4j.Neo4jEvidence;
+import bio.knowledge.model.neo4j.Neo4jReference;
 
 /**
  * @author Richard
@@ -47,7 +50,7 @@ public interface AnnotationRepository extends GraphRepository<Annotation> {
 	 * @return
 	 */
 	@Query("MATCH (annotation:Annotation) RETURN annotation")
-	List<Annotation> getAnnotations() ;
+	List<Neo4jAnnotation> getAnnotations() ;
 	
 	/**
 	 * @param reference
@@ -57,7 +60,7 @@ public interface AnnotationRepository extends GraphRepository<Annotation> {
          + " MATCH (annotation:Annotation)-[:REFERENCE]->(reference)"
          + " RETURN annotation" 
     )
-	Annotation findByReference( @Param("referenceId")Reference reference );
+	Neo4jAnnotation findByReference( @Param("referenceId") Reference reference );
 
 	/**
 	 * 
@@ -78,7 +81,7 @@ public interface AnnotationRepository extends GraphRepository<Annotation> {
 	 * @return matching Annotation
 	 */
 	@Query( "MATCH ( annotation:Annotation { accessionId:{accessionId} } ) RETURN annotation")
-	Annotation findByAccessionId(  @Param("accessionId") String accessionId ) ;
+	Neo4jAnnotation findByAccessionId(  @Param("accessionId") String accessionId ) ;
 	
 	
 	@Query( "MATCH (annotation:Annotation { accessionId:{accessionId} } )-[:REFERENCE]->(reference:Reference) RETURN reference LIMIT 1")
@@ -107,7 +110,7 @@ public interface AnnotationRepository extends GraphRepository<Annotation> {
 			+ " SKIP  {1}.pageNumber*{1}.pageSize"
 			+ " LIMIT {1}.pageSize" 
 		)
-	List<Annotation> findByNameLikeIgnoreCase( @Param("filter") String filter, Pageable pageable);
+	List<Neo4jAnnotation> findByNameLikeIgnoreCase( @Param("filter") String filter, Pageable pageable);
 	
 	@Query( 
 			" MATCH (evidence:Evidence) WHERE id(evidence) = {evidenceId}"+

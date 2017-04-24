@@ -30,7 +30,6 @@ import java.util.concurrent.CompletableFuture;
 
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.datasource.ResultSet;
 

@@ -29,11 +29,11 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;
 
 import bio.knowledge.model.core.AnnotatedEntity;
-import bio.knowledge.model.core.neo4j.Neo4jAnnotatedEntity;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractAnnotatedEntity;
 
 @Repository
 public interface Neo4jAnnotatedEntityRepository 
-	extends GraphRepository<Neo4jAnnotatedEntity> {
+	extends GraphRepository<Neo4jAbstractAnnotatedEntity> {
 
 	/**
 	 * @param accessionId

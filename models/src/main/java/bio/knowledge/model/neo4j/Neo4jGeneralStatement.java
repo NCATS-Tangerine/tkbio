@@ -23,45 +23,52 @@
  * THE SOFTWARE.
  *-------------------------------------------------------------------------------
  */
-package bio.knowledge.model;
+package bio.knowledge.model.neo4j;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 
-@NodeEntity(label="UserStatement")
-public class UserStatement extends AbstractStatement {
+import bio.knowledge.model.Concept;
+import bio.knowledge.model.Predicate;
+
+/**
+ * @author Richard
+ * 
+ * Reified node for statements of conceptual relations, which are now inspired
+ * by the notion of WikiData RDF statement triples, embellished with associated Evidence
+ *
+ */
+@NodeEntity(label="Statement")
+public class Neo4jGeneralStatement extends Neo4jAbstractStatement {
 	
-	String userId;
-	
-	protected UserStatement() {
+	protected Neo4jGeneralStatement() {
 		super();
 	}
 
-	public UserStatement(String name, String userId) {
+	public Neo4jGeneralStatement(String name){
 		super(name);
-		setUserId(userId);	
-	}
-
-	public UserStatement(String accessionId, Predicate predicate, String userId) {
-		super(accessionId, predicate);
-		setUserId(userId);	
-	}
-
-	public UserStatement(String accessionId, Concept subject, Predicate predicate, Concept object, String userId) {
-		super(accessionId, subject, predicate, object);
-		setUserId(userId);	
-	}
-
-	public UserStatement(String accessionId, String predicateName, String userId) {
-		super(accessionId, predicateName);
-		setUserId(userId);	
 	}
 	
-	public String getUserId() {
-		return this.userId;
-	}
-	
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
+	public Neo4jGeneralStatement(
+    		String accessionId,
+    		Predicate predicate
+    ) {
+    	super(accessionId, predicate);
+    }
+	   
+	public Neo4jGeneralStatement(
+    		String accessionId,
+    		Concept subject,
+    		Predicate predicate,
+    		Concept object
+    ) {
+    	super(accessionId, subject, predicate, object) ;
+    }
 
+	public Neo4jGeneralStatement(
+    		String accessionId,
+    		String predicateName
+    ) {
+    	super(accessionId,predicateName) ;
+    }
+	
 }

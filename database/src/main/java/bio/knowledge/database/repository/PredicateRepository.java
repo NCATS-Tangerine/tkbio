@@ -31,13 +31,13 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
-import bio.knowledge.model.Predicate;
+import bio.knowledge.model.neo4j.Neo4jPredicate;
 
 /**
  * @author Richard
  *
  */
-public interface PredicateRepository extends GraphRepository<Predicate> {
+public interface PredicateRepository extends GraphRepository<Neo4jPredicate> {
 
 	/**
 	 * 
@@ -51,7 +51,7 @@ public interface PredicateRepository extends GraphRepository<Predicate> {
 	 * @return
 	 */
 	@Query("MATCH (predicate:Predicate) WHERE predicate.accessionId = {accessionId} RETURN predicate")
-	public Predicate findPredicateByAccessionId(@Param("accessionId")String accessionId );
+	public Neo4jPredicate findPredicateByAccessionId(@Param("accessionId")String accessionId );
 
 	/**
 	 * 
@@ -64,9 +64,9 @@ public interface PredicateRepository extends GraphRepository<Predicate> {
 	 * @return
 	 */
 	@Query("MATCH (predicate:Predicate) WHERE predicate.name = {name} RETURN predicate")
-	Predicate findPredicateByName(@Param("name")String name);
+	Neo4jPredicate findPredicateByName(@Param("name")String name);
 	
 	@Query("MATCH (predicate:Predicate) RETURN predicate")
-	List<Predicate> findAllPredicates();
+	List<Neo4jPredicate> findAllPredicates();
 
 }
