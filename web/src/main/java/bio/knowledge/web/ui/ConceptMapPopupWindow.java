@@ -437,7 +437,7 @@ public class ConceptMapPopupWindow {
 				statement.setEvidence(evidence);
 
 				// not putting this back into the statement object might have been a bit of a problem
-				statement = statementService.save(statement);
+				statement = statementService.save((Neo4jGeneralStatement) statement);
 				
 			}
 
@@ -501,7 +501,7 @@ public class ConceptMapPopupWindow {
 				}
 
 				// Save the whole updated statement?
-				statement = statementService.save(statement);
+				statement = statementService.save((Neo4jGeneralStatement) statement);
 			}
 			
 			/*
