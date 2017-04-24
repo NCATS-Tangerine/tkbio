@@ -527,13 +527,13 @@ public class StatementService
 				// statement object without any relationships
 				Neo4jGeneralStatement statement = (Neo4jGeneralStatement) entry.get("statement");
 				
-				statement.setSubject((Neo4jConcept) entry.get("subject"));
+				statement.setSubject((Concept) entry.get("subject"));
 				
 				Neo4jPredicate relation = (Neo4jPredicate) entry.get("relation");
 				relation = predicateService.annotate(relation) ;
 				statement.setRelation(relation);
 				
-				statement.setObject((Neo4jConcept) entry.get("object"));
+				statement.setObject((Concept) entry.get("object"));
 				
 				Neo4jEvidence evidence = (Neo4jEvidence)entry.get("evidence");
 				if ( evidence == null) {
@@ -673,7 +673,7 @@ public class StatementService
 	
 	private void runQuery(
 			String serviceName,
-			Neo4jConcept concept, 
+			Concept concept, 
 			Function<? super ResultSet, ? extends Void> resultHandler 
 	) {
 		DataService dataService = 
@@ -691,7 +691,7 @@ public class StatementService
 	// simple runQuery with paging of results
 	private void runQuery(
 			String serviceName,
-			Neo4jConcept concept, String filter, Pageable pageable, 
+			Concept concept, String filter, Pageable pageable, 
 			Function<? super ResultSet, ? extends Void> resultHandler 
 	) {
 		DataService dataService = 
@@ -915,7 +915,7 @@ public class StatementService
 					// Count WikiData properties for the Gene Name == Gene Symbol?
 					runQuery( 
 							WikiDataDataSource.WD_SDS_3_COUNTING_ID, 
-							(Neo4jConcept) concept, 
+							concept, 
 							(rs)->countWikiDataResults(rs,count) 
 					);
 					break ;
