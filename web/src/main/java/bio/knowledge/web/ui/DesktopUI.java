@@ -96,7 +96,6 @@ import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
-import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 import bio.knowledge.service.AuthenticationState;
 import bio.knowledge.service.Cache;
@@ -1253,10 +1252,10 @@ public class DesktopUI extends UI implements MessageService {
 			desktopView.getCmLayoutSelect().setValue(MANUAL_CM_LAYOUT);
 
 			// set current concept
-			Optional<Neo4jConcept> conceptOpt = conceptService.getDetailsByAccessionId(accessionId) ;
+			Optional<Concept> conceptOpt = conceptService.getDetailsByAccessionId(accessionId) ;
 			
 			if(conceptOpt.isPresent()) {
-				Neo4jConcept cst = conceptOpt.get() ;
+				Concept cst = conceptOpt.get() ;
 				query.setCurrentQueryConceptById( cst.getId().toString() );
 				
 				if (query.getCurrentQueryConcept().isPresent()) {

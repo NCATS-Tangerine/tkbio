@@ -173,12 +173,12 @@ public class ConceptMapPopupWindow {
 	public void conceptMapNodePopUp(String accessionId, String name, int x, int y) {
 
 		// Generate popup content from passed data
-		Optional<Neo4jConcept> conceptOpt = conceptService.getDetailsByAccessionId(accessionId);
+		Optional<Concept> conceptOpt = conceptService.getDetailsByAccessionId(accessionId);
 
 		if (!conceptOpt.isPresent())
 			return;
 
-		Neo4jConcept selectedConcept = conceptOpt.get();
+		Concept selectedConcept = conceptOpt.get();
 		
 		addAnno = new Button("Add Annotation", e -> {
 			parentUi.getPredicatePopupWindow().conceptMapUserAnnotation(selectedConcept, x, y);
@@ -234,16 +234,16 @@ public class ConceptMapPopupWindow {
 			String uri) {
 
 		// Generate popup content from passed data
-		Optional<Neo4jConcept> sourceOpt = conceptService.getDetailsByAccessionId(sourceId);
+		Optional<Concept> sourceOpt = conceptService.getDetailsByAccessionId(sourceId);
 		if (!sourceOpt.isPresent())
 			return;
-		Neo4jConcept sourceConcept = sourceOpt.get();
+		Concept sourceConcept = sourceOpt.get();
 		String sourceName = sourceConcept.getName();
 
-		Optional<Neo4jConcept> targetOpt = conceptService.getDetailsByAccessionId(targetId);
+		Optional<Concept> targetOpt = conceptService.getDetailsByAccessionId(targetId);
 		if (!targetOpt.isPresent())
 			return;
-		Neo4jConcept targetConcept = targetOpt.get();
+		Concept targetConcept = targetOpt.get();
 		String targetName = targetConcept.getName();
 
 		// TODO: How to handle the User's Annotation case here?
@@ -413,14 +413,14 @@ public class ConceptMapPopupWindow {
 			// statement doesn't exist in database
 			if (statement == null) {
 				// find subject
-				Neo4jConcept subject = conceptService.findByAccessionId(sourceId);
+				Concept subject = conceptService.findByAccessionId(sourceId);
 				if (subject == null) {
 					// subject = new Concept();
 					return;
 				}
 
 				// find object
-				Neo4jConcept object = conceptService.findByAccessionId(targetId);
+				Concept object = conceptService.findByAccessionId(targetId);
 				if (object == null) {
 					// object = new Concept();
 					return;

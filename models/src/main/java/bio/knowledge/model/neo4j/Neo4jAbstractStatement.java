@@ -98,9 +98,9 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
      */
     protected Neo4jAbstractStatement(
     		String accessionId,
-    		Neo4jConcept subject,
+    		Concept subject,
     		Neo4jPredicate predicate,
-    		Neo4jConcept object
+    		Concept object
     ) {
     	super(accessionId,subject.getName()+" - "+predicate.getName()+" -> "+object.getName(),"") ;
     	setSubject(subject);

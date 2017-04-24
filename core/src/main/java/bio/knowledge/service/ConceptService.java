@@ -556,10 +556,10 @@ public class ConceptService
 	 * @param ConceptId
 	 * @return Concept
 	 */
-	public Optional<Neo4jConcept> getDetailsByAccessionId(String accessionId) {
+	public Optional<Concept> getDetailsByAccessionId(String accessionId) {
 		
 		// Try first to find this item in the local database(?)
-		Neo4jConcept concept = conceptRepository.findByAccessionId(accessionId);
+		Concept concept = conceptRepository.findByAccessionId(accessionId);
 		if(concept==null) {
 			/* 
 			 * This is a qualified URI identifying a local data item, 
