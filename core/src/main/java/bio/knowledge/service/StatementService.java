@@ -632,7 +632,7 @@ public class StatementService
 	 */
 	public Concept getCanonicalSubject(Neo4jGeneralStatement p) {
 		
-		List<Neo4jConcept> subjects = p.getSubjects() ;
+		List<Concept> subjects = p.getSubjects() ;
 		
 		// might trigger a NPE in caller?
 		if( subjects==null || subjects.size()==0 ) return null ; 

@@ -12,7 +12,7 @@ public interface Statement {
 	 * 
 	 * @param subject to be added to the Statement
 	 */
-	void addSubject(Neo4jConcept subject);
+	void addSubject(Concept subject);
 
 	/**
 	 * @param subjects set to be added with the Statement
@@ -90,8 +90,5 @@ public interface Statement {
 	 * @see bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity#toString()
 	 */
 	String toString();
-
-	void addSubject(Concept subject);
-
 
 }
