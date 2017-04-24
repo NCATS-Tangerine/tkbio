@@ -17,24 +17,24 @@ public interface Statement {
 	/**
 	 * @param subjects set to be added with the Statement
 	 */
-	void setSubjects(List<Neo4jConcept> subjects);
+	void setSubjects(List<Concept> subjects);
 
 	/**
 	 * @return subjects associated with the Statement
 	 */
-	List<Neo4jConcept> getSubjects();
+	List<Concept> getSubjects();
 
 	/**
 	 * 
 	 * @param subject
 	 */
-	void setSubject(Neo4jConcept subject);
+	void setSubject(Concept subject);
 
 	/**
 	 * 
 	 * @return
 	 */
-	Neo4jConcept getSubject();
+	Concept getSubject();
 
 	/**
 	 * @param predicate the predicate to set
@@ -50,7 +50,7 @@ public interface Statement {
 	 * 
 	 * @param subject to be added to the Statement
 	 */
-	void addObject(Neo4jConcept object);
+	void addObject(Concept object);
 
 	/**
 	 * @param objects set to be added with the Statement
@@ -66,13 +66,13 @@ public interface Statement {
 	 * 
 	 * @param object
 	 */
-	void setObject(Neo4jConcept object);
+	void setObject(Concept object);
 
 	/**
 	 * 
 	 * @return
 	 */
-	Neo4jConcept getObject();
+	Concept getObject();
 
 	/**
 	 * 
@@ -90,5 +90,8 @@ public interface Statement {
 	 * @see bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity#toString()
 	 */
 	String toString();
+
+	void addSubject(Concept subject);
+
 
 }

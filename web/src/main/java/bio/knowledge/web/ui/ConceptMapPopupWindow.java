@@ -475,15 +475,15 @@ public class ConceptMapPopupWindow {
 				evidence.addAnnotation(annotation);
 				evidenceService.save(evidence);
 
-				List<Neo4jConcept> subjects = statement.getSubjects();
-				for (Neo4jConcept s : subjects) {
+				List<Concept> subjects = statement.getSubjects();
+				for (Concept s : subjects) {
 					s.incrementUsage();
 					/*
 					 * TODO: Don't think that we need to replace subject in
 					 * statement subjects list, but may be worthwhile to double
 					 * check this
 					 */
-					conceptService.save(s);
+					conceptService.save((Neo4jConcept) s);
 				}
 
 				List<Concept> objects = statement.getObjects();

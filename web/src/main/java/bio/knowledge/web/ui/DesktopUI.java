@@ -518,7 +518,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * @param target
 	 * @param label
 	 */
-	public void setHighlightedEdge(Neo4jConcept source, Neo4jConcept target, String label) {
+	public void setHighlightedEdge(Concept source, Concept target, String label) {
 
 		// Removing highlights from previous concept edge
 		if (lastHighlightEdgeId != 0) {

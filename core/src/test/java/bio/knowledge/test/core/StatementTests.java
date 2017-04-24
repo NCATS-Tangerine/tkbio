@@ -44,6 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Annotation;
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.EvidenceCode;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
@@ -387,11 +388,11 @@ public class StatementTests {
 		System.out.println( "\nTesting findOne() of UMBL_LOCATION_OF_GLYP:");
 		assertEquals( p.getId(), UMBL_LOCATION_OF_GLYP.getId() ) ;
 		
-		List<Neo4jConcept> subjects = p.getSubjects() ;
+		List<Concept> subjects = p.getSubjects() ;
 		assertNotNull(subjects) ;
 		assertTrue("Statement has subjects?",!subjects.isEmpty()) ;
-		Neo4jConcept subject = subjects.get(0) ;
-		Neo4jConcept origSubject = UMBL_LOCATION_OF_GLYP.getSubjects().get(0);
+		Concept subject = subjects.get(0) ;
+		Concept origSubject = UMBL_LOCATION_OF_GLYP.getSubjects().get(0);
 		assertEquals( subject.getId(), origSubject.getId() ) ;
 		assertEquals( subject.getAccessionId(), origSubject.getAccessionId() ) ;
 		System.out.println( "Subject accession id: "+subject.getAccessionId());
@@ -399,11 +400,11 @@ public class StatementTests {
 		assertEquals( p.getRelation(), UMBL_LOCATION_OF_GLYP.getRelation() ) ;
 		System.out.println( "Relation Name: "+UMBL_LOCATION_OF_GLYP.getRelation().getName() );
 		
-		List<Neo4jConcept> objects = p.getObjects() ;
+		List<Concept> objects = p.getObjects() ;
 		assertNotNull(objects) ;
 		assertTrue("Statement has objects?",!objects.isEmpty()) ;
-		Neo4jConcept object = objects.get(0) ;
-		Neo4jConcept origObject = UMBL_LOCATION_OF_GLYP.getObjects().get(0);
+		Concept object = objects.get(0) ;
+		Concept origObject = UMBL_LOCATION_OF_GLYP.getObjects().get(0);
 		assertEquals( object.getId(),  origObject.getId() ) ;
 		assertEquals( object.getAccessionId(),  origObject.getAccessionId() ) ;
 		System.out.println( "Object accession id: "+object.getAccessionId());
