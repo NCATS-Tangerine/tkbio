@@ -43,7 +43,7 @@ public class EvidenceApiTest {
     @Test
     public void getEvidenceTest() throws ApiException {
         String evidenceId = null;
-        String q = null;
+        List<String> q = null;
         Integer pageNumber = null;
         Integer pageSize = null;
         InlineResponse2004 response = api.getEvidence(evidenceId, q, pageNumber, pageSize);
