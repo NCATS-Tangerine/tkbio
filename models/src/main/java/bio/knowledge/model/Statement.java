@@ -2,11 +2,11 @@ package bio.knowledge.model;
 
 import java.util.List;
 
-import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.neo4j.Neo4jEvidence;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
 
-public interface Statement {
+public interface Statement extends IdentifiedEntity {
 
 	/**
 	 * 
@@ -90,5 +90,7 @@ public interface Statement {
 	 * @see bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity#toString()
 	 */
 	String toString();
+
+	String getName();
 
 }

@@ -34,8 +34,8 @@ import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.Statement;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
-import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 
 /**
  * @author Richard
@@ -123,16 +123,16 @@ public interface KBQuery {
 
 	/**
 	 * 
-	 * @param Neo4jGeneralStatement currently displayed
+	 * @param Statement currently displayed
 
 	 */
-	public void setCurrentStatement( Neo4jGeneralStatement statement ) ;
+	public void setCurrentStatement(Statement selectedStatement) ;
 	
 	/**
 	 * 
 	 * @return optional of Statement currently for display
 	 */
-	public Optional< Neo4jGeneralStatement > getCurrentStatement() ;
+	public Optional<Statement> getCurrentStatement() ;
 	
 	/**
 	 * 

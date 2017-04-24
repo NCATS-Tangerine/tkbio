@@ -97,12 +97,11 @@ import bio.knowledge.model.DomainModelException;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.OntologyTerm;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.Concept;
-import bio.knowledge.model.neo4j.Neo4jEvidence;
-import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
 import bio.knowledge.model.organization.ContactForm;
 import bio.knowledge.model.umls.SemanticType;
@@ -879,7 +878,7 @@ public class ListView extends BaseView {
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
 			for (Object item: items) {
 				
-				Neo4jGeneralStatement statement = (Neo4jGeneralStatement) item;
+				Statement statement = (Statement) item;
 				
 				Concept subject       = statement.getSubject() ;
 				String predicateLabel = statement.getRelation().getName();
@@ -1062,7 +1061,7 @@ public class ListView extends BaseView {
 					Optional<Evidence> evidenceOpt = query.getCurrentEvidence() ;
 					if ( evidenceOpt.isPresent() ) {
 						Evidence evidence = evidenceOpt.get() ;
-						Neo4jGeneralStatement statement = evidence.getStatement() ;
+						Statement statement = evidence.getStatement() ;
 						if( statement != null ) {
 							String subject      = statement.getSubject().getName();
 							String object       = statement.getObject().getName();
@@ -1680,7 +1679,7 @@ public class ListView extends BaseView {
 	
 	// Handler for Concept details in various data tables
 	private void onConceptDetailsSelection(RendererClickEvent event, ConceptRole role) {
-		Neo4jGeneralStatement statement = (Neo4jGeneralStatement) event.getItemId();
+		Statement statement = (Statement) event.getItemId();
 		Concept subject = statement.getSubject();
 		Neo4jPredicate predicate = statement.getRelation();
 		Concept object = statement.getObject();
@@ -1903,7 +1902,7 @@ public class ListView extends BaseView {
 			}
 		});
 
-		registry.setMapping(ViewName.RELATIONS_VIEW, new BeanItemContainer<Neo4jGeneralStatement>(Neo4jGeneralStatement.class),
+		registry.setMapping(ViewName.RELATIONS_VIEW, new BeanItemContainer<Statement>(Statement.class),
 				statementService, new String[] { "subject|*", COL_ID_RELATION, "object|*", "evidence|*" }, null);
 
 		registry.addSelectionHandler(ViewName.RELATIONS_VIEW, COL_ID_SUBJECT,
@@ -1915,7 +1914,7 @@ public class ListView extends BaseView {
 		registry.addSelectionHandler(ViewName.RELATIONS_VIEW, COL_ID_EVIDENCE, event -> {
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
 
-			Neo4jGeneralStatement selectedStatement = (Neo4jGeneralStatement) event.getItemId();
+			Statement selectedStatement = (Statement) event.getItemId();
 			query.setCurrentStatement(selectedStatement);
 
 			_logger.trace("Display Evidence for " + selectedStatement.getName());

@@ -95,8 +95,8 @@ import bio.knowledge.graph.jsonmodels.NodeData;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.Statement;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
-import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 import bio.knowledge.service.AuthenticationState;
 import bio.knowledge.service.Cache;
 import bio.knowledge.service.ConceptMapArchiveService;
@@ -537,11 +537,11 @@ public class DesktopUI extends UI implements MessageService {
 
 		query.setRelationSearchMode(RelationSearchMode.RELATIONS);
 
-		Optional<Neo4jGeneralStatement> stmtOpt = query.getCurrentStatement();
+		Optional<Statement> stmtOpt = query.getCurrentStatement();
 
 		if (stmtOpt.isPresent()) {
 
-			Neo4jGeneralStatement statement = stmtOpt.get();
+			Statement statement = stmtOpt.get();
 			//query.setCurrentStatement(statement);
 			
             // highlight the edge according to the predication

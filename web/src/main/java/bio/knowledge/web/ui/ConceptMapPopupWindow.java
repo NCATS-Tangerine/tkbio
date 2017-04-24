@@ -64,6 +64,7 @@ import bio.knowledge.model.Annotation.Type;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.EvidenceCode;
 import bio.knowledge.model.Reference;
+import bio.knowledge.model.Statement;
 import bio.knowledge.service.AnnotationService;
 import bio.knowledge.service.Cache;
 import bio.knowledge.service.ConceptService;
@@ -248,7 +249,7 @@ public class ConceptMapPopupWindow {
 		String targetName = targetConcept.getName();
 
 		// TODO: How to handle the User's Annotation case here?
-		Neo4jGeneralStatement selectedStatement = 
+		Statement selectedStatement = 
 				statementService.findbySourceAndTargetAccessionId(sourceId, targetId, label);
 
 		// Create buttons related to node popup
@@ -408,7 +409,7 @@ public class ConceptMapPopupWindow {
 			Neo4jPredicate relation = (Neo4jPredicate) comboBoxPredicate.getValue();
 
 			// assert the Statement
-			Neo4jGeneralStatement statement = 
+			Statement statement = 
 					statementService.findbySourceAndTargetAccessionId(sourceId, targetId, relationLabel);
 
 			// statement doesn't exist in database

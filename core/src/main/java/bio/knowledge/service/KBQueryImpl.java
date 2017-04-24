@@ -39,6 +39,7 @@ import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.Statement;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
@@ -199,13 +200,13 @@ public class KBQueryImpl implements KBQuery {
 		return selectedConcept;
 	}
 
-	private Optional< Neo4jGeneralStatement > currentStatement = Optional.empty() ;
+	private Optional<Statement> currentStatement = Optional.empty() ;
 	
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCurrentStatement(bio.knowledge.model.semmeddb.Statement)
 	 */
 	@Override
-	public void setCurrentStatement(Neo4jGeneralStatement statement) {
+	public void setCurrentStatement(Statement statement) {
 		Evidence evidence = statement.getEvidence();
 		this.currentEvidence  = Optional.of(evidence) ;
 		this.currentStatement = Optional.of(statement);
@@ -215,7 +216,7 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#getCurrentStatement()
 	 */
 	@Override
-	public Optional<Neo4jGeneralStatement> getCurrentStatement() {
+	public Optional<Statement> getCurrentStatement() {
 		return currentStatement;
 	}
 
