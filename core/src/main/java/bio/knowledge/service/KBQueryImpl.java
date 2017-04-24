@@ -40,7 +40,6 @@ import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
-import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 
@@ -187,7 +186,7 @@ public class KBQueryImpl implements KBQuery {
 		if(query==null)
 			selectedConcept = Optional.empty() ;
 		else {
-			String identifier = ((Neo4jConcept)query).getAccessionId();
+			String identifier = query.getAccessionId();
 			selectedConcept = conceptService.getDetailsByConceptAccessionId(identifier) ;
 		}
 	}

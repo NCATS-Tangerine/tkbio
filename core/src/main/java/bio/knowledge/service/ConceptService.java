@@ -374,7 +374,7 @@ public class ConceptService
 	 */
 	public Feature addDefinition( Concept concept, String source, String id, String definition ) {
 		Feature existingDefinition = getDefinition( concept, source ) ;
-		featureService.createFeature( (Neo4jConcept) concept, id, source, definition ) ;
+		featureService.createFeature( concept, id, source, definition ) ;
 		return existingDefinition ;
 	}
 
@@ -383,7 +383,7 @@ public class ConceptService
 	 * @return definition Feature of the Concept, associated with the SAB
 	 */
 	public Feature getDefinition( Concept concept, String sab ) {
-		List<Feature> features = featureService.findFeaturesByTagName( (Neo4jConcept) concept, sab ) ;
+		List<Feature> features = featureService.findFeaturesByTagName( concept, sab ) ;
 		if(features.isEmpty()) return null ;
 		return features.get(0) ;
 	}

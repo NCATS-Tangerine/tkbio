@@ -2,9 +2,10 @@ package bio.knowledge.model;
 
 import java.util.Set;
 
+import bio.knowledge.model.core.AnnotatedEntity;
 import bio.knowledge.model.core.IdentifiedEntity;
 
-public interface Concept extends IdentifiedEntity {
+public interface Concept extends IdentifiedEntity, AnnotatedEntity {
 	
 	public static final String SEMGROUP_FIELD_START = "[" ;
 	public static final String SEMGROUP_FIELD_END   = "]" ;

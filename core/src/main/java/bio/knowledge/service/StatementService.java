@@ -122,9 +122,9 @@ public class StatementService
 		else if (args.length == 4)
 			return new Neo4jGeneralStatement(
 					(String) args[0],  		  // Statement AccessionId
-					(Neo4jConcept) args[1],        // Subject
+					(Concept) args[1],        // Subject
 					(Neo4jPredicate) args[2],      // Predicate
-					(Neo4jConcept) args[3]         // Object
+					(Concept) args[3]         // Object
 			);
 		else
 			throw new RuntimeException("Invalid StatementService.createInstance() arguments?");
@@ -245,7 +245,7 @@ public class StatementService
 				
 				// fill  subject relationship
 				if (entry.get("subject") != null) {
-					Neo4jConcept subject = (Neo4jConcept) entry.get("subject");
+					Concept subject = (Concept) entry.get("subject");
 					statement.setSubject(subject);
 				}
 				if (entry.get("relation") != null) {
@@ -255,7 +255,7 @@ public class StatementService
 				}
 				// fill object relationship
 				if (entry.get("object") != null) {
-					Neo4jConcept object = (Neo4jConcept) entry.get("object");
+					Concept object = (Concept) entry.get("object");
 					statement.setObject(object);
 				}
 				
@@ -372,7 +372,7 @@ public class StatementService
 		Map<String, Object> entry = result.get(0);
 		Neo4jGeneralStatement statement = (Neo4jGeneralStatement)entry.get("statement");
 
-		Neo4jConcept subject = (Neo4jConcept) entry.get("subject");
+		Concept subject = (Concept) entry.get("subject");
 		if (subject != null) {
 			statement.setSubject(subject);
 		}
@@ -383,7 +383,7 @@ public class StatementService
 			statement.setRelation(relation);
 		}
 		
-		Neo4jConcept object = (Neo4jConcept) entry.get("object");
+		Concept object = (Concept) entry.get("object");
 		if (object != null) {
 			statement.setObject(object);
 		}
