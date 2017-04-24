@@ -52,6 +52,7 @@ import bio.knowledge.datasource.DataServiceUtility;
 import bio.knowledge.datasource.DataSourceRegistry;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.RdfUtil;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.datasource.Result;
@@ -185,7 +186,7 @@ public class StatementService
 		/*
 		 * Searches are constrained to the currently selected currentQueryConcept; 
 		 */
-		Optional<Neo4jConcept> currentConceptOpt = query.getCurrentQueryConcept();
+		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
 		Optional<Set<SemanticGroup>> currentConceptTypes = query.getConceptTypes();
 		
 		if (!currentConceptOpt.isPresent()) return null;
@@ -202,7 +203,7 @@ public class StatementService
 			}
 		}
 
-		Neo4jConcept concept = currentConceptOpt.get() ;
+		Concept concept = currentConceptOpt.get() ;
 		String accessionId = concept.getAccessionId() ;
 		
 		// this is key used for caching purpose,(conceptId + Selected SemanticType + textFilter + pageable)
@@ -226,13 +227,13 @@ public class StatementService
 			
 			if (filter.trim().isEmpty() && !currentConceptTypes.isPresent()) {
 				_logger.trace("Filter Empty : Calling findByConcept ");
-				data = statementRepository.findByConcept(concept, conceptTypeFilter, pageable);
+				data = statementRepository.findByConcept((Neo4jConcept) concept, conceptTypeFilter, pageable);
 
 			} else {
 				_logger.trace("Filter is there : " + filter + " Calling findByConceptFiltered");
 				// splitting for word by word search
 				String[] words = filter.split(SEPARATOR);
-				data = statementRepository.findByConceptFiltered(concept, conceptTypeFilter, words,
+				data = statementRepository.findByConceptFiltered((Neo4jConcept) concept, conceptTypeFilter, words,
 						pageable);
 			}
 			
@@ -407,10 +408,10 @@ public class StatementService
 	 */
 	private long countHelper(String filter) {
 
-		Optional<Neo4jConcept> currentConceptOpt = query.getCurrentQueryConcept();
+		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
 		if (!currentConceptOpt.isPresent()) return 0L;
 		
-		Neo4jConcept concept = currentConceptOpt.get() ;
+		Concept concept = currentConceptOpt.get() ;
 		String accessionId = concept.getAccessionId();
 		
 		Optional<Set<SemanticGroup>> currentConceptTypes = query.getConceptTypes();
@@ -446,7 +447,7 @@ public class StatementService
 		
 		if (filter.trim().isEmpty() &&  !currentConceptTypes.isPresent()) {
 			if (count == null) {
-				count = statementRepository.countByConcept(concept, conceptTypeFilter);
+				count = statementRepository.countByConcept((Neo4jConcept) concept, conceptTypeFilter);
 				_logger.trace("Inside countEntries (From Database) : " + count);
 			}
 			_logger.trace("Inside countEntries (From Cached Result) : " + count);
@@ -455,7 +456,7 @@ public class StatementService
 			if (count == null) {
 				count = statementRepository.
 							countByNameLikeIgnoreCase(
-									concept,
+									(Neo4jConcept) concept,
 									filter.split(" "), 
 									conceptTypeFilter
 							);
@@ -629,14 +630,14 @@ public class StatementService
 	/**
 	 * @return
 	 */
-	public Neo4jConcept getCanonicalSubject(Neo4jGeneralStatement p) {
+	public Concept getCanonicalSubject(Neo4jGeneralStatement p) {
 		
 		List<Neo4jConcept> subjects = p.getSubjects() ;
 		
 		// might trigger a NPE in caller?
 		if( subjects==null || subjects.size()==0 ) return null ; 
 		
-		Optional<Neo4jConcept> currentConcept = query.getCurrentQueryConcept();
+		Optional<Concept> currentConcept = query.getCurrentQueryConcept();
 		if (!currentConcept.isPresent()) return subjects.get(0) ;
 
 		// else, heuristic?
@@ -650,14 +651,14 @@ public class StatementService
 	 * @param p 
 	 * @return
 	 */
-	public Neo4jConcept getCanonicalObject(Neo4jGeneralStatement p) {
+	public Concept getCanonicalObject(Neo4jGeneralStatement p) {
 		
-		List<Neo4jConcept> objects = p.getObjects() ;
+		List<Concept> objects = p.getObjects() ;
 		
 		// might trigger a NPE in caller?
 		if( objects==null || objects.size()==0 ) return null ; 
 		
-		Optional<Neo4jConcept> currentConceptOpt = query.getCurrentQueryConcept();
+		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
 		if (!currentConceptOpt.isPresent()) return objects.get(0) ;
 
 		// else, heuristic?
@@ -807,8 +808,8 @@ public class StatementService
 		return (Void)null ;
 	}
 	
-	private Neo4jConcept getCurrentConcept() {
-		Optional<Neo4jConcept> selectedConceptOpt = query.getCurrentSelectedConcept();
+	private Concept getCurrentConcept() {
+		Optional<Concept> selectedConceptOpt = query.getCurrentSelectedConcept();
 		if (!selectedConceptOpt.isPresent()) return null;
 		return selectedConceptOpt.get();
 	}	
@@ -818,7 +819,7 @@ public class StatementService
 
 		List<Neo4jGeneralStatement> statements = new ArrayList<>();
 
-		Neo4jConcept concept = getCurrentConcept();
+		Concept concept = getCurrentConcept();
 
 		if(concept!=null) {
 
@@ -847,10 +848,10 @@ public class StatementService
 					final List<Neo4jGeneralStatement> newStatements = new ArrayList<>();
 					runQuery( 
 							WikiDataDataSource.WD_CDS_3_ID, 
-							concept,
+							(Neo4jConcept) concept,
 							filter,
 							pageable,
-							(rs)->loadWikiDataResults(rs,concept,newStatements) 
+							(rs)->loadWikiDataResults(rs, (Neo4jConcept) concept,newStatements) 
 							);
 					statements = newStatements ;
 					break ;
@@ -883,7 +884,7 @@ public class StatementService
 	 */
 	private long countByWikiData(String filter) {
 		
-		Neo4jConcept concept = getCurrentConcept() ;
+		Concept concept = getCurrentConcept() ;
 		
 		// Access WikiData here and count properties matched by filter
 		
@@ -914,7 +915,7 @@ public class StatementService
 					// Count WikiData properties for the Gene Name == Gene Symbol?
 					runQuery( 
 							WikiDataDataSource.WD_SDS_3_COUNTING_ID, 
-							concept, 
+							(Neo4jConcept) concept, 
 							(rs)->countWikiDataResults(rs,count) 
 					);
 					break ;

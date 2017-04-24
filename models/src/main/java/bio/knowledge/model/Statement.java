@@ -55,12 +55,12 @@ public interface Statement {
 	/**
 	 * @param objects set to be added with the Statement
 	 */
-	void setObjects(List<Neo4jConcept> objects);
+	void setObjects(List<Concept> objects);
 
 	/**
 	 * @return objects associated with the Statement
 	 */
-	List<Neo4jConcept> getObjects();
+	List<Concept> getObjects();
 
 	/**
 	 * 

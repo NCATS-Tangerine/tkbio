@@ -31,6 +31,7 @@ import java.util.List;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
 
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity;
 
@@ -42,7 +43,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
     private Neo4jPredicate relation ;
 
 	@Relationship( type="OBJECT" )
-    private List<Neo4jConcept> objects = new ArrayList<Neo4jConcept>() ;
+    private List<Concept> objects = new ArrayList<Concept>() ;
 	
 	/*
 	 *  The Transient subject and object attributes here
@@ -188,7 +189,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	@Override
 	public void addObject(Neo4jConcept object) {
 		if(objects==null)
-			objects = new ArrayList<Neo4jConcept>() ;
+			objects = new ArrayList<Concept>() ;
 		objects.add(object);
 	}
 	
@@ -196,7 +197,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 * @see bio.knowledge.model.Statement#setObjects(java.util.List)
 	 */
 	@Override
-	public void setObjects(List<Neo4jConcept> objects) {
+	public void setObjects(List<Concept> objects) {
 		this.objects = objects;
 	}
 
@@ -204,7 +205,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 * @see bio.knowledge.model.Statement#getObjects()
 	 */
 	@Override
-	public List<Neo4jConcept> getObjects() {
+	public List<Concept> getObjects() {
 		return objects;
 	}
 	

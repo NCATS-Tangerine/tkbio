@@ -49,6 +49,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.datasource.wikidata.ConceptDescriptor;
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.RdfUtil;
 import bio.knowledge.model.datasource.ResultSet;
 import bio.knowledge.model.neo4j.Neo4jConcept;
@@ -81,7 +82,7 @@ public class WikiDetailsHandler {
 	@Autowired
 	private WikiDataService wikiDataService;
 
-	public VerticalLayout getDetails(Neo4jConcept selectedConcept) {
+	public VerticalLayout getDetails(Concept selectedConcept) {
 		query.setCurrentSelectedConcept(selectedConcept);
 		try {
 			descriptionBuilder = null; // resetting descriptionBuilder
@@ -230,7 +231,7 @@ public class WikiDetailsHandler {
 	 *            embedded meta-data)
 	 * @return the full Vaadin component to be displayed as the descriptor value
 	 */
-	private Component formatDisplayValue(Neo4jConcept currentConcept, ConceptDescriptor descriptor, String rawValue) {
+	private Component formatDisplayValue(Concept currentConcept, ConceptDescriptor descriptor, String rawValue) {
 		String fieldId = descriptor.getQualifiedId();
 		Boolean isRetrievable = descriptor.isRetrievable();
 
@@ -319,7 +320,7 @@ public class WikiDetailsHandler {
 						addToMap.setStyleName("concept-detail-button");
 						
 						addToMap.addClickListener(e -> {
-							Neo4jConcept object = conceptService.annotate("wd:" + valueObjectId);
+							Concept object = conceptService.annotate("wd:" + valueObjectId);
 							if(object==null) return;
 							
 							// If annotated 'object' concept exists, add it to the concept map!
@@ -350,12 +351,12 @@ public class WikiDetailsHandler {
 		}
 	}
 
-	private void addItemToMapFromList(Neo4jConcept subject, String relation, ComboBox source, Map<String, String> itemMap) {
+	private void addItemToMapFromList(Concept subject, String relation, ComboBox source, Map<String, String> itemMap) {
 		
 		String id = (String) source.getValue();
 		if (itemMap.containsKey(id)) {
 			
-			Neo4jConcept object = conceptService.annotate("wd:" + itemMap.get(id));
+			Concept object = conceptService.annotate("wd:" + itemMap.get(id));
 			if(object==null) return;
 			
 			// If annotated 'object' concept exists, add it to the concept map!

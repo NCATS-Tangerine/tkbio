@@ -35,6 +35,7 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
 import bio.knowledge.model.Annotation;
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
@@ -73,7 +74,7 @@ public class KBQueryImpl implements KBQuery {
 	@Autowired
 	private ConceptService conceptService ;
 
-	private Optional<Neo4jConcept> queryConcept = Optional.empty() ;
+	private Optional<Concept> queryConcept = Optional.empty() ;
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCurrentQueryConcept(bio.knowledge.model.Concept)
@@ -88,7 +89,7 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#getCurrentQueryConcept()
 	 */
 	@Override
-	public Optional<Neo4jConcept> getCurrentQueryConcept() {
+	public Optional<Concept> getCurrentQueryConcept() {
 		return queryConcept;
 	}
 	
@@ -176,13 +177,13 @@ public class KBQueryImpl implements KBQuery {
 		return currentImportedMaps;
 	}
 
-	private Optional<Neo4jConcept> selectedConcept = Optional.empty() ;
+	private Optional<Concept> selectedConcept = Optional.empty() ;
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCurrentQueryConcept(bio.knowledge.model.Concept)
 	 */
 	@Override
-	public void setCurrentSelectedConcept(Neo4jConcept query) {
+	public void setCurrentSelectedConcept(Concept query) {
 		if(query==null)
 			selectedConcept = Optional.empty() ;
 		else {
@@ -195,7 +196,7 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#getCurrentQueryConcept()
 	 */
 	@Override
-	public Optional<Neo4jConcept> getCurrentSelectedConcept() {
+	public Optional<Concept> getCurrentSelectedConcept() {
 		return selectedConcept;
 	}
 
@@ -397,7 +398,7 @@ public class KBQueryImpl implements KBQuery {
 
 	private ConceptSearchMode conceptSearchMode = ConceptSearchMode.DEFAULT ;
 
-	private Neo4jConcept lastSelectedConcept;
+	private Concept lastSelectedConcept;
 	
 	@Override
 	public void setConceptSearchMode(ConceptSearchMode mode) {
@@ -410,12 +411,12 @@ public class KBQueryImpl implements KBQuery {
 	}
 
 	@Override
-	public void setLastSelectedConcept(Neo4jConcept concept) {
+	public void setLastSelectedConcept(Concept concept) {
 		this.lastSelectedConcept = concept;
 	}
 
 	@Override
-	public Neo4jConcept getLastSelectedConcept() {
+	public Concept getLastSelectedConcept() {
 		// TODO Auto-generated method stub
 		return lastSelectedConcept;
 	}

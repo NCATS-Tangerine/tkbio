@@ -54,6 +54,7 @@ import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.datasource.DataSourceRegistry;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.RdfUtil;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.core.Feature;
@@ -418,7 +419,7 @@ public class ConceptService
 	 * @param concept
 	 * @return
 	 */
-	public String getCanonicalDescription( Neo4jConcept concept ) {
+	public String getCanonicalDescription( Concept concept ) {
 		String description = "" ;
 		return description;
 	}
@@ -435,7 +436,7 @@ public class ConceptService
 	 * @param ConceptId
 	 * @return Concept
 	 */
-	public Optional<Neo4jConcept> getDetailsByConceptAccessionId(String accessionId) {
+	public Optional<Concept> getDetailsByConceptAccessionId(String accessionId) {
 		
 		Neo4jConcept concept = conceptRepository.findByAccessionId(accessionId) ;
 		
@@ -634,10 +635,10 @@ public class ConceptService
 	 */
 	public void getDescription( Function<ResultSet,Void> handler ) throws Exception {
 		
-		Optional<Neo4jConcept> cscOpt = query.getCurrentSelectedConcept();
+		Optional<Concept> cscOpt = query.getCurrentSelectedConcept();
 		if (!cscOpt.isPresent()) return;
 		
-		Neo4jConcept concept = cscOpt.get();
+		Concept concept = cscOpt.get();
 		String name = concept.getName();
 		
 		SemanticGroup conceptType = concept.getSemanticGroup() ;
@@ -756,10 +757,10 @@ public class ConceptService
 	 */
 	public void getFullDetails( Function<ResultSet,Void> handler ) throws Exception {
 		
-		Optional<Neo4jConcept> optCSC = query.getCurrentSelectedConcept();
+		Optional<Concept> optCSC = query.getCurrentSelectedConcept();
 		if (!optCSC.isPresent()) return;
 		
-		Neo4jConcept concept = optCSC.get() ;
+		Concept concept = optCSC.get() ;
 		
 		Map<String, Object> args = new HashMap<String, Object>();
 		
@@ -824,7 +825,7 @@ public class ConceptService
      * @param predicate
      * @return
      */
-    public Neo4jConcept annotate(String accessionId) {
+    public Concept annotate(String accessionId) {
 
     	if(accessionId.isEmpty()) {
     		_logger.warn(
@@ -839,7 +840,7 @@ public class ConceptService
 		String nameSpace = idPart[0];
 		String objectId  = idPart[1];
 		
-		Neo4jConcept concept = null;
+		Concept concept = null;
 		
 		CacheLocation cacheLocation = 
 				cache.searchForEntity( "Concept", nameSpace, new String[] {objectId} );
@@ -849,7 +850,7 @@ public class ConceptService
 		if (cachedConcept == null) {
 			
 			// Not cached... then first, attempt to retrieve it from the local database
-			Optional<Neo4jConcept> databaseConceptOpt = 
+			Optional<Concept> databaseConceptOpt = 
 						getDetailsByConceptAccessionId(accessionId);
 			
 			if(databaseConceptOpt.isPresent()) {
@@ -929,7 +930,7 @@ public class ConceptService
 						 * Save whatever concept with a newly 
 						 * discovered name and semantic group 
 						 */
-						concept = conceptRepository.save(concept) ; 
+						concept = conceptRepository.save((Neo4jConcept) concept) ; 
 					}
 					
 				} catch (InterruptedException | ExecutionException | TimeoutException e) {

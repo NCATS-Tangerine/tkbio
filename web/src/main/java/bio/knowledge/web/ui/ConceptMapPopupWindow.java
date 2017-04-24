@@ -61,6 +61,7 @@ import bio.knowledge.model.neo4j.Neo4jPredicate;
 import bio.knowledge.model.neo4j.Neo4jReference;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Annotation.Type;
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.EvidenceCode;
 import bio.knowledge.service.AnnotationService;
 import bio.knowledge.service.Cache;
@@ -299,7 +300,7 @@ public class ConceptMapPopupWindow {
 
 	}
 
-	public void conceptMapUserAnnotation(Neo4jConcept selectedConcept, int x, int y) {
+	public void conceptMapUserAnnotation(Concept selectedConcept, int x, int y) {
 		query.tempCoordX(x);
 		query.tempCoordY(y);
 		
@@ -485,15 +486,15 @@ public class ConceptMapPopupWindow {
 					conceptService.save(s);
 				}
 
-				List<Neo4jConcept> objects = statement.getObjects();
-				for (Neo4jConcept o : objects) {
+				List<Concept> objects = statement.getObjects();
+				for (Concept o : objects) {
 					o.incrementUsage();
 					/*
 					 * TODO: Don't think that we need to replace subject in
 					 * statement subjects list, but may be worthwhile to double
 					 * check this
 					 */
-					conceptService.save(o);
+					conceptService.save((Neo4jConcept) o);
 				}
 
 				// Save the whole updated statement?
@@ -553,7 +554,7 @@ public class ConceptMapPopupWindow {
 	}
 
 	public void addToGraphNodeContainerFromKBQuery() {
-		Neo4jConcept lastConcept = query.getLastSelectedConcept();
+		Concept lastConcept = query.getLastSelectedConcept();
 		Node node = new Node(lastConcept);
 		NodeData nd = node.getData();
 		initGraphNodeContainer();
@@ -574,7 +575,7 @@ public class ConceptMapPopupWindow {
 		graphNodeContainer.addBean(moreNodesStub);
 	}
 	
-	public void addConceptToComboBoxes(Neo4jConcept concept) {
+	public void addConceptToComboBoxes(Concept concept) {
 		Node node = new Node(concept);
 		NodeData nd = node.getData();
 		graphNodeContainer.addBean(nd);

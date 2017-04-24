@@ -2,7 +2,12 @@ package bio.knowledge.model;
 
 import java.util.Set;
 
-public interface Concept {
+import bio.knowledge.model.core.IdentifiedEntity;
+
+public interface Concept extends IdentifiedEntity {
+	
+	public static final String SEMGROUP_FIELD_START = "[" ;
+	public static final String SEMGROUP_FIELD_END   = "]" ;
 
 	/**
 	 * 
@@ -96,5 +101,9 @@ public interface Concept {
 	 * @see java.lang.Object#toString()
 	 */
 	String toString();
+
+	String getName();
+
+	String getAccessionId();
 
 }

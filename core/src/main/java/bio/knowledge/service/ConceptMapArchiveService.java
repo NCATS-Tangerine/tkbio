@@ -41,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import bio.knowledge.database.repository.ConceptMapArchiveRepository;
 import bio.knowledge.database.repository.LibraryRepository;
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.neo4j.Neo4jConcept;
@@ -200,7 +201,7 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 		switch (query.getLibraryMode()) {
 
 		case BY_CONCEPT:
-			Optional<Neo4jConcept> optConcept = query.getCurrentSelectedConcept();
+			Optional<Concept> optConcept = query.getCurrentSelectedConcept();
 			if ( optConcept.isPresent() ) {
 				Neo4jConcept concept = (Neo4jConcept)optConcept.get() ;
 				Library library = concept.getLibrary();
@@ -287,7 +288,7 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 		switch (query.getLibraryMode()) {
 
 			case BY_CONCEPT:
-				Optional<Neo4jConcept> optConcept = query.getCurrentSelectedConcept();
+				Optional<Concept> optConcept = query.getCurrentSelectedConcept();
 				if ( optConcept.isPresent() ) {
 					Neo4jConcept concept = (Neo4jConcept)optConcept.get() ;
 					Library library = concept.getLibrary() ;
@@ -365,9 +366,9 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 		switch (query.getLibraryMode()) {
 
 			case BY_CONCEPT:
-				Optional<Neo4jConcept> optConcept = query.getCurrentSelectedConcept();
+				Optional<Concept> optConcept = query.getCurrentSelectedConcept();
 				if (optConcept.isPresent()) {
-					Neo4jConcept concept = optConcept.get();
+					Concept concept = optConcept.get();
 					Library library = concept.getLibrary();
 					String[] words = new String[0];
 					count = archiveRepository.countConceptMapArchiveByLibraryFiltered(library, words);
@@ -417,9 +418,9 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 		switch (query.getLibraryMode()) {
 
 		case BY_CONCEPT:
-			Optional<Neo4jConcept> optConcept = query.getCurrentSelectedConcept();
+			Optional<Concept> optConcept = query.getCurrentSelectedConcept();
 			if (optConcept.isPresent()) {
-				Neo4jConcept concept = optConcept.get();
+				Concept concept = optConcept.get();
 				Library library = concept.getLibrary();
 				words = filter.split(SEPARATOR);
 				count = archiveRepository.countConceptMapArchiveByLibraryFiltered(library, words);

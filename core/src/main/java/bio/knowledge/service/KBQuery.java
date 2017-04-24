@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import bio.knowledge.model.Annotation;
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
@@ -65,7 +66,7 @@ public interface KBQuery {
 	 * 
 	 * @return user's current query ConceptSemanticType
 	 */
-	public Optional<Neo4jConcept> getCurrentQueryConcept() ;
+	public Optional<Concept> getCurrentQueryConcept() ;
 
 	public enum LibrarySearchMode {
 		NONE, BY_CONCEPT, BY_LIBRARY, BY_PARENTS, HIDDEN ;
@@ -114,13 +115,13 @@ public interface KBQuery {
 	 * 
 	 * @param query user's current query ConceptSemanticType
 	 */
-	public void setCurrentSelectedConcept(Neo4jConcept query) ;
+	public void setCurrentSelectedConcept(Concept query) ;
 	
 	/**
 	 * 
 	 * @return user's current query ConceptSemanticType
 	 */
-	public Optional<Neo4jConcept> getCurrentSelectedConcept() ;
+	public Optional<Concept> getCurrentSelectedConcept() ;
 
 	/**
 	 * 
@@ -279,9 +280,9 @@ public interface KBQuery {
 	 */
 	public ConceptSearchMode getConceptSearchMode();
 	
-	public void setLastSelectedConcept(Neo4jConcept concept);
+	public void setLastSelectedConcept(Concept concept);
 	
-	public Neo4jConcept getLastSelectedConcept();
+	public Concept getLastSelectedConcept();
 		
 	/* Passing out coordinates of popups when need be */
 	public int tempCoordX();

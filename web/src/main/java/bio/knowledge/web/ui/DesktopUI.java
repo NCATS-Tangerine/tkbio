@@ -92,6 +92,7 @@ import bio.knowledge.graph.jsonmodels.EdgeData;
 import bio.knowledge.graph.jsonmodels.Layout;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.NodeData;
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
@@ -266,13 +267,13 @@ public class DesktopUI extends UI implements MessageService {
 	@Autowired 
 	Cache cache;
 
-	private Optional<Neo4jConcept> currentConcept ;
+	private Optional<Concept> currentConcept ;
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public Neo4jConcept getCurrentConcept() {
+	public Concept getCurrentConcept() {
 		return currentConcept.get();
 	}
 
@@ -312,7 +313,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * 
 	 * @param concept
 	 */
-	public void addNodeToConceptMap(Neo4jConcept concept) {
+	public void addNodeToConceptMap(Concept concept) {
 		getConceptMap().addNodeToConceptMap(concept);
 	}
 	
@@ -321,7 +322,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * @param sourceNode
 	 * @param targetNode
 	 */
-	public void addEdgeToConceptMap( Neo4jConcept sourceNode, Neo4jConcept targetNode ) {
+	public void addEdgeToConceptMap( Concept sourceNode, Concept targetNode ) {
 		getConceptMap().getElements().getEdges().addEdge(
 				new Edge( sourceNode.getAccessionId(), targetNode.getAccessionId() ));
 	}
@@ -332,7 +333,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * @param targetNode
 	 * @param label
 	 */
-	public void addEdgeToConceptMap( Neo4jConcept sourceNode, Neo4jConcept targetNode, String label ) {
+	public void addEdgeToConceptMap( Concept sourceNode, Concept targetNode, String label ) {
 		getConceptMap().addEdgeToConceptMap(sourceNode, targetNode, label, "", "");
 	}
 
@@ -463,7 +464,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * highlight the seed node
 	 * @param currentConcept
 	 */
-	public void setHighlightedNode(Neo4jConcept currentConcept) {
+	public void setHighlightedNode(Concept currentConcept) {
 		// Removing highlights from previous concept node
 		if (lastHighlightNodeId != null) {
 			highlightNode(HighlightStatus.NO);
@@ -482,7 +483,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * TODO: replace setCurrentConceptTitle with setConceptInSession
 	 * @param currentConcept
 	 */
-    private void setConceptInSession( Neo4jConcept currentConcept ) {
+    private void setConceptInSession( Concept currentConcept ) {
     	setCurrentConceptTitle(currentConcept.getName());
     	setHighlightedNode(currentConcept);
     }
@@ -583,7 +584,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * @param concept
 	 * @param mode
 	 */
-    public void queryUpdate( Neo4jConcept concept, RelationSearchMode mode ) {
+    public void queryUpdate( Concept concept, RelationSearchMode mode ) {
         
         String conceptName = concept.getName() ;
         
@@ -622,7 +623,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * 
 	 * @param concept
 	 */
-	private void setConceptLabelDescription(Neo4jConcept concept) {
+	private void setConceptLabelDescription(Concept concept) {
 
 		VerticalLayout popupLayout = getDesktop().getPopUpLayout();
 
