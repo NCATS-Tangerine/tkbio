@@ -39,12 +39,12 @@ public interface Statement extends IdentifiedEntity {
 	/**
 	 * @param predicate the predicate to set
 	 */
-	void setRelation(Neo4jPredicate relation);
+	void setRelation(Predicate relation);
 
 	/**
 	 * @return the predicate
 	 */
-	Neo4jPredicate getRelation();
+	Predicate getRelation();
 
 	/**
 	 * 
@@ -78,12 +78,12 @@ public interface Statement extends IdentifiedEntity {
 	 * 
 	 * @param evidence to be associated with the Statement
 	 */
-	void setEvidence(Neo4jEvidence evidence);
+	void setEvidence(Evidence evidence);
 
 	/**
 	 * @return associated Evidence (e.g. References) supporting the Statement
 	 */
-	Neo4jEvidence getEvidence();
+	Evidence getEvidence();
 
 	/*
 	 * (non-Javadoc)

@@ -28,6 +28,7 @@ package bio.knowledge.model.neo4j;
 import org.neo4j.ogm.annotation.NodeEntity;
 
 import bio.knowledge.model.Concept;
+import bio.knowledge.model.Predicate;
 
 /**
  * @author Richard
@@ -49,7 +50,7 @@ public class Neo4jGeneralStatement extends Neo4jAbstractStatement {
 	
 	public Neo4jGeneralStatement(
     		String accessionId,
-    		Neo4jPredicate predicate
+    		Predicate predicate
     ) {
     	super(accessionId, predicate);
     }
@@ -57,7 +58,7 @@ public class Neo4jGeneralStatement extends Neo4jAbstractStatement {
 	public Neo4jGeneralStatement(
     		String accessionId,
     		Concept subject,
-    		Neo4jPredicate predicate,
+    		Predicate predicate,
     		Concept object
     ) {
     	super(accessionId, subject, predicate, object) ;

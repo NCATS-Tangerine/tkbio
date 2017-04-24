@@ -136,7 +136,7 @@ public interface KBQuery {
 	
 	/**
 	 * 
-	 * @param Neo4jEvidence currently displayed
+	 * @param Evidence currently displayed
 	 */
 	public void setCurrentEvidence( Evidence evidence ) ;
 	

@@ -42,7 +42,6 @@ import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.Evidence;
-import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 
 /**
  * @author Richard

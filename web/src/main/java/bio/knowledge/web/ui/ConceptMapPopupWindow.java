@@ -54,15 +54,16 @@ import com.vaadin.ui.Window;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.NodeData;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
-import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.neo4j.Neo4jEvidence;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
-import bio.knowledge.model.neo4j.Neo4jPredicate;
 import bio.knowledge.model.neo4j.Neo4jReference;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Annotation.Type;
 import bio.knowledge.model.Concept;
+import bio.knowledge.model.Evidence;
 import bio.knowledge.model.EvidenceCode;
+import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Reference;
 import bio.knowledge.model.Statement;
 import bio.knowledge.service.AnnotationService;
@@ -308,7 +309,7 @@ public class ConceptMapPopupWindow {
 		
 		// create the collections necessary for the menus
 		// predicate
-		List<Neo4jPredicate> predicateCollection = predicateService.findAllPredicates();
+		List<Predicate> predicateCollection = predicateService.findAllPredicates();
 
 		// graph nodes
 		// because it's essentially json data we need to manufacture the new
@@ -391,8 +392,8 @@ public class ConceptMapPopupWindow {
 			}
 
 			String relationLabel;
-			if (((Neo4jPredicate) comboBoxPredicate.getValue()) != null) {
-				relationLabel = ((Neo4jPredicate) comboBoxPredicate.getValue()).getName();
+			if (((Predicate) comboBoxPredicate.getValue()) != null) {
+				relationLabel = ((Predicate) comboBoxPredicate.getValue()).getName();
 			} else {
 				// open up the search box?
 				relationLabel = "";
@@ -406,7 +407,7 @@ public class ConceptMapPopupWindow {
 			String uri = uriEvidenceText.getValue();
 
 			String statementId = String.valueOf(edgeId);
-			Neo4jPredicate relation = (Neo4jPredicate) comboBoxPredicate.getValue();
+			Predicate relation = (Predicate) comboBoxPredicate.getValue();
 
 			// assert the Statement
 			Statement statement = 
@@ -430,10 +431,11 @@ public class ConceptMapPopupWindow {
 
 				// add this to the database
 				statement = new Neo4jGeneralStatement(statementId,
-						conceptService.getDetailsByAccessionId(sourceId).get(), relation,
+						conceptService.getDetailsByAccessionId(sourceId).get(), 
+						relation,
 						conceptService.getDetailsByAccessionId(targetId).get());
 
-				Neo4jEvidence evidence = evidenceService.createByEvidenceId(evidenceId);
+				Evidence evidence = evidenceService.createByEvidenceId(evidenceId);
 				statement.setEvidence(evidence);
 
 				// not putting this back into the statement object might have been a bit of a problem
@@ -473,10 +475,10 @@ public class ConceptMapPopupWindow {
 				}
 
 				// Hopefully Statement.evidence is not null here!
-				Neo4jEvidence evidence = statement.getEvidence();
+				Evidence evidence = statement.getEvidence();
 				// ..update and save?
 				evidence.addAnnotation(annotation);
-				evidenceService.save(evidence);
+				evidenceService.save((Neo4jEvidence) evidence);
 
 				List<Concept> subjects = statement.getSubjects();
 				for (Concept s : subjects) {

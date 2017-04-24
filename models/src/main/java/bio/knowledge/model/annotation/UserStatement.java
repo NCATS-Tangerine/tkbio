@@ -25,6 +25,7 @@
  */
 package bio.knowledge.model.annotation;
 
+import bio.knowledge.model.Evidence;
 import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.neo4j.Neo4jEvidence;
 import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
@@ -74,7 +75,7 @@ public class UserStatement extends Neo4jGeneralStatement {
 		this.uriEvidence = uriEvidence;
 	}
 	
-	public Neo4jEvidence getEvidence() {
+	public Evidence getEvidence() {
 		return this.evidence;
 	}
 	

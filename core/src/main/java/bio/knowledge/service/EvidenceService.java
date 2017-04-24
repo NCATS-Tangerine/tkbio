@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import bio.knowledge.database.repository.EvidenceRepository;
+import bio.knowledge.model.Evidence;
 import bio.knowledge.model.neo4j.Neo4jEvidence;
 
 @Service
@@ -37,15 +38,15 @@ public class EvidenceService {
 	@Autowired
 	EvidenceRepository evidenceRepository;
 	
-	public Neo4jEvidence findByEvidenceId(String evidenceId) {
+	public Evidence findByEvidenceId(String evidenceId) {
 		return evidenceRepository.findByEvidenceId(evidenceId);
 	}
 	
-	public Neo4jEvidence createByEvidenceId(String evidenceId) {
+	public Evidence createByEvidenceId(String evidenceId) {
 		return evidenceRepository.createByEvidenceId(evidenceId);		
 	}
 	
-	public Neo4jEvidence save(Neo4jEvidence evidence) {
+	public Evidence save(Neo4jEvidence evidence) {
 		return evidenceRepository.save(evidence);
 	}
 	

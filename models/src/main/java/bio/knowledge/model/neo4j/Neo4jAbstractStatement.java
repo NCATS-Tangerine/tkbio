@@ -32,6 +32,8 @@ import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
 
 import bio.knowledge.model.Concept;
+import bio.knowledge.model.Evidence;
+import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity;
 
@@ -40,7 +42,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
     private List<Concept> subjects = new ArrayList<Concept>() ;
     
 	@Relationship( type="RELATION" )
-    private Neo4jPredicate relation ;
+    private Predicate relation ;
 
 	@Relationship( type="OBJECT" )
     private List<Concept> objects = new ArrayList<Concept>() ;
@@ -58,7 +60,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	private Concept object ;
 
     @Relationship( type="EVIDENCE" )
-	protected Neo4jEvidence evidence ;
+	protected Evidence evidence ;
     
 	protected Neo4jAbstractStatement() {}
     
@@ -81,7 +83,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
      */
     protected Neo4jAbstractStatement(
     		String accessionId,
-    		Neo4jPredicate predicate
+    		Predicate predicate
     ) {
     	super(accessionId,predicate.getName(),"") ;
     	setRelation(predicate);
@@ -99,7 +101,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
     protected Neo4jAbstractStatement(
     		String accessionId,
     		Concept subject,
-    		Neo4jPredicate predicate,
+    		Predicate predicate,
     		Concept object
     ) {
     	super(accessionId,subject.getName()+" - "+predicate.getName()+" -> "+object.getName(),"") ;
@@ -170,16 +172,15 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.Statement#setRelation(bio.knowledge.model.neo4j.Neo4jPredicate)
 	 */
-	@Override
-	public void setRelation(Neo4jPredicate relation) {
+	public void setRelation(Predicate relation) {
 		this.relation = relation;
 	}
 
     /* (non-Javadoc)
 	 * @see bio.knowledge.model.Statement#getRelation()
 	 */
-	@Override
-	public Neo4jPredicate getRelation() {
+	
+	public Predicate getRelation() {
 		return relation;
 	}
 	
@@ -230,7 +231,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 * @see bio.knowledge.model.Statement#setEvidence(bio.knowledge.model.neo4j.Neo4jEvidence)
 	 */
 	@Override
-	public void setEvidence( Neo4jEvidence evidence ) {
+	public void setEvidence( Evidence evidence ) {
 		this.evidence = evidence;
 	}
 
@@ -238,7 +239,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 * @see bio.knowledge.model.Statement#getEvidence()
 	 */
 	@Override
-	public Neo4jEvidence getEvidence() {
+	public Evidence getEvidence() {
 		return evidence;
 	}
     

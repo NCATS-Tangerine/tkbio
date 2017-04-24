@@ -96,6 +96,7 @@ import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.DomainModelException;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
+import bio.knowledge.model.Predicate;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.IdentifiedEntity;
@@ -1390,8 +1391,8 @@ public class ListView extends BaseView {
 
 			// if (propertyId.equals(COL_ID_RELATION)) {
 			if (propertyId.equals(COL_ID_RELATION)) {
-				if (value instanceof Neo4jPredicate) {
-					definition = ((Neo4jPredicate) value).getDescription();
+				if (value instanceof Predicate) {
+					definition = ((Predicate) value).getDescription();
 					description = "<span style=\"font-weight: bold;\">" + name + ": " + "</span>" + definition;
 				}
 			}
@@ -1681,7 +1682,7 @@ public class ListView extends BaseView {
 	private void onConceptDetailsSelection(RendererClickEvent event, ConceptRole role) {
 		Statement statement = (Statement) event.getItemId();
 		Concept subject = statement.getSubject();
-		Neo4jPredicate predicate = statement.getRelation();
+		Predicate predicate = statement.getRelation();
 		Concept object = statement.getObject();
 
 		RelationSearchMode searchMode = query.getRelationSearchMode();
