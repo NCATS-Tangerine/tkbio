@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import bio.knowledge.database.repository.ConceptRepository;
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.service.AuthenticationState;
 
@@ -55,16 +56,16 @@ public class ConceptRestController {
 	private ConceptRepository conceptRepository;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public Iterable<Neo4jConcept> getAll() {
-		return conceptRepository.findAll();
+	public Iterable<Concept> getAll() {
+		return (Iterable<Concept>) (Iterable) conceptRepository.findAll();
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "{term}")
-	public Iterable<Neo4jConcept> getOne(@PathVariable String term,
+	public Iterable<Concept> getOne(@PathVariable String term,
 			@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
 			@RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
 		Pageable pageable = new PageRequest(pageNum - 1, pageSize);
-		return conceptRepository.findByNameLikeIgnoreCase(term, pageable);
+		return (Iterable<Concept>) (Iterable) conceptRepository.findByNameLikeIgnoreCase(term, pageable);
 	}
 
 	/**
@@ -79,7 +80,7 @@ public class ConceptRestController {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "data/{searchTerm}")
-	public Iterable<Neo4jConcept> search(@PathVariable String searchTerm,
+	public Iterable<Concept> search(@PathVariable String searchTerm,
 			@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
 			@RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
 		Pageable pageable = new PageRequest(pageNum - 1, pageSize);
@@ -102,7 +103,7 @@ public class ConceptRestController {
 		 * So with accountId and groupIds being set to null, only public concept
 		 * maps will be counted.
 		 */
-		List<Neo4jConcept> result = conceptRepository.findByInitialSearch(words, pageable, null, null);
+		List<Concept> result = (List<Concept>) (List) conceptRepository.findByInitialSearch(words, pageable, null, null);
 		return result;
 	}
 
@@ -125,8 +126,8 @@ public class ConceptRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public Neo4jConcept create(@RequestBody Neo4jConcept concept) {
-		return conceptRepository.save(concept);
+	public Concept create(@RequestBody Concept concept) {
+		return conceptRepository.save((Neo4jConcept) concept);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "{id}")
@@ -135,11 +136,11 @@ public class ConceptRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
-	public Neo4jConcept update(@PathVariable Long id, @RequestBody Neo4jConcept concept) {
-		Neo4jConcept update = conceptRepository.findOne(id);
+	public Concept update(@PathVariable Long id, @RequestBody Concept concept) {
+		Concept update = conceptRepository.findOne(id);
 		update.setAccessionId(concept.getAccessionId());
 		update.setName(concept.getName());
 		update.setSemanticGroup(concept.getSemanticGroup());
-		return conceptRepository.save(update);
+		return conceptRepository.save((Neo4jConcept) update);
 	}
 }

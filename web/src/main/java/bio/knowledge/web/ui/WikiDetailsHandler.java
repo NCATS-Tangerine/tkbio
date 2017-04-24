@@ -52,7 +52,6 @@ import bio.knowledge.datasource.wikidata.ConceptDescriptor;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.RdfUtil;
 import bio.knowledge.model.datasource.ResultSet;
-import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.service.ConceptService;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.wikidata.WikiDataService;

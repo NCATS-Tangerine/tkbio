@@ -32,7 +32,6 @@ import org.springframework.stereotype.Service;
 
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.datasource.ResultSet;
-import bio.knowledge.model.neo4j.Neo4jConcept;
 
 /**
  * @author Richard

@@ -66,7 +66,6 @@ import bio.knowledge.graph.ContentRequester;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Library;
-import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.service.Cache;
 import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.service.ConceptMapArchiveService.SearchMode;

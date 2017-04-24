@@ -54,7 +54,6 @@ import bio.knowledge.graph.jsonmodels.Nodes;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
-import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 import bio.knowledge.web.ui.DesktopUI;
 

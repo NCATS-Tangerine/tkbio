@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import bio.knowledge.model.Concept;
-import bio.knowledge.model.neo4j.Neo4jConcept;
 
 /**
  * 

@@ -44,7 +44,6 @@ import bio.knowledge.database.repository.LibraryRepository;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Library;
-import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
 
 /**
@@ -203,7 +202,7 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 		case BY_CONCEPT:
 			Optional<Concept> optConcept = query.getCurrentSelectedConcept();
 			if ( optConcept.isPresent() ) {
-				Neo4jConcept concept = (Neo4jConcept)optConcept.get() ;
+				Concept concept = (Concept) optConcept.get() ;
 				Library library = concept.getLibrary();
 				words = filter.split(SEPARATOR);
 				return getConceptMapArchiveByLibraryFiltered(
@@ -290,7 +289,7 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 			case BY_CONCEPT:
 				Optional<Concept> optConcept = query.getCurrentSelectedConcept();
 				if ( optConcept.isPresent() ) {
-					Neo4jConcept concept = (Neo4jConcept)optConcept.get() ;
+					Concept concept = (Concept)optConcept.get() ;
 					Library library = concept.getLibrary() ;
 					String[] words = new String[0];
 					return getConceptMapArchiveByLibraryFiltered(
