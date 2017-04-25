@@ -40,7 +40,7 @@ import bio.knowledge.renderer.client.ButtonRendererState;
  * 
  * @author Lance Hannestad
  */
-public class ButtonRenderer extends com.vaadin.ui.renderers.ButtonRenderer{
+public class ButtonRenderer extends com.vaadin.ui.renderers.ButtonRenderer {
 
 	private static final long serialVersionUID = 3478709185409867558L;
 	

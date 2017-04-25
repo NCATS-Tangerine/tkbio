@@ -27,11 +27,11 @@ package bio.knowledge.web.view.components;
 
 import java.util.Map;
 
-import com.vaadin.data.util.GeneratedPropertyContainer;
-import com.vaadin.shared.ui.grid.HeightMode;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.renderers.ClickableRenderer.RendererClickListener;
+import com.vaadin.v7.data.util.GeneratedPropertyContainer;
+import com.vaadin.v7.shared.ui.grid.HeightMode;
+import com.vaadin.v7.ui.Grid;
+import com.vaadin.v7.ui.VerticalLayout;
+import com.vaadin.v7.ui.renderers.ClickableRenderer.RendererClickListener;
 
 import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.web.view.Registry.Mapping;
@@ -95,7 +95,7 @@ public class Book extends VerticalLayout {
 		dataTable.setWidth("100%");
 		dataTable.setHeightMode(HeightMode.ROW);
 		dataTable.setHeightByRows(ROWS_TO_DISPLAY);
-		dataTable.setImmediate(true);
+		// dataTable.setImmediate(true);
 		dataTable.addStyleName("results-grid");
 	}
 	

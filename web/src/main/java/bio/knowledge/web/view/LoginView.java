@@ -27,7 +27,7 @@ package bio.knowledge.web.view;
 
 import java.util.concurrent.Callable;
 
-import com.vaadin.data.Validator;
+import com.vaadin.v7.data.Validator;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;

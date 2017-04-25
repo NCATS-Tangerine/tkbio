@@ -31,11 +31,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.navigator.Navigator;
-//import com.vaadin.shared.ui.label.ContentMode;
+//import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.ui.VerticalLayout;
 
 import bio.knowledge.web.design.SearchDesign;
 

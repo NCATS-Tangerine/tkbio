@@ -30,12 +30,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.VaadinSessionScope;
-import com.vaadin.ui.renderers.ButtonRenderer;
-import com.vaadin.ui.renderers.ClickableRenderer.RendererClickListener;
-import com.vaadin.ui.renderers.Renderer;
+import com.vaadin.v7.ui.renderers.ButtonRenderer;
+import com.vaadin.v7.ui.renderers.ClickableRenderer.RendererClickListener;
+import com.vaadin.v7.ui.renderers.Renderer;
 
 import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.service.core.IdentifiedEntityService;

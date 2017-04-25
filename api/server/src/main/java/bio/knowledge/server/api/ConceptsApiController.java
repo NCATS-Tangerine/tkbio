@@ -72,9 +72,9 @@ public class ConceptsApiController implements ConceptsApi {
 		List<Concept> concepts;
 		if (sg != null) {
 			String[] semanticGroups = sg.toArray(new String[sg.size()]);
-			concepts = conceptRepository.apiGetConceptsByType(filter, semanticGroups, pageNumber, pageSize);
+			concepts = (List<Concept>) (List) conceptRepository.apiGetConceptsByType(filter, semanticGroups, pageNumber, pageSize);
 		} else {
-			concepts = conceptRepository.apiGetConcepts(filter, pageNumber, pageSize);
+			concepts = (List<Concept>) (List) conceptRepository.apiGetConcepts(filter, pageNumber, pageSize);
 		}
 		
 		InlineResponse2001 response = new InlineResponse2001();

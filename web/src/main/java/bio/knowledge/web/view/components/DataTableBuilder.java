@@ -27,9 +27,9 @@ package bio.knowledge.web.view.components;
 
 import java.util.Map;
 
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.renderers.ButtonRenderer;
-import com.vaadin.ui.renderers.ClickableRenderer.RendererClickListener;
+import com.vaadin.v7.ui.Grid;
+import com.vaadin.v7.ui.renderers.ButtonRenderer;
+import com.vaadin.v7.ui.renderers.ClickableRenderer.RendererClickListener;
 
 /**
  * A factory class for building the Grid components that are used as data tables

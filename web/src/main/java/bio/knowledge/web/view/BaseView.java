@@ -36,10 +36,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 
 import com.vaadin.navigator.View;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import bio.knowledge.service.core.MessageService;

@@ -25,12 +25,12 @@
  */
 package bio.knowledge.web.view;
 
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.Grid.HeaderCell;
-import com.vaadin.ui.Grid.HeaderRow;
+import com.vaadin.v7.ui.Grid;
+import com.vaadin.v7.ui.Grid.HeaderCell;
+import com.vaadin.v7.ui.Grid.HeaderRow;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.renderers.ClickableRenderer.RendererClickListener;
-import com.vaadin.ui.renderers.ImageRenderer;
+import com.vaadin.v7.ui.renderers.ImageRenderer;
 import com.vaadin.ui.renderers.Renderer;
 
 import bio.knowledge.renderer.ButtonRenderer;
@@ -73,7 +73,7 @@ public class ViewUtil {
 		
 		String searchPhrase = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
 		
-		Renderer<String> renderer;
+		com.vaadin.ui.renderers.ButtonRenderer renderer;
 
 		// We want to use our own custom ButtonRenderer for every column except
 		// for these, since it messes up their CSS formatting. So we use

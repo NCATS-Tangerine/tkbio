@@ -4,118 +4,118 @@
   <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;kb2&quot;}">
  </head> 
  <body> 
-  <vaadin-vertical-layout> 
-   <vaadin-vertical-layout style-name="landingpage-layout" height="500px"> 
-    <vaadin-vertical-layout spacing :middle :center> 
+  <vaadin7-vertical-layout> 
+   <vaadin7-vertical-layout style-name="landingpage-layout" height="500px"> 
+    <vaadin7-vertical-layout spacing :middle :center> 
      <vaadin-image description="Knowledge.Bio logo" source="theme://images/kb2logo_white.png" style-name="kb-image" width="50px" _id="logoImage" :middle :center></vaadin-image> 
-     <vaadin-label style-name="landingpage-title-label" plain-text>
+     <vaadin7-label style-name="landingpage-title-label" plain-text>
        KNOWLEDGE.BIO 
-     </vaadin-label> 
-     <vaadin-horizontal-layout spacing _id="searchLayout" :middle :center> 
+     </vaadin7-label> 
+     <vaadin7-horizontal-layout spacing _id="searchLayout" :middle :center> 
       <vaadin-button description="click to launch the application" style-name="huge initial-launch-button" width="15em" plain-text _id="launchBtn">
         LAUNCH 
       </vaadin-button> 
-     </vaadin-horizontal-layout> 
-    </vaadin-vertical-layout> 
-   </vaadin-vertical-layout> 
-   <vaadin-vertical-layout style-name="idea-content-layout lightgrey-background"> 
+     </vaadin7-horizontal-layout> 
+    </vaadin7-vertical-layout> 
+   </vaadin7-vertical-layout> 
+   <vaadin7-vertical-layout style-name="idea-content-layout lightgrey-background"> 
     <vaadin-image source="theme://images/chart_images_06.png" style-name="kb-image" width="900px" _id="overviewImage" :center></vaadin-image> 
-    <vaadin-horizontal-layout style-name="landingpage-label-layout" width-full :middle :center> 
-     <vaadin-label style-name="landingpage-question-label" plain-text :center :expand="1.5">
+    <vaadin7-horizontal-layout style-name="landingpage-label-layout" width-full :middle :center> 
+     <vaadin7-label style-name="landingpage-question-label" plain-text :center :expand="1.5">
        WHAT IS IT? 
-     </vaadin-label> 
-     <vaadin-label plain-text :expand="0.5"></vaadin-label> 
-     <vaadin-label style-name="landingpage-answer-label" :center :expand="7">
+     </vaadin7-label> 
+     <vaadin7-label plain-text :expand="0.5"></vaadin7-label> 
+     <vaadin7-label style-name="landingpage-answer-label" :center :expand="7">
        Knowledge.bio is an open-source project that allows its users to find and create biomedical connections from over 20 million PubMed abstracts. 
       <br> 
       <br>Knowledge.bio integrates the explicit connections identified by the SemRep system from the US National Library of Medicine along with the Implicitome from the Leiden University Medical Center to provide predicted relationships between genes and diseases based on 'concept profile' technology. 
-     </vaadin-label> 
-    </vaadin-horizontal-layout> 
-   </vaadin-vertical-layout> 
-   <vaadin-vertical-layout style-name="landingpage-step-layout" spacing> 
-    <vaadin-horizontal-layout style-name="landingpage-label-layout landingpage-step-layout" width-full :middle :center> 
-     <vaadin-label style-name="landingpage-step-prefix-label text-align-right" plain-text :expand="3.5">
+     </vaadin7-label> 
+    </vaadin7-horizontal-layout> 
+   </vaadin7-vertical-layout> 
+   <vaadin7-vertical-layout style-name="landingpage-step-layout" spacing> 
+    <vaadin7-horizontal-layout style-name="landingpage-label-layout landingpage-step-layout" width-full :middle :center> 
+     <vaadin7-label style-name="landingpage-step-prefix-label text-align-right" plain-text :expand="3.5">
        1 
-     </vaadin-label> 
-     <vaadin-label plain-text :expand="0.5"></vaadin-label> 
-     <vaadin-vertical-layout spacing :expand="6"> 
-      <vaadin-label style-name="landingpage-step-label" plain-text :expand="9">
+     </vaadin7-label> 
+     <vaadin7-label plain-text :expand="0.5"></vaadin7-label> 
+     <vaadin7-vertical-layout spacing :expand="6"> 
+      <vaadin7-label style-name="landingpage-step-label" plain-text :expand="9">
         enter a keyword 
-      </vaadin-label> 
+      </vaadin7-label> 
       <vaadin-image source="theme://images/help/step1.png" style-name="kb-image" width="40%" _id="step1Img"></vaadin-image> 
-     </vaadin-vertical-layout> 
-    </vaadin-horizontal-layout> 
-    <vaadin-horizontal-layout style-name="landingpage-label-layout landingpage-step-layout" width-full :middle :center> 
-     <vaadin-label style-name="landingpage-step-prefix-label text-align-right" plain-text :expand="3.5">
+     </vaadin7-vertical-layout> 
+    </vaadin7-horizontal-layout> 
+    <vaadin7-horizontal-layout style-name="landingpage-label-layout landingpage-step-layout" width-full :middle :center> 
+     <vaadin7-label style-name="landingpage-step-prefix-label text-align-right" plain-text :expand="3.5">
        2 
-     </vaadin-label> 
-     <vaadin-label plain-text :expand="0.5"></vaadin-label> 
-     <vaadin-vertical-layout spacing :expand="6"> 
-      <vaadin-label style-name="landingpage-step-label" plain-text :expand="9">
+     </vaadin7-label> 
+     <vaadin7-label plain-text :expand="0.5"></vaadin7-label> 
+     <vaadin7-vertical-layout spacing :expand="6"> 
+      <vaadin7-label style-name="landingpage-step-label" plain-text :expand="9">
         refine your search 
-      </vaadin-label> 
+      </vaadin7-label> 
       <vaadin-image source="theme://images/index/step2.png" style-name="kb-image" width="40%" _id="step2Img"></vaadin-image> 
-     </vaadin-vertical-layout> 
-    </vaadin-horizontal-layout> 
-    <vaadin-horizontal-layout style-name="landingpage-label-layout landingpage-step-layout" width-full :middle :center> 
-     <vaadin-label style-name="landingpage-step-prefix-label text-align-right" plain-text :expand="3.5">
+     </vaadin7-vertical-layout> 
+    </vaadin7-horizontal-layout> 
+    <vaadin7-horizontal-layout style-name="landingpage-label-layout landingpage-step-layout" width-full :middle :center> 
+     <vaadin7-label style-name="landingpage-step-prefix-label text-align-right" plain-text :expand="3.5">
        3 
-     </vaadin-label> 
-     <vaadin-label plain-text :expand="0.5"></vaadin-label> 
-     <vaadin-vertical-layout spacing :expand="6"> 
-      <vaadin-label style-name="landingpage-step-label" plain-text :expand="9">
+     </vaadin7-label> 
+     <vaadin7-label plain-text :expand="0.5"></vaadin7-label> 
+     <vaadin7-vertical-layout spacing :expand="6"> 
+      <vaadin7-label style-name="landingpage-step-label" plain-text :expand="9">
         add to map 
-      </vaadin-label> 
+      </vaadin7-label> 
       <vaadin-image source="theme://images/help/step3.png" style-name="kb-image" width="40%" _id="step3Img"></vaadin-image> 
-     </vaadin-vertical-layout> 
-    </vaadin-horizontal-layout> 
-    <vaadin-horizontal-layout style-name="landingpage-label-layout landingpage-step-layout" width-full :middle :center> 
-     <vaadin-label style-name="landingpage-step-prefix-label text-align-right" plain-text :expand="3.5">
+     </vaadin7-vertical-layout> 
+    </vaadin7-horizontal-layout> 
+    <vaadin7-horizontal-layout style-name="landingpage-label-layout landingpage-step-layout" width-full :middle :center> 
+     <vaadin7-label style-name="landingpage-step-prefix-label text-align-right" plain-text :expand="3.5">
        4 
-     </vaadin-label> 
-     <vaadin-label plain-text :expand="0.5"></vaadin-label> 
-     <vaadin-vertical-layout spacing :expand="6"> 
-      <vaadin-label style-name="landingpage-step-label" plain-text :expand="9">
+     </vaadin7-label> 
+     <vaadin7-label plain-text :expand="0.5"></vaadin7-label> 
+     <vaadin7-vertical-layout spacing :expand="6"> 
+      <vaadin7-label style-name="landingpage-step-label" plain-text :expand="9">
         arrange your concept map 
-      </vaadin-label> 
+      </vaadin7-label> 
       <vaadin-image source="theme://images/index/step4.png" style-name="kb-image" width="40%" _id="step4Img"></vaadin-image> 
-     </vaadin-vertical-layout> 
-    </vaadin-horizontal-layout> 
-    <vaadin-horizontal-layout style-name="landingpage-label-layout landingpage-step-layout" width-full :middle :center> 
-     <vaadin-label style-name="landingpage-step-prefix-label text-align-right" plain-text :expand="3.5">
+     </vaadin7-vertical-layout> 
+    </vaadin7-horizontal-layout> 
+    <vaadin7-horizontal-layout style-name="landingpage-label-layout landingpage-step-layout" width-full :middle :center> 
+     <vaadin7-label style-name="landingpage-step-prefix-label text-align-right" plain-text :expand="3.5">
        5 
-     </vaadin-label> 
-     <vaadin-label plain-text :expand="0.5"></vaadin-label> 
-     <vaadin-vertical-layout spacing :expand="6"> 
-      <vaadin-label style-name="landingpage-step-label" plain-text :expand="9">
+     </vaadin7-label> 
+     <vaadin7-label plain-text :expand="0.5"></vaadin7-label> 
+     <vaadin7-vertical-layout spacing :expand="6"> 
+      <vaadin7-label style-name="landingpage-step-label" plain-text :expand="9">
         find related articles 
-      </vaadin-label> 
+      </vaadin7-label> 
       <vaadin-image source="theme://images/index/step5.png" style-name="kb-image" width="40%" _id="step5Img"></vaadin-image> 
-     </vaadin-vertical-layout> 
-    </vaadin-horizontal-layout> 
-    <vaadin-horizontal-layout style-name="landingpage-label-layout landingpage-step-layout" width-full :middle :center> 
-     <vaadin-label style-name="landingpage-step-prefix-label text-align-right" plain-text :expand="3.5">
+     </vaadin7-vertical-layout> 
+    </vaadin7-horizontal-layout> 
+    <vaadin7-horizontal-layout style-name="landingpage-label-layout landingpage-step-layout" width-full :middle :center> 
+     <vaadin7-label style-name="landingpage-step-prefix-label text-align-right" plain-text :expand="3.5">
        6 
-     </vaadin-label> 
-     <vaadin-label plain-text :expand="0.5"></vaadin-label> 
-     <vaadin-vertical-layout spacing :expand="6"> 
-      <vaadin-label style-name="landingpage-step-label" plain-text :expand="9">
+     </vaadin7-label> 
+     <vaadin7-label plain-text :expand="0.5"></vaadin7-label> 
+     <vaadin7-vertical-layout spacing :expand="6"> 
+      <vaadin7-label style-name="landingpage-step-label" plain-text :expand="9">
         search public library of concept maps 
-      </vaadin-label> 
+      </vaadin7-label> 
       <vaadin-image source="theme://images/index/step6.png" style-name="kb-image" width="40%" _id="step6Img"></vaadin-image> 
-     </vaadin-vertical-layout> 
-    </vaadin-horizontal-layout> 
-   </vaadin-vertical-layout> 
-   <vaadin-vertical-layout style-name="black-background landingpage-step-layout"> 
-    <vaadin-horizontal-layout style-name="landingpage-step-layout landingpage-usecase-layout" spacing width="80%" :middle :center> 
-     <vaadin-vertical-layout spacing :expand> 
-      <vaadin-label style-name="landingpage-usecase-header-label text-align-left has-letter-spacing" plain-text>
+     </vaadin7-vertical-layout> 
+    </vaadin7-horizontal-layout> 
+   </vaadin7-vertical-layout> 
+   <vaadin7-vertical-layout style-name="black-background landingpage-step-layout"> 
+    <vaadin7-horizontal-layout style-name="landingpage-step-layout landingpage-usecase-layout" spacing width="80%" :middle :center> 
+     <vaadin7-vertical-layout spacing :expand> 
+      <vaadin7-label style-name="landingpage-usecase-header-label text-align-left has-letter-spacing" plain-text>
         USE CASE 
-      </vaadin-label> 
-      <vaadin-label size-auto>
+      </vaadin7-label> 
+      <vaadin7-label size-auto>
         &nbsp; 
-      </vaadin-label> 
-      <vaadin-label style-name="section-content-label-left">
+      </vaadin7-label> 
+      <vaadin7-label style-name="section-content-label-left">
         Here is an example of what you can discover. 
        <br> 
        <br>Given a patient with a mutation in the Sepiaterin Reductase (SPR) gene and a collection of Movement Disorders and significantly disrupted sleep, what treament might you offer them? 
@@ -123,11 +123,11 @@
        <br>The answer is contained in the 
        <span style="color:#90baad;">Knowledge.bio</span> graph depicted here (and in Figure 1 of a ground breaking paper in 
        <em>Science Translational Medicine</em>). 
-      </vaadin-label> 
-     </vaadin-vertical-layout> 
+      </vaadin7-label> 
+     </vaadin7-vertical-layout> 
      <vaadin-image source="theme://images/usecase.png" style-name="kb-image" width-full _id="usecaseImg" :expand></vaadin-image> 
-    </vaadin-horizontal-layout> 
-   </vaadin-vertical-layout> 
-  </vaadin-vertical-layout>  
+    </vaadin7-horizontal-layout> 
+   </vaadin7-vertical-layout> 
+  </vaadin7-vertical-layout>  
  </body>
 </html>

@@ -30,8 +30,8 @@ import java.util.Iterator;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.ui.HorizontalLayout;
+import com.vaadin.v7.ui.Label;
 
 public class PageSelectorBar extends HorizontalLayout {
 	private ListContainer listContainer;

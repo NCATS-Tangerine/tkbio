@@ -27,11 +27,11 @@ package bio.knowledge.web.ui;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
+import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.ui.TextField;
+import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 public class GraphAnnotationWindow extends Window {

@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.vaadin.server.UserError;
-import com.vaadin.ui.AbstractField;
+import com.vaadin.v7.ui.AbstractField;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.ui.Label;
 
 /**
  * This class handles validation of {@code AbstractField<String>} objects. I

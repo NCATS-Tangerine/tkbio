@@ -31,7 +31,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.PasswordField;
+import com.vaadin.v7.ui.PasswordField;
 import com.vaadin.ui.UI;
 
 import bio.knowledge.authentication.exceptions.AccountDoesNotExistException;

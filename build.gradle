@@ -8,7 +8,7 @@ ext.springBootVersion        = '1.3.7.RELEASE'
 ext.springDataNeo4jVersion   = '4.1.2.RELEASE'
 ext.springNeo4jVersion       = '3.0.4'
 ext.springNeo4jOGMVersion    = '2.0.3'
-ext.vaadinSharedVersion      = '7.6.5'
+ext.vaadinSharedVersion      = '8.0.0'
 
 buildscript {
     ext {

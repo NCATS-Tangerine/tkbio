@@ -39,13 +39,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 
 import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
+import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.ui.HorizontalLayout;
+import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.ui.VerticalLayout;
 
 import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.datasource.wikidata.ConceptDescriptor;

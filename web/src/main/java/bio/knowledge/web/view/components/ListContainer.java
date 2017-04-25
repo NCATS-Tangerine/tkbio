@@ -27,8 +27,8 @@ package bio.knowledge.web.view.components;
 
 import java.io.Serializable;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.ui.UI;
 
 import bio.knowledge.authentication.AuthenticationManager;

@@ -25,11 +25,11 @@
  */
 package bio.knowledge.web.view.components;
 
-import com.vaadin.shared.ui.label.ContentMode;
-//import com.vaadin.ui.AbstractField;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextArea;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+//import com.vaadin.v7.ui.AbstractField;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.TextArea;
+import com.vaadin.v7.ui.VerticalLayout;
 
 public class EditableLabel extends VerticalLayout {
 

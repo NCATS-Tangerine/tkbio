@@ -25,7 +25,7 @@
  */
 package bio.knowledge.web.view.components;
 
-import com.vaadin.ui.OptionGroup;
+import com.vaadin.v7.ui.OptionGroup;
 
 public class SingleRadioButton extends OptionGroup {
 

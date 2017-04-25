@@ -38,7 +38,7 @@ import com.vaadin.shared.AbstractComponentState;
  * 
  * @author Lance Hannestad
  */
-public class ButtonRendererState extends AbstractComponentState {
+public class ButtonRendererState extends com.vaadin.shared.ui.grid.renderers.ButtonRendererState {
 	private static final long serialVersionUID = 1549401267386502201L;
 	
 	/**

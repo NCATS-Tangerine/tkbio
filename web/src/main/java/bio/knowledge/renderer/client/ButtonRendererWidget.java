@@ -30,7 +30,7 @@ import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.Button;
-import com.vaadin.client.widget.grid.RendererCellReference;
+import com.vaadin.v7.client.widget.grid.RendererCellReference;
 
 /**
  * The client side widget, corresponding to the server side
@@ -54,7 +54,7 @@ import com.vaadin.client.widget.grid.RendererCellReference;
  * 
  * @author Lance Hannestad
  */
-public class ButtonRendererWidget extends com.vaadin.client.renderers.ButtonRenderer {
+public class ButtonRendererWidget extends com.vaadin.v7.client.renderers.ButtonRenderer {
 	
 	private String[] highlightWords;
 	// Default colour is bright red

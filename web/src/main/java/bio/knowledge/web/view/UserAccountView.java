@@ -29,29 +29,29 @@ import java.util.Collection;
 
 import com.stormpath.sdk.account.Account;
 import com.stormpath.sdk.resource.ResourceException;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.GeneratedPropertyContainer;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.data.util.PropertyValueGenerator;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.GeneratedPropertyContainer;
+import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.data.util.PropertyValueGenerator;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.Grid;
+import com.vaadin.v7.ui.HorizontalLayout;
+import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.TextField;
+import com.vaadin.v7.ui.TextField;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.renderers.ButtonRenderer;
+import com.vaadin.v7.ui.renderers.ButtonRenderer;
 
 import bio.knowledge.authentication.AuthenticationListener;
 import bio.knowledge.authentication.Role;
@@ -204,7 +204,7 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 		bio.knowledge.renderer.ButtonRenderer deleteRenderer = new bio.knowledge.renderer.ButtonRenderer();
 		deleteRenderer.addClickListener(event -> {
 			UserGroup group = (UserGroup) chooseGroupComboBox.getValue();
-			UserProfile user = (UserProfile) event.getItemId();
+			UserProfile user = (UserProfile) event.getItem();
 			group.removeMember(user);
 			
 			refreshContainer(container, group);

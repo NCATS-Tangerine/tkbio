@@ -30,10 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Validatable;
-import com.vaadin.data.Validator;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.data.Property;
+import com.vaadin.v7.data.Validatable;
+import com.vaadin.v7.data.Validator;
+import com.vaadin.v7.ui.Label;
 
 public class ErrorHandler {
 	private List<Object> components = new ArrayList<Object>();

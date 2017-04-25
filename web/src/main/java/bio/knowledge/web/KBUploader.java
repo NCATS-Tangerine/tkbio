@@ -32,7 +32,7 @@ import java.io.OutputStream;
 
 import com.vaadin.server.Page;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Upload.Receiver;
+import com.vaadin.v7.ui.Upload.Receiver;
 /**
  * 
  * @author Chandan Mishra (cmishra@sfu.ca)

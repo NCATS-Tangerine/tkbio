@@ -44,10 +44,10 @@ dependencies {
     compile 'com.stormpath.sdk:stormpath-servlet-plugin:1.0.4'
     
     // Vaadin-specific, including widgetset compiler, dependencies
-    compile "com.vaadin:vaadin-shared:$vaadinSharedVersion"
-    compile "com.vaadin:vaadin-server:$vaadinSharedVersion"
-    compile "com.vaadin:vaadin-themes:$vaadinSharedVersion"
-    compile "com.vaadin:vaadin-client:$vaadinSharedVersion"
+    compile "com.vaadin:vaadin-compatibility-shared:$vaadinSharedVersion"
+    compile "com.vaadin:vaadin-compatibility-server:$vaadinSharedVersion"
+    compile "com.vaadin:vaadin-compatibility-themes:$vaadinSharedVersion"
+    compile "com.vaadin:vaadin-compatibility-client:$vaadinSharedVersion"
     compile "com.vaadin:vaadin-client-compiler:$vaadinSharedVersion"
     compile 'com.vaadin.addon.responsive:responsive:1.0.0.alpha4'
     compile "org.vaadin.addon:confirmdialog:2.1.3"

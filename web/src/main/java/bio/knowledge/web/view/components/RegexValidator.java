@@ -25,7 +25,7 @@
  */
 package bio.knowledge.web.view.components;
 
-import com.vaadin.data.Validator;
+import com.vaadin.v7.data.Validator;
 
 public class RegexValidator implements Validator {
 

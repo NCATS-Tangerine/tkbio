@@ -11,46 +11,46 @@
   <meta charset="UTF-8" name="package-mapping" content="bio_knowledge_graph:bio.knowledge.graph">
  </head> 
  <body> 
-  <vaadin-vertical-layout primary-style-name="v-vertical-layout" spacing responsive size-full _id="verticalLayout"> 
+  <vaadin7-vertical-layout primary-style-name="v-vertical-layout" spacing responsive size-full _id="verticalLayout"> 
    <vaadin-horizontal-split-panel responsive split-position="51.980198%" _id="desktopSplitPanel" :expand> 
-    <vaadin-vertical-layout spacing responsive id="relations-layout" size-full margin> 
-     <vaadin-horizontal-layout primary-style-name="v-viewConcepts" responsive width-full _id="viewingConcepts"> 
-      <vaadin-text-field description="Type Concept To Search" input-prompt="Search Concepts" style-name="no-border-radius-right huge main-search-field borderless" width-full _id="search" :expand></vaadin-text-field> 
+    <vaadin7-vertical-layout spacing responsive id="relations-layout" size-full margin> 
+     <vaadin7-horizontal-layout primary-style-name="v-viewConcepts" responsive width-full _id="viewingConcepts"> 
+      <vaadin7-text-field description="Type Concept To Search" input-prompt="Search Concepts" style-name="no-border-radius-right huge main-search-field borderless" width-full _id="search" :expand></vaadin7-text-field> 
       <vaadin-button description="Search" icon="fonticon://FontAwesome/f002" style-name="icon-only no-border-radius-left borderless huge" plain-text _id="searchBtn"></vaadin-button> 
-     </vaadin-horizontal-layout> 
-     <vaadin-vertical-layout visible="false" _id="popUpLayout"></vaadin-vertical-layout> 
+     </vaadin7-horizontal-layout> 
+     <vaadin7-vertical-layout visible="false" _id="popUpLayout"></vaadin7-vertical-layout> 
      <vaadin-tab-sheet style-name="framed padded-tabbar" responsive size-full _id="dataTabSheet" :expand> 
       <tab caption="Relations" selected> 
-       <vaadin-vertical-layout responsive margin _id="relationsTab"> 
-        <vaadin-horizontal-layout responsive width-full> 
-         <vaadin-native-select responsive item-caption-mode="id" _id="semanticFilterSelect"> 
+       <vaadin7-vertical-layout responsive margin _id="relationsTab"> 
+        <vaadin7-horizontal-layout responsive width-full> 
+         <vaadin7-native-select responsive item-caption-mode="id" _id="semanticFilterSelect"> 
           <option>Any Type</option> 
           <option>Diseases</option> 
           <option>Genes</option> 
           <option>Drugs</option> 
           <option>Other..</option> 
-         </vaadin-native-select> 
-        </vaadin-horizontal-layout> 
-       </vaadin-vertical-layout> 
+         </vaadin7-native-select> 
+        </vaadin7-horizontal-layout> 
+       </vaadin7-vertical-layout> 
       </tab> 
       <tab caption="Evidence"> 
-       <vaadin-vertical-layout responsive margin _id="evidenceTab"></vaadin-vertical-layout> 
+       <vaadin7-vertical-layout responsive margin _id="evidenceTab"></vaadin7-vertical-layout> 
       </tab> 
       <tab caption="Reference"> 
-       <vaadin-vertical-layout size-full _id="referenceTab"> 
-        <vaadin-vertical-layout size-full _id="referenceLayout"></vaadin-vertical-layout> 
-       </vaadin-vertical-layout> 
+       <vaadin7-vertical-layout size-full _id="referenceTab"> 
+        <vaadin7-vertical-layout size-full _id="referenceLayout"></vaadin7-vertical-layout> 
+       </vaadin7-vertical-layout> 
       </tab> 
      </vaadin-tab-sheet> 
-    </vaadin-vertical-layout> 
-    <vaadin-vertical-layout spacing responsive id="map-layout" size-full margin> 
-     <vaadin-horizontal-layout primary-style-name="v-cmbar" spacing responsive width-full height="33px" _id="cmbar" :middle :center> 
-      <vaadin-upload description="Load Concept Map" responsive immediate size-full _id="loadMap" :middle :center :expand></vaadin-upload> 
+    </vaadin7-vertical-layout> 
+    <vaadin7-vertical-layout spacing responsive id="map-layout" size-full margin> 
+     <vaadin7-horizontal-layout primary-style-name="v-cmbar" spacing responsive width-full height="33px" _id="cmbar" :middle :center> 
+      <vaadin7-upload description="Load Concept Map" responsive immediate size-full _id="loadMap" :middle :center :expand></vaadin7-upload> 
       <vaadin-button icon="fonticon://FontAwesome/f0c7" description="Save Concept Map" style-name="map-button" responsive size-full plain-text _id="saveBtn" :middle :center :expand></vaadin-button> 
       <vaadin-button icon="fonticon://FontAwesome/f021" description="Clear Concept Map" style-name="map-button" responsive size-full plain-text _id="clearMapBtn" :middle :center :expand></vaadin-button> 
       <vaadin-button icon="fonticon://FontAwesome/f02d" description="Concept Map Library" style-name="map-button" responsive size-full plain-text _id="searchMapLibraryBtn" :middle :center :expand></vaadin-button> 
       <vaadin-button icon="fonticon://FontAwesome/f140" description="Center Concept Map" style-name="map-button" size-full plain-text _id="centerMapBtn" :middle :center :expand></vaadin-button> 
-      <vaadin-native-select description="Layout" responsive item-caption-mode="id" width="97px" height-full _id="cmLayoutSelect" :middle :center> 
+      <vaadin7-native-select description="Layout" responsive item-caption-mode="id" width="97px" height-full _id="cmLayoutSelect" :middle :center> 
        <option>Manual</option> 
        <option>Grid</option> 
        <option>Circle</option> 
@@ -58,24 +58,24 @@
        <option>Cola</option> 
        <option>Dagre</option> 
        <option>Spread</option> 
-      </vaadin-native-select> 
-      <vaadin-native-select description="Background Color" responsive item-caption-mode="id" size-full _id="colorSelect" :middle :right :expand> 
+      </vaadin7-native-select> 
+      <vaadin7-native-select description="Background Color" responsive item-caption-mode="id" size-full _id="colorSelect" :middle :right :expand> 
        <option>Dark</option> 
        <option>Light</option> 
-      </vaadin-native-select> 
-     </vaadin-horizontal-layout> 
-     <vaadin-horizontal-layout responsive id="cm-panel-dark" width-full height="101.65%" _id="cmPanel" :expand></vaadin-horizontal-layout> 
-     <vaadin-horizontal-layout width-full> 
+      </vaadin7-native-select> 
+     </vaadin7-horizontal-layout> 
+     <vaadin7-horizontal-layout responsive id="cm-panel-dark" width-full height="101.65%" _id="cmPanel" :expand></vaadin7-horizontal-layout> 
+     <vaadin7-horizontal-layout width-full> 
       <vaadin-button icon="fonticon://FontAwesome/f0d8" style-name="borderless icon-align-right" responsive width="93px" height="22px" plain-text _id="showLegendBtn" :middle>
         Show Legend 
       </vaadin-button> 
-      <vaadin-label _id=conceptMapNameLabel>
+      <vaadin7-label _id=conceptMapNameLabel>
       	
-      </vaadin-label>
-      <vaadin-slider description="Slide to Zoom in/out" responsive immediate width="100px" value="100.0" _id="zoomSlider" :middle :right></vaadin-slider> 
-     </vaadin-horizontal-layout> 
-    </vaadin-vertical-layout> 
+      </vaadin7-label>
+      <vaadin7-slider description="Slide to Zoom in/out" responsive immediate width="100px" value="100.0" _id="zoomSlider" :middle :right></vaadin7-slider> 
+     </vaadin7-horizontal-layout> 
+    </vaadin7-vertical-layout> 
    </vaadin-horizontal-split-panel> 
-  </vaadin-vertical-layout>  
+  </vaadin7-vertical-layout>  
  </body>
 </html>
