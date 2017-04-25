@@ -230,7 +230,7 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 		userGrid.removeAllColumns();
 		userGrid.addColumn("username");
 		userGrid.addColumn("delete");
-		userGrid.getColumn("delete").setRenderer(deleteRenderer);
+//		userGrid.getColumn("delete").setRenderer(deleteRenderer);
 		userGrid.getColumn("username").setRenderer(usernameRenderer);
 //		userGrid.setHeaderVisible(false);
 		

@@ -26,6 +26,7 @@
 package bio.knowledge.renderer.client;
 
 import com.vaadin.client.communication.StateChangeEvent;
+import com.vaadin.client.renderers.ButtonRenderer;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -51,8 +52,8 @@ public class ButtonRendererConnector extends  com.vaadin.client.connectors.Butto
 	 * (non-Javadoc)
 	 * @see com.vaadin.client.connectors.ButtonRendererConnector#getRenderer()
 	 */
-	public ButtonRendererWidget getRenderer() {
-		return (ButtonRendererWidget) super.getRenderer();
+	public ButtonRenderer getRenderer() {
+		return (ButtonRenderer) super.getRenderer();
 	}
 	
 	@Override
@@ -63,8 +64,8 @@ public class ButtonRendererConnector extends  com.vaadin.client.connectors.Butto
 	public void onStateChanged(StateChangeEvent stateChangeEvent) {
 		super.onStateChanged(stateChangeEvent);
 		
-		getRenderer().setWordHighlights(getState().highlightTerms);
-		getRenderer().setHighlightColour(getState().highlightColour);
+		//getRenderer().setWordHighlights(getState().highlightTerms);
+		//getRenderer().setHighlightColour(getState().highlightColour);
 	}
 	
 	@Override

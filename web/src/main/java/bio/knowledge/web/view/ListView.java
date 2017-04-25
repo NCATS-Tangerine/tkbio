@@ -1461,7 +1461,8 @@ public class ListView extends BaseView {
 				}
 				
 				if (selectionHandlers.containsKey(columnName))
-					ViewUtil.makeButton(dataTable, columnName, handler::click, viewName);
+					//ViewUtil.makeButton(dataTable, columnName, handler::click, viewName)
+					;
 			}
 		}
 
@@ -1570,13 +1571,13 @@ public class ListView extends BaseView {
 		}
 	}
 
-	private void onShowDetails(RendererClickEvent event) {
+	private void onShowDetails(com.vaadin.ui.renderers.ClickableRenderer.RendererClickEvent e2) {
 
 		detailsPane.removeAllComponents();
 
 		// will return the type of the BeanItemContainer's
 		// class argument, as the type of the items being stored.
-		IdentifiedEntity entity = (IdentifiedEntity) event.getItemId();
+		IdentifiedEntity entity = (IdentifiedEntity) e2.getItem();
 		Indexed gpc = gpcontainer.getWrappedContainer();
 		Item item = gpc.getItem(entity);
 

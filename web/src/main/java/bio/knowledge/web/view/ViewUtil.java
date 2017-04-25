@@ -31,7 +31,7 @@ import com.vaadin.v7.ui.Grid.HeaderRow;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.renderers.ClickableRenderer.RendererClickListener;
 import com.vaadin.v7.ui.renderers.ImageRenderer;
-import com.vaadin.ui.renderers.Renderer;
+import com.vaadin.v7.ui.renderers.Renderer;
 
 import bio.knowledge.renderer.ButtonRenderer;
 import bio.knowledge.web.ui.DesktopUI;
@@ -88,7 +88,7 @@ public class ViewUtil {
 			renderer = new com.vaadin.ui.renderers.ButtonRenderer(listener);
 		}
 		
-		column.setRenderer(renderer);
+		//column.setRenderer(renderer);
 	}	
 	/**
 	 * 
@@ -99,7 +99,7 @@ public class ViewUtil {
 	public static void makeIconButton(Grid grid, String columnId, RendererClickListener listener) {
 		Grid.Column column = grid.getColumn(columnId);
 		ImageRenderer selectButton = new ImageRenderer();
-		selectButton.addClickListener(listener);
+		//selectButton.addClickListener(listener);
 		column.setRenderer(selectButton);
 	}
 }
