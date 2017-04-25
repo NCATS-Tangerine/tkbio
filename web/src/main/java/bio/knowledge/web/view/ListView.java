@@ -103,7 +103,6 @@ import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.OntologyTerm;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
 import bio.knowledge.model.Concept;
-import bio.knowledge.model.neo4j.Neo4jPredicate;
 import bio.knowledge.model.organization.ContactForm;
 import bio.knowledge.model.umls.SemanticType;
 import bio.knowledge.service.AnnotationService;
