@@ -38,9 +38,7 @@ import org.springframework.stereotype.Service;
 
 import bio.knowledge.database.repository.AnnotationRepository;
 import bio.knowledge.model.Annotation;
-import bio.knowledge.model.Annotation.Type;
 import bio.knowledge.model.Evidence;
-import bio.knowledge.model.EvidenceCode;
 import bio.knowledge.model.Reference;
 import bio.knowledge.service.Cache.CacheLocation;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
@@ -61,29 +59,12 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
     @Autowired
 	private AnnotationRepository annotationRepository ;
 
-	/* (non-Javadoc)
-	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])
-	 */
-	@Override
-	public Annotation createInstance(Object... args) {
-		if(args.length==5)
-			return new Annotation(
-		    		(String) args[0],      // accessionId
-		    		(String) args[1],      // name == text of annotation
-		    		(Type)   args[2],      // Annotation.Type
-				    (EvidenceCode) args[3],
-				    (Reference) args[4]
-			) ;
-		else
-			throw new RuntimeException("Invalid AnnotationPredicationService.createInstance() arguments?") ;
-	}
-   
     /* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#getIdentifiers()
 	 */
 	@Override
 	public List<Annotation> getIdentifiers() {
-		return annotationRepository.getAnnotations();
+		return (List<Annotation>)(List)annotationRepository.getAnnotations();
 	}
 
 	/* (non-Javadoc)
@@ -214,9 +195,11 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 			List<Map<String, Object>> data;
 
 			if(filter.trim().isEmpty()){
-				 data = annotationRepository.findByEvidence(evidence, pageable, userId);
+				// TODO: Should we be accessing the repository in this way in a service?
+				data = annotationRepository.findByEvidence((Evidence) evidence, pageable, userId);
 			} else {
-				 data = annotationRepository.findByEvidenceFiltered(evidence, filter, pageable, userId);
+				// TODO: Should we be accessing the repository in this way in a service?
+				data = annotationRepository.findByEvidenceFiltered((Evidence) evidence, filter, pageable, userId);
 			}
 			
 			annotations = new ArrayList<>();

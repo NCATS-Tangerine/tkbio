@@ -35,8 +35,8 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
-import bio.knowledge.model.Concept;
-import bio.knowledge.model.Statement;
+import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 
 /**
  * @author Richard Bruskiewich
@@ -45,13 +45,13 @@ import bio.knowledge.model.Statement;
  * @author Chandan Mishra
  *
  */
-public interface StatementRepository extends GraphRepository<Statement> {
+public interface StatementRepository extends GraphRepository<Neo4jGeneralStatement> {
 
 	/**
 	 * @return
 	 */
 	@Query("MATCH (statement:Statement) RETURN statement")
-	Iterable<Statement> getStatements() ;
+	Iterable<Neo4jGeneralStatement> getStatements() ;
 
 	/**
 	 * 
@@ -89,7 +89,7 @@ public interface StatementRepository extends GraphRepository<Statement> {
 			" OR toString(evidence.count) IN {filter}"+
 			" RETURN count( DISTINCT statement)"
 			)
-	long countByNameLikeIgnoreCase(@Param("conceptId") Concept concept, @Param("filter") String[] filter, @Param("conceptTypeFilter") ArrayList<String> conceptTypeFilter);
+	long countByNameLikeIgnoreCase(@Param("conceptId") Neo4jConcept concept, @Param("filter") String[] filter, @Param("conceptTypeFilter") ArrayList<String> conceptTypeFilter);
 	
 	/**
 	 * @author Chandan Mishra (original Predication model queries)
@@ -113,7 +113,7 @@ public interface StatementRepository extends GraphRepository<Statement> {
 	" SKIP  {1}.pageNumber*{1}.pageSize"+
 	" LIMIT {1}.pageSize" 
 	)
-	List<Statement> findByNameLikeIgnoreCase( @Param("conceptId") Optional<Concept> currentConcept, @Param("filter") String filter, Pageable pageable);
+	List<Neo4jGeneralStatement> findByNameLikeIgnoreCase( @Param("conceptId") Optional<Neo4jConcept> currentConcept, @Param("filter") String filter, Pageable pageable);
 
 	/**
 	 * @author Chandan Mishra
@@ -152,7 +152,7 @@ public interface StatementRepository extends GraphRepository<Statement> {
 			" SKIP  {2}.pageNumber*{2}.pageSize"+
 			" LIMIT {2}.pageSize"
 			)
-	List<Map<String, Object>> findByConcept( @Param("conceptId") Concept concept, @Param("conceptTypeFilter") ArrayList<String> conceptTypeFilter, Pageable pageable);
+	List<Map<String, Object>> findByConcept( @Param("conceptId") Neo4jConcept concept, @Param("conceptTypeFilter") ArrayList<String> conceptTypeFilter, Pageable pageable);
 
 	/**
 	 * @author Chandan Mishra (original Predication model queries)
@@ -170,7 +170,7 @@ public interface StatementRepository extends GraphRepository<Statement> {
 			" return count(DISTINCT statement)"
 			)
 	Long countByConcept( 
-			 @Param("conceptId") Concept concept, 
+			 @Param("conceptId") Neo4jConcept concept, 
 			 @Param("conceptTypeFilter") ArrayList<String> conceptTypeFilter
 	);
 	
@@ -216,7 +216,7 @@ public interface StatementRepository extends GraphRepository<Statement> {
 			" LIMIT {3}.pageSize"
 			)
 	List<Map<String, Object>> findByConceptFiltered( 
-			@Param("conceptId") Concept concept, 
+			@Param("conceptId") Neo4jConcept concept, 
 			@Param("conceptTypeFilter") ArrayList<String> conceptTypeFilter,
 			@Param("filter")String[] filter, 
 			Pageable pageable

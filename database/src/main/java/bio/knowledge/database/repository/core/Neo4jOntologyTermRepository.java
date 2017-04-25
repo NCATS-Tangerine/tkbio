@@ -33,31 +33,31 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import bio.knowledge.model.core.neo4j.Neo4jOntology;
-import bio.knowledge.model.core.neo4j.Neo4jOntologyTerm;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractOntology;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractOntologyTerm;
 
 @Repository
 public interface Neo4jOntologyTermRepository
-	extends GraphRepository<Neo4jOntologyTerm> {
+	extends GraphRepository<Neo4jAbstractOntologyTerm> {
 
 	/**
 	 * 
 	 * @return iterable list of Neo4jOntologyTerm
 	 */
 	@Query("MATCH (r:OntologyTerm) RETURN r")
-	Iterable<Neo4jOntologyTerm> getOntologyTerms() ;
+	Iterable<Neo4jAbstractOntologyTerm> getOntologyTerms() ;
 
 	/**
 	 * @param accessionId
 	 * @return Neo4jOntologyTerm
 	 */
-	Neo4jOntologyTerm findByAccessionIdEquals(String accessionId);
+	Neo4jAbstractOntologyTerm findByAccessionIdEquals(String accessionId);
 
 	/**
 	 * @param termName
 	 * @return Neo4jOntologyTerm
 	 */
-	Neo4jOntologyTerm findByNameEquals(String termName);
+	Neo4jAbstractOntologyTerm findByNameEquals(String termName);
 
 	/**
 	 * @param ontologyName
@@ -69,8 +69,8 @@ public interface Neo4jOntologyTermRepository
 		 + " MATCH (term)-[:ONTOLOGY]->(ontology)"
 		 + " RETURN term" 
 	)
-	Neo4jOntologyTerm findByOntologyAndNameEquals( 
-			@Param("ontologyId")Neo4jOntology ontology, 
+	Neo4jAbstractOntologyTerm findByOntologyAndNameEquals( 
+			@Param("ontologyId")Neo4jAbstractOntology ontology, 
 			@Param("termName") String termName 
 	);
 
@@ -78,7 +78,7 @@ public interface Neo4jOntologyTermRepository
 	 * @param termName
 	 * @return Neo4jOntologyTerm
 	 */
-	Neo4jOntologyTerm findOntologyTermByNameEquals(String name);
+	Neo4jAbstractOntologyTerm findOntologyTermByNameEquals(String name);
 
 	/**
 	 * @param filter
@@ -101,6 +101,6 @@ public interface Neo4jOntologyTermRepository
                   + " LOWER(term.description) CONTAINS LOWER({filter})"
 			+ " RETURN term"
 		)
-	List<Neo4jOntologyTerm> findByNameLikeIgnoreCase(@Param("filter")String filter, Pageable pageable);
+	List<Neo4jAbstractOntologyTerm> findByNameLikeIgnoreCase(@Param("filter")String filter, Pageable pageable);
 
 }

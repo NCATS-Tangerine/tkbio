@@ -33,7 +33,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
-import bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity;
 
 /**
  * @author Richard
@@ -44,7 +44,7 @@ import bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity;
  *
  */
 @NodeEntity(label="ConceptMap")
-public class ConceptMapArchive extends Neo4jIdentifiedEntity {
+public class ConceptMapArchive extends Neo4jAbstractIdentifiedEntity {
 	
 	private final static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 

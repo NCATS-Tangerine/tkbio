@@ -34,20 +34,20 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import bio.knowledge.model.core.neo4j.Neo4jDataFile;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractDataFile;
 
 @Repository
 public interface Neo4jDataFileRepository
-	extends GraphRepository<Neo4jDataFile> {
+	extends GraphRepository<Neo4jAbstractDataFile> {
 
 	@Query("MATCH (file:DataFile) RETURN file")
-	Iterable<Neo4jDataFile> getDataFiles() ;
+	Iterable<Neo4jAbstractDataFile> getDataFiles() ;
 
 	/**
 	 * @param fileName
 	 * @return
 	 */
-	Neo4jDataFile findByFileName(String fileName);
+	Neo4jAbstractDataFile findByFileName(String fileName);
 
 	/**
 	 * @param filter
@@ -70,6 +70,6 @@ public interface Neo4jDataFileRepository
 			      + " LOWER(file.description) CONTAINS LOWER({filter})"
 			+ " RETURN file"
 		)
-	List<Neo4jDataFile> findByNameLikeIgnoreCase(@Param("filter")String filter, Pageable pageable);
+	List<Neo4jAbstractDataFile> findByNameLikeIgnoreCase(@Param("filter")String filter, Pageable pageable);
 }
 

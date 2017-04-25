@@ -36,13 +36,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import bio.knowledge.database.repository.ConceptRepository;
-
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.core.Feature;
 import bio.knowledge.model.core.Ontology;
 import bio.knowledge.model.core.OntologyTerm;
-
+import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.service.ConceptService;
 import bio.knowledge.service.core.ExternalDatabaseService;
 import bio.knowledge.service.core.OntologyService;
@@ -94,9 +92,9 @@ public class ConceptTests {
 		String TESTDEF  = "Hyperglycemia in the newborn due to a defect "
 				        + "in the secretion or function of insulin.(NICHD)" ;
 		
-		Concept concept = conceptRepository.findByAccessionId(TESTCUI) ;
+		Neo4jConcept concept = conceptRepository.findByAccessionId(TESTCUI) ;
 		if(concept==null) {
-			concept = new Concept( TESTCUI, SemanticGroup.PHEN, TESTNAME );
+			concept = new Neo4jConcept( TESTCUI, SemanticGroup.PHEN, TESTNAME );
 			concept = conceptRepository.save(concept) ;
 		}
 		
@@ -128,9 +126,9 @@ public class ConceptTests {
 		String TESTDEF  = "Hyperglycemia in the newborn due to a defect "
 				        + "in the secretion or function of insulin.(NICHD)" ;
 		
-		Concept concept = conceptRepository.findByAccessionId(TESTCUI) ;
+		Neo4jConcept concept = conceptRepository.findByAccessionId(TESTCUI) ;
 		if(concept==null) {
-			concept = new Concept( TESTCUI, SemanticGroup.PHEN, TESTNAME );
+			concept = new Neo4jConcept( TESTCUI, SemanticGroup.PHEN, TESTNAME );
 			concept = conceptRepository.save(concept) ;
 		}
 		

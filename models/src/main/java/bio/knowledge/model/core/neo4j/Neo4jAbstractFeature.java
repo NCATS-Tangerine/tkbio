@@ -39,13 +39,13 @@ import bio.knowledge.model.core.OntologyTerm;
  * complex domain model actor entities in the system.
  */
 @NodeEntity(label="Feature")
-public class Neo4jFeature 
-	extends Neo4jIdentifiedEntity implements Feature {
+public class Neo4jAbstractFeature 
+	extends Neo4jAbstractIdentifiedEntity implements Feature {
 
 	/**
 	 * 
 	 */
-	public Neo4jFeature() {
+	public Neo4jAbstractFeature() {
         super();
     }
 
@@ -54,7 +54,7 @@ public class Neo4jFeature
 	 * @param owner
 	 * @param tag
 	 */
-    public Neo4jFeature( AnnotatedEntity owner, OntologyTerm tag ) {
+    public Neo4jAbstractFeature( AnnotatedEntity owner, OntologyTerm tag ) {
     	this(owner, "", tag, "") ;
     }
     
@@ -64,7 +64,7 @@ public class Neo4jFeature
      * @param tag
      * @param value
      */
-    public Neo4jFeature( AnnotatedEntity owner, OntologyTerm tag, String value ) {
+    public Neo4jAbstractFeature( AnnotatedEntity owner, OntologyTerm tag, String value ) {
     	this(owner, "", tag, value) ;
     }
     
@@ -73,7 +73,7 @@ public class Neo4jFeature
 	 * @param accessionId
 	 * @param tag2
 	 */
-	public Neo4jFeature( AnnotatedEntity owner, String accessionId, OntologyTerm tag ) {
+	public Neo4jAbstractFeature( AnnotatedEntity owner, String accessionId, OntologyTerm tag ) {
         this(owner, accessionId, tag, "") ;
 	}
 
@@ -85,7 +85,7 @@ public class Neo4jFeature
 	 * @param tag OntologyTerm
 	 * @param value
 	 */
-	public Neo4jFeature( AnnotatedEntity owner, String accessionId, OntologyTerm tag, String value ) {
+	public Neo4jAbstractFeature( AnnotatedEntity owner, String accessionId, OntologyTerm tag, String value ) {
         super( accessionId, tag.getName(), value );
         setOwner( owner );
         setTag( tag );
@@ -94,17 +94,17 @@ public class Neo4jFeature
 	/**
      */
     @Relationship( type="OWNER" )
-	private Neo4jAnnotatedEntity owner;
+	private Neo4jAbstractAnnotatedEntity owner;
 
     /**
      */
     @Relationship( type="TAG" )
-	private Neo4jOntologyTerm tag;
+	private Neo4jAbstractOntologyTerm tag;
 
     /**
      */
     @Relationship( type="EVIDENCE_CODE" )  // Do I need another EVIDENCE class here?
-	private Neo4jOntologyTerm evidenceCode;
+	private Neo4jAbstractOntologyTerm evidenceCode;
 
     /* (non-Javadoc)
 	 * @see bio.knowledge.model.core.Feature#toString()
@@ -120,7 +120,7 @@ public class Neo4jFeature
 	public void setOwner(AnnotatedEntity owner) {
         // owner "AnnotatedEntity" is guaranteed to be a 
         // JpaLocation within this JPA-based application
-        this.owner = (Neo4jAnnotatedEntity)owner;
+        this.owner = (Neo4jAbstractAnnotatedEntity)owner;
     }
 
 	/* (non-Javadoc)
@@ -146,7 +146,7 @@ public class Neo4jFeature
 	public void setTag(OntologyTerm tag) {
         // tag "OntologyTerm" is guaranteed to be a 
         // JpaOntologyTerm within this JPA-based application
-        this.tag = (Neo4jOntologyTerm)tag;
+        this.tag = (Neo4jAbstractOntologyTerm)tag;
     }
 
 	/* (non-Javadoc)
@@ -180,6 +180,6 @@ public class Neo4jFeature
 	public void setEvidenceCode( OntologyTerm evidenceCode ) {
         // evidenceCode "OntologyTerm" is guaranteed to be a 
         // JpaOntologyTerm within this JPA-based application
-        this.evidenceCode = (Neo4jOntologyTerm)evidenceCode;
+        this.evidenceCode = (Neo4jAbstractOntologyTerm)evidenceCode;
     }
 }

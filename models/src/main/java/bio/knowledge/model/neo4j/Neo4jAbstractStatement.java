@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  *-------------------------------------------------------------------------------
  */
-package bio.knowledge.model;
+package bio.knowledge.model.neo4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +31,13 @@ import java.util.List;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
 
-import bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity;
+import bio.knowledge.model.Concept;
+import bio.knowledge.model.Evidence;
+import bio.knowledge.model.Predicate;
+import bio.knowledge.model.Statement;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity;
 
-public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
+public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEntity implements Statement {
 	@Relationship( type="SUBJECT" )
     private List<Concept> subjects = new ArrayList<Concept>() ;
     
@@ -58,13 +62,13 @@ public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
     @Relationship( type="EVIDENCE" )
 	protected Evidence evidence ;
     
-	protected AbstractStatement() {}
+	protected Neo4jAbstractStatement() {}
     
 	/**
 	 * 
 	 * @param name
 	 */
-	protected AbstractStatement(String name) {
+	protected Neo4jAbstractStatement(String name) {
     	super(name);
     }
     
@@ -77,7 +81,7 @@ public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
      * @param accessionId
      * @param predicate
      */
-    protected AbstractStatement(
+    protected Neo4jAbstractStatement(
     		String accessionId,
     		Predicate predicate
     ) {
@@ -94,7 +98,7 @@ public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
      * @param type
      * @param predicate
      */
-    protected AbstractStatement(
+    protected Neo4jAbstractStatement(
     		String accessionId,
     		Concept subject,
     		Predicate predicate,
@@ -104,7 +108,7 @@ public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
     	setSubject(subject);
     	setObject(object);
     	setRelation(predicate);
-    	setEvidence(new Evidence());
+    	setEvidence(new Neo4jEvidence());
     }
 	
     /**
@@ -115,120 +119,126 @@ public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
      * @param type
      * @param predicateName
      */
-    protected AbstractStatement(
+    protected Neo4jAbstractStatement(
     		String accessionId,
     		String predicateName
     ) {
     	super(accessionId,predicateName,"") ;
     }
 
-	/**
-	 * 
-	 * @param subject to be added to the Statement
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#addSubject(bio.knowledge.model.neo4j.Neo4jConcept)
 	 */
+	@Override
 	public void addSubject(Concept subject) {
 		if(subjects==null)
 			subjects = new ArrayList<Concept>() ;
 		subjects.add(subject);
 	}
 	
-	/**
-	 * @param subjects set to be added with the Statement
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#setSubjects(java.util.List)
 	 */
+	@Override
 	public void setSubjects(List<Concept> subjects) {
 		this.subjects = subjects;
 	}
 
-	/**
-	 * @return subjects associated with the Statement
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#getSubjects()
 	 */
+	@Override
 	public List<Concept> getSubjects() {
 		return subjects;
 	}
 	
-	/**
-	 * 
-	 * @param subject
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#setSubject(bio.knowledge.model.neo4j.Neo4jConcept)
 	 */
+	@Override
 	public  void setSubject(Concept subject) {
 		addSubject(subject);
 		this.subject = subject ;
 	}
 	
-	/**
-	 * 
-	 * @return
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#getSubject()
 	 */
+	@Override
 	public Concept getSubject() {
 		return subject ;
 	}
 
-	/**
-	 * @param predicate the predicate to set
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#setRelation(bio.knowledge.model.neo4j.Neo4jPredicate)
 	 */
 	public void setRelation(Predicate relation) {
 		this.relation = relation;
 	}
 
-    /**
-	 * @return the predicate
+    /* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#getRelation()
 	 */
+	
 	public Predicate getRelation() {
 		return relation;
 	}
 	
-	/**
-	 * 
-	 * @param subject to be added to the Statement
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#addObject(bio.knowledge.model.neo4j.Neo4jConcept)
 	 */
+	@Override
 	public void addObject(Concept object) {
 		if(objects==null)
 			objects = new ArrayList<Concept>() ;
 		objects.add(object);
 	}
 	
-	/**
-	 * @param objects set to be added with the Statement
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#setObjects(java.util.List)
 	 */
+	@Override
 	public void setObjects(List<Concept> objects) {
 		this.objects = objects;
 	}
 
-	/**
-	 * @return objects associated with the Statement
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#getObjects()
 	 */
+	@Override
 	public List<Concept> getObjects() {
 		return objects;
 	}
 	
-	/**
-	 * 
-	 * @param object
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#setObject(bio.knowledge.model.neo4j.Neo4jConcept)
 	 */
+	@Override
 	public void setObject(Concept object) {
 		addObject(object);
 		this.object = object ;
 	}
 	
-	/**
-	 * 
-	 * @return
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#getObject()
 	 */
+	@Override
 	public Concept getObject() {
 		return object ;
 	}
 	
-	/**
-	 * 
-	 * @param evidence to be associated with the Statement
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#setEvidence(bio.knowledge.model.neo4j.Neo4jEvidence)
 	 */
+	@Override
 	public void setEvidence( Evidence evidence ) {
 		this.evidence = evidence;
 	}
 
-	/**
-	 * @return associated Evidence (e.g. References) supporting the Statement
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#getEvidence()
 	 */
+	@Override
 	public Evidence getEvidence() {
 		return evidence;
 	}
@@ -237,6 +247,9 @@ public abstract class AbstractStatement  extends Neo4jIdentifiedEntity {
      * (non-Javadoc)
      * @see bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity#toString()
      */
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.Statement#toString()
+	 */
 	@Override
     public String toString() {
     	return  "( subject:Concept "+subjects.toString()+

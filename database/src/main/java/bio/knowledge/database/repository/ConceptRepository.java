@@ -35,12 +35,13 @@ import org.springframework.data.repository.query.Param;
 
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.neo4j.Neo4jConcept;
 
 /**
  * @author Richard
  *
  */
-public interface ConceptRepository extends GraphRepository<Concept> {
+public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 	
 	@Query( "CREATE CONSTRAINT ON (concept:Concept)"
 	      + " ASSERT concept.accessionId IS UNIQUE")
@@ -50,7 +51,7 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 	 * @return
 	 */
 	@Query( "MATCH ( concept:Concept ) RETURN concept" )
-	public Iterable<Concept>  getConcepts();
+	public Iterable<Neo4jConcept>  getConcepts();
 
 	/**
 	 * 
@@ -70,7 +71,7 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 	 * @return Concept identified by the accessionId
 	 */
 	@Query( "MATCH ( concept:Concept ) WHERE concept.accessionId = {accessionId} RETURN concept")
-	public Concept findByAccessionId( @Param("accessionId") String accessionId ) ;
+	public Neo4jConcept findByAccessionId( @Param("accessionId") String accessionId ) ;
 	
 	/**
 	 * 
@@ -80,7 +81,7 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 	@Query( "MATCH ( concept:Concept )"
 			+ " WHERE concept.semMedDbConceptId = {id}"
 		 + " RETURN concept")
-	public Concept findBySemMedDbConceptId( @Param("id")String id ) ;
+	public Neo4jConcept findBySemMedDbConceptId( @Param("id")String id ) ;
 	
 	/**
 	 * 
@@ -89,7 +90,7 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 	 */
 	@Query( "MATCH ( concept:Concept ) WHERE concept.implicitomeConceptId = {id}"
 		 + " RETURN concept")
-	public Concept findByImplicitomeConceptId( @Param("id") String id ) ;
+	public Neo4jConcept findByImplicitomeConceptId( @Param("id") String id ) ;
 	
 	/**
 	 * 
@@ -103,7 +104,7 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 			+" MATCH ( concept:Concept ) WHERE concept.implicitomeConceptId = {id}"
 			+" RETURN concept"
 		 )
-	public Concept findByConceptId(@Param("id") Long id);
+	public Neo4jConcept findByConceptId(@Param("id") Long id);
 
 	/**
 	 * @param filter string to match (as an embedded substring, non-case-sensitive)
@@ -132,7 +133,8 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 			" SKIP  {1}.pageNumber*{1}.pageSize"+
 			" LIMIT {1}.pageSize"
 	)
-	public List<Concept> findByNameLikeIgnoreCase( @Param("filter") String filter, Pageable pageable );
+
+	public List<Neo4jConcept> findByNameLikeIgnoreCase( @Param("filter") String filter, Pageable pageable );
 	
 	@Query("MATCH (concept:Concept) WHERE ID(concept) = {localId} RETURN concept;")
 	public Concept apiGetConceptById(@Param("localId") Integer localId);
@@ -146,7 +148,7 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 			" SKIP  {pageNumber} * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
-	public List<Concept> apiGetConcepts(
+	public List<Neo4jConcept> apiGetConcepts(
 			@Param("filter") String[] filter,
 			@Param("pageNumber") Integer pageNumber,
 			@Param("pageSize") Integer pageSize
@@ -164,12 +166,13 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 			" SKIP  {pageNumber} * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
-	public List<Concept> apiGetConceptsByType(
+	public List<Neo4jConcept> apiGetConceptsByType(
 			@Param("filter") String[] filter,
 			@Param("semanticGroups") String[] semanticGroups,
 			@Param("pageNumber") Integer pageNumber,
 			@Param("pageSize") Integer pageSize
 	);
+
 
 	/**
 	 * @param name
@@ -182,7 +185,7 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 			"    concept.semanticGroup = {semanticGroup}"+
 			" RETURN concept"
 	)
-	public List<Concept> findConceptByNameAndType(
+	public List<Neo4jConcept> findConceptByNameAndType(
 						@Param("name") String name,
 						@Param("semanticGroup") SemanticGroup semanticGroup
 					);
@@ -239,7 +242,7 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 			"    SKIP  {1}.pageNumber*{1}.pageSize"+
 			"    LIMIT {1}.pageSize"
 		)
-	public List<Concept> findByInitialSearch(
+	public List<Neo4jConcept> findByInitialSearch(
 			@Param("filter") String[] filter,
 			Pageable pageable,
 			@Param("accountId") String accountId,
@@ -272,7 +275,7 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 			" SKIP  {2}.pageNumber*{2}.pageSize"+
 			" LIMIT {2}.pageSize"
 		)
-	public List<Concept> findByNameLikeIgnoreCase(
+	public List<Neo4jConcept> findByNameLikeIgnoreCase(
 			@Param("semanticGroups") ArrayList<String> semanticGroups, 
 			@Param("filter") String[] filter, 
 			Pageable pageable,
@@ -297,7 +300,7 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 			"    SKIP  {0}.pageNumber*{0}.pageSize"+
 			"    LIMIT {0}.pageSize"
 		)
-	public List<Concept> findAllByPage(
+	public List<Neo4jConcept> findAllByPage(
 			Pageable pageable,
 			@Param("accountId") String accountId,
 			@Param("groupIds") String[] groupIds

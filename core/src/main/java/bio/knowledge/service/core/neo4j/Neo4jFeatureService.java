@@ -39,8 +39,8 @@ import bio.knowledge.model.core.AnnotatedEntity;
 import bio.knowledge.model.core.Feature;
 import bio.knowledge.model.core.ModelException;
 import bio.knowledge.model.core.OntologyTerm;
-import bio.knowledge.model.core.neo4j.Neo4jAnnotatedEntity;
-import bio.knowledge.model.core.neo4j.Neo4jFeature;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractAnnotatedEntity;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractFeature;
 import bio.knowledge.service.core.FeatureService;
 
 @Service("FeatureService")
@@ -79,17 +79,17 @@ public class Neo4jFeatureService implements FeatureService {
 	@Override
 	public Feature createFeature( AnnotatedEntity owner, String accessionId, OntologyTerm tagTerm, String value ) {
 		Feature feature = 
-				new Neo4jFeature(
+				new Neo4jAbstractFeature(
 						owner,
 						accessionId,
 						tagTerm,
 						value
 				) ;
-		feature = featureRepository.save((Neo4jFeature)feature) ;
+		feature = featureRepository.save((Neo4jAbstractFeature)feature) ;
 		// Need to ensure reciprocal persistence of owner, when Feature set is updated?
 		Set<Feature> features = owner.getFeatures() ;
 		features.add(feature) ;
-		annotatedEntityRepository.save((Neo4jAnnotatedEntity)owner) ;
+		annotatedEntityRepository.save((Neo4jAbstractAnnotatedEntity)owner) ;
 		return feature ;	}
 
 	/* (non-Javadoc)
@@ -100,7 +100,7 @@ public class Neo4jFeatureService implements FeatureService {
 	}
 	
 	public Feature save(Feature feature) {
-		return featureRepository.save((Neo4jFeature)feature) ;
+		return featureRepository.save((Neo4jAbstractFeature)feature) ;
 	}
 
 	/* (non-Javadoc)

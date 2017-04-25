@@ -37,10 +37,11 @@ import org.springframework.stereotype.Component;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
-import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
+import bio.knowledge.model.neo4j.Neo4jAnnotation;
+import bio.knowledge.model.Evidence;
 
 /**
  * @author Richard
@@ -185,7 +186,7 @@ public class KBQueryImpl implements KBQuery {
 		if(query==null)
 			selectedConcept = Optional.empty() ;
 		else {
-			String identifier = ((Concept)query).getAccessionId();
+			String identifier = query.getAccessionId();
 			selectedConcept = conceptService.getDetailsByConceptAccessionId(identifier) ;
 		}
 	}
@@ -198,7 +199,7 @@ public class KBQueryImpl implements KBQuery {
 		return selectedConcept;
 	}
 
-	private Optional< Statement > currentStatement = Optional.empty() ;
+	private Optional<Statement> currentStatement = Optional.empty() ;
 	
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCurrentStatement(bio.knowledge.model.semmeddb.Statement)
@@ -236,7 +237,7 @@ public class KBQueryImpl implements KBQuery {
 		return currentEvidence;
 	}
 
-	private Optional< Annotation > currentAnnotation = Optional.empty() ;
+	private Optional<Annotation> currentAnnotation = Optional.empty() ;
 	
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCurrentAnnotation(bio.knowledge.model.semmeddb.Annotation)

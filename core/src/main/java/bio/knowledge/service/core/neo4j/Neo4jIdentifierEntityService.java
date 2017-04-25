@@ -39,8 +39,8 @@ import org.springframework.stereotype.Service;
 
 import bio.knowledge.database.repository.core.Neo4jIdentifierEntityRepository;
 import bio.knowledge.model.core.IdentifiedEntity;
-import bio.knowledge.model.core.neo4j.Neo4jExternalDatabase;
-import bio.knowledge.model.core.neo4j.Neo4jIdentifiedEntity;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractExternalDatabase;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity;
 import bio.knowledge.service.core.IdentifiedEntityService;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
 
@@ -59,11 +59,10 @@ public class Neo4jIdentifierEntityService
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])
 	 */
-	@Override
 	public IdentifiedEntity createInstance( Object... args ) {
 		// Use the Neo4jExternalDatabase class as a 
 		// surrogate to create an instance of IdentifiedEntity
-		return new Neo4jExternalDatabase((String)args[0], (String)args[1]);
+		return new Neo4jAbstractExternalDatabase((String)args[0], (String)args[1]);
 	}
     
     public List<IdentifiedEntity> testData() {
@@ -72,9 +71,9 @@ public class Neo4jIdentifierEntityService
     	List<IdentifiedEntity> ids = new ArrayList<IdentifiedEntity> () ;
     	
     	// Use the Neo4jExternalDatabase class as a surrogate to generate IdentifiedEntity
-        ids.add( identifierRepository.save( (Neo4jIdentifiedEntity)createInstance("Johnny Appleseed", "Disseminator of Apples")) );
-        ids.add( identifierRepository.save( (Neo4jIdentifiedEntity)createInstance("Monty Python","Lumberjack")) );
-        ids.add( identifierRepository.save( (Neo4jIdentifiedEntity)createInstance("Amazonia","Queen of the Amazon")) );
+        ids.add( identifierRepository.save( (Neo4jAbstractIdentifiedEntity)createInstance("Johnny Appleseed", "Disseminator of Apples")) );
+        ids.add( identifierRepository.save( (Neo4jAbstractIdentifiedEntity)createInstance("Monty Python","Lumberjack")) );
+        ids.add( identifierRepository.save( (Neo4jAbstractIdentifiedEntity)createInstance("Amazonia","Queen of the Amazon")) );
         return ids ; 
     }
     

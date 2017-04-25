@@ -92,8 +92,6 @@ import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.graph.jsonmodels.Node;
-import bio.knowledge.model.Annotation;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.DomainModelException;
 import bio.knowledge.model.Evidence;
@@ -103,6 +101,8 @@ import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.OntologyTerm;
+import bio.knowledge.model.neo4j.Neo4jAnnotation;
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.organization.ContactForm;
 import bio.knowledge.model.umls.SemanticType;
 import bio.knowledge.service.AnnotationService;
@@ -1923,7 +1923,7 @@ public class ListView extends BaseView {
 		});
 
 		registry.setMapping(ViewName.EVIDENCE_VIEW, 
-				new BeanItemContainer<Annotation>(Annotation.class),
+				new BeanItemContainer<Neo4jAnnotation>(Neo4jAnnotation.class),
 				annotationService,
 				new String[] { /* "reference|*", */"publicationDate", "supportingText|*" /* ,"evidenceCode" */ }, 
 				null, 
@@ -1933,7 +1933,7 @@ public class ListView extends BaseView {
 				ViewName.EVIDENCE_VIEW, 
 				COL_ID_SUPPORTING_TEXT, 
 				event -> {
-					Annotation annotation = (Annotation) event.getItemId();
+					Neo4jAnnotation annotation = (Neo4jAnnotation) event.getItemId();
 		
 					_logger.trace("Display PubMed Reference for Annotation " + annotation.toString() + "...");
 		

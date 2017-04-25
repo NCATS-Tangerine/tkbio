@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import bio.knowledge.database.repository.EvidenceRepository;
 import bio.knowledge.model.Evidence;
+import bio.knowledge.model.neo4j.Neo4jEvidence;
 
 @Service
 public class EvidenceService {
@@ -45,7 +46,7 @@ public class EvidenceService {
 		return evidenceRepository.createByEvidenceId(evidenceId);		
 	}
 	
-	public Evidence save(Evidence evidence) {
+	public Evidence save(Neo4jEvidence evidence) {
 		return evidenceRepository.save(evidence);
 	}
 	

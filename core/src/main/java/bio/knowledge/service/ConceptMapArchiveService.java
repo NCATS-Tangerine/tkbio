@@ -175,7 +175,6 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 		return archiveRepository.countConceptMapArchiveByLibraryFiltered(library, filter);
 	}
 
-	@Override
 	public ConceptMapArchive createInstance(Object... args) {
 		return null;
 	}
@@ -203,7 +202,7 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 		case BY_CONCEPT:
 			Optional<Concept> optConcept = query.getCurrentSelectedConcept();
 			if ( optConcept.isPresent() ) {
-				Concept concept = (Concept)optConcept.get() ;
+				Concept concept = (Concept) optConcept.get() ;
 				Library library = concept.getLibrary();
 				words = filter.split(SEPARATOR);
 				return getConceptMapArchiveByLibraryFiltered(

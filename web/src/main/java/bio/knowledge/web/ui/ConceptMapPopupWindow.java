@@ -53,6 +53,11 @@ import com.vaadin.ui.Window;
 
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.NodeData;
+import bio.knowledge.model.neo4j.Neo4jAnnotation;
+import bio.knowledge.model.neo4j.Neo4jEvidence;
+import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
+import bio.knowledge.model.neo4j.Neo4jReference;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Annotation.Type;
 import bio.knowledge.model.Concept;
@@ -425,15 +430,16 @@ public class ConceptMapPopupWindow {
 				}
 
 				// add this to the database
-				statement = new Statement(statementId,
-						conceptService.getDetailsByAccessionId(sourceId).get(), relation,
+				statement = new Neo4jGeneralStatement(statementId,
+						conceptService.getDetailsByAccessionId(sourceId).get(), 
+						relation,
 						conceptService.getDetailsByAccessionId(targetId).get());
 
 				Evidence evidence = evidenceService.createByEvidenceId(evidenceId);
 				statement.setEvidence(evidence);
 
 				// not putting this back into the statement object might have been a bit of a problem
-				statement = statementService.save(statement);
+				statement = statementService.save((Neo4jGeneralStatement) statement);
 				
 			}
 
@@ -442,7 +448,8 @@ public class ConceptMapPopupWindow {
 				// May have seen this Reference before?
 				Reference reference = referenceService.findByUri(uri);
 				if (reference == null) {
-					reference = new Reference();
+					// TODO: can we turn this into something more generic?
+					reference = new Neo4jReference();
 					reference.setUri(uri);
 
 					// User citation is given today's date
@@ -451,7 +458,7 @@ public class ConceptMapPopupWindow {
 					reference.setMonthPublished(calendar.get(Calendar.MONTH));
 					reference.setDayPublished(calendar.get(Calendar.DAY_OF_MONTH));
 
-					reference = referenceService.save(reference);
+					reference = referenceService.save((Neo4jReference) reference);
 				}
 
 				// Wonder how the annotationId should be consistently computed?
@@ -459,7 +466,7 @@ public class ConceptMapPopupWindow {
 				Annotation annotation = annotationService.findByAccessionId(annotationId);
 				
 				if (annotation == null) {
-					annotation = new Annotation(annotationId, description, Type.Remark, EvidenceCode.IC, reference);
+					annotation = new Neo4jAnnotation(annotationId, description, Type.Remark, EvidenceCode.IC, reference);
 					if(((DesktopUI) UI.getCurrent()).getAuthenticationManager().isUserAuthenticated()) {
 						annotation.setUserId(((DesktopUI) UI.getCurrent()).getAuthenticationManager().getCurrentUser().getId());					
 					}
@@ -471,7 +478,7 @@ public class ConceptMapPopupWindow {
 				Evidence evidence = statement.getEvidence();
 				// ..update and save?
 				evidence.addAnnotation(annotation);
-				evidenceService.save(evidence);
+				evidenceService.save((Neo4jEvidence) evidence);
 
 				List<Concept> subjects = statement.getSubjects();
 				for (Concept s : subjects) {
@@ -481,7 +488,7 @@ public class ConceptMapPopupWindow {
 					 * statement subjects list, but may be worthwhile to double
 					 * check this
 					 */
-					conceptService.save(s);
+					conceptService.save((Neo4jConcept) s);
 				}
 
 				List<Concept> objects = statement.getObjects();
@@ -492,11 +499,11 @@ public class ConceptMapPopupWindow {
 					 * statement subjects list, but may be worthwhile to double
 					 * check this
 					 */
-					conceptService.save(o);
+					conceptService.save((Neo4jConcept) o);
 				}
 
 				// Save the whole updated statement?
-				statement = statementService.save(statement);
+				statement = statementService.save((Neo4jGeneralStatement) statement);
 			}
 			
 			/*

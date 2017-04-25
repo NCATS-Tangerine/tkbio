@@ -23,46 +23,32 @@
  * THE SOFTWARE.
  *-------------------------------------------------------------------------------
  */
-package bio.knowledge.database.repository;
+package bio.knowledge.model.neo4j;
 
-import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
-import org.springframework.data.repository.query.Param;
+import org.neo4j.ogm.annotation.NodeEntity;
 
-import bio.knowledge.model.neo4j.Neo4jReference;
+import bio.knowledge.model.Predicate;
+import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity;
 
 /**
  * @author Richard
  *
  */
-public interface ReferenceRepository extends GraphRepository<Neo4jReference> {
-
-	/**
-	 * 
-	 */
-	@Query( "DROP CONSTRAINT ON (reference:Reference)"
-		  + " ASSERT reference.pmid IS UNIQUE")
-	void dropUniqueConstraintOnReferencePmid();
-
-	/**
-	 * 
-	 */
-	@Query( "DROP INDEX ON :Reference(pmid)")
-	void dropIndexOnReferencePmid();
-
-	/**
-	 * 
-	 * @param pmid String PubMed identifier
-	 * @return matching Reference
-	 */
-	@Query( "MATCH (reference:Reference)"
-			+ " WHERE reference.pmid = {pmid}"
-			+ " RETURN reference")
-	Neo4jReference findByPmid(  @Param("pmid") String pmid ) ;
-
-	/**
-	 * @param uri
-	 * @return
-	 */
-	Neo4jReference findByUri(String uri);
+@NodeEntity(label="Predicate")
+public class Neo4jPredicate extends Neo4jAbstractIdentifiedEntity implements Predicate {
+	
+	public Neo4jPredicate() { }
+	
+	public Neo4jPredicate( String name ) {
+		super(name) ;
+	}
+	
+	public Neo4jPredicate( String name, String description ) {
+		super(name,description) ;
+	}
+	
+	public Neo4jPredicate( String predicateId, String name, String description ) {
+		super( predicateId, name, description ) ;
+	}
+	
 }

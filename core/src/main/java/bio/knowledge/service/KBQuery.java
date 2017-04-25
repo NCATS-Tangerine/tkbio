@@ -35,6 +35,7 @@ import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
+import bio.knowledge.model.neo4j.Neo4jAnnotation;
 
 /**
  * @author Richard
@@ -125,13 +126,13 @@ public interface KBQuery {
 	 * @param Statement currently displayed
 
 	 */
-	public void setCurrentStatement( Statement statement ) ;
+	public void setCurrentStatement(Statement selectedStatement) ;
 	
 	/**
 	 * 
 	 * @return optional of Statement currently for display
 	 */
-	public Optional< Statement > getCurrentStatement() ;
+	public Optional<Statement> getCurrentStatement() ;
 	
 	/**
 	 * 
@@ -143,11 +144,11 @@ public interface KBQuery {
 	 * 
 	 * @return optional of Evidence currently for display
 	 */
-	public Optional< Evidence > getCurrentEvidence() ;
+	public Optional<Evidence> getCurrentEvidence() ;
 
 	/**
 	 * 
-	 * @param Annotation currently selected
+	 * @param Neo4jAnnotation currently selected
 	 */
 	public void setCurrentAnnotation( Annotation annotation ) ;
 	
@@ -155,7 +156,7 @@ public interface KBQuery {
 	 * 
 	 * @return optional of Annotation currently selected
 	 */
-	public Optional< Annotation > getCurrentAnnotation() ;
+	public Optional<Annotation> getCurrentAnnotation() ;
 	
 	/**
 	 * 
