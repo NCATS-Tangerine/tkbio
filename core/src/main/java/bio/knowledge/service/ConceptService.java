@@ -28,6 +28,7 @@ package bio.knowledge.service;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -52,6 +54,8 @@ import bio.knowledge.datasource.DataService;
 import bio.knowledge.datasource.DataServiceUtility;
 import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.datasource.DataSourceRegistry;
+import bio.knowledge.datasource.GetConceptDataService;
+import bio.knowledge.datasource.KnowledgeSource;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
 import bio.knowledge.model.Concept;
@@ -176,6 +180,30 @@ public class ConceptService
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Page<Concept> findAllFiltered(String filter, Pageable pageable) {
+		KnowledgeSource ks = new KnowledgeSource("tkbio", "knowledge.bio", "http://localhost:8080/");
+		GetConceptDataService service = new GetConceptDataService(ks);
+		CompletableFuture<ResultSet> future = service.query(
+				Arrays.asList(filter.split(" ")),
+				new ArrayList<String>(),
+				pageable.getPageNumber(),
+				pageable.getPageSize()
+		);
+		
+		try {
+			ResultSet resultSet = future.get(10, TimeUnit.SECONDS);
+			List<Concept> concepts = new ArrayList<Concept>();
+			
+			for (Result result : resultSet) {
+//				Concept concept = new Concept();
+			}
+			
+			return (Page<Concept>) (Page) new PageImpl(concepts);
+			
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			future.completeExceptionally(e);
+		}
+		
+		
 		String searchString = query.getCurrentQueryText();
 		if ( 
 				searchString == null 

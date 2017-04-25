@@ -4,9 +4,11 @@ archivesBaseName  = 'tkbio-services'
 description       = 'NCATS Translator Knowledge.Bio (TKBio) 3rd Party DataSource Services Backend'
 
 evaluationDependsOn(':database')
+evaluationDependsOn(':api:client')
 
 dependencies {
 	compile project(':database')
+	compile project(':api:client')
 	
     compile 'org.json:json:20160212'
 	compile 'com.googlecode.json-simple:json-simple:1.1.1'
