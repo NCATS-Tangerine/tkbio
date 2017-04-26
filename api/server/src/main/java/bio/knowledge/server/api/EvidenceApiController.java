@@ -2,6 +2,7 @@ package bio.knowledge.server.api;
 
 import bio.knowledge.database.repository.EvidenceRepository;
 import bio.knowledge.model.Evidence;
+import bio.knowledge.model.neo4j.Neo4jEvidence;
 import bio.knowledge.server.model.InlineResponse2004;
 import bio.knowledge.server.model.InlineResponse2004DataPage;
 import io.swagger.annotations.*;
@@ -46,7 +47,7 @@ public class EvidenceApiController implements EvidenceApi {
 		
 		String[] filter;
 		
-		List<Evidence> evidences;
+		List<Neo4jEvidence> evidences;
 		
 		if (q != null ) {
 			filter = q.toArray(new String[q.size()]);

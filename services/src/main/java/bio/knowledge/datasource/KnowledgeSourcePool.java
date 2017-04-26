@@ -12,7 +12,7 @@ public class KnowledgeSourcePool extends KnowledgeSource {
 	// since we will probably never need indexing.
 	List<KnowledgeSource> dataSources = new ArrayList<KnowledgeSource>();
 
-	protected KnowledgeSourcePool(String dataSourceId, String name) {
+	public KnowledgeSourcePool(String dataSourceId, String name) {
 		super(dataSourceId, name, null);
 	}
 	

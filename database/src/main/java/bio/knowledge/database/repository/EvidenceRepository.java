@@ -72,7 +72,7 @@ public interface EvidenceRepository extends GraphRepository<Neo4jEvidence> {
 			" SKIP  {pageNumber} * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
-	public List<Evidence> apiGetEvidenceFiltered(
+	public List<Neo4jEvidence> apiGetEvidenceFiltered(
 		@Param("evidenceId") String evidenceId,
 		@Param("filter") String[] filter,
 		@Param("pageNumber") Integer pageNumber,
