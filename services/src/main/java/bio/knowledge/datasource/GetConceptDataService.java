@@ -2,19 +2,10 @@ package bio.knowledge.datasource;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
-import org.apache.commons.lang3.NotImplementedException;
-
-import com.squareup.okhttp.Call;
-
-import bio.knowledge.client.ApiCallback;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.api.ConceptsApi;
@@ -25,17 +16,15 @@ import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.core.Feature;
 import bio.knowledge.model.core.IdentifiedEntity;
-import bio.knowledge.model.datasource.Result;
-import bio.knowledge.model.datasource.ResultSet;
-import bio.knowledge.model.datasource.SimpleResult;
-import bio.knowledge.model.datasource.SimpleResultSet;
 
-@SuppressWarnings("unused")
-public class GetConceptDataService extends AbstractComplexDataService {
+public class GetConceptDataService {
+	
 	public static final String ID = "conceptDataService";
 
+	private final KnowledgeSource knowledgeSource;
+	
 	public GetConceptDataService(KnowledgeSource knowledgeSource) {
-		super(knowledgeSource, ID, SemanticGroup.ANY, knowledgeSource.getName() + "." + ID);
+		this.knowledgeSource = knowledgeSource;
 	}
 
 	public CompletableFuture<List<ConceptImpl>> query(
@@ -44,7 +33,7 @@ public class GetConceptDataService extends AbstractComplexDataService {
 			int pageNumber,
 			int pageSize
 	) {
-		Set<ApiClient> apiClients = getDataSource().getApiClients();
+		Set<ApiClient> apiClients = knowledgeSource.getApiClients();
 		
 		@SuppressWarnings("unchecked")
 		CompletableFuture<List<ConceptImpl>>[] futures = new CompletableFuture[apiClients.size()];
@@ -117,7 +106,6 @@ public class GetConceptDataService extends AbstractComplexDataService {
 				ConceptsApi conceptsApi = new ConceptsApi(apiClient);
 				InlineResponse2001 response;
 				try {
-					System.out.println(conceptsApi.getApiClient().getBasePath());
 					response = conceptsApi.getConcepts(filters, semanticGroups, pageNumber, pageSize);
 					List<InlineResponse2001DataPage> dataPages = response.getDataPage();
 					List<ConceptImpl> concepts = new ArrayList<ConceptImpl>();
@@ -133,21 +121,6 @@ public class GetConceptDataService extends AbstractComplexDataService {
 			}
 			
 		};
-	}
-
-	@Override
-	public KnowledgeSource getDataSource() {
-		return (KnowledgeSource) super.getDataSource();
-	}
-
-	@Override
-	public CompletableFuture<ResultSet> query(Map<String, Object> parameters) throws IllegalArgumentException {
-		throw new NotImplementedException("");
-	}
-
-	@Override
-	public Boolean isSimple() {
-		return false;
 	}
 	
 	public class ConceptImpl implements Concept {

@@ -21,12 +21,13 @@ public class GetConceptDataServiceTest {
 	private final int pageSize = 50;
 	private final int timeDuration = 60;
 	private final TimeUnit timeUnit = TimeUnit.SECONDS;
+	private final String serverUrl = "http://localhost:8080/api/";
 	
 	private final int expectedNumberOfResults = 18;
 	
 	@Test
 	public void testSingleKnowledgeSource() {
-		KnowledgeSource ks = new KnowledgeSource("tkbio", "knowledge.bio", "http://localhost:8080/api/");
+		KnowledgeSource ks = new KnowledgeSource(serverUrl);
 		GetConceptDataService service = new GetConceptDataService(ks);
 		
 		CompletableFuture<List<ConceptImpl>> future =
@@ -45,12 +46,12 @@ public class GetConceptDataServiceTest {
 	
 	@Test
 	public void testDuplicateKnowledgeSources() {
-		KnowledgeSource ks1 = new KnowledgeSource("tkbio1", "knowledge.bio1", "http://localhost:8080/api/");
-		KnowledgeSource ks2 = new KnowledgeSource("tkbio2", "knowledge.bio2", "http://localhost:8080/api/");
-		KnowledgeSourcePool ksPool = new KnowledgeSourcePool("pool", "pool");
+		KnowledgeSource ks1 = new KnowledgeSource(serverUrl);
+		KnowledgeSource ks2 = new KnowledgeSource(serverUrl);
+		KnowledgeSourcePool ksPool = new KnowledgeSourcePool();
 		
-		ksPool.addKnowledgeSource(ks1);
-		ksPool.addKnowledgeSource(ks2);
+		ksPool.add(ks1);
+		ksPool.add(ks2);
 		
 		GetConceptDataService service = new GetConceptDataService(ksPool);
 		
@@ -70,12 +71,12 @@ public class GetConceptDataServiceTest {
 	
 	@Test
 	public void testBrokenKnowledgeSources() {
-		KnowledgeSource ks1 = new KnowledgeSource("tkbio1", "knowledge.bio1", "http://localhost:8080/api/");
-		KnowledgeSource ks2 = new KnowledgeSource("broken", "broken source", "broken URI");
-		KnowledgeSourcePool ksPool = new KnowledgeSourcePool("pool", "pool");
+		KnowledgeSource ks1 = new KnowledgeSource(serverUrl);
+		KnowledgeSource ks2 = new KnowledgeSource("Broken URL");
+		KnowledgeSourcePool ksPool = new KnowledgeSourcePool();
 		
-		ksPool.addKnowledgeSource(ks1);
-		ksPool.addKnowledgeSource(ks2);
+		ksPool.add(ks1);
+		ksPool.add(ks2);
 		
 		GetConceptDataService service = new GetConceptDataService(ksPool);
 		

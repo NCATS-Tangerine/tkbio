@@ -8,12 +8,14 @@ import java.util.Set;
 import bio.knowledge.client.ApiClient;
 
 public class KnowledgeSourcePool extends KnowledgeSource {
-	// Maybe change this to a linked list for O(1) add operation,
-	// since we will probably never need indexing.
 	List<KnowledgeSource> dataSources = new ArrayList<KnowledgeSource>();
-
-	public KnowledgeSourcePool(String dataSourceId, String name) {
-		super(dataSourceId, name, null);
+	
+	public KnowledgeSourcePool(String name) {
+		super(null, name);
+	}
+	
+	public KnowledgeSourcePool() {
+		super(null, null);
 	}
 	
 	@Override
@@ -26,13 +28,8 @@ public class KnowledgeSourcePool extends KnowledgeSource {
 		
 		return set;
 	}
-
-	@Override
-	protected void initialize() {
-		
-	}
 	
-	public void addKnowledgeSource(KnowledgeSource dataSource) {
+	public void add(KnowledgeSource dataSource) {
 		dataSources.add(dataSource);
 	}
 

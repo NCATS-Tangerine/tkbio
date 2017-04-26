@@ -184,11 +184,11 @@ public class ConceptService
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	// TODO: I think this is where the refactoring faltered
 	private Page<Concept> findAllFiltered(String filter, Pageable pageable) {
-		KnowledgeSource ks1 = new KnowledgeSource("tkbio", "knowledge.bio", "http://localhost:8080/api/");
-		KnowledgeSource ks2 = new KnowledgeSource("broken", "broken server", "broken link");
-		KnowledgeSourcePool pool = new KnowledgeSourcePool("pool", "pool");
-		pool.addKnowledgeSource(ks1);
-		pool.addKnowledgeSource(ks2);
+		KnowledgeSource ks1 = new KnowledgeSource("http://localhost:8080/api/");
+		KnowledgeSource ks2 = new KnowledgeSource("broken link");
+		KnowledgeSourcePool pool = new KnowledgeSourcePool();
+		pool.add(ks1);
+		pool.add(ks2);
 		GetConceptDataService service = new GetConceptDataService(pool);
 		List<String> f = Arrays.asList(filter.split(" "));
 		CompletableFuture<List<ConceptImpl>> future = service.query(
