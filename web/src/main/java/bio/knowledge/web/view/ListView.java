@@ -375,8 +375,8 @@ public class ListView extends BaseView {
 					} else {
 						authenticationState.setState(null, null);
 					}
-					
-					container.addAll(pager.getDataPage(currentPageIndex, pageSize, simpleTextFilter, sorter, isAscending));
+					String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+					container.addAll(pager.getDataPage(currentPageIndex, pageSize, filter, sorter, isAscending));
 				}
 			}
 
