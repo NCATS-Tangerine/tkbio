@@ -11,13 +11,19 @@ import java.util.function.Supplier;
 
 import org.apache.commons.lang3.NotImplementedException;
 
+import com.squareup.okhttp.Call;
+
 import bio.knowledge.client.ApiCallback;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.model.InlineResponse2001;
 import bio.knowledge.client.model.InlineResponse2001DataPage;
+import bio.knowledge.model.Concept;
+import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.core.Feature;
+import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
 import bio.knowledge.model.datasource.SimpleResult;
@@ -33,112 +39,59 @@ public class GetConceptDataService extends AbstractComplexDataService {
 		super(knowledgeSource, ID, SemanticGroup.ANY, knowledgeSource.getName() + "." + ID);
 	}
 
-	public CompletableFuture<ResultSet> query(
+	public CompletableFuture<List<ConceptImpl>> query(
 			List<String> filters,
 			List<String> semanticGroups,
 			int pageNumber,
 			int pageSize
 	) {
-		
 		Set<ApiClient> apiClients = getDataSource().getApiClients();
 		
-		CompletableFuture<ResultSet> future = CompletableFuture.supplyAsync(new Supplier<ResultSet>() {
-
-			@Override
-			public ResultSet get() {
-				ResultSet resultSet = new SimpleResultSet();
-				
-				for (ApiClient apiClient : apiClients) {
-					conceptsApi.setApiClient(apiClient);
-					
-					try {
-						conceptsApi.getConceptsAsync(filters, semanticGroups, pageNumber, pageSize, new Callback(resultSet));
-					} catch (ApiException e) {
-						e.printStackTrace();
-					}
-				}
-				
-				return resultSet;
-			}
-			
-		});
+		CompletableFuture<List<ConceptImpl>> priorFuture = null;
 		
-		return future;
-	}
-	
-	public CompletableFuture<ResultSet> query2(List<String> filters, List<String> semanticGroups, int pageNumber,
-			int pageSize) {
-		Set<ApiClient> apiClients = getDataSource().getApiClients();
-		
-		List<CompletableFuture<ResultSet>> futures = new ArrayList<CompletableFuture<ResultSet>>();
-
 		for (ApiClient apiClient : apiClients) {
-			CompletableFuture<ResultSet> future;
-			future = runQuery(apiClient, filters, semanticGroups, pageNumber, pageSize);
-			futures.add(future);
+			conceptsApi.setApiClient(apiClient);
+			
+			CompletableFuture<List<ConceptImpl>> future = CompletableFuture.supplyAsync(buildSupplier(filters, semanticGroups, pageNumber, pageSize));
+			
+			if (priorFuture != null) {
+				priorFuture = future.thenCombine(priorFuture, (list1, list2) -> combineLists(list1, list2));
+			} else {
+				priorFuture = future;
+			}
 		}
 		
-		CompletableFuture<ResultSet> combinedFuture = CompletableFuture.supplyAsync(new Supplier<ResultSet>() {
+		return priorFuture;
+	}
+
+	private Supplier<List<ConceptImpl>> buildSupplier(List<String> filters, List<String> semanticGroups, int pageNumber,
+			int pageSize) {
+		return new Supplier<List<ConceptImpl>>() {
 
 			@Override
-			public ResultSet get() {
-				ResultSet resultSet = new SimpleResultSet();
-				
-				for (CompletableFuture<ResultSet> future : futures) {
-					try {
-						ResultSet results = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
-						resultSet.addAll(results);
-						
-					} catch (InterruptedException | ExecutionException | TimeoutException e) {
-						future.completeExceptionally(e);
+			public List<ConceptImpl> get() {
+				InlineResponse2001 response;
+				try {
+					response = conceptsApi.getConcepts(filters, semanticGroups, pageNumber, pageSize);
+					List<InlineResponse2001DataPage> dataPages = response.getDataPage();
+					List<ConceptImpl> concepts = new ArrayList<ConceptImpl>();
+					
+					for (InlineResponse2001DataPage dataPage : dataPages) {
+						ConceptImpl concept = new ConceptImpl(dataPage.getName(), Long.decode(dataPage.getId()));
+						concepts.add(concept);
 					}
+					return concepts;
+				} catch (ApiException e) {
+					throw new RuntimeException(e.getMessage(), e.getCause());
 				}
-				
-				return resultSet;
 			}
 			
-		});
-
-		return combinedFuture;
+		};
 	}
 	
-	private CompletableFuture<ResultSet> runQuery(ApiClient apiClient, List<String> filters,
-			List<String> semanticGroups, int pageNumber, int pageSize) {
-		CompletableFuture<ResultSet> future = CompletableFuture.supplyAsync(new Supplier<ResultSet>() {
-
-			@Override
-			public ResultSet get() {
-				conceptsApi.setApiClient(apiClient);
-
-				ResultSet resultSet = new SimpleResultSet();
-
-				try {
-					InlineResponse2001 response = conceptsApi.getConcepts(filters, semanticGroups, pageNumber,
-							pageSize);
-					List<InlineResponse2001DataPage> dataPages = response.getDataPage();
-
-					for (InlineResponse2001DataPage dataPage : dataPages) {
-						Result result = new SimpleResult();
-
-						result.put("concept id", dataPage.getId());
-						result.put("concept name", dataPage.getName());
-						result.put("concept description", dataPage.getDefinition());
-						result.put("semantic group", dataPage.getSemanticGroup());
-						result.put("concept synonoms", dataPage.getSynonyms());
-
-						resultSet.add(result);
-					}
-
-				} catch (ApiException e) {
-					e.printStackTrace();
-				}
-
-				return resultSet;
-			}
-
-		});
-
-		return future;
+	private List<ConceptImpl> combineLists(List<ConceptImpl> list1, List<ConceptImpl> list2) {
+		list1.addAll(list2);
+		return list1;
 	}
 
 	@Override
@@ -153,52 +106,227 @@ public class GetConceptDataService extends AbstractComplexDataService {
 
 	@Override
 	public Boolean isSimple() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
-	private class Callback implements ApiCallback<InlineResponse2001> {
+	public class ConceptImpl implements Concept {
+		private String name;
+		private Long id;
 		
-		private final ResultSet resultSet;
+		public ConceptImpl(String name, Long id) {
+			this.name = name;
+			this.id = id;
+		}
+
+		@Override
+		public void setUri(String uri) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setAccessionId(String accessionId) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setName(String name) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setDescription(String description) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setSynonyms(String synonyms) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Long getId() {
+			// TODO Auto-generated method stub
+			return id;
+		}
+
+		@Override
+		public void setId(Long id) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Integer getVersion() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setVersion(Integer version) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public long getVersionDate() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public void setVersionDate(long versionDate) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public String getUri() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getDescription() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getSynonyms() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public int compareTo(IdentifiedEntity o) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public void setFeatures(Set<Feature> features) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Set<Feature> getFeatures() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setSemanticGroup(SemanticGroup semgroup) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public SemanticGroup getSemanticGroup() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Long getUsage() {
+			// TODO Auto-generated method stub
+			return this.id;
+		}
+
+		@Override
+		public void setUsage(Long usage) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void incrementUsage(Long increment) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void incrementUsage() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setLibrary(Library library) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Library getLibrary() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getGhr() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setGhr(String ghr) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public String getHmdbId() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setHmdbId(String hmdbId) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public String getChebi() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setChebi(String chebi) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Set<String> getCrossReferences() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Set<String> getTerms() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getName() {
+			// TODO Auto-generated method stub
+			return this.name;
+		}
+
+		@Override
+		public String getAccessionId() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 		
-		public Callback(ResultSet resultSet) {
-			this.resultSet = resultSet;
-		}
-
-		@Override
-		public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onSuccess(InlineResponse2001 response, int statusCode, Map<String, List<String>> responseHeaders) {
-			List<InlineResponse2001DataPage> dataPages = response.getDataPage();
-
-			for (InlineResponse2001DataPage dataPage : dataPages) {
-				Result result = new SimpleResult();
-
-				result.put("concept id", dataPage.getId());
-				result.put("concept name", dataPage.getName());
-				result.put("concept description", dataPage.getDefinition());
-				result.put("semantic group", dataPage.getSemanticGroup());
-				result.put("concept synonoms", dataPage.getSynonyms());
-
-				resultSet.add(result);
-			}
-		}
-
-		@Override
-		public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
-			// TODO Auto-generated method stub
-			
-		}
-
 	}
 }
