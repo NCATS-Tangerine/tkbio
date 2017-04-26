@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -33,8 +34,6 @@ import bio.knowledge.model.datasource.SimpleResultSet;
 public class GetConceptDataService extends AbstractComplexDataService {
 	public static final String ID = "conceptDataService";
 
-	private ConceptsApi conceptsApi = new ConceptsApi();
-
 	public GetConceptDataService(KnowledgeSource knowledgeSource) {
 		super(knowledgeSource, ID, SemanticGroup.ANY, knowledgeSource.getName() + "." + ID);
 	}
@@ -47,31 +46,78 @@ public class GetConceptDataService extends AbstractComplexDataService {
 	) {
 		Set<ApiClient> apiClients = getDataSource().getApiClients();
 		
-		CompletableFuture<List<ConceptImpl>> priorFuture = null;
+		@SuppressWarnings("unchecked")
+		CompletableFuture<List<ConceptImpl>>[] futures = new CompletableFuture[apiClients.size()];
 		
+		int i = 0;
 		for (ApiClient apiClient : apiClients) {
-			conceptsApi.setApiClient(apiClient);
+			CompletableFuture<List<ConceptImpl>> future = CompletableFuture.supplyAsync(
+					buildSupplier(apiClient, filters, semanticGroups, pageNumber, pageSize)
+			);
 			
-			CompletableFuture<List<ConceptImpl>> future = CompletableFuture.supplyAsync(buildSupplier(filters, semanticGroups, pageNumber, pageSize));
-			
-			if (priorFuture != null) {
-				priorFuture = future.thenCombine(priorFuture, (list1, list2) -> combineLists(list1, list2));
-			} else {
-				priorFuture = future;
-			}
+			futures[i++] = future;
 		}
 		
-		return priorFuture;
+		CompletableFuture<List<ConceptImpl>> combinedFuture = combineFutures(futures);
+		
+		return combinedFuture;
 	}
 
-	private Supplier<List<ConceptImpl>> buildSupplier(List<String> filters, List<String> semanticGroups, int pageNumber,
-			int pageSize) {
+	/**
+	 * Here we take all of the CompletableFuture objects in futures, and combine them into
+	 * a single CompletableFuture object. This combined future is of type Void, so we need
+	 * thenApply() to get the proper sort of CompletableFuture. Also this combinedFuture
+	 * completes exceptionally if any of the items in {@code futures} completes exceptionally.
+	 * Because of this, we also need to tell it what to do if it completes exceptionally,
+	 * which is done with exceptionally().
+	 * @param futures
+	 * @return
+	 */
+	private CompletableFuture<List<ConceptImpl>> combineFutures(CompletableFuture<List<ConceptImpl>>[] futures) {
+		return CompletableFuture.allOf(futures)
+				.thenApply(x -> {
+					
+					List<ConceptImpl> concepts = new ArrayList<ConceptImpl>();
+					
+					for (CompletableFuture<List<ConceptImpl>> f : futures) {
+						List<ConceptImpl> result = f.join();
+						if (result != null) {
+							concepts.addAll(result);
+						}
+					}
+					
+					return concepts;
+				})
+				.exceptionally((error) -> {
+					List<ConceptImpl> concepts = new ArrayList<ConceptImpl>();
+					
+					for (CompletableFuture<List<ConceptImpl>> f : futures) {
+						if (!f.isCompletedExceptionally()) {
+							List<ConceptImpl> result = f.join();
+							if (result != null) {
+								concepts.addAll(result);
+							}
+						}
+					}
+					return concepts;
+				});
+	}
+
+	private Supplier<List<ConceptImpl>> buildSupplier(
+			ApiClient apiClient,
+			List<String> filters,
+			List<String> semanticGroups,
+			int pageNumber,
+			int pageSize
+	) {
 		return new Supplier<List<ConceptImpl>>() {
 
 			@Override
 			public List<ConceptImpl> get() {
+				ConceptsApi conceptsApi = new ConceptsApi(apiClient);
 				InlineResponse2001 response;
 				try {
+					System.out.println(conceptsApi.getApiClient().getBasePath());
 					response = conceptsApi.getConcepts(filters, semanticGroups, pageNumber, pageSize);
 					List<InlineResponse2001DataPage> dataPages = response.getDataPage();
 					List<ConceptImpl> concepts = new ArrayList<ConceptImpl>();
@@ -87,11 +133,6 @@ public class GetConceptDataService extends AbstractComplexDataService {
 			}
 			
 		};
-	}
-	
-	private List<ConceptImpl> combineLists(List<ConceptImpl> list1, List<ConceptImpl> list2) {
-		list1.addAll(list2);
-		return list1;
 	}
 
 	@Override
