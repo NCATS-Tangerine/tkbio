@@ -18,6 +18,8 @@ import bio.knowledge.client.model.InlineResponse2004;
 import org.junit.Test;
 import org.junit.Ignore;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,11 +44,7 @@ public class EvidenceApiTest {
      */
     @Test
     public void getEvidenceTest() throws ApiException {
-        String evidenceId = null;
-        List<String> q = null;
-        Integer pageNumber = null;
-        Integer pageSize = null;
-        InlineResponse2004 response = api.getEvidence(evidenceId, q, pageNumber, pageSize);
+    	fail("Not yet implemented");
 
         // TODO: test validations
     }

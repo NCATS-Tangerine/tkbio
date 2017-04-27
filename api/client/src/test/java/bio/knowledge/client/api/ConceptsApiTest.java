@@ -79,10 +79,8 @@ public class ConceptsApiTest {
      */
     @Test
     public void getConceptsTest() throws ApiException {
-    	String[] filter = {"chocolate", "milk"};
-        List<String> q = Arrays.asList(filter);
-        String[] semanticGroups = {"GENE", "OBJC"};
-        List<String> sg = Arrays.asList(semanticGroups);
+        String q = "chocolate milk";
+        String sg = "GENE OBJC";
         Integer pageNumber = 0;
         Integer pageSize = 20;
         InlineResponse2001 response = api.getConcepts(q, sg, pageNumber, pageSize);
