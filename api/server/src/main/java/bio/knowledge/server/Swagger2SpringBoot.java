@@ -10,7 +10,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
-@ComponentScan(basePackages = "bio.knowledge.server")
+@ComponentScan(basePackages = {
+		"bio.knowledge.server",
+		"bio.knowledge.database"
+})
 public class Swagger2SpringBoot implements CommandLineRunner {
 
 	@Override
