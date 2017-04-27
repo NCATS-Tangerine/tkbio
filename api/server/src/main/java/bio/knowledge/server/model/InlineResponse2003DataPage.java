@@ -2,6 +2,7 @@ package bio.knowledge.server.model;
 
 import java.util.Objects;
 import bio.knowledge.server.model.InlineResponse2003Evidence;
+import bio.knowledge.server.model.InlineResponse2003Object;
 import bio.knowledge.server.model.InlineResponse2003Subject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -11,7 +12,7 @@ import javax.validation.constraints.*;
 /**
  * InlineResponse2003DataPage
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-21T13:55:25.453-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
 
 public class InlineResponse2003DataPage   {
   @JsonProperty("id")
@@ -24,7 +25,7 @@ public class InlineResponse2003DataPage   {
   private InlineResponse2003Subject predicate = null;
 
   @JsonProperty("object")
-  private InlineResponse2003Subject object = null;
+  private InlineResponse2003Object object = null;
 
   @JsonProperty("evidence")
   private InlineResponse2003Evidence evidence = null;
@@ -35,10 +36,10 @@ public class InlineResponse2003DataPage   {
   }
 
    /**
-   * predicate identifiers
+   * local statement identifiers
    * @return id
   **/
-  @ApiModelProperty(value = "predicate identifiers")
+  @ApiModelProperty(value = "local statement identifiers")
   public String getId() {
     return id;
   }
@@ -83,7 +84,7 @@ public class InlineResponse2003DataPage   {
     this.predicate = predicate;
   }
 
-  public InlineResponse2003DataPage object(InlineResponse2003Subject object) {
+  public InlineResponse2003DataPage object(InlineResponse2003Object object) {
     this.object = object;
     return this;
   }
@@ -93,11 +94,11 @@ public class InlineResponse2003DataPage   {
    * @return object
   **/
   @ApiModelProperty(value = "")
-  public InlineResponse2003Subject getObject() {
+  public InlineResponse2003Object getObject() {
     return object;
   }
 
-  public void setObject(InlineResponse2003Subject object) {
+  public void setObject(InlineResponse2003Object object) {
     this.object = object;
   }
 

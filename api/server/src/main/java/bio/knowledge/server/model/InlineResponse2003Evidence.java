@@ -9,7 +9,7 @@ import javax.validation.constraints.*;
 /**
  * InlineResponse2003Evidence
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-21T13:55:25.453-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
 
 public class InlineResponse2003Evidence   {
   @JsonProperty("id")
@@ -24,10 +24,10 @@ public class InlineResponse2003Evidence   {
   }
 
    /**
-   * Get id
+   * local identifier to evidence record
    * @return id
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "local identifier to evidence record")
   public String getId() {
     return id;
   }
