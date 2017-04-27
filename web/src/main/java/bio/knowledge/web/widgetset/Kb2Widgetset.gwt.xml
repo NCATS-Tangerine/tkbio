@@ -29,4 +29,7 @@
     
 
     <inherits name="bio.knowledge.renderer.ButtonRendererWidgetset" />
+    
+
+    <inherits name="bio.knowledge.grid.GridWidgetSet" />
 </module>

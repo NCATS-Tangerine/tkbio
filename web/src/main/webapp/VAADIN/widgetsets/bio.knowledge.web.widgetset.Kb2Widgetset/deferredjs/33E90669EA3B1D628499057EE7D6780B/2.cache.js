@@ -1,0 +1,1 @@
+$wnd.bio_knowledge_web_widgetset_Kb2Widgetset.runAsyncCallback2('Pjb(1619,1,F1d);_.me=function gkc(){N4b((!G4b&&(G4b=new S4b),G4b),this.a.d)};_Vd(_n)(2);\n//# sourceURL=bio.knowledge.web.widgetset.Kb2Widgetset-2.js\n')

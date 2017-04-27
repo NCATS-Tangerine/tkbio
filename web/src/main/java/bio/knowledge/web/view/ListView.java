@@ -200,7 +200,8 @@ public class ListView extends BaseView {
 	private GeneratedPropertyContainer gpcontainer;
 
 	// Identification/Unique Keys
-	private Grid dataTable = null;
+	private bio.knowledge.grid.Grid dataTable = null;
+//	private Grid dataTable = null;
 
 	// view's name
 	private String viewName = "";
@@ -1006,7 +1007,8 @@ public class ListView extends BaseView {
 	private VerticalLayout formatGenericTableComponents(String datatype) {
 
 		// use datatype here to possibly get custom list of fields(?)
-		dataTable = new Grid();
+		dataTable = new bio.knowledge.grid.Grid();
+//		dataTable = new Grid();
 		dataTable.setWidth("100%");
 		dataTable.setHeightMode(HeightMode.ROW);
 		dataTable.setHeightByRows(ROWS_TO_DISPLAY);
