@@ -27,8 +27,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 
 
-import bio.knowledge.client.model.InlineResponse200;
-import bio.knowledge.client.model.InlineResponse2001;
+import bio.knowledge.client.model.InlineResponse2002;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -36,14 +35,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ConceptsApi {
+public class ExactmatchesApi {
     private ApiClient apiClient;
 
-    public ConceptsApi() {
+    public ExactmatchesApi() {
         this(Configuration.getDefaultApiClient());
     }
 
-    public ConceptsApi(ApiClient apiClient) {
+    public ExactmatchesApi(ApiClient apiClient) {
         this.apiClient = apiClient;
     }
 
@@ -55,12 +54,12 @@ public class ConceptsApi {
         this.apiClient = apiClient;
     }
 
-    /* Build call for getConceptDetails */
-    private com.squareup.okhttp.Call getConceptDetailsCall(String conceptId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    /* Build call for getExactMatchesToConcept */
+    private com.squareup.okhttp.Call getExactMatchesToConceptCall(String conceptId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/concepts/{conceptId}".replaceAll("\\{format\\}","json")
+        String localVarPath = "/exactmatches/{conceptId}".replaceAll("\\{format\\}","json")
         .replaceAll("\\{" + "conceptId" + "\\}", apiClient.escapeString(conceptId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -98,15 +97,15 @@ public class ConceptsApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getConceptDetailsValidateBeforeCall(String conceptId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getExactMatchesToConceptValidateBeforeCall(String conceptId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'conceptId' is set
         if (conceptId == null) {
-            throw new ApiException("Missing the required parameter 'conceptId' when calling getConceptDetails(Async)");
+            throw new ApiException("Missing the required parameter 'conceptId' when calling getExactMatchesToConcept(Async)");
         }
         
         
-        com.squareup.okhttp.Call call = getConceptDetailsCall(conceptId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getExactMatchesToConceptCall(conceptId, progressListener, progressRequestListener);
         return call;
 
         
@@ -117,38 +116,38 @@ public class ConceptsApi {
 
     /**
      * 
-     * Retrieves details for a specified concepts in the system, as specified by a local (simple, non-qualified) object identifier. 
-     * @param conceptId local object identifier of concept of interest (required)
-     * @return List&lt;InlineResponse200&gt;
+     * Retrieves a list of qualified identifiers of \&quot;exact match\&quot; concepts, [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch) associated with an specified local concept object identifier, typically, of a concept selected from the list of concepts originally returned by a /concepts API call on a given KS. This API call should generally only be run against the same KS (only) from which the originally selected concept was retrieved. 
+     * @param conceptId local object identifier of the concept to be matched (required)
+     * @return List&lt;String&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<InlineResponse200> getConceptDetails(String conceptId) throws ApiException {
-        ApiResponse<List<InlineResponse200>> resp = getConceptDetailsWithHttpInfo(conceptId);
+    public List<String> getExactMatchesToConcept(String conceptId) throws ApiException {
+        ApiResponse<List<String>> resp = getExactMatchesToConceptWithHttpInfo(conceptId);
         return resp.getData();
     }
 
     /**
      * 
-     * Retrieves details for a specified concepts in the system, as specified by a local (simple, non-qualified) object identifier. 
-     * @param conceptId local object identifier of concept of interest (required)
-     * @return ApiResponse&lt;List&lt;InlineResponse200&gt;&gt;
+     * Retrieves a list of qualified identifiers of \&quot;exact match\&quot; concepts, [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch) associated with an specified local concept object identifier, typically, of a concept selected from the list of concepts originally returned by a /concepts API call on a given KS. This API call should generally only be run against the same KS (only) from which the originally selected concept was retrieved. 
+     * @param conceptId local object identifier of the concept to be matched (required)
+     * @return ApiResponse&lt;List&lt;String&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<InlineResponse200>> getConceptDetailsWithHttpInfo(String conceptId) throws ApiException {
-        com.squareup.okhttp.Call call = getConceptDetailsValidateBeforeCall(conceptId, null, null);
-        Type localVarReturnType = new TypeToken<List<InlineResponse200>>(){}.getType();
+    public ApiResponse<List<String>> getExactMatchesToConceptWithHttpInfo(String conceptId) throws ApiException {
+        com.squareup.okhttp.Call call = getExactMatchesToConceptValidateBeforeCall(conceptId, null, null);
+        Type localVarReturnType = new TypeToken<List<String>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
     /**
      *  (asynchronously)
-     * Retrieves details for a specified concepts in the system, as specified by a local (simple, non-qualified) object identifier. 
-     * @param conceptId local object identifier of concept of interest (required)
+     * Retrieves a list of qualified identifiers of \&quot;exact match\&quot; concepts, [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch) associated with an specified local concept object identifier, typically, of a concept selected from the list of concepts originally returned by a /concepts API call on a given KS. This API call should generally only be run against the same KS (only) from which the originally selected concept was retrieved. 
+     * @param conceptId local object identifier of the concept to be matched (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getConceptDetailsAsync(String conceptId, final ApiCallback<List<InlineResponse200>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getExactMatchesToConceptAsync(String conceptId, final ApiCallback<List<String>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -169,27 +168,21 @@ public class ConceptsApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getConceptDetailsValidateBeforeCall(conceptId, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<List<InlineResponse200>>(){}.getType();
+        com.squareup.okhttp.Call call = getExactMatchesToConceptValidateBeforeCall(conceptId, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<List<String>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
-    /* Build call for getConcepts */
-    private com.squareup.okhttp.Call getConceptsCall(String keywords, String sg, Integer pageNumber, Integer pageSize, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    /* Build call for getExactMatchesToConceptList */
+    private com.squareup.okhttp.Call getExactMatchesToConceptListCall(String emci, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/concepts".replaceAll("\\{format\\}","json");
+        String localVarPath = "/exactMatches".replaceAll("\\{format\\}","json");
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        if (keywords != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "keywords", keywords));
-        if (sg != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "sg", sg));
-        if (pageNumber != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "pageNumber", pageNumber));
-        if (pageSize != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "pageSize", pageSize));
+        if (emci != null)
+        localVarQueryParams.addAll(apiClient.parameterToPairs("", "emci", emci));
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
 
@@ -224,15 +217,15 @@ public class ConceptsApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getConceptsValidateBeforeCall(String keywords, String sg, Integer pageNumber, Integer pageSize, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getExactMatchesToConceptListValidateBeforeCall(String emci, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
-        // verify the required parameter 'keywords' is set
-        if (keywords == null) {
-            throw new ApiException("Missing the required parameter 'keywords' when calling getConcepts(Async)");
+        // verify the required parameter 'emci' is set
+        if (emci == null) {
+            throw new ApiException("Missing the required parameter 'emci' when calling getExactMatchesToConceptList(Async)");
         }
         
         
-        com.squareup.okhttp.Call call = getConceptsCall(keywords, sg, pageNumber, pageSize, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getExactMatchesToConceptListCall(emci, progressListener, progressRequestListener);
         return call;
 
         
@@ -243,47 +236,38 @@ public class ConceptsApi {
 
     /**
      * 
-     * Retrieves a (paged) list of concepts in the system 
-     * @param keywords a (urlencoded) space delimited set of keywords or substrings against which to match concept names and synonyms (required)
-     * @param sg a (urlencoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)  (optional)
-     * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
-     * @param pageSize number of concepts per page to be returned in a paged set of query results  (optional)
-     * @return InlineResponse2001
+     * Given an input list of [CURIE](https://www.w3.org/TR/curie/) identifiers of known exactly matched concepts [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch), retrieves the list of (CURIE)[https://www.w3.org/TR/curie/] identifiers of additional concepts that are deemed to be exact matches to one or more of the input concepts. This new list of concept identifiers is returned with the full list of any additional identifiers deemed by the KS to also be identifying exactly matched concepts. 
+     * @param emci a (urlencoded) space-delimited set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, to be used in a search for additional exactly matching concepts  (required)
+     * @return List&lt;InlineResponse2002&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public InlineResponse2001 getConcepts(String keywords, String sg, Integer pageNumber, Integer pageSize) throws ApiException {
-        ApiResponse<InlineResponse2001> resp = getConceptsWithHttpInfo(keywords, sg, pageNumber, pageSize);
+    public List<InlineResponse2002> getExactMatchesToConceptList(String emci) throws ApiException {
+        ApiResponse<List<InlineResponse2002>> resp = getExactMatchesToConceptListWithHttpInfo(emci);
         return resp.getData();
     }
 
     /**
      * 
-     * Retrieves a (paged) list of concepts in the system 
-     * @param keywords a (urlencoded) space delimited set of keywords or substrings against which to match concept names and synonyms (required)
-     * @param sg a (urlencoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)  (optional)
-     * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
-     * @param pageSize number of concepts per page to be returned in a paged set of query results  (optional)
-     * @return ApiResponse&lt;InlineResponse2001&gt;
+     * Given an input list of [CURIE](https://www.w3.org/TR/curie/) identifiers of known exactly matched concepts [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch), retrieves the list of (CURIE)[https://www.w3.org/TR/curie/] identifiers of additional concepts that are deemed to be exact matches to one or more of the input concepts. This new list of concept identifiers is returned with the full list of any additional identifiers deemed by the KS to also be identifying exactly matched concepts. 
+     * @param emci a (urlencoded) space-delimited set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, to be used in a search for additional exactly matching concepts  (required)
+     * @return ApiResponse&lt;List&lt;InlineResponse2002&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<InlineResponse2001> getConceptsWithHttpInfo(String keywords, String sg, Integer pageNumber, Integer pageSize) throws ApiException {
-        com.squareup.okhttp.Call call = getConceptsValidateBeforeCall(keywords, sg, pageNumber, pageSize, null, null);
-        Type localVarReturnType = new TypeToken<InlineResponse2001>(){}.getType();
+    public ApiResponse<List<InlineResponse2002>> getExactMatchesToConceptListWithHttpInfo(String emci) throws ApiException {
+        com.squareup.okhttp.Call call = getExactMatchesToConceptListValidateBeforeCall(emci, null, null);
+        Type localVarReturnType = new TypeToken<List<InlineResponse2002>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
     /**
      *  (asynchronously)
-     * Retrieves a (paged) list of concepts in the system 
-     * @param keywords a (urlencoded) space delimited set of keywords or substrings against which to match concept names and synonyms (required)
-     * @param sg a (urlencoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)  (optional)
-     * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
-     * @param pageSize number of concepts per page to be returned in a paged set of query results  (optional)
+     * Given an input list of [CURIE](https://www.w3.org/TR/curie/) identifiers of known exactly matched concepts [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch), retrieves the list of (CURIE)[https://www.w3.org/TR/curie/] identifiers of additional concepts that are deemed to be exact matches to one or more of the input concepts. This new list of concept identifiers is returned with the full list of any additional identifiers deemed by the KS to also be identifying exactly matched concepts. 
+     * @param emci a (urlencoded) space-delimited set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, to be used in a search for additional exactly matching concepts  (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getConceptsAsync(String keywords, String sg, Integer pageNumber, Integer pageSize, final ApiCallback<InlineResponse2001> callback) throws ApiException {
+    public com.squareup.okhttp.Call getExactMatchesToConceptListAsync(String emci, final ApiCallback<List<InlineResponse2002>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -304,8 +288,8 @@ public class ConceptsApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getConceptsValidateBeforeCall(keywords, sg, pageNumber, pageSize, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<InlineResponse2001>(){}.getType();
+        com.squareup.okhttp.Call call = getExactMatchesToConceptListValidateBeforeCall(emci, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<List<InlineResponse2002>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }

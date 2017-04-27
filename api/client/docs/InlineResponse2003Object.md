@@ -1,11 +1,11 @@
 
-# InlineResponse2002
+# InlineResponse2003Object
 
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **String** |  |  [optional]
-**exactMatches** | [**List&lt;ExactMatchesExactMatches&gt;**](ExactMatchesExactMatches.md) |  |  [optional]
+**name** | **String** | human readable label of concept |  [optional]
 
 
 
