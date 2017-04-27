@@ -49,7 +49,6 @@ ApiInfo apiInfo() {
 		.termsOfServiceUrl("...")
 		.version("4.0.6")
 		.contact(new Contact("","", "yourName@yourDomain.com"))
-		.contact("richard@starinformatics.com")
 		.build();
 }
 ```
