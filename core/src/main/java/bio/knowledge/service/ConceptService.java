@@ -190,10 +190,9 @@ public class ConceptService
 		pool.add(ks1);
 		pool.add(ks2);
 		GetConceptDataService service = new GetConceptDataService(pool);
-		List<String> f = Arrays.asList(filter.split(" "));
 		CompletableFuture<List<ConceptImpl>> future = service.query(
-				f,
-				new ArrayList<String>(),
+				filter,
+				null,
 				pageable.getPageNumber(),
 				pageable.getPageSize()
 		);

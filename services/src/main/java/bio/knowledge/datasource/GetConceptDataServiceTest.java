@@ -15,8 +15,8 @@ import bio.knowledge.datasource.GetConceptDataService.ConceptImpl;
 
 public class GetConceptDataServiceTest {
 	
-	private final List<String> filters = Arrays.asList(new String[]{"chocolate", "milk"});
-	private final List<String> semanticGroups = Arrays.asList(new String[]{"GENE", "OBJC"});
+	private final String filters = "chocolate milk";
+	private final String semanticGroups = "GENE OBJC";
 	private final int pageNumber = 0;
 	private final int pageSize = 50;
 	private final int timeDuration = 60;
