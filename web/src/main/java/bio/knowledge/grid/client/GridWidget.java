@@ -1,19 +1,24 @@
-package bio.knowledge.grid.client.grid;
-
-import java.util.logging.Logger;
+package bio.knowledge.grid.client;
 
 import com.vaadin.client.widget.grid.events.ScrollEvent;
 import com.vaadin.client.widget.grid.events.ScrollHandler;
 import com.vaadin.client.widgets.Escalator;
 
-public class GridWidget extends com.vaadin.client.widgets.Grid {
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
+//
+//import com.vaadin.client.widget.grid.events.ScrollEvent;
+//import com.vaadin.client.widget.grid.events.ScrollHandler;
+//import com.vaadin.client.widgets.Escalator;
+
+public class GridWidget<T> extends com.vaadin.client.widgets.Grid<T> {
 	
-	private Logger _logger = Logger.getLogger(GridWidget.class.toString());
+//	private Logger _logger = Logger.getLogger(GridWidget.class.toString());
 	
 	public GridWidget() {
 		super();
 		
-		this.getEscalator().addScrollHandler(new ScrollHandler() {
+		this.addScrollHandler(new ScrollHandler() {
 
 			@Override
 			public void onScroll(ScrollEvent event) {

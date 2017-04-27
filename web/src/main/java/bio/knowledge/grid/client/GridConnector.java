@@ -1,4 +1,4 @@
-package bio.knowledge.grid.client.grid;
+package bio.knowledge.grid.client;
 
 import com.vaadin.shared.ui.Connect;
 
