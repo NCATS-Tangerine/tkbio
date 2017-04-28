@@ -78,17 +78,15 @@ public class ViewUtil {
 		// We want to use our own custom ButtonRenderer for every column except
 		// for these, since it messes up their CSS formatting. So we use
 		// Vaadin's ButtonRenderer for these other columns.
-//		if (!columnId.equals("library") && !columnId.equals("parents") && !columnId.equals("evidence")) {
-//			renderer = new ButtonRenderer(listener);
-//			if (searchPhrase != null && viewname.equals(ViewName.CONCEPTS_VIEW)) {
-//				// #FF0000 is bright red
-//				((ButtonRenderer) renderer).setHighlightProperties(searchPhrase.split(" "), "#FF0000");
-//			}
-//		} else {
-//			renderer = new com.vaadin.ui.renderers.ButtonRenderer(listener);
-//		}
-		
-		renderer = new com.vaadin.ui.renderers.ButtonRenderer(listener);
+		if (!columnId.equals("library") && !columnId.equals("parents") && !columnId.equals("evidence")) {
+			renderer = new ButtonRenderer(listener);
+			if (searchPhrase != null && viewname.equals(ViewName.CONCEPTS_VIEW)) {
+				// #FF0000 is bright red
+				((ButtonRenderer) renderer).setHighlightProperties(searchPhrase.split(" "), "#FF0000");
+			}
+		} else {
+			renderer = new com.vaadin.ui.renderers.ButtonRenderer(listener);
+		}
 		
 		column.setRenderer(renderer);
 	}	

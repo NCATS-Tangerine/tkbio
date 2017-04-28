@@ -17,6 +17,23 @@ public class GridConnector extends com.vaadin.client.connectors.GridConnector {
 
 	public GridServerRpc rpc = RpcProxy.create(GridServerRpc.class, this);
 	
+	public GridConnector() {
+		getWidget().addScrollHandler(new ScrollHandler() {
+
+			@Override
+			public void onScroll(ScrollEvent event) {
+				Escalator escalator = getWidget().getEscalator();
+				int lastIndex = escalator.getBody().getRowCount() - 1;
+				
+				if (escalator.getVisibleRowRange().contains(lastIndex)) {
+					GridServerRpc rpc = getRpcProxy(GridServerRpc.class);
+					rpc.scrolledToBottom();
+				}
+			}
+			
+		});
+	}
+	
 	@Override
 	public GridWidget<JsonObject> getWidget() {
 		return (GridWidget<JsonObject>) super.getWidget();

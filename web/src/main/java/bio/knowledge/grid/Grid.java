@@ -58,8 +58,7 @@ public class Grid extends com.vaadin.ui.Grid {
 
 		@Override
 		public void scrolledToBottom() {
-			System.out.println("SCROLLED TO BOTTOM");
-			Notification.show("HELLOO");
+			Notification.show("We're at the bottom!!");
 		}
 		
 	};

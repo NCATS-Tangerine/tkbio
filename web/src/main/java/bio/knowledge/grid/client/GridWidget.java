@@ -17,23 +17,6 @@ public class GridWidget<T> extends com.vaadin.client.widgets.Grid<T> {
 	
 	public GridWidget() {
 		super();
-		
-		this.addScrollHandler(new ScrollHandler() {
-
-			@Override
-			public void onScroll(ScrollEvent event) {
-				Escalator escalator = GridWidget.this.getEscalator();
-				int lastIndex = (int) (escalator.getHeightByRows() - 1);
-				
-				if (escalator.getVisibleRowRange().contains(lastIndex)) {
-					GridWidget.this.setTitle("UP");
-				} else {
-					GridWidget.this.setTitle("DOWN");
-				}
-			}
-			
-		});
-		
 	}
 	
 	@Override

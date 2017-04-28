@@ -201,7 +201,7 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 
 		// We use my custom ButtonRenderer because it automatically displays
 		// text as HTML, which is what we need here
-		ButtonRenderer deleteRenderer = new ButtonRenderer();
+		bio.knowledge.renderer.ButtonRenderer deleteRenderer = new bio.knowledge.renderer.ButtonRenderer();
 		deleteRenderer.addClickListener(event -> {
 			UserGroup group = (UserGroup) chooseGroupComboBox.getValue();
 			UserProfile user = (UserProfile) event.getItemId();

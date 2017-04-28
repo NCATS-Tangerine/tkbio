@@ -201,7 +201,6 @@ public class ListView extends BaseView {
 
 	// Identification/Unique Keys
 	private bio.knowledge.grid.Grid dataTable = null;
-//	private Grid dataTable = null;
 
 	// view's name
 	private String viewName = "";
