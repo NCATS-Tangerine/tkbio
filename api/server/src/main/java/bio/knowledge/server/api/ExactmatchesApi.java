@@ -1,5 +1,6 @@
 package bio.knowledge.server.api;
 
+import bio.knowledge.server.model.InlineResponse2002;
 
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +17,15 @@ import java.util.List;
 import javax.validation.constraints.*;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
 
-@Api(value = "exactmatches", description = "the exactmatches API")
-public interface ExactmatchesApi {
+@Api(value = "exactMatches", description = "the exactMatches API")
+public interface ExactMatchesApi {
 
-    @ApiOperation(value = "", notes = "Retrieves a list of qualified identifiers of \"exact match\" concepts, [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch) associated with an specified local concept object identifier, typically, of a concept selected from the list of concepts originally returned by a /concepts API call on a given KS. This API call should generally only be run against the same KS (only) from which the originally selected concept was retrieved. ", response = String.class, responseContainer = "List", tags={ "exactmatches", })
+    @ApiOperation(value = "", notes = "Given an input list of [CURIE](https://www.w3.org/TR/curie/) identifiers of known exactly matched concepts [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch), retrieves the list of (CURIE)[https://www.w3.org/TR/curie/] identifiers of additional concepts that are deemed to be exact matches to one or more of the input concepts. This new list of concept identifiers is returned with the full list of any additional identifiers deemed by the KS to also be identifying exactly matched concepts. ", response = InlineResponse2002.class, responseContainer = "List", tags={ "exactmatches", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Successful response returns a list of [CURIE](https://www.w3.org/TR/curie/) identifiers to 3rd party concepts defined outside of the local KS, which are deemed semantic exact matches to  the specified identified concept (maybe an empty list?) ", response = String.class) })
-    @RequestMapping(value = "/exactmatches/{conceptId}",
+        @ApiResponse(code = 200, message = "Successful response returns a list of [CURIE-encoded](https://www.w3.org/TR/curie/)  identifiers of concepts (with supporting evidence code and reference) matching at least one identifier in the input list of known exactly matched concepts [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch). Each concept identifier is returned with  the full list of any additional associated [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers known to the local Knowledge Source. ", response = InlineResponse2002.class) })
+    @RequestMapping(value = "/exactMatches",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<String>> getExactMatchesToConcept(@ApiParam(value = "local object identifier of the concept to be matched",required=true ) @PathVariable("conceptId") String conceptId);
+    ResponseEntity<List<InlineResponse2002>> getExactMatchesToConceptList( @NotNull @ApiParam(value = "a (urlencoded) space-delimited set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, to be used in a search for additional exactly matching concepts ", required = true) @RequestParam(value = "emci", required = true) String emci);
 
 }
