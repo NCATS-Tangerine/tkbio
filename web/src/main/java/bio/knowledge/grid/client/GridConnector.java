@@ -1,5 +1,6 @@
 package bio.knowledge.grid.client;
 
+import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.widget.grid.events.ScrollEvent;
 import com.vaadin.client.widget.grid.events.ScrollHandler;
@@ -14,6 +15,8 @@ public class GridConnector extends com.vaadin.client.connectors.GridConnector {
 
 	private static final long serialVersionUID = 7130352625723507638L;
 
+	public GridServerRpc rpc = RpcProxy.create(GridServerRpc.class, this);
+	
 	@Override
 	public GridWidget<JsonObject> getWidget() {
 		return (GridWidget<JsonObject>) super.getWidget();
@@ -22,22 +25,6 @@ public class GridConnector extends com.vaadin.client.connectors.GridConnector {
 	@Override
 	public void onStateChanged(StateChangeEvent stateChangeEvent) {
 		super.onStateChanged(stateChangeEvent);
-		
-		getWidget().addScrollHandler(new ScrollHandler() {
-
-			@Override
-			public void onScroll(ScrollEvent event) {
-				Escalator escalator = getWidget().getEscalator();
-				int lastIndex = (int) (escalator.getHeightByRows() - 1);
-				
-				if (escalator.getVisibleRowRange().contains(lastIndex)) {
-					getState().scrollListener.onScroll();
-				} else {
-					
-				}
-			}
-			
-		});
 	}
 	
 	@Override

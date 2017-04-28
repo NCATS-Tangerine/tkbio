@@ -26,9 +26,9 @@ public class GridWidget<T> extends com.vaadin.client.widgets.Grid<T> {
 				int lastIndex = (int) (escalator.getHeightByRows() - 1);
 				
 				if (escalator.getVisibleRowRange().contains(lastIndex)) {
-					GridWidget.this.setTitle("HELLOOO");
+					GridWidget.this.setTitle("UP");
 				} else {
-					GridWidget.this.setTitle("GOODBYE");
+					GridWidget.this.setTitle("DOWN");
 				}
 			}
 			
