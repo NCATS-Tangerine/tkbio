@@ -1,6 +1,7 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
+import bio.knowledge.server.model.ExactMatchesExactMatches;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
@@ -11,14 +12,14 @@ import javax.validation.constraints.*;
 /**
  * InlineResponse2002
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-21T13:55:25.453-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
 
 public class InlineResponse2002   {
   @JsonProperty("id")
   private String id = null;
 
-  @JsonProperty("xrefs")
-  private List<String> xrefs = new ArrayList<String>();
+  @JsonProperty("exactMatches")
+  private List<ExactMatchesExactMatches> exactMatches = new ArrayList<ExactMatchesExactMatches>();
 
   public InlineResponse2002 id(String id) {
     this.id = id;
@@ -38,27 +39,27 @@ public class InlineResponse2002   {
     this.id = id;
   }
 
-  public InlineResponse2002 xrefs(List<String> xrefs) {
-    this.xrefs = xrefs;
+  public InlineResponse2002 exactMatches(List<ExactMatchesExactMatches> exactMatches) {
+    this.exactMatches = exactMatches;
     return this;
   }
 
-  public InlineResponse2002 addXrefsItem(String xrefsItem) {
-    this.xrefs.add(xrefsItem);
+  public InlineResponse2002 addExactMatchesItem(ExactMatchesExactMatches exactMatchesItem) {
+    this.exactMatches.add(exactMatchesItem);
     return this;
   }
 
    /**
-   * Get xrefs
-   * @return xrefs
+   * Get exactMatches
+   * @return exactMatches
   **/
   @ApiModelProperty(value = "")
-  public List<String> getXrefs() {
-    return xrefs;
+  public List<ExactMatchesExactMatches> getExactMatches() {
+    return exactMatches;
   }
 
-  public void setXrefs(List<String> xrefs) {
-    this.xrefs = xrefs;
+  public void setExactMatches(List<ExactMatchesExactMatches> exactMatches) {
+    this.exactMatches = exactMatches;
   }
 
 
@@ -72,12 +73,12 @@ public class InlineResponse2002   {
     }
     InlineResponse2002 inlineResponse2002 = (InlineResponse2002) o;
     return Objects.equals(this.id, inlineResponse2002.id) &&
-        Objects.equals(this.xrefs, inlineResponse2002.xrefs);
+        Objects.equals(this.exactMatches, inlineResponse2002.exactMatches);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, xrefs);
+    return Objects.hash(id, exactMatches);
   }
 
   @Override
@@ -86,7 +87,7 @@ public class InlineResponse2002   {
     sb.append("class InlineResponse2002 {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    xrefs: ").append(toIndentedString(xrefs)).append("\n");
+    sb.append("    exactMatches: ").append(toIndentedString(exactMatches)).append("\n");
     sb.append("}");
     return sb.toString();
   }

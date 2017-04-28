@@ -14,34 +14,34 @@
 package bio.knowledge.client.model;
 
 import java.util.Objects;
-import bio.knowledge.client.model.ExactMatchesExactMatches;
 import com.google.gson.annotations.SerializedName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * InlineResponse2002
+ * ExactMatchesExactMatches
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-04-27T09:44:03.540-07:00")
-public class InlineResponse2002 {
+public class ExactMatchesExactMatches {
   @SerializedName("id")
   private String id = null;
 
-  @SerializedName("exactMatches")
-  private List<ExactMatchesExactMatches> exactMatches = new ArrayList<ExactMatchesExactMatches>();
+  @SerializedName("evidenceCode")
+  private String evidenceCode = null;
 
-  public InlineResponse2002 id(String id) {
+  @SerializedName("reference")
+  private String reference = null;
+
+  public ExactMatchesExactMatches id(String id) {
     this.id = id;
     return this;
   }
 
    /**
-   * Get id
+   * [CURIE](https://www.w3.org/TR/curie/) identifier of asserted exact matching concept 
    * @return id
   **/
-  @ApiModelProperty(example = "null", value = "")
+  @ApiModelProperty(example = "null", value = "[CURIE](https://www.w3.org/TR/curie/) identifier of asserted exact matching concept ")
   public String getId() {
     return id;
   }
@@ -50,27 +50,40 @@ public class InlineResponse2002 {
     this.id = id;
   }
 
-  public InlineResponse2002 exactMatches(List<ExactMatchesExactMatches> exactMatches) {
-    this.exactMatches = exactMatches;
-    return this;
-  }
-
-  public InlineResponse2002 addExactMatchesItem(ExactMatchesExactMatches exactMatchesItem) {
-    this.exactMatches.add(exactMatchesItem);
+  public ExactMatchesExactMatches evidenceCode(String evidenceCode) {
+    this.evidenceCode = evidenceCode;
     return this;
   }
 
    /**
-   * Get exactMatches
-   * @return exactMatches
+   * identifier of [GENE Ontology Evidence Codes](http://geneontology.org/page/guide-go-evidence-codes) 
+   * @return evidenceCode
   **/
-  @ApiModelProperty(example = "null", value = "")
-  public List<ExactMatchesExactMatches> getExactMatches() {
-    return exactMatches;
+  @ApiModelProperty(example = "null", value = "identifier of [GENE Ontology Evidence Codes](http://geneontology.org/page/guide-go-evidence-codes) ")
+  public String getEvidenceCode() {
+    return evidenceCode;
   }
 
-  public void setExactMatches(List<ExactMatchesExactMatches> exactMatches) {
-    this.exactMatches = exactMatches;
+  public void setEvidenceCode(String evidenceCode) {
+    this.evidenceCode = evidenceCode;
+  }
+
+  public ExactMatchesExactMatches reference(String reference) {
+    this.reference = reference;
+    return this;
+  }
+
+   /**
+   * [CURIE](https://www.w3.org/TR/curie/) identifier of supporting reference 
+   * @return reference
+  **/
+  @ApiModelProperty(example = "null", value = "[CURIE](https://www.w3.org/TR/curie/) identifier of supporting reference ")
+  public String getReference() {
+    return reference;
+  }
+
+  public void setReference(String reference) {
+    this.reference = reference;
   }
 
 
@@ -82,24 +95,26 @@ public class InlineResponse2002 {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2002 inlineResponse2002 = (InlineResponse2002) o;
-    return Objects.equals(this.id, inlineResponse2002.id) &&
-        Objects.equals(this.exactMatches, inlineResponse2002.exactMatches);
+    ExactMatchesExactMatches exactMatchesExactMatches = (ExactMatchesExactMatches) o;
+    return Objects.equals(this.id, exactMatchesExactMatches.id) &&
+        Objects.equals(this.evidenceCode, exactMatchesExactMatches.evidenceCode) &&
+        Objects.equals(this.reference, exactMatchesExactMatches.reference);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, exactMatches);
+    return Objects.hash(id, evidenceCode, reference);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2002 {\n");
+    sb.append("class ExactMatchesExactMatches {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    exactMatches: ").append(toIndentedString(exactMatches)).append("\n");
+    sb.append("    evidenceCode: ").append(toIndentedString(evidenceCode)).append("\n");
+    sb.append("    reference: ").append(toIndentedString(reference)).append("\n");
     sb.append("}");
     return sb.toString();
   }

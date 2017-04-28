@@ -18,6 +18,8 @@ import bio.knowledge.client.model.InlineResponse2003;
 import org.junit.Test;
 import org.junit.Ignore;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,14 +44,7 @@ public class StatementsApiTest {
      */
     @Test
     public void getStatementsTest() throws ApiException {
-        List<String> ci = null;
-        Integer pageNumber = null;
-        Integer pageSize = null;
-        List<String> q = null;
-        List<String> sg = null;
-        InlineResponse2003 response = api.getStatements(ci, pageNumber, pageSize, q, sg);
-
-        // TODO: test validations
+    	fail("Not yet implemented");
     }
     
 }

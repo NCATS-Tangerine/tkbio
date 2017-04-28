@@ -14,25 +14,23 @@
 package bio.knowledge.client.model;
 
 import java.util.Objects;
-import bio.knowledge.client.model.ExactMatchesExactMatches;
 import com.google.gson.annotations.SerializedName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * InlineResponse2002
+ * CURIE-encoded identifier 
  */
+@ApiModel(description = "CURIE-encoded identifier ")
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-04-27T09:44:03.540-07:00")
-public class InlineResponse2002 {
+public class InlineResponse2003Object {
   @SerializedName("id")
   private String id = null;
 
-  @SerializedName("exactMatches")
-  private List<ExactMatchesExactMatches> exactMatches = new ArrayList<ExactMatchesExactMatches>();
+  @SerializedName("name")
+  private String name = null;
 
-  public InlineResponse2002 id(String id) {
+  public InlineResponse2003Object id(String id) {
     this.id = id;
     return this;
   }
@@ -50,27 +48,22 @@ public class InlineResponse2002 {
     this.id = id;
   }
 
-  public InlineResponse2002 exactMatches(List<ExactMatchesExactMatches> exactMatches) {
-    this.exactMatches = exactMatches;
-    return this;
-  }
-
-  public InlineResponse2002 addExactMatchesItem(ExactMatchesExactMatches exactMatchesItem) {
-    this.exactMatches.add(exactMatchesItem);
+  public InlineResponse2003Object name(String name) {
+    this.name = name;
     return this;
   }
 
    /**
-   * Get exactMatches
-   * @return exactMatches
+   * human readable label of concept
+   * @return name
   **/
-  @ApiModelProperty(example = "null", value = "")
-  public List<ExactMatchesExactMatches> getExactMatches() {
-    return exactMatches;
+  @ApiModelProperty(example = "null", value = "human readable label of concept")
+  public String getName() {
+    return name;
   }
 
-  public void setExactMatches(List<ExactMatchesExactMatches> exactMatches) {
-    this.exactMatches = exactMatches;
+  public void setName(String name) {
+    this.name = name;
   }
 
 
@@ -82,24 +75,24 @@ public class InlineResponse2002 {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2002 inlineResponse2002 = (InlineResponse2002) o;
-    return Objects.equals(this.id, inlineResponse2002.id) &&
-        Objects.equals(this.exactMatches, inlineResponse2002.exactMatches);
+    InlineResponse2003Object inlineResponse2003Object = (InlineResponse2003Object) o;
+    return Objects.equals(this.id, inlineResponse2003Object.id) &&
+        Objects.equals(this.name, inlineResponse2003Object.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, exactMatches);
+    return Objects.hash(id, name);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2002 {\n");
+    sb.append("class InlineResponse2003Object {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    exactMatches: ").append(toIndentedString(exactMatches)).append("\n");
+    sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("}");
     return sb.toString();
   }

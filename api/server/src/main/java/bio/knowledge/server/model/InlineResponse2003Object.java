@@ -7,30 +7,28 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
 /**
- * InlineResponse2004DataPage
+ * CURIE-encoded identifier 
  */
+@ApiModel(description = "CURIE-encoded identifier ")
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
 
-public class InlineResponse2004DataPage   {
+public class InlineResponse2003Object   {
   @JsonProperty("id")
   private String id = null;
 
   @JsonProperty("name")
   private String name = null;
 
-  @JsonProperty("publicationDate")
-  private String publicationDate = null;
-
-  public InlineResponse2004DataPage id(String id) {
+  public InlineResponse2003Object id(String id) {
     this.id = id;
     return this;
   }
 
    /**
-   * CURIE-encoded identifier for the cited reference 
+   * Get id
    * @return id
   **/
-  @ApiModelProperty(value = "CURIE-encoded identifier for the cited reference ")
+  @ApiModelProperty(value = "")
   public String getId() {
     return id;
   }
@@ -39,40 +37,22 @@ public class InlineResponse2004DataPage   {
     this.id = id;
   }
 
-  public InlineResponse2004DataPage name(String name) {
+  public InlineResponse2003Object name(String name) {
     this.name = name;
     return this;
   }
 
    /**
-   * canonical human readable title of the cited reference 
+   * human readable label of concept
    * @return name
   **/
-  @ApiModelProperty(value = "canonical human readable title of the cited reference ")
+  @ApiModelProperty(value = "human readable label of concept")
   public String getName() {
     return name;
   }
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public InlineResponse2004DataPage publicationDate(String publicationDate) {
-    this.publicationDate = publicationDate;
-    return this;
-  }
-
-   /**
-   * publication date of reference (yyyy-mm-dd) 
-   * @return publicationDate
-  **/
-  @ApiModelProperty(value = "publication date of reference (yyyy-mm-dd) ")
-  public String getPublicationDate() {
-    return publicationDate;
-  }
-
-  public void setPublicationDate(String publicationDate) {
-    this.publicationDate = publicationDate;
   }
 
 
@@ -84,25 +64,23 @@ public class InlineResponse2004DataPage   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2004DataPage inlineResponse2004DataPage = (InlineResponse2004DataPage) o;
-    return Objects.equals(this.id, inlineResponse2004DataPage.id) &&
-        Objects.equals(this.name, inlineResponse2004DataPage.name) &&
-        Objects.equals(this.publicationDate, inlineResponse2004DataPage.publicationDate);
+    InlineResponse2003Object inlineResponse2003Object = (InlineResponse2003Object) o;
+    return Objects.equals(this.id, inlineResponse2003Object.id) &&
+        Objects.equals(this.name, inlineResponse2003Object.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, publicationDate);
+    return Objects.hash(id, name);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2004DataPage {\n");
+    sb.append("class InlineResponse2003Object {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    publicationDate: ").append(toIndentedString(publicationDate)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -12,7 +12,7 @@ import javax.validation.constraints.*;
 /**
  * InlineResponse200
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-21T13:55:25.453-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
 
 public class InlineResponse200   {
   @JsonProperty("id")
@@ -39,10 +39,10 @@ public class InlineResponse200   {
   }
 
    /**
-   * object identifier for the concept in the specified knowledge source database 
+   * local object identifier for the concept in the specified knowledge source database 
    * @return id
   **/
-  @ApiModelProperty(value = "object identifier for the concept in the specified knowledge source database ")
+  @ApiModelProperty(value = "local object identifier for the concept in the specified knowledge source database ")
   public String getId() {
     return id;
   }

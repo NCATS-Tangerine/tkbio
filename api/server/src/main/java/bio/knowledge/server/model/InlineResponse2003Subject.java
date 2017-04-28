@@ -9,7 +9,7 @@ import javax.validation.constraints.*;
 /**
  * InlineResponse2003Subject
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-21T13:55:25.453-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
 
 public class InlineResponse2003Subject   {
   @JsonProperty("id")
@@ -24,10 +24,10 @@ public class InlineResponse2003Subject   {
   }
 
    /**
-   * Get id
+   * CURIE-encoded identifier 
    * @return id
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "CURIE-encoded identifier ")
   public String getId() {
     return id;
   }

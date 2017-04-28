@@ -4,7 +4,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **String** |  |  [optional]
+**id** | **String** | local identifier to evidence record |  [optional]
 **count** | **Integer** |  |  [optional]
 
 

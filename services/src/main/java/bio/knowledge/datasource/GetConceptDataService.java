@@ -28,8 +28,8 @@ public class GetConceptDataService {
 	}
 
 	public CompletableFuture<List<ConceptImpl>> query(
-			List<String> filters,
-			List<String> semanticGroups,
+			String filters,
+			String semanticGroups,
 			int pageNumber,
 			int pageSize
 	) {
@@ -94,8 +94,8 @@ public class GetConceptDataService {
 
 	private Supplier<List<ConceptImpl>> buildSupplier(
 			ApiClient apiClient,
-			List<String> filters,
-			List<String> semanticGroups,
+			String filters,
+			String semanticGroups,
 			int pageNumber,
 			int pageSize
 	) {
