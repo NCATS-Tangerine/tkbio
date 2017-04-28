@@ -21,42 +21,6 @@ public class Grid extends com.vaadin.ui.Grid {
 	private GridServerRpc rpc = new GridServerRpc() {
 
 		@Override
-		public void sort(String[] columnIds, SortDirection[] directions, boolean userOriginated) {
-			System.out.println("sort");
-			
-		}
-
-		@Override
-		public void itemClick(String rowKey, String columnId, MouseEventDetails details) {
-			System.out.println("itemClick");
-			
-		}
-
-		@Override
-		public void contextClick(int rowIndex, String rowKey, String columnId, Section section,
-				MouseEventDetails details) {
-			System.out.println("contextClick");
-			
-		}
-
-		@Override
-		public void columnsReordered(List<String> newColumnOrder, List<String> oldColumnOrder) {
-			System.out.println("columnsReordered");
-			
-		}
-
-		@Override
-		public void columnVisibilityChanged(String id, boolean hidden, boolean userOriginated) {
-			System.out.println("columnVisibilityChanged");
-			
-		}
-
-		@Override
-		public void columnResized(String id, double pixels) {
-			System.out.println("COLUMN RESIZED");
-		}
-
-		@Override
 		public void scrolledToBottom() {
 			Notification.show("We're at the bottom!!");
 		}
