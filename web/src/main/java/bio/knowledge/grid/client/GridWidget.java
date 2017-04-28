@@ -33,5 +33,11 @@ public class GridWidget<T> extends com.vaadin.client.widgets.Grid<T> {
 			}
 			
 		});
+		
+	}
+	
+	@Override
+	public Escalator getEscalator() {
+		return super.getEscalator();
 	}
 }
