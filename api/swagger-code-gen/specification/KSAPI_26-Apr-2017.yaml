@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Translator Knowledge Beacon API
-  version: 4.0.6
+  version: 1.0.7
   contact:
     responsibleDeveloper: Richard Bruskiewich
     responsibleOrganization: STAR Informatics/Delphinai Corporation
@@ -221,9 +221,9 @@ paths:
     get:
       description: >
         Retrieves a list of qualified identifiers of "exact match" concepts,
-        [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch) associated
-        with an specified local concept object identifier, typically, of a
-        concept selected from the list of concepts originally returned by a
+        [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch) associated with a
+        specified url encoded CURIE (without brackets) concept object identifier, 
+        typically, of a concept selected from the list of concepts originally returned by a
         /concepts API call on a given KS. This API call should generally only be
         run against the same KS (only) from which the originally selected
         concept was retrieved.
@@ -251,7 +251,7 @@ paths:
           examples:
             application/json:
               - 'wd:Q12345 mon:67890'
-  /exactMatches:
+  /exactmatches:
     get:
       description: >
         Given an input list of [CURIE](https://www.w3.org/TR/curie/) identifiers
