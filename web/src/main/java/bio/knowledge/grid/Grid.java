@@ -13,16 +13,22 @@ import bio.knowledge.grid.client.GridServerRpc;
 public class Grid extends com.vaadin.ui.Grid {
 	private static final long serialVersionUID = 6340543125776370643L;
 	
-	public Grid() {
+	private final ScrollListener scrollListener;
+	
+	public interface ScrollListener {
+		public void scrolledToBottom();
+	}
+	
+	public Grid(ScrollListener scrollListener) {
 		registerRpc(rpc);
-		Notification.show("CONSTRUCTOR CALL");
+		this.scrollListener = scrollListener;
 	}
 	
 	private GridServerRpc rpc = new GridServerRpc() {
 
 		@Override
 		public void scrolledToBottom() {
-			Notification.show("We're at the bottom!!");
+			scrollListener.scrolledToBottom();
 		}
 		
 	};
