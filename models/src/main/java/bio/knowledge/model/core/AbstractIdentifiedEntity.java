@@ -36,7 +36,6 @@ import bio.knowledge.model.core.IdentifiedEntity;
  * Should be abstract, since this class is NOT generally directly instantiated, 
  * but Neo4j doesn't really like abstract classes for @NodeEntity tagged classes
  */
-@NodeEntity(label="IdentifiedEntity")
 public class AbstractIdentifiedEntity implements IdentifiedEntity {
 
 	protected Long id = 0L;

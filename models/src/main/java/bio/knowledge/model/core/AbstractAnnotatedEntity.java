@@ -28,9 +28,6 @@ package bio.knowledge.model.core;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
-
 import bio.knowledge.model.core.AnnotatedEntity;
 import bio.knowledge.model.core.Feature;
 
@@ -40,7 +37,6 @@ import bio.knowledge.model.core.Feature;
  * @author Richard
  *
  */
-@NodeEntity(label="AnnotatedEntity")
 public class AbstractAnnotatedEntity 
 	extends AbstractIdentifiedEntity implements AnnotatedEntity {
 
@@ -60,7 +56,6 @@ public class AbstractAnnotatedEntity
     	super(accessionId,name,description) ;
     }
 	
-    @Relationship(type="FEATURE")
     private Set<Feature> features = new HashSet<Feature>() ; ;
 
     /*
