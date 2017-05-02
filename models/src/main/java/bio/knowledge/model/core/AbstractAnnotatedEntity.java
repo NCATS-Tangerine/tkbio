@@ -56,7 +56,7 @@ public class AbstractAnnotatedEntity
     	super(accessionId,name,description) ;
     }
 	
-    private Set<Feature> features = new HashSet<Feature>() ; ;
+    private Set<Feature> features = new HashSet<Feature>() ;
 
     /*
      * (non-Javadoc)
