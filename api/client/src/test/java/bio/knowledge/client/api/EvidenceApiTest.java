@@ -10,45 +10,48 @@
  * Do not edit the class manually.
  */
 
-
 package bio.knowledge.client.api;
 
-import bio.knowledge.client.ApiException;
-import bio.knowledge.client.model.InlineResponse2004;
 import org.junit.Test;
-import org.junit.Ignore;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import bio.knowledge.client.ApiClient;
+import bio.knowledge.client.ApiException;
 
 /**
  * API tests for EvidenceApi
  */
-@Ignore
+// @Ignore
 public class EvidenceApiTest {
+	private static final boolean RUNNING_CLIENT_LOCALLY = true;
 
-    private final EvidenceApi api = new EvidenceApi();
+	private final static EvidenceApi api = new EvidenceApi();
+	static {
+		if (RUNNING_CLIENT_LOCALLY) {
+			ApiClient apiClient = new ApiClient();
+			apiClient.setBasePath("http://localhost:8080/api/");
+			api.setApiClient(apiClient);
+		}
+	}
 
-    
-    /**
-     * 
-     *
-     * Retrieves a (paged) list of references cited as evidence for a specified statement 
-     *
-     * @throws ApiException
-     *          if the Api call fails
-     */
-    @Test
-    public void getEvidenceTest() throws ApiException {
-        String evidenceId = null;
-        String keywords = null;
-        Integer pageNumber = null;
-        Integer pageSize = null;
-        List<InlineResponse2004> response = api.getEvidence(evidenceId, keywords, pageNumber, pageSize);
+	/**
+	 * 
+	 *
+	 * Retrieves a (paged) list of references cited as evidence for a specified
+	 * statement
+	 *
+	 * @throws ApiException
+	 *             if the Api call fails
+	 */
+	@Test
+	public void getEvidenceTest() throws ApiException {
+		String evidenceId = "kbe:Q179661.P2175.Q126691";
+		String keywords = null;
+		Integer pageNumber = null;
+		Integer pageSize = null;
 
-        // TODO: test validations
-    }
-    
+		api.getEvidence(evidenceId, keywords, pageNumber, pageSize);
+
+		// TODO: test validations
+	}
+
 }
