@@ -1,14 +1,15 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
  * ConceptsconceptIdDetails
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T09:47:16.640-07:00")
 
 public class ConceptsconceptIdDetails   {
   @JsonProperty("tag")

@@ -1,36 +1,33 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-import bio.knowledge.server.model.ExactmatchesExactMatches;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.ArrayList;
-import java.util.List;
 import javax.validation.constraints.*;
 /**
- * InlineResponse2002
+ * StatementsPredicate
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T09:47:16.640-07:00")
 
-public class InlineResponse2002   {
+public class StatementsPredicate   {
   @JsonProperty("id")
   private String id = null;
 
-  @JsonProperty("exactMatches")
-  private List<ExactmatchesExactMatches> exactMatches = new ArrayList<ExactmatchesExactMatches>();
+  @JsonProperty("name")
+  private String name = null;
 
-  public InlineResponse2002 id(String id) {
+  public StatementsPredicate id(String id) {
     this.id = id;
     return this;
   }
 
    /**
-   * Get id
+   * CURIE-encoded identifier 
    * @return id
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "CURIE-encoded identifier ")
   public String getId() {
     return id;
   }
@@ -39,27 +36,22 @@ public class InlineResponse2002   {
     this.id = id;
   }
 
-  public InlineResponse2002 exactMatches(List<ExactmatchesExactMatches> exactMatches) {
-    this.exactMatches = exactMatches;
-    return this;
-  }
-
-  public InlineResponse2002 addExactMatchesItem(ExactmatchesExactMatches exactMatchesItem) {
-    this.exactMatches.add(exactMatchesItem);
+  public StatementsPredicate name(String name) {
+    this.name = name;
     return this;
   }
 
    /**
-   * Get exactMatches
-   * @return exactMatches
+   * human readable label of concept
+   * @return name
   **/
-  @ApiModelProperty(value = "")
-  public List<ExactmatchesExactMatches> getExactMatches() {
-    return exactMatches;
+  @ApiModelProperty(value = "human readable label of concept")
+  public String getName() {
+    return name;
   }
 
-  public void setExactMatches(List<ExactmatchesExactMatches> exactMatches) {
-    this.exactMatches = exactMatches;
+  public void setName(String name) {
+    this.name = name;
   }
 
 
@@ -71,23 +63,23 @@ public class InlineResponse2002   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2002 inlineResponse2002 = (InlineResponse2002) o;
-    return Objects.equals(this.id, inlineResponse2002.id) &&
-        Objects.equals(this.exactMatches, inlineResponse2002.exactMatches);
+    StatementsPredicate statementsPredicate = (StatementsPredicate) o;
+    return Objects.equals(this.id, statementsPredicate.id) &&
+        Objects.equals(this.name, statementsPredicate.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, exactMatches);
+    return Objects.hash(id, name);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2002 {\n");
+    sb.append("class StatementsPredicate {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    exactMatches: ").append(toIndentedString(exactMatches)).append("\n");
+    sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("}");
     return sb.toString();
   }

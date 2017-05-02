@@ -1,16 +1,17 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
- * InlineResponse2004DataPage
+ * EvidenceevidenceIdDataPage
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T09:47:16.640-07:00")
 
-public class InlineResponse2004DataPage   {
+public class EvidenceevidenceIdDataPage   {
   @JsonProperty("id")
   private String id = null;
 
@@ -20,7 +21,7 @@ public class InlineResponse2004DataPage   {
   @JsonProperty("publicationDate")
   private String publicationDate = null;
 
-  public InlineResponse2004DataPage id(String id) {
+  public EvidenceevidenceIdDataPage id(String id) {
     this.id = id;
     return this;
   }
@@ -38,7 +39,7 @@ public class InlineResponse2004DataPage   {
     this.id = id;
   }
 
-  public InlineResponse2004DataPage name(String name) {
+  public EvidenceevidenceIdDataPage name(String name) {
     this.name = name;
     return this;
   }
@@ -56,7 +57,7 @@ public class InlineResponse2004DataPage   {
     this.name = name;
   }
 
-  public InlineResponse2004DataPage publicationDate(String publicationDate) {
+  public EvidenceevidenceIdDataPage publicationDate(String publicationDate) {
     this.publicationDate = publicationDate;
     return this;
   }
@@ -83,10 +84,10 @@ public class InlineResponse2004DataPage   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2004DataPage inlineResponse2004DataPage = (InlineResponse2004DataPage) o;
-    return Objects.equals(this.id, inlineResponse2004DataPage.id) &&
-        Objects.equals(this.name, inlineResponse2004DataPage.name) &&
-        Objects.equals(this.publicationDate, inlineResponse2004DataPage.publicationDate);
+    EvidenceevidenceIdDataPage evidenceevidenceIdDataPage = (EvidenceevidenceIdDataPage) o;
+    return Objects.equals(this.id, evidenceevidenceIdDataPage.id) &&
+        Objects.equals(this.name, evidenceevidenceIdDataPage.name) &&
+        Objects.equals(this.publicationDate, evidenceevidenceIdDataPage.publicationDate);
   }
 
   @Override
@@ -97,7 +98,7 @@ public class InlineResponse2004DataPage   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2004DataPage {\n");
+    sb.append("class EvidenceevidenceIdDataPage {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");

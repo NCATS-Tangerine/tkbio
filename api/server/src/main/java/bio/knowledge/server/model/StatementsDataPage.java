@@ -1,32 +1,37 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-
+import bio.knowledge.server.model.StatementsEvidence;
+import bio.knowledge.server.model.StatementsObject;
+import bio.knowledge.server.model.StatementsPredicate;
+import bio.knowledge.server.model.StatementsSubject;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
- * InlineResponse2003DataPage
+ * StatementsDataPage
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T09:47:16.640-07:00")
 
-public class InlineResponse2003DataPage   {
+public class StatementsDataPage   {
   @JsonProperty("id")
   private String id = null;
 
   @JsonProperty("subject")
-  private InlineResponse2003Subject subject = null;
+  private StatementsSubject subject = null;
 
   @JsonProperty("predicate")
-  private InlineResponse2003Subject predicate = null;
+  private StatementsPredicate predicate = null;
 
   @JsonProperty("object")
-  private InlineResponse2003Object object = null;
+  private StatementsObject object = null;
 
   @JsonProperty("evidence")
-  private InlineResponse2003Evidence evidence = null;
+  private StatementsEvidence evidence = null;
 
-  public InlineResponse2003DataPage id(String id) {
+  public StatementsDataPage id(String id) {
     this.id = id;
     return this;
   }
@@ -44,7 +49,7 @@ public class InlineResponse2003DataPage   {
     this.id = id;
   }
 
-  public InlineResponse2003DataPage subject(InlineResponse2003Subject subject) {
+  public StatementsDataPage subject(StatementsSubject subject) {
     this.subject = subject;
     return this;
   }
@@ -54,15 +59,15 @@ public class InlineResponse2003DataPage   {
    * @return subject
   **/
   @ApiModelProperty(value = "")
-  public InlineResponse2003Subject getSubject() {
+  public StatementsSubject getSubject() {
     return subject;
   }
 
-  public void setSubject(InlineResponse2003Subject subject) {
+  public void setSubject(StatementsSubject subject) {
     this.subject = subject;
   }
 
-  public InlineResponse2003DataPage predicate(InlineResponse2003Subject predicate) {
+  public StatementsDataPage predicate(StatementsPredicate predicate) {
     this.predicate = predicate;
     return this;
   }
@@ -72,15 +77,15 @@ public class InlineResponse2003DataPage   {
    * @return predicate
   **/
   @ApiModelProperty(value = "")
-  public InlineResponse2003Subject getPredicate() {
+  public StatementsPredicate getPredicate() {
     return predicate;
   }
 
-  public void setPredicate(InlineResponse2003Subject predicate) {
+  public void setPredicate(StatementsPredicate predicate) {
     this.predicate = predicate;
   }
 
-  public InlineResponse2003DataPage object(InlineResponse2003Object object) {
+  public StatementsDataPage object(StatementsObject object) {
     this.object = object;
     return this;
   }
@@ -90,15 +95,15 @@ public class InlineResponse2003DataPage   {
    * @return object
   **/
   @ApiModelProperty(value = "")
-  public InlineResponse2003Object getObject() {
+  public StatementsObject getObject() {
     return object;
   }
 
-  public void setObject(InlineResponse2003Object object) {
+  public void setObject(StatementsObject object) {
     this.object = object;
   }
 
-  public InlineResponse2003DataPage evidence(InlineResponse2003Evidence evidence) {
+  public StatementsDataPage evidence(StatementsEvidence evidence) {
     this.evidence = evidence;
     return this;
   }
@@ -108,11 +113,11 @@ public class InlineResponse2003DataPage   {
    * @return evidence
   **/
   @ApiModelProperty(value = "")
-  public InlineResponse2003Evidence getEvidence() {
+  public StatementsEvidence getEvidence() {
     return evidence;
   }
 
-  public void setEvidence(InlineResponse2003Evidence evidence) {
+  public void setEvidence(StatementsEvidence evidence) {
     this.evidence = evidence;
   }
 
@@ -125,12 +130,12 @@ public class InlineResponse2003DataPage   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2003DataPage inlineResponse2003DataPage = (InlineResponse2003DataPage) o;
-    return Objects.equals(this.id, inlineResponse2003DataPage.id) &&
-        Objects.equals(this.subject, inlineResponse2003DataPage.subject) &&
-        Objects.equals(this.predicate, inlineResponse2003DataPage.predicate) &&
-        Objects.equals(this.object, inlineResponse2003DataPage.object) &&
-        Objects.equals(this.evidence, inlineResponse2003DataPage.evidence);
+    StatementsDataPage statementsDataPage = (StatementsDataPage) o;
+    return Objects.equals(this.id, statementsDataPage.id) &&
+        Objects.equals(this.subject, statementsDataPage.subject) &&
+        Objects.equals(this.predicate, statementsDataPage.predicate) &&
+        Objects.equals(this.object, statementsDataPage.object) &&
+        Objects.equals(this.evidence, statementsDataPage.evidence);
   }
 
   @Override
@@ -141,7 +146,7 @@ public class InlineResponse2003DataPage   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2003DataPage {\n");
+    sb.append("class StatementsDataPage {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    subject: ").append(toIndentedString(subject)).append("\n");

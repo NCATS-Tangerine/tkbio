@@ -1,16 +1,17 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
- * ExactMatchesExactMatches
+ * ExactmatchesExactMatches
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T09:47:16.640-07:00")
 
-public class ExactMatchesExactMatches   {
+public class ExactmatchesExactMatches   {
   @JsonProperty("id")
   private String id = null;
 
@@ -20,7 +21,7 @@ public class ExactMatchesExactMatches   {
   @JsonProperty("reference")
   private String reference = null;
 
-  public ExactMatchesExactMatches id(String id) {
+  public ExactmatchesExactMatches id(String id) {
     this.id = id;
     return this;
   }
@@ -38,7 +39,7 @@ public class ExactMatchesExactMatches   {
     this.id = id;
   }
 
-  public ExactMatchesExactMatches evidenceCode(String evidenceCode) {
+  public ExactmatchesExactMatches evidenceCode(String evidenceCode) {
     this.evidenceCode = evidenceCode;
     return this;
   }
@@ -56,7 +57,7 @@ public class ExactMatchesExactMatches   {
     this.evidenceCode = evidenceCode;
   }
 
-  public ExactMatchesExactMatches reference(String reference) {
+  public ExactmatchesExactMatches reference(String reference) {
     this.reference = reference;
     return this;
   }
@@ -83,10 +84,10 @@ public class ExactMatchesExactMatches   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ExactMatchesExactMatches exactMatchesExactMatches = (ExactMatchesExactMatches) o;
-    return Objects.equals(this.id, exactMatchesExactMatches.id) &&
-        Objects.equals(this.evidenceCode, exactMatchesExactMatches.evidenceCode) &&
-        Objects.equals(this.reference, exactMatchesExactMatches.reference);
+    ExactmatchesExactMatches exactmatchesExactMatches = (ExactmatchesExactMatches) o;
+    return Objects.equals(this.id, exactmatchesExactMatches.id) &&
+        Objects.equals(this.evidenceCode, exactmatchesExactMatches.evidenceCode) &&
+        Objects.equals(this.reference, exactmatchesExactMatches.reference);
   }
 
   @Override
@@ -97,7 +98,7 @@ public class ExactMatchesExactMatches   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ExactMatchesExactMatches {\n");
+    sb.append("class ExactmatchesExactMatches {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    evidenceCode: ").append(toIndentedString(evidenceCode)).append("\n");

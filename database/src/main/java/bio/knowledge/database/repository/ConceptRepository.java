@@ -136,37 +136,23 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 
 	public List<Neo4jConcept> findByNameLikeIgnoreCase( @Param("filter") String filter, Pageable pageable );
 	
-	@Query("MATCH (concept:Concept) WHERE ID(concept) = {localId} RETURN concept;")
-	public Concept apiGetConceptById(@Param("localId") Integer localId);
+	@Query("MATCH (concept:Concept) WHERE concept.accessionId = {curieId} RETURN concept;")
+	public Concept apiGetConceptById(@Param("curieId") String curieId);
 	
 	@Query(
 			" MATCH (concept:Concept) " +
-			" WHERE " +
-			" ANY (x in {filter} WHERE LOWER(concept.name) CONTAINS LOWER(x)) OR " +
-			" ANY (x in {filter} WHERE LOWER(concept.synonyms) CONTAINS LOWER(x)) " +
+			" WHERE ( " +
+			"     ANY (x IN {filter} WHERE LOWER(concept.name)     CONTAINS LOWER(x)) OR " +
+			"     ANY (x IN {filter} WHERE LOWER(concept.synonyms) CONTAINS LOWER(x)) " +
+			" ) AND (" +
+			"     {semanticGroups} IS NULL OR SIZE({semanticGroups}) = 0 OR " +
+			"     ANY (x IN {semanticGroups} WHERE LOWER(concept.semanticGroup) = LOWER(x)) " +
+			" ) " +
 			" RETURN concept " +
 			" SKIP  {pageNumber} * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
 	public List<Neo4jConcept> apiGetConcepts(
-			@Param("filter") String[] filter,
-			@Param("pageNumber") Integer pageNumber,
-			@Param("pageSize") Integer pageSize
-	);
-	
-	@Query(
-			" MATCH (concept:Concept) " +
-			" WHERE " +
-			" ( " +
-			"     ANY (x IN {filter} WHERE LOWER(concept.name) CONTAINS LOWER(x)) OR " +
-			"     ANY (x IN {filter} WHERE LOWER(concept.synonyms) CONTAINS LOWER(x)) " +
-			" ) " +
-			" AND ANY (x IN {semanticGroups} WHERE LOWER(concept.semanticGroup) = LOWER(x)) " +
-			" RETURN concept " +
-			" SKIP  {pageNumber} * {pageSize} " +
-			" LIMIT {pageSize} "
-	)
-	public List<Neo4jConcept> apiGetConceptsByType(
 			@Param("filter") String[] filter,
 			@Param("semanticGroups") String[] semanticGroups,
 			@Param("pageNumber") Integer pageNumber,

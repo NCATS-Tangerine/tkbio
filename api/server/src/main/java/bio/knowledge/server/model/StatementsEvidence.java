@@ -1,23 +1,24 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
- * InlineResponse2003Evidence
+ * StatementsEvidence
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T09:47:16.640-07:00")
 
-public class InlineResponse2003Evidence   {
+public class StatementsEvidence   {
   @JsonProperty("id")
   private String id = null;
 
   @JsonProperty("count")
   private Integer count = null;
 
-  public InlineResponse2003Evidence id(String id) {
+  public StatementsEvidence id(String id) {
     this.id = id;
     return this;
   }
@@ -35,7 +36,7 @@ public class InlineResponse2003Evidence   {
     this.id = id;
   }
 
-  public InlineResponse2003Evidence count(Integer count) {
+  public StatementsEvidence count(Integer count) {
     this.count = count;
     return this;
   }
@@ -62,9 +63,9 @@ public class InlineResponse2003Evidence   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2003Evidence inlineResponse2003Evidence = (InlineResponse2003Evidence) o;
-    return Objects.equals(this.id, inlineResponse2003Evidence.id) &&
-        Objects.equals(this.count, inlineResponse2003Evidence.count);
+    StatementsEvidence statementsEvidence = (StatementsEvidence) o;
+    return Objects.equals(this.id, statementsEvidence.id) &&
+        Objects.equals(this.count, statementsEvidence.count);
   }
 
   @Override
@@ -75,7 +76,7 @@ public class InlineResponse2003Evidence   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2003Evidence {\n");
+    sb.append("class StatementsEvidence {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    count: ").append(toIndentedString(count)).append("\n");

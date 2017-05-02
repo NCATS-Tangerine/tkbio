@@ -1,16 +1,18 @@
 package bio.knowledge.server.model;
 
+import java.util.Objects;
+import bio.knowledge.server.model.StatementsDataPage;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
  * InlineResponse2003
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T09:47:16.640-07:00")
 
 public class InlineResponse2003   {
   @JsonProperty("keywords")
@@ -29,7 +31,7 @@ public class InlineResponse2003   {
   private Integer totalEntries = null;
 
   @JsonProperty("dataPage")
-  private List<InlineResponse2003DataPage> dataPage = new ArrayList<InlineResponse2003DataPage>();
+  private List<StatementsDataPage> dataPage = new ArrayList<StatementsDataPage>();
 
   public InlineResponse2003 keywords(List<String> keywords) {
     this.keywords = keywords;
@@ -131,12 +133,12 @@ public class InlineResponse2003   {
     this.totalEntries = totalEntries;
   }
 
-  public InlineResponse2003 dataPage(List<InlineResponse2003DataPage> dataPage) {
+  public InlineResponse2003 dataPage(List<StatementsDataPage> dataPage) {
     this.dataPage = dataPage;
     return this;
   }
 
-  public InlineResponse2003 addDataPageItem(InlineResponse2003DataPage dataPageItem) {
+  public InlineResponse2003 addDataPageItem(StatementsDataPage dataPageItem) {
     this.dataPage.add(dataPageItem);
     return this;
   }
@@ -146,11 +148,11 @@ public class InlineResponse2003   {
    * @return dataPage
   **/
   @ApiModelProperty(value = "")
-  public List<InlineResponse2003DataPage> getDataPage() {
+  public List<StatementsDataPage> getDataPage() {
     return dataPage;
   }
 
-  public void setDataPage(List<InlineResponse2003DataPage> dataPage) {
+  public void setDataPage(List<StatementsDataPage> dataPage) {
     this.dataPage = dataPage;
   }
 
