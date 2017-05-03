@@ -1,25 +1,29 @@
-package bio.knowledge.datasource;
+package bio.knowledge.service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import bio.knowledge.client.ApiClient;
+import bio.knowledge.model.ConceptImpl;
 
-public class KnowledgeSource {
+public class KnowledgeBeacon {
 	
 	private ApiClient apiClient;
 	
 	private final String NAME;
 	private final String BASE_URL;
 
-	public KnowledgeSource(String baseUrl, String name) {
+	public KnowledgeBeacon(String baseUrl, String name) {
 		this.apiClient = new ApiClient();
 		this.apiClient.setBasePath(baseUrl);
 		NAME = name;
 		BASE_URL = baseUrl;
 	}
 	
-	public KnowledgeSource(String baseUrl) {
+	public KnowledgeBeacon(String baseUrl) {
 		this(baseUrl, null);
 	}
 
@@ -28,4 +32,6 @@ public class KnowledgeSource {
 		set.add(apiClient);
 		return set;
 	}
+
+
 }

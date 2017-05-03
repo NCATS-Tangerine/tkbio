@@ -54,10 +54,7 @@ import bio.knowledge.datasource.DataService;
 import bio.knowledge.datasource.DataServiceUtility;
 import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.datasource.DataSourceRegistry;
-import bio.knowledge.datasource.GetConceptDataService;
 import bio.knowledge.model.ConceptImpl;
-import bio.knowledge.datasource.KnowledgeSource;
-import bio.knowledge.datasource.KnowledgeSourcePool;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
 import bio.knowledge.model.Concept;
@@ -181,21 +178,31 @@ public class ConceptService
 		return findAllFiltered(filter,pageable);
 	}
 	
+	@Autowired
+	private KnowledgeBeaconService kbService;
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	// TODO: I think this is where the refactoring faltered
 	private Page<Concept> findAllFiltered(String filter, Pageable pageable) {
-		KnowledgeSource ks1 = new KnowledgeSource("http://localhost:8080/api/");
-		KnowledgeSource ks2 = new KnowledgeSource("broken link");
-		KnowledgeSourcePool pool = new KnowledgeSourcePool();
-		pool.add(ks1);
-		pool.add(ks2);
-		GetConceptDataService service = new GetConceptDataService(pool);
-		CompletableFuture<List<ConceptImpl>> future = service.query(
+
+		//GetConceptDataService service = new GetConceptDataService(registry);
+		//GetConceptDataService service = registry.getConceptDataService();
+		
+		/*
+		 * CompletableFuture<List<ConceptImpl>> future = service.query(
 				filter,
 				null,
 				pageable.getPageNumber(),
 				pageable.getPageSize()
 		);
+		*/
+		
+		 CompletableFuture<List<ConceptImpl>> future = kbService.getConcepts(
+					filter,
+					null,
+					pageable.getPageNumber(),
+					pageable.getPageSize()
+			);
 		
 		try {
 			List<ConceptImpl> concepts = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);

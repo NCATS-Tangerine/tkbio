@@ -1,4 +1,4 @@
-package bio.knowledge.datasource;
+package bio.knowledge.test;
 
 import static org.junit.Assert.*;
 
@@ -12,6 +12,9 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Test;
 
 import bio.knowledge.model.ConceptImpl;
+import bio.knowledge.service.GetConceptDataService;
+import bio.knowledge.service.KnowledgeBeacon;
+import bio.knowledge.service.KnowledgeBeaconService;
 
 public class GetConceptDataServiceTest {
 	
@@ -27,7 +30,7 @@ public class GetConceptDataServiceTest {
 	
 	@Test
 	public void testSingleKnowledgeSource() {
-		KnowledgeSource ks = new KnowledgeSource(serverUrl);
+		KnowledgeBeacon ks = new KnowledgeBeacon(serverUrl);
 		GetConceptDataService service = new GetConceptDataService(ks);
 		
 		CompletableFuture<List<ConceptImpl>> future =
@@ -46,9 +49,9 @@ public class GetConceptDataServiceTest {
 	
 	@Test
 	public void testDuplicateKnowledgeSources() {
-		KnowledgeSource ks1 = new KnowledgeSource(serverUrl);
-		KnowledgeSource ks2 = new KnowledgeSource(serverUrl);
-		KnowledgeSourcePool ksPool = new KnowledgeSourcePool();
+		KnowledgeBeacon ks1 = new KnowledgeBeacon(serverUrl);
+		KnowledgeBeacon ks2 = new KnowledgeBeacon(serverUrl);
+		KnowledgeBeaconService ksPool = new KnowledgeBeaconService();
 		
 		ksPool.add(ks1);
 		ksPool.add(ks2);
@@ -71,9 +74,9 @@ public class GetConceptDataServiceTest {
 	
 	@Test
 	public void testBrokenKnowledgeSources() {
-		KnowledgeSource ks1 = new KnowledgeSource(serverUrl);
-		KnowledgeSource ks2 = new KnowledgeSource("Broken URL");
-		KnowledgeSourcePool ksPool = new KnowledgeSourcePool();
+		KnowledgeBeacon ks1 = new KnowledgeBeacon(serverUrl);
+		KnowledgeBeacon ks2 = new KnowledgeBeacon("Broken URL");
+		KnowledgeBeaconService ksPool = new KnowledgeBeaconService();
 		
 		ksPool.add(ks1);
 		ksPool.add(ks2);

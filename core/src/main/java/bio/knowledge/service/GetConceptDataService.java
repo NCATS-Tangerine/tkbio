@@ -1,4 +1,4 @@
-package bio.knowledge.datasource;
+package bio.knowledge.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +17,9 @@ public class GetConceptDataService {
 	
 	public static final String ID = "conceptDataService";
 
-	private final KnowledgeSource knowledgeSource;
+	private final KnowledgeBeacon knowledgeSource;
 	
-	public GetConceptDataService(KnowledgeSource knowledgeSource) {
+	public GetConceptDataService(KnowledgeBeacon knowledgeSource) {
 		this.knowledgeSource = knowledgeSource;
 	}
 
