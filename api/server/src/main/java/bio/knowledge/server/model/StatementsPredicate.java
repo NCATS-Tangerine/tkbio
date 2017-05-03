@@ -9,7 +9,7 @@ import javax.validation.constraints.*;
 /**
  * StatementsPredicate
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T09:47:16.640-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T16:41:12.704-07:00")
 
 public class StatementsPredicate   {
   @JsonProperty("id")
@@ -24,10 +24,10 @@ public class StatementsPredicate   {
   }
 
    /**
-   * CURIE-encoded identifier 
+   * CURIE-encoded identifier of predicate resource 
    * @return id
   **/
-  @ApiModelProperty(value = "CURIE-encoded identifier ")
+  @ApiModelProperty(value = "CURIE-encoded identifier of predicate resource ")
   public String getId() {
     return id;
   }

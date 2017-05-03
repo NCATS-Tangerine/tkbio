@@ -4,12 +4,10 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**keywords** | **List&lt;String&gt;** |  |  [optional]
-**semanticGroups** | **List&lt;String&gt;** |  |  [optional]
-**pageNumber** | **Integer** |  |  [optional]
-**pageSize** | **Integer** |  |  [optional]
-**totalEntries** | **Integer** |  |  [optional]
-**dataPage** | [**List&lt;InlineResponse2003DataPage&gt;**](InlineResponse2003DataPage.md) |  |  [optional]
+**id** | **String** | CURIE-encoded identifier for statement (can be used to retrieve associated evidence) |  [optional]
+**subject** | [**StatementsSubject**](StatementsSubject.md) |  |  [optional]
+**predicate** | [**StatementsPredicate**](StatementsPredicate.md) |  |  [optional]
+**object** | [**StatementsObject**](StatementsObject.md) |  |  [optional]
 
 
 

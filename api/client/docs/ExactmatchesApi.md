@@ -5,7 +5,7 @@ All URIs are relative to *http://api.knowledge.bio/api*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**getExactMatchesToConcept**](ExactmatchesApi.md#getExactMatchesToConcept) | **GET** /exactmatches/{conceptId} | 
-[**getExactMatchesToConceptList**](ExactmatchesApi.md#getExactMatchesToConceptList) | **GET** /exactMatches | 
+[**getExactMatchesToConceptList**](ExactmatchesApi.md#getExactMatchesToConceptList) | **GET** /exactmatches | 
 
 
 <a name="getExactMatchesToConcept"></a>
@@ -14,7 +14,7 @@ Method | HTTP request | Description
 
 
 
-Retrieves a list of qualified identifiers of \&quot;exact match\&quot; concepts, [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch) associated with an specified local concept object identifier, typically, of a concept selected from the list of concepts originally returned by a /concepts API call on a given KS. This API call should generally only be run against the same KS (only) from which the originally selected concept was retrieved. 
+Retrieves a list of qualified identifiers of \&quot;exact match\&quot; concepts, [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch) associated with a specified (url-encoded) CURIE (without brackets) concept object identifier,  typically, of a concept selected from the list of concepts originally returned by a /concepts API call on a given KS. This API call should generally only be run against the same KS (only) from which the originally selected concept was retrieved. 
 
 ### Example
 ```java
@@ -24,7 +24,7 @@ Retrieves a list of qualified identifiers of \&quot;exact match\&quot; concepts,
 
 
 ExactmatchesApi apiInstance = new ExactmatchesApi();
-String conceptId = "conceptId_example"; // String | local object identifier of the concept to be matched
+String conceptId = "conceptId_example"; // String | (url-encoded) CURIE identifier of the concept to be matched
 try {
     List<String> result = apiInstance.getExactMatchesToConcept(conceptId);
     System.out.println(result);
@@ -38,7 +38,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **conceptId** | **String**| local object identifier of the concept to be matched |
+ **conceptId** | **String**| (url-encoded) CURIE identifier of the concept to be matched |
 
 ### Return type
 
@@ -59,7 +59,7 @@ No authorization required
 
 
 
-Given an input list of [CURIE](https://www.w3.org/TR/curie/) identifiers of known exactly matched concepts [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch), retrieves the list of (CURIE)[https://www.w3.org/TR/curie/] identifiers of additional concepts that are deemed to be exact matches to one or more of the input concepts. This new list of concept identifiers is returned with the full list of any additional identifiers deemed by the KS to also be identifying exactly matched concepts. 
+Given an input list of [CURIE](https://www.w3.org/TR/curie/) identifiers of known exactly matched concepts [*sensa*-SKOS](http://www.w3.org/2004/02/skos/core#exactMatch), retrieves the list of [CURIE](https://www.w3.org/TR/curie/) identifiers of **additional** concepts that are deemed by the given knowledge source to be exact matches to one or more of the input concepts.  If an empty set is returned, the it can be assumed that the given knowledge source does not know of any new equivalent concepts to add to the input set. 
 
 ### Example
 ```java
@@ -69,7 +69,7 @@ Given an input list of [CURIE](https://www.w3.org/TR/curie/) identifiers of know
 
 
 ExactmatchesApi apiInstance = new ExactmatchesApi();
-String emci = "emci_example"; // String | a (urlencoded) space-delimited set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, to be used in a search for additional exactly matching concepts 
+String emci = "emci_example"; // String | a (url-encoded) space-delimited set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, to be used in a search for additional exactly matching concepts 
 try {
     List<InlineResponse2002> result = apiInstance.getExactMatchesToConceptList(emci);
     System.out.println(result);
@@ -83,7 +83,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **emci** | **String**| a (urlencoded) space-delimited set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, to be used in a search for additional exactly matching concepts  |
+ **emci** | **String**| a (url-encoded) space-delimited set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, to be used in a search for additional exactly matching concepts  |
 
 ### Return type
 

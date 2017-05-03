@@ -13,6 +13,7 @@
 
 package bio.knowledge.client.api;
 
+import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.InlineResponse2003;
 import org.junit.Test;
@@ -28,11 +29,18 @@ import java.util.Map;
 /**
  * API tests for StatementsApi
  */
-@Ignore
+//@Ignore
 public class StatementsApiTest {
+	private static final boolean RUNNING_CLIENT_LOCALLY = true;
 
-    private final StatementsApi api = new StatementsApi();
-
+    private static final StatementsApi api = new StatementsApi();
+    static {
+    	if (RUNNING_CLIENT_LOCALLY) {
+	    	ApiClient apiClient = new ApiClient();
+	    	apiClient.setBasePath("http://localhost:8080/api/");
+	    	api.setApiClient(apiClient);
+    	}
+    }
     
     /**
      * 
@@ -44,7 +52,8 @@ public class StatementsApiTest {
      */
     @Test
     public void getStatementsTest() throws ApiException {
-    	fail("Not yet implemented");
+    	// Just testing to see if it reaches the server
+    	api.getStatements("", null, null, null, null);
     }
     
 }

@@ -32,7 +32,6 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
-import bio.knowledge.model.Evidence;
 import bio.knowledge.model.neo4j.Neo4jEvidence;
 
 /**
@@ -57,7 +56,7 @@ public interface EvidenceRepository extends GraphRepository<Neo4jEvidence> {
 	public Neo4jEvidence findByEvidenceId(@Param("evidenceId") String evidenceId);
 	
 	// { accessionId : \"kbe:\"+{evidenceId}
-	@Query(	" MATCH (evidence:Evidence {accessionId : {evidenceId}})-[:ANNOTATION]->(annotation:Annotation)-[:REFERENCE]->(reference:Reference) " + 
+	@Query(	" MATCH (statement:Statement {accessionId : {statementId}})-[:EVIDENCE]->(evidence:Evidence)-[:ANNOTATION]->(annotation:Annotation)-[:REFERENCE]->(reference:Reference) " +
 			" WHERE " +
 			"    {filter} IS NULL OR SIZE({filter}) = 0 OR " +
 			"    ANY (x IN {filter} WHERE LOWER(annotation.name) CONTAINS LOWER(x)) " +
@@ -67,7 +66,7 @@ public interface EvidenceRepository extends GraphRepository<Neo4jEvidence> {
 			" LIMIT {pageSize} "
 	)
 	public List<Map<String, Object>> apiGetEvidence(
-		@Param("evidenceId") String evidenceId,
+		@Param("statementId") String statementId,
 		@Param("filter") String[] filter,
 		@Param("pageNumber") Integer pageNumber,
 		@Param("pageSize") Integer pageSize

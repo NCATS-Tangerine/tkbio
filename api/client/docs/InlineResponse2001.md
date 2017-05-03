@@ -4,12 +4,11 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**keywords** | **List&lt;String&gt;** |  |  [optional]
-**semanticGroups** | **List&lt;String&gt;** |  |  [optional]
-**pageNumber** | **Integer** |  |  [optional]
-**pageSize** | **Integer** |  |  [optional]
-**totalEntries** | **Integer** |  |  [optional]
-**dataPage** | [**List&lt;InlineResponse2001DataPage&gt;**](InlineResponse2001DataPage.md) |  |  [optional]
+**id** | **String** | local object identifier for the concept in the specified knowledge source database  |  [optional]
+**name** | **String** | canonical human readable name of the concept  |  [optional]
+**semanticGroup** | **String** | concept semantic type  |  [optional]
+**synonyms** | **List&lt;String&gt;** | list of synonyms for concept  |  [optional]
+**definition** | **String** | concept definition  |  [optional]
 
 
 

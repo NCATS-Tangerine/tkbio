@@ -15,14 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import javax.validation.constraints.*;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T09:47:16.640-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T16:41:12.704-07:00")
 
 @Api(value = "statements", description = "the statements API")
 public interface StatementsApi {
 
     @ApiOperation(value = "", notes = "Given a list of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, retrieves a paged list of concept-relations where either the subject or object concept matches at least one concept in the input list ", response = InlineResponse2003.class, responseContainer = "List", tags={ "statements", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Successful response returns a list of concept-relations with one or more subject or object matches to input concept identifiers ", response = InlineResponse2003.class) })
+        @ApiResponse(code = 200, message = "Successful response returns a list of concept-relations where there is an exact match of an input concept identifier either to the subject or object concepts of the statement ", response = InlineResponse2003.class) })
     @RequestMapping(value = "/statements",
         produces = { "application/json" }, 
         method = RequestMethod.GET)

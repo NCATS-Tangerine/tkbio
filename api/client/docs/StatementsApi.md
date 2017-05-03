@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 <a name="getStatements"></a>
 # **getStatements**
-> InlineResponse2003 getStatements(emci, pageNumber, pageSize, keywords, semgroups)
+> List&lt;InlineResponse2003&gt; getStatements(emci, pageNumber, pageSize, keywords, semgroups)
 
 
 
@@ -29,7 +29,7 @@ Integer pageSize = 56; // Integer | number of concepts per page to be returned i
 String keywords = "keywords_example"; // String | a (urlencoded) space delimited set of keywords or substrings against which to apply against the subject, predicate or object names of the set of concept-relations matched by any of the input exact matching concepts 
 String semgroups = "semgroups_example"; // String | a (urlencoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes) 
 try {
-    InlineResponse2003 result = apiInstance.getStatements(emci, pageNumber, pageSize, keywords, semgroups);
+    List<InlineResponse2003> result = apiInstance.getStatements(emci, pageNumber, pageSize, keywords, semgroups);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling StatementsApi#getStatements");
@@ -49,7 +49,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2003**](InlineResponse2003.md)
+[**List&lt;InlineResponse2003&gt;**](InlineResponse2003.md)
 
 ### Authorization
 
