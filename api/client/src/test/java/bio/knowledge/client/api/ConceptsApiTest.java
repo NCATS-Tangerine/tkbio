@@ -13,22 +13,16 @@
 
 package bio.knowledge.client.api;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
+import org.junit.Test;
+
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.InlineResponse200;
 import bio.knowledge.client.model.InlineResponse2001;
-import bio.knowledge.client.model.InlineResponse2001DataPage;
-
-import org.junit.Test;
-import org.junit.Ignore;
-
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * API tests for ConceptsApi
@@ -62,8 +56,6 @@ public class ConceptsApiTest {
         
         assertTrue(responses != null);
         
-        assertTrue(responses.size() == 1);
-        
         for (InlineResponse200 response : responses) {
         	assertTrue(response.getName().equals("INSL3"));
         }
@@ -83,19 +75,18 @@ public class ConceptsApiTest {
         String sg = "GENE OBJC";
         Integer pageNumber = 0;
         Integer pageSize = 20;
-        InlineResponse2001 response = api.getConcepts(q, sg, pageNumber, pageSize);
-        
-        assertTrue(response != null);
-        assertTrue(response.getTotalEntries() == 18);
-        
+        List<InlineResponse2001> responses = api.getConcepts(q, sg, pageNumber, pageSize);
+
         boolean milkChocolateFound = false;
-        
-        for (InlineResponse2001DataPage page : response.getDataPage()) {
-        	if (page.getName().equals("Milk chocolate")) {
+        int count = 0;
+        for (InlineResponse2001 response : responses) {
+        	count += 1;
+        	if (response.getName().equals("Milk chocolate")) {
         		milkChocolateFound = true;
         	}
         }
         
+        assertTrue(count == 18);
         assertTrue(milkChocolateFound);
     }
     

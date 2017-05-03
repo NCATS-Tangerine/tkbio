@@ -1,23 +1,25 @@
 package bio.knowledge.server.model;
 
+import java.util.Objects;
+import bio.knowledge.server.model.ExactmatchesExactMatches;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
  * InlineResponse2002
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T16:41:12.704-07:00")
 
 public class InlineResponse2002   {
   @JsonProperty("id")
   private String id = null;
 
   @JsonProperty("exactMatches")
-  private List<ExactMatchesExactMatches> exactMatches = new ArrayList<ExactMatchesExactMatches>();
+  private List<ExactmatchesExactMatches> exactMatches = new ArrayList<ExactmatchesExactMatches>();
 
   public InlineResponse2002 id(String id) {
     this.id = id;
@@ -37,12 +39,12 @@ public class InlineResponse2002   {
     this.id = id;
   }
 
-  public InlineResponse2002 exactMatches(List<ExactMatchesExactMatches> exactMatches) {
+  public InlineResponse2002 exactMatches(List<ExactmatchesExactMatches> exactMatches) {
     this.exactMatches = exactMatches;
     return this;
   }
 
-  public InlineResponse2002 addExactMatchesItem(ExactMatchesExactMatches exactMatchesItem) {
+  public InlineResponse2002 addExactMatchesItem(ExactmatchesExactMatches exactMatchesItem) {
     this.exactMatches.add(exactMatchesItem);
     return this;
   }
@@ -52,11 +54,11 @@ public class InlineResponse2002   {
    * @return exactMatches
   **/
   @ApiModelProperty(value = "")
-  public List<ExactMatchesExactMatches> getExactMatches() {
+  public List<ExactmatchesExactMatches> getExactMatches() {
     return exactMatches;
   }
 
-  public void setExactMatches(List<ExactMatchesExactMatches> exactMatches) {
+  public void setExactMatches(List<ExactmatchesExactMatches> exactMatches) {
     this.exactMatches = exactMatches;
   }
 

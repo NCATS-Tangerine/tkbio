@@ -4,11 +4,9 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**keywords** | **List&lt;String&gt;** |  |  [optional]
-**pageNumber** | **Integer** |  |  [optional]
-**pageSize** | **Integer** |  |  [optional]
-**totalEntries** | **Integer** |  |  [optional]
-**dataPage** | [**List&lt;InlineResponse2004DataPage&gt;**](InlineResponse2004DataPage.md) |  |  [optional]
+**id** | **String** | CURIE-encoded identifier to an associated external resources (e.g. PMID of a pubmed citation)  |  [optional]
+**label** | **String** | canonical human readable and searchable label of the annotation (i.e. comment, matched sentence, etc.)  |  [optional]
+**date** | **String** | publication date of annotation (generally of format &#39;yyyy-mm-dd&#39;)  |  [optional]
 
 
 

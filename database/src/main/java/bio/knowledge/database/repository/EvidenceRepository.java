@@ -26,12 +26,12 @@
 package bio.knowledge.database.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
-import bio.knowledge.model.Evidence;
 import bio.knowledge.model.neo4j.Neo4jEvidence;
 
 /**
@@ -52,28 +52,21 @@ public interface EvidenceRepository extends GraphRepository<Neo4jEvidence> {
 			+"RETURN evidence")
 	public Neo4jEvidence createByEvidenceId(@Param("evidenceId") String evidenceId);
 	
-	@Query("MATCH (evidence:Evidence:IdentifiedEntity:DatabaseEntity { accessionId : \"kbe:\"+{evidenceId} }) RETURN evidence")
+	@Query("MATCH (evidence:Evidence:IdentifiedEntity:DatabaseEntity { accessionId : {evidenceId} }) RETURN evidence")
 	public Neo4jEvidence findByEvidenceId(@Param("evidenceId") String evidenceId);
 	
-	@Query(	" MATCH (evidence:Evidence:IdentifiedEntity:DatabaseEntity { accessionId : \"kbe:\"+{evidenceId} }) " +
-			" RETURN evidence " +
+	// { accessionId : \"kbe:\"+{evidenceId}
+	@Query(	" MATCH (statement:Statement {accessionId : {statementId}})-[:EVIDENCE]->(evidence:Evidence)-[:ANNOTATION]->(annotation:Annotation)-[:REFERENCE]->(reference:Reference) " +
+			" WHERE " +
+			"    {filter} IS NULL OR SIZE({filter}) = 0 OR " +
+			"    ANY (x IN {filter} WHERE LOWER(annotation.name) CONTAINS LOWER(x)) " +
+			" RETURN annotation, reference.year as year, reference.month as month, reference.day as day " +
+			" ORDER BY reference.year DESC, reference.month DESC, reference.day DESC " +
 			" SKIP  {pageNumber} * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
-	public List<Neo4jEvidence> apiGetEvidence(
-		@Param("evidenceId") String evidenceId,
-		@Param("pageNumber") Integer pageNumber,
-		@Param("pageSize") Integer pageSize
-	);
-	
-	@Query(	" MATCH (evidence:Evidence:IdentifiedEntity:DatabaseEntity { accessionId : \"kbe:\"+{evidenceId} }) " + 
-			" WHERE ANY (x IN {filter} WHERE LOWER(evidence.name) CONTAINS LOWER(x)) " +
-			" RETURN evidence " +
-			" SKIP  {pageNumber} * {pageSize} " +
-			" LIMIT {pageSize} "
-	)
-	public List<Neo4jEvidence> apiGetEvidenceFiltered(
-		@Param("evidenceId") String evidenceId,
+	public List<Map<String, Object>> apiGetEvidence(
+		@Param("statementId") String statementId,
 		@Param("filter") String[] filter,
 		@Param("pageNumber") Integer pageNumber,
 		@Param("pageSize") Integer pageSize

@@ -1,157 +1,102 @@
 package bio.knowledge.server.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-
+import bio.knowledge.server.model.StatementsObject;
+import bio.knowledge.server.model.StatementsPredicate;
+import bio.knowledge.server.model.StatementsSubject;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
  * InlineResponse2003
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T16:41:12.704-07:00")
 
 public class InlineResponse2003   {
-  @JsonProperty("keywords")
-  private List<String> keywords = new ArrayList<String>();
+  @JsonProperty("id")
+  private String id = null;
 
-  @JsonProperty("semanticGroups")
-  private List<String> semanticGroups = new ArrayList<String>();
+  @JsonProperty("subject")
+  private StatementsSubject subject = null;
 
-  @JsonProperty("pageNumber")
-  private Integer pageNumber = null;
+  @JsonProperty("predicate")
+  private StatementsPredicate predicate = null;
 
-  @JsonProperty("pageSize")
-  private Integer pageSize = null;
+  @JsonProperty("object")
+  private StatementsObject object = null;
 
-  @JsonProperty("totalEntries")
-  private Integer totalEntries = null;
-
-  @JsonProperty("dataPage")
-  private List<InlineResponse2003DataPage> dataPage = new ArrayList<InlineResponse2003DataPage>();
-
-  public InlineResponse2003 keywords(List<String> keywords) {
-    this.keywords = keywords;
-    return this;
-  }
-
-  public InlineResponse2003 addKeywordsItem(String keywordsItem) {
-    this.keywords.add(keywordsItem);
+  public InlineResponse2003 id(String id) {
+    this.id = id;
     return this;
   }
 
    /**
-   * Get keywords
-   * @return keywords
+   * CURIE-encoded identifier for statement (can be used to retrieve associated evidence)
+   * @return id
   **/
-  @ApiModelProperty(value = "")
-  public List<String> getKeywords() {
-    return keywords;
+  @ApiModelProperty(value = "CURIE-encoded identifier for statement (can be used to retrieve associated evidence)")
+  public String getId() {
+    return id;
   }
 
-  public void setKeywords(List<String> keywords) {
-    this.keywords = keywords;
+  public void setId(String id) {
+    this.id = id;
   }
 
-  public InlineResponse2003 semanticGroups(List<String> semanticGroups) {
-    this.semanticGroups = semanticGroups;
-    return this;
-  }
-
-  public InlineResponse2003 addSemanticGroupsItem(String semanticGroupsItem) {
-    this.semanticGroups.add(semanticGroupsItem);
+  public InlineResponse2003 subject(StatementsSubject subject) {
+    this.subject = subject;
     return this;
   }
 
    /**
-   * Get semanticGroups
-   * @return semanticGroups
+   * Get subject
+   * @return subject
   **/
   @ApiModelProperty(value = "")
-  public List<String> getSemanticGroups() {
-    return semanticGroups;
+  public StatementsSubject getSubject() {
+    return subject;
   }
 
-  public void setSemanticGroups(List<String> semanticGroups) {
-    this.semanticGroups = semanticGroups;
+  public void setSubject(StatementsSubject subject) {
+    this.subject = subject;
   }
 
-  public InlineResponse2003 pageNumber(Integer pageNumber) {
-    this.pageNumber = pageNumber;
+  public InlineResponse2003 predicate(StatementsPredicate predicate) {
+    this.predicate = predicate;
     return this;
   }
 
    /**
-   * Get pageNumber
-   * @return pageNumber
+   * Get predicate
+   * @return predicate
   **/
   @ApiModelProperty(value = "")
-  public Integer getPageNumber() {
-    return pageNumber;
+  public StatementsPredicate getPredicate() {
+    return predicate;
   }
 
-  public void setPageNumber(Integer pageNumber) {
-    this.pageNumber = pageNumber;
+  public void setPredicate(StatementsPredicate predicate) {
+    this.predicate = predicate;
   }
 
-  public InlineResponse2003 pageSize(Integer pageSize) {
-    this.pageSize = pageSize;
+  public InlineResponse2003 object(StatementsObject object) {
+    this.object = object;
     return this;
   }
 
    /**
-   * Get pageSize
-   * @return pageSize
+   * Get object
+   * @return object
   **/
   @ApiModelProperty(value = "")
-  public Integer getPageSize() {
-    return pageSize;
+  public StatementsObject getObject() {
+    return object;
   }
 
-  public void setPageSize(Integer pageSize) {
-    this.pageSize = pageSize;
-  }
-
-  public InlineResponse2003 totalEntries(Integer totalEntries) {
-    this.totalEntries = totalEntries;
-    return this;
-  }
-
-   /**
-   * Get totalEntries
-   * @return totalEntries
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getTotalEntries() {
-    return totalEntries;
-  }
-
-  public void setTotalEntries(Integer totalEntries) {
-    this.totalEntries = totalEntries;
-  }
-
-  public InlineResponse2003 dataPage(List<InlineResponse2003DataPage> dataPage) {
-    this.dataPage = dataPage;
-    return this;
-  }
-
-  public InlineResponse2003 addDataPageItem(InlineResponse2003DataPage dataPageItem) {
-    this.dataPage.add(dataPageItem);
-    return this;
-  }
-
-   /**
-   * Get dataPage
-   * @return dataPage
-  **/
-  @ApiModelProperty(value = "")
-  public List<InlineResponse2003DataPage> getDataPage() {
-    return dataPage;
-  }
-
-  public void setDataPage(List<InlineResponse2003DataPage> dataPage) {
-    this.dataPage = dataPage;
+  public void setObject(StatementsObject object) {
+    this.object = object;
   }
 
 
@@ -164,17 +109,15 @@ public class InlineResponse2003   {
       return false;
     }
     InlineResponse2003 inlineResponse2003 = (InlineResponse2003) o;
-    return Objects.equals(this.keywords, inlineResponse2003.keywords) &&
-        Objects.equals(this.semanticGroups, inlineResponse2003.semanticGroups) &&
-        Objects.equals(this.pageNumber, inlineResponse2003.pageNumber) &&
-        Objects.equals(this.pageSize, inlineResponse2003.pageSize) &&
-        Objects.equals(this.totalEntries, inlineResponse2003.totalEntries) &&
-        Objects.equals(this.dataPage, inlineResponse2003.dataPage);
+    return Objects.equals(this.id, inlineResponse2003.id) &&
+        Objects.equals(this.subject, inlineResponse2003.subject) &&
+        Objects.equals(this.predicate, inlineResponse2003.predicate) &&
+        Objects.equals(this.object, inlineResponse2003.object);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(keywords, semanticGroups, pageNumber, pageSize, totalEntries, dataPage);
+    return Objects.hash(id, subject, predicate, object);
   }
 
   @Override
@@ -182,12 +125,10 @@ public class InlineResponse2003   {
     StringBuilder sb = new StringBuilder();
     sb.append("class InlineResponse2003 {\n");
     
-    sb.append("    keywords: ").append(toIndentedString(keywords)).append("\n");
-    sb.append("    semanticGroups: ").append(toIndentedString(semanticGroups)).append("\n");
-    sb.append("    pageNumber: ").append(toIndentedString(pageNumber)).append("\n");
-    sb.append("    pageSize: ").append(toIndentedString(pageSize)).append("\n");
-    sb.append("    totalEntries: ").append(toIndentedString(totalEntries)).append("\n");
-    sb.append("    dataPage: ").append(toIndentedString(dataPage)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    subject: ").append(toIndentedString(subject)).append("\n");
+    sb.append("    predicate: ").append(toIndentedString(predicate)).append("\n");
+    sb.append("    object: ").append(toIndentedString(object)).append("\n");
     sb.append("}");
     return sb.toString();
   }

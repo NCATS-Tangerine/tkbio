@@ -1,131 +1,78 @@
 package bio.knowledge.server.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
  * InlineResponse2004
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T16:41:12.704-07:00")
 
 public class InlineResponse2004   {
-  @JsonProperty("keywords")
-  private List<String> keywords = new ArrayList<String>();
+  @JsonProperty("id")
+  private String id = null;
 
-  @JsonProperty("pageNumber")
-  private Integer pageNumber = null;
+  @JsonProperty("label")
+  private String label = null;
 
-  @JsonProperty("pageSize")
-  private Integer pageSize = null;
+  @JsonProperty("date")
+  private String date = null;
 
-  @JsonProperty("totalEntries")
-  private Integer totalEntries = null;
-
-  @JsonProperty("dataPage")
-  private List<InlineResponse2004DataPage> dataPage = new ArrayList<InlineResponse2004DataPage>();
-
-  public InlineResponse2004 keywords(List<String> keywords) {
-    this.keywords = keywords;
-    return this;
-  }
-
-  public InlineResponse2004 addKeywordsItem(String keywordsItem) {
-    this.keywords.add(keywordsItem);
+  public InlineResponse2004 id(String id) {
+    this.id = id;
     return this;
   }
 
    /**
-   * Get keywords
-   * @return keywords
+   * CURIE-encoded identifier to an associated external resources (e.g. PMID of a pubmed citation) 
+   * @return id
   **/
-  @ApiModelProperty(value = "")
-  public List<String> getKeywords() {
-    return keywords;
+  @ApiModelProperty(value = "CURIE-encoded identifier to an associated external resources (e.g. PMID of a pubmed citation) ")
+  public String getId() {
+    return id;
   }
 
-  public void setKeywords(List<String> keywords) {
-    this.keywords = keywords;
+  public void setId(String id) {
+    this.id = id;
   }
 
-  public InlineResponse2004 pageNumber(Integer pageNumber) {
-    this.pageNumber = pageNumber;
+  public InlineResponse2004 label(String label) {
+    this.label = label;
     return this;
   }
 
    /**
-   * Get pageNumber
-   * @return pageNumber
+   * canonical human readable and searchable label of the annotation (i.e. comment, matched sentence, etc.) 
+   * @return label
   **/
-  @ApiModelProperty(value = "")
-  public Integer getPageNumber() {
-    return pageNumber;
+  @ApiModelProperty(value = "canonical human readable and searchable label of the annotation (i.e. comment, matched sentence, etc.) ")
+  public String getLabel() {
+    return label;
   }
 
-  public void setPageNumber(Integer pageNumber) {
-    this.pageNumber = pageNumber;
+  public void setLabel(String label) {
+    this.label = label;
   }
 
-  public InlineResponse2004 pageSize(Integer pageSize) {
-    this.pageSize = pageSize;
+  public InlineResponse2004 date(String date) {
+    this.date = date;
     return this;
   }
 
    /**
-   * Get pageSize
-   * @return pageSize
+   * publication date of annotation (generally of format 'yyyy-mm-dd') 
+   * @return date
   **/
-  @ApiModelProperty(value = "")
-  public Integer getPageSize() {
-    return pageSize;
+  @ApiModelProperty(value = "publication date of annotation (generally of format 'yyyy-mm-dd') ")
+  public String getDate() {
+    return date;
   }
 
-  public void setPageSize(Integer pageSize) {
-    this.pageSize = pageSize;
-  }
-
-  public InlineResponse2004 totalEntries(Integer totalEntries) {
-    this.totalEntries = totalEntries;
-    return this;
-  }
-
-   /**
-   * Get totalEntries
-   * @return totalEntries
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getTotalEntries() {
-    return totalEntries;
-  }
-
-  public void setTotalEntries(Integer totalEntries) {
-    this.totalEntries = totalEntries;
-  }
-
-  public InlineResponse2004 dataPage(List<InlineResponse2004DataPage> dataPage) {
-    this.dataPage = dataPage;
-    return this;
-  }
-
-  public InlineResponse2004 addDataPageItem(InlineResponse2004DataPage dataPageItem) {
-    this.dataPage.add(dataPageItem);
-    return this;
-  }
-
-   /**
-   * Get dataPage
-   * @return dataPage
-  **/
-  @ApiModelProperty(value = "")
-  public List<InlineResponse2004DataPage> getDataPage() {
-    return dataPage;
-  }
-
-  public void setDataPage(List<InlineResponse2004DataPage> dataPage) {
-    this.dataPage = dataPage;
+  public void setDate(String date) {
+    this.date = date;
   }
 
 
@@ -138,16 +85,14 @@ public class InlineResponse2004   {
       return false;
     }
     InlineResponse2004 inlineResponse2004 = (InlineResponse2004) o;
-    return Objects.equals(this.keywords, inlineResponse2004.keywords) &&
-        Objects.equals(this.pageNumber, inlineResponse2004.pageNumber) &&
-        Objects.equals(this.pageSize, inlineResponse2004.pageSize) &&
-        Objects.equals(this.totalEntries, inlineResponse2004.totalEntries) &&
-        Objects.equals(this.dataPage, inlineResponse2004.dataPage);
+    return Objects.equals(this.id, inlineResponse2004.id) &&
+        Objects.equals(this.label, inlineResponse2004.label) &&
+        Objects.equals(this.date, inlineResponse2004.date);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(keywords, pageNumber, pageSize, totalEntries, dataPage);
+    return Objects.hash(id, label, date);
   }
 
   @Override
@@ -155,11 +100,9 @@ public class InlineResponse2004   {
     StringBuilder sb = new StringBuilder();
     sb.append("class InlineResponse2004 {\n");
     
-    sb.append("    keywords: ").append(toIndentedString(keywords)).append("\n");
-    sb.append("    pageNumber: ").append(toIndentedString(pageNumber)).append("\n");
-    sb.append("    pageSize: ").append(toIndentedString(pageSize)).append("\n");
-    sb.append("    totalEntries: ").append(toIndentedString(totalEntries)).append("\n");
-    sb.append("    dataPage: ").append(toIndentedString(dataPage)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    label: ").append(toIndentedString(label)).append("\n");
+    sb.append("    date: ").append(toIndentedString(date)).append("\n");
     sb.append("}");
     return sb.toString();
   }

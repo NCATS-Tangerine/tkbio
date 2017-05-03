@@ -313,4 +313,38 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 			@Param("target")   String targetAccessionId, 
 			@Param("relation") String relation
 	) ;
+	
+	@Query(
+			" MATCH (concept:Concept)<-[:SUBJECT|:OBJECT]-(statement:Statement) " + 
+			" WHERE ANY(x in {curieIds} WHERE LOWER(concept.accessionId) = LOWER(x)) " +
+			" WITH statement as statement, ID(concept) as id " +
+			
+			" MATCH (subject:Concept)<-[:SUBJECT]-(statement)-[:OBJECT]->(object:Concept) " +
+			" WHERE (ID(subject) = id OR ID(object) = id) AND " +
+			"    {semanticGroups} IS NULL OR SIZE({semanticGroups}) = 0 OR " +
+			"    ANY (x IN {semanticGroups} WHERE ( " +
+			"       LOWER(object.semanticGroup)  CONTAINS LOWER(x) OR " +
+			"       LOWER(subject.semanticGroup) CONTAINS LOWER(x) " +
+			"    )) " +
+			" WITH statement, subject, object " +
+			
+			" MATCH (relation:Predicate)<-[:RELATION]-(statement)-[:EVIDENCE]->(evidence:Evidence) " +
+			" WHERE {filter} IS NULL OR SIZE({filter}) = 0 " +
+			" OR ANY (x IN {filter} WHERE ( " +
+			"    LOWER(object.name)   CONTAINS LOWER(x) OR " +
+			"    LOWER(subject.name)  CONTAINS LOWER(x) OR " +
+			"    LOWER(relation.name) CONTAINS LOWER(x) " +
+			" )) " +
+			" RETURN DISTINCT statement as statement, subject as subject, relation as relation, object as object, evidence as evidence" +
+			" ORDER BY evidence.count DESC " +
+			" SKIP {pageNumber} * {pageSize} " +
+			" LIMIT {pageSize} "
+	)
+	List<Map<String, Object>> apiFindById(
+			@Param("curieIds") String[] curieIds,
+			@Param("filter") String[] filter,
+			@Param("semanticGroups") String[] semanticGroups,
+			@Param("pageNumber") Integer pageNumber,
+			@Param("pageSize") Integer pageSize
+	);
 }

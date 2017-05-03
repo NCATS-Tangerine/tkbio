@@ -10,8 +10,8 @@ import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.model.InlineResponse2001;
-import bio.knowledge.client.model.InlineResponse2001DataPage;
 import bio.knowledge.model.Concept;
+import bio.knowledge.model.ConceptImpl;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.core.Feature;
@@ -104,14 +104,13 @@ public class GetConceptDataService {
 			@Override
 			public List<ConceptImpl> get() {
 				ConceptsApi conceptsApi = new ConceptsApi(apiClient);
-				InlineResponse2001 response;
+				
 				try {
-					response = conceptsApi.getConcepts(filters, semanticGroups, pageNumber, pageSize);
-					List<InlineResponse2001DataPage> dataPages = response.getDataPage();
+					List<InlineResponse2001> responses = conceptsApi.getConcepts(filters, semanticGroups, pageNumber, pageSize);
 					List<ConceptImpl> concepts = new ArrayList<ConceptImpl>();
 					
-					for (InlineResponse2001DataPage dataPage : dataPages) {
-						ConceptImpl concept = new ConceptImpl(dataPage.getName(), Long.decode(dataPage.getId()));
+					for (InlineResponse2001 response : responses) {
+						ConceptImpl concept = new ConceptImpl(response.getName(), response.getId());
 						concepts.add(concept);
 					}
 					return concepts;
@@ -125,9 +124,9 @@ public class GetConceptDataService {
 	
 	public class ConceptImpl implements Concept {
 		private String name;
-		private Long id;
+		private String id;
 		
-		public ConceptImpl(String name, Long id) {
+		public ConceptImpl(String name, String id) {
 			this.name = name;
 			this.id = id;
 		}
@@ -165,7 +164,7 @@ public class GetConceptDataService {
 		@Override
 		public Long getId() {
 			// TODO Auto-generated method stub
-			return id;
+			return null;
 		}
 
 		@Override
@@ -249,7 +248,7 @@ public class GetConceptDataService {
 		@Override
 		public Long getUsage() {
 			// TODO Auto-generated method stub
-			return this.id;
+			return null;
 		}
 
 		@Override
@@ -339,7 +338,7 @@ public class GetConceptDataService {
 		@Override
 		public String getAccessionId() {
 			// TODO Auto-generated method stub
-			return null;
+			return this.id;
 		}
 		
 	}

@@ -1,34 +1,33 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
- * CURIE-encoded identifier 
+ * StatementsObject
  */
-@ApiModel(description = "CURIE-encoded identifier ")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-27T09:43:12.446-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T16:41:12.704-07:00")
 
-public class InlineResponse2003Object   {
+public class StatementsObject   {
   @JsonProperty("id")
   private String id = null;
 
   @JsonProperty("name")
   private String name = null;
 
-  public InlineResponse2003Object id(String id) {
+  public StatementsObject id(String id) {
     this.id = id;
     return this;
   }
 
    /**
-   * Get id
+   * CURIE-encoded identifier of object concept 
    * @return id
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "CURIE-encoded identifier of object concept ")
   public String getId() {
     return id;
   }
@@ -37,16 +36,16 @@ public class InlineResponse2003Object   {
     this.id = id;
   }
 
-  public InlineResponse2003Object name(String name) {
+  public StatementsObject name(String name) {
     this.name = name;
     return this;
   }
 
    /**
-   * human readable label of concept
+   * human readable label of object concept
    * @return name
   **/
-  @ApiModelProperty(value = "human readable label of concept")
+  @ApiModelProperty(value = "human readable label of object concept")
   public String getName() {
     return name;
   }
@@ -64,9 +63,9 @@ public class InlineResponse2003Object   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2003Object inlineResponse2003Object = (InlineResponse2003Object) o;
-    return Objects.equals(this.id, inlineResponse2003Object.id) &&
-        Objects.equals(this.name, inlineResponse2003Object.name);
+    StatementsObject statementsObject = (StatementsObject) o;
+    return Objects.equals(this.id, statementsObject.id) &&
+        Objects.equals(this.name, statementsObject.name);
   }
 
   @Override
@@ -77,7 +76,7 @@ public class InlineResponse2003Object   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2003Object {\n");
+    sb.append("class StatementsObject {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
