@@ -35,7 +35,6 @@ import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
-import bio.knowledge.model.neo4j.Neo4jAnnotation;
 
 /**
  * @author Richard
@@ -148,7 +147,7 @@ public interface KBQuery {
 
 	/**
 	 * 
-	 * @param Neo4jAnnotation currently selected
+	 * @param Annotation currently selected
 	 */
 	public void setCurrentAnnotation( Annotation annotation ) ;
 	

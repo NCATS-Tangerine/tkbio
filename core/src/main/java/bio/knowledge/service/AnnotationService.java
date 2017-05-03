@@ -194,13 +194,14 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 			String userId = query.currentUserId();
 			List<Map<String, Object>> data;
 
-			if(filter.trim().isEmpty()){
+			// TODO: No real reason to use filter: broken until I can get query to work
+//			if(filter.trim().isEmpty()){
 				// TODO: Should we be accessing the repository in this way in a service?
 				data = annotationRepository.findByEvidence((Evidence) evidence, pageable, userId);
-			} else {
-				// TODO: Should we be accessing the repository in this way in a service?
-				data = annotationRepository.findByEvidenceFiltered((Evidence) evidence, filter, pageable, userId);
-			}
+//			} else {
+//				// TODO: Should we be accessing the repository in this way in a service?
+//				data = annotationRepository.findByEvidenceFiltered((Evidence) evidence, filter, pageable, userId);
+//			}
 			
 			annotations = new ArrayList<>();
 			
