@@ -11,6 +11,7 @@ import bio.knowledge.client.ApiException;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.model.InlineResponse2001;
 import bio.knowledge.model.Concept;
+import bio.knowledge.model.ConceptImpl;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.core.Feature;

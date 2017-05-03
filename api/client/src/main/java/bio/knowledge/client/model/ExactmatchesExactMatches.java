@@ -19,10 +19,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * ExactmatchesExactMatches
+ * ExactMatchesExactMatches
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-05-02T16:40:39.510-07:00")
 public class ExactmatchesExactMatches {
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-04-27T09:44:03.540-07:00")
   @SerializedName("id")
   private String id = null;
 
@@ -95,10 +96,10 @@ public class ExactmatchesExactMatches {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ExactmatchesExactMatches exactmatchesExactMatches = (ExactmatchesExactMatches) o;
-    return Objects.equals(this.id, exactmatchesExactMatches.id) &&
-        Objects.equals(this.evidenceCode, exactmatchesExactMatches.evidenceCode) &&
-        Objects.equals(this.reference, exactmatchesExactMatches.reference);
+    ExactmatchesExactMatches exactMatchesExactMatches = (ExactmatchesExactMatches) o;
+    return Objects.equals(this.id, exactMatchesExactMatches.id) &&
+        Objects.equals(this.evidenceCode, exactMatchesExactMatches.evidenceCode) &&
+        Objects.equals(this.reference, exactMatchesExactMatches.reference);
   }
 
   @Override
@@ -110,7 +111,7 @@ public class ExactmatchesExactMatches {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ExactmatchesExactMatches {\n");
+    sb.append("class ExactMatchesExactMatches {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    evidenceCode: ").append(toIndentedString(evidenceCode)).append("\n");

@@ -11,7 +11,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.junit.Test;
 
-import bio.knowledge.datasource.GetConceptDataService.ConceptImpl;
+import bio.knowledge.model.ConceptImpl;
 
 public class GetConceptDataServiceTest {
 	
