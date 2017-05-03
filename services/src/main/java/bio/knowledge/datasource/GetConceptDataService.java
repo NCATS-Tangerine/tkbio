@@ -10,12 +10,8 @@ import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.model.InlineResponse2001;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptImpl;
-import bio.knowledge.model.Library;
 import bio.knowledge.model.SemanticGroup;
-import bio.knowledge.model.core.Feature;
-import bio.knowledge.model.core.IdentifiedEntity;
 
 public class GetConceptDataService {
 	
@@ -110,7 +106,12 @@ public class GetConceptDataService {
 					List<ConceptImpl> concepts = new ArrayList<ConceptImpl>();
 					
 					for (InlineResponse2001 response : responses) {
-						ConceptImpl concept = new ConceptImpl(response.getName(), response.getId());
+						SemanticGroup semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
+						ConceptImpl concept = new ConceptImpl(
+								response.getId(),
+								semgroup,
+								response.getName()
+						);
 						concepts.add(concept);
 					}
 					return concepts;
@@ -120,226 +121,5 @@ public class GetConceptDataService {
 			}
 			
 		};
-	}
-	
-	public class ConceptImpl implements Concept {
-		private String name;
-		private String id;
-		
-		public ConceptImpl(String name, String id) {
-			this.name = name;
-			this.id = id;
-		}
-
-		@Override
-		public void setUri(String uri) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void setAccessionId(String accessionId) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void setName(String name) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void setDescription(String description) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void setSynonyms(String synonyms) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public Long getId() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void setId(Long id) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public Integer getVersion() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void setVersion(Integer version) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public long getVersionDate() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public void setVersionDate(long versionDate) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public String getUri() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public String getDescription() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public String getSynonyms() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public int compareTo(IdentifiedEntity o) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public void setFeatures(Set<Feature> features) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public Set<Feature> getFeatures() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void setSemanticGroup(SemanticGroup semgroup) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public SemanticGroup getSemanticGroup() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Long getUsage() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void setUsage(Long usage) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void incrementUsage(Long increment) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void incrementUsage() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void setLibrary(Library library) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public Library getLibrary() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public String getGhr() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void setGhr(String ghr) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public String getHmdbId() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void setHmdbId(String hmdbId) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public String getChebi() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void setChebi(String chebi) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public Set<String> getCrossReferences() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Set<String> getTerms() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public String getName() {
-			// TODO Auto-generated method stub
-			return this.name;
-		}
-
-		@Override
-		public String getAccessionId() {
-			// TODO Auto-generated method stub
-			return this.id;
-		}
-		
 	}
 }

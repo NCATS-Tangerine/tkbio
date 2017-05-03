@@ -48,7 +48,7 @@ public class ConceptImpl extends AbstractIdentifiedEntity implements Concept {
     	super() ;
     }
     
-    public ConceptImpl( SemanticGroup semgroup, String name ) {
+    protected ConceptImpl( SemanticGroup semgroup, String name ) {
     	super(name) ;
     	this.semanticGroup = semgroup ;
     }
