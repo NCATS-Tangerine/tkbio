@@ -19,7 +19,8 @@ public class KnowledgeBeaconRegistry {
 		// default URL. We always want our own knowledge source in the pool
 		// (though in the future we could give the user the opportunity to
 		// remove a knowledge source).
-		addKnowledgeSource("http://localhost:8090/api/");
+		addKnowledgeSource("http://localhost:8080/api/");
+		addKnowledgeSource("http://52.15.200.208:5000/translator/");
 	}
 
 	/**

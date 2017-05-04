@@ -167,7 +167,7 @@ public class ListView extends BaseView {
 	private GeneratedPropertyContainer gpcontainer;
 
 	// Identification/Unique Keys
-	private Grid dataTable = null;
+	private bio.knowledge.grid.Grid dataTable = null;
 
 	// view's name
 	private String viewName = "";
@@ -328,6 +328,25 @@ public class ListView extends BaseView {
 		public void refresh(ConceptMapArchiveService.SearchMode searchMode) {
 			conceptMapArchiveService.setSearchMode(searchMode);
 			refresh();
+		}
+		
+		private boolean loadingData = false;
+		public void addData(int pageSize) {
+			if (pager != null && !loadingData) {
+				loadingData = true;
+				AuthenticationManager authenticationManager = ((DesktopUI) UI.getCurrent()).getAuthenticationManager();
+				
+				if (authenticationManager.isUserAuthenticated()) {
+					UserProfile userProfile = authenticationManager.getCurrentUser();
+					
+					authenticationState.setState(userProfile.getId(), userProfile.getIdsOfGroupsBelongedTo());
+				} else {
+					authenticationState.setState(null, null);
+				}
+				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+				container.addAll(pager.getDataPage(currentPageIndex, pageSize, filter, sorter, isAscending));
+				loadingData = false;
+			}
 		}
 
 		public void refresh() {
@@ -969,11 +988,21 @@ public class ListView extends BaseView {
 	private Label formatDataTableLabel(String message) {
 		return formatDataTableLabel(message, "");
 	}
-
+	
 	private VerticalLayout formatGenericTableComponents(String datatype) {
 
 		// use datatype here to possibly get custom list of fields(?)
-		dataTable = new Grid();
+		bio.knowledge.grid.Grid.ScrollListener sl = new bio.knowledge.grid.Grid.ScrollListener() {
+
+			@Override
+			public void scrolledToBottom() {
+				listContainer.addData(100);
+			}
+			
+		};
+		dataTable = new bio.knowledge.grid.Grid(sl);
+		listContainer.setPageSize(50);
+//		dataTable = new Grid();
 		dataTable.setWidth("100%");
 		dataTable.setHeightMode(HeightMode.ROW);
 		dataTable.setHeightByRows(ROWS_TO_DISPLAY);

@@ -3,4 +3,6 @@
 <source path='client'/>
     <inherits name="bio.knowledge.web.widgetset.Kb2Widgetset" />
     <inherits name="com.vaadin.addon.responsive.ResponsiveWidgetSet" />
+
+    <inherits name="bio.knowledge.grid.GridWidgetSet" />
 </module>

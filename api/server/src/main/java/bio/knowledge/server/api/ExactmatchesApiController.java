@@ -17,13 +17,6 @@ import io.swagger.annotations.ApiParam;
 @Controller
 public class ExactmatchesApiController implements ExactmatchesApi {
 
-
-
-    public ResponseEntity<List<String>> getExactMatchesToConcept(@ApiParam(value = "(url-encoded) CURIE identifier of the concept to be matched",required=true ) @PathVariable("conceptId") String conceptId) {
-        // do some magic!
-        return new ResponseEntity<List<String>>(HttpStatus.OK);
-    }
-
     public ResponseEntity<List<InlineResponse2002>> getExactMatchesToConceptList( @NotNull @ApiParam(value = "a (url-encoded) space-delimited set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, to be used in a search for additional exactly matching concepts ", required = true) @RequestParam(value = "emci", required = true) String emci) {
         // do some magic!
         return new ResponseEntity<List<InlineResponse2002>>(HttpStatus.OK);

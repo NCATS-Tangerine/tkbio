@@ -1,0 +1,1 @@
+$wnd.bio_knowledge_renderer_ButtonRendererWidgetset.runAsyncCallback2('bkb(1623,1,a2d);_.oe=function zkc(){_4b((!U4b&&(U4b=new e5b),U4b),this.a.d)};qWd(jo)(2);\n//# sourceURL=bio.knowledge.renderer.ButtonRendererWidgetset-2.js\n')
