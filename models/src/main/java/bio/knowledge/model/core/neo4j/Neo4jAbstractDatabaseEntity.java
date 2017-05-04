@@ -27,6 +27,7 @@ package bio.knowledge.model.core.neo4j;
 
 import java.util.Calendar;
 
+import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 
 import bio.knowledge.model.core.DatabaseEntity;
@@ -46,7 +47,8 @@ import bio.knowledge.model.core.DatabaseEntity;
 public class Neo4jAbstractDatabaseEntity 
 	implements DatabaseEntity {
 	
-    private Long id;
+	@GraphId
+    private Long dbid;
 	
     private Integer version=1;
 
@@ -65,8 +67,8 @@ public class Neo4jAbstractDatabaseEntity
 	 * @see bio.knowledge.model.core.DatabaseEntity#getId()
 	 */
 	@Override
-	public Long getId() {
-        return id;
+	public Long getDbId() {
+        return dbid;
     }
 
 	/*
@@ -74,8 +76,8 @@ public class Neo4jAbstractDatabaseEntity
 	 * @see bio.knowledge.model.core.DatabaseEntity#setId(java.lang.Long)
 	 */
 	@Override
-	public void setId(Long id) {
-        this.id = id;
+	public void setDbId(Long dbid) {
+        this.dbid = dbid;
     }
 
 	/*
@@ -120,7 +122,7 @@ public class Neo4jAbstractDatabaseEntity
 	 */
     @Override
 	public String toString() {
-    	return "STAR Neo4j Node "+ id.toString()+"."+getVersion().toString()+" ["+getVersionDate()+"]" ;
+    	return "STAR Neo4j Node "+ dbid.toString()+"."+getVersion().toString()+" ["+getVersionDate()+"]" ;
     }
     
 }

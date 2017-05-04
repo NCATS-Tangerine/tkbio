@@ -43,7 +43,7 @@ public interface DataFile extends IdentifiedEntity {
 	String getDataType();
 	
 	default String standardFileName( String prefix, IdentifiedEntity entity ){
-		return prefix+"_" + entity.getClass().getSimpleName()+ "_" + entity.getId() + ".xlsx" ;
+		return prefix+"_" + entity.getClass().getSimpleName()+ "_" + entity.getDbId() + ".xlsx" ;
 	}
 
 }

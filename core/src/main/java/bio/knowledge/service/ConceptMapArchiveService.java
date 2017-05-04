@@ -97,7 +97,7 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 		ConceptMapArchive savedConceptMap = archiveRepository.save(conceptMapArchive);
 		Set<String> conceptAccessionIds = query.getNodeIdsfromConceptMap();
 		for (String accessionId : conceptAccessionIds) {
-			archiveRepository.attachLibraryToConcept( savedConceptMap.getId(), accessionId );
+			archiveRepository.attachLibraryToConcept( savedConceptMap.getDbId(), accessionId );
 		}
 		return true;
 	}

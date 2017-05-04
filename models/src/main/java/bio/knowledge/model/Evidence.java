@@ -59,6 +59,4 @@ public interface Evidence extends IdentifiedEntity {
 	 */
 	int compareTo(IdentifiedEntity other);
 
-	Long getId();
-
 }

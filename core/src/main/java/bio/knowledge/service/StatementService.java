@@ -891,7 +891,7 @@ public class StatementService
 		
 		// Access WikiData here and count properties matched by filter
 		
-		Long conceptId = concept.getId();
+		Long conceptId = concept.getDbId();
 		
 		// creating cache key using ("WikiData" + conceptId + textFilter)
 		//String cacheKey = ("WikiData" + "#" + conceptId + "#" + filter);
