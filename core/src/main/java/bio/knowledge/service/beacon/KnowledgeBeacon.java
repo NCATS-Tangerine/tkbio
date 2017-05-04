@@ -1,4 +1,4 @@
-package bio.knowledge.service;
+package bio.knowledge.service.beacon;
 
 import java.util.HashSet;
 import java.util.List;
@@ -9,10 +9,18 @@ import java.util.function.Supplier;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.model.ConceptImpl;
 
+/**
+ * This was originally going to wrap a {@code ApiClient} object, but I'm not
+ * sure if that's very useful anymore.
+ * 
+ * @author lance
+ *
+ */
+@Deprecated
 public class KnowledgeBeacon {
-	
+
 	private ApiClient apiClient;
-	
+
 	private final String NAME;
 	private final String BASE_URL;
 
@@ -22,7 +30,7 @@ public class KnowledgeBeacon {
 		NAME = name;
 		BASE_URL = baseUrl;
 	}
-	
+
 	public KnowledgeBeacon(String baseUrl) {
 		this(baseUrl, null);
 	}
@@ -32,6 +40,5 @@ public class KnowledgeBeacon {
 		set.add(apiClient);
 		return set;
 	}
-
 
 }

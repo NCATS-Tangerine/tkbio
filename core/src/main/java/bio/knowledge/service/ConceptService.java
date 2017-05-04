@@ -67,6 +67,7 @@ import bio.knowledge.model.datasource.SimpleResult;
 import bio.knowledge.model.datasource.SimpleResultSet;
 import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.service.Cache.CacheLocation;
+import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.service.core.FeatureService;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
 import bio.knowledge.service.wikidata.WikiDataService;
@@ -184,25 +185,12 @@ public class ConceptService
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	// TODO: I think this is where the refactoring faltered
 	private Page<Concept> findAllFiltered(String filter, Pageable pageable) {
-
-		//GetConceptDataService service = new GetConceptDataService(registry);
-		//GetConceptDataService service = registry.getConceptDataService();
-		
-		/*
-		 * CompletableFuture<List<ConceptImpl>> future = service.query(
+		CompletableFuture<List<ConceptImpl>> future = kbService.getConcepts(
 				filter,
 				null,
 				pageable.getPageNumber(),
 				pageable.getPageSize()
 		);
-		*/
-		
-		 CompletableFuture<List<ConceptImpl>> future = kbService.getConcepts(
-					filter,
-					null,
-					pageable.getPageNumber(),
-					pageable.getPageSize()
-			);
 		
 		try {
 			List<ConceptImpl> concepts = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);

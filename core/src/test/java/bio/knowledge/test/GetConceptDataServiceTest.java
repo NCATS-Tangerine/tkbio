@@ -12,9 +12,9 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Test;
 
 import bio.knowledge.model.ConceptImpl;
-import bio.knowledge.service.GetConceptDataService;
-import bio.knowledge.service.KnowledgeBeacon;
-import bio.knowledge.service.KnowledgeBeaconService;
+import bio.knowledge.service.beacon.GenericKnowledgeService;
+import bio.knowledge.service.beacon.KnowledgeBeacon;
+import bio.knowledge.service.beacon.KnowledgeBeaconService;
 
 public class GetConceptDataServiceTest {
 	
@@ -31,7 +31,7 @@ public class GetConceptDataServiceTest {
 	@Test
 	public void testSingleKnowledgeSource() {
 		KnowledgeBeacon ks = new KnowledgeBeacon(serverUrl);
-		GetConceptDataService service = new GetConceptDataService(ks);
+		GenericKnowledgeService service = new GenericKnowledgeService(ks);
 		
 		CompletableFuture<List<ConceptImpl>> future =
 				service.query(filters, semanticGroups, pageNumber, pageSize);
@@ -56,7 +56,7 @@ public class GetConceptDataServiceTest {
 		ksPool.add(ks1);
 		ksPool.add(ks2);
 		
-		GetConceptDataService service = new GetConceptDataService(ksPool);
+		GenericKnowledgeService service = new GenericKnowledgeService(ksPool);
 		
 		CompletableFuture<List<ConceptImpl>> future =
 				service.query(filters, semanticGroups, pageNumber, pageSize);
@@ -81,7 +81,7 @@ public class GetConceptDataServiceTest {
 		ksPool.add(ks1);
 		ksPool.add(ks2);
 		
-		GetConceptDataService service = new GetConceptDataService(ksPool);
+		GenericKnowledgeService service = new GenericKnowledgeService(ksPool);
 		
 		CompletableFuture<List<ConceptImpl>> future =
 				service.query(filters, semanticGroups, pageNumber, pageSize);
