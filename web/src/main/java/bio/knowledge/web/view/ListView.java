@@ -162,39 +162,6 @@ public class ListView extends BaseView {
 	private static final String PAGE_BUTTON_STYLE = "page-button";
 	private static final String PAGE_CONTROL_BUTTON_STYLE = "pagecontrol-button";
 
-	@Autowired
-	private KBQuery query;
-
-	@Autowired
-	Registry registry;
-	
-	@Autowired
-	private AuthenticationContext context;
-
-	@Autowired
-	private OntologyTermService ontologyTermService;
-
-	@Autowired
-	private IdentifiedEntityService<IdentifiedEntity> identifierService;
-
-	@Autowired
-	private ContactFormService contactFormService;
-
-	@Autowired
-	private ConceptService conceptService ;
-
-	@Autowired
-	private ConceptMapArchiveService conceptMapArchiveService;
-
-	@Autowired
-	private StatementService statementService ;
-	
-	@Autowired
-	private AnnotationService annotationService ;
-	
-	@Autowired
-	private AuthenticationState authenticationState;
-
 	// Wrapper for datasource container,
 	// to add extra action columns for 'details', 'data download', etc.
 	private GeneratedPropertyContainer gpcontainer;
