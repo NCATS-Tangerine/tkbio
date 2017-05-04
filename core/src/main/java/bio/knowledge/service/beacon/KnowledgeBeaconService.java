@@ -4,17 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.api.EvidenceApi;
-import bio.knowledge.client.api.ExactmatchesApi;
 import bio.knowledge.client.api.StatementsApi;
 import bio.knowledge.client.model.InlineResponse200;
 import bio.knowledge.client.model.InlineResponse2001;
+import bio.knowledge.client.model.InlineResponse2003;
+import bio.knowledge.client.model.InlineResponse2004;
+import bio.knowledge.client.model.StatementsObject;
+import bio.knowledge.client.model.StatementsPredicate;
+import bio.knowledge.client.model.StatementsSubject;
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptImpl;
+import bio.knowledge.model.Evidence;
+import bio.knowledge.model.EvidenceImpl;
+import bio.knowledge.model.GeneralStatement;
+import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 
@@ -32,8 +40,17 @@ import bio.knowledge.model.Statement;
 @Service
 public class KnowledgeBeaconService extends GenericKnowledgeService {
 
-	public CompletableFuture<List<ConceptImpl>> getConcepts(
-			String keywords,
+	/**
+	 * Gets a list of concepts satisfying a query with the given parameters.
+	 * @param keywords
+	 * @param semanticGroups
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return a {@code CompletableFuture} of all the concepts from all the
+	 *         knowledge sources in the {@code KnowledgeBeaconRegistry} that
+	 *         satisfy a query with the given parameters.
+	 */
+	public CompletableFuture<List<Concept>> getConcepts(String keywords,
 			String semanticGroups,
 			int pageNumber,
 			int pageSize
@@ -46,30 +63,45 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 		));
 	}
 	
-	public CompletableFuture<List<Statement>> getStatements() {
-		null;
-	}
-	
-	public CompletableFuture<List<ConceptImpl>> getConceptDetails(String conceptId) {
+	public CompletableFuture<List<Concept>> getConceptDetails(String conceptId) {
 		return query(buildConceptDetailsSupplier(conceptId));
 	}
 	
-	private ListSupplier<ConceptImpl> buildConceptSupplier(
+	public CompletableFuture<List<Statement>> getStatements(
+			String emci,
+			String keywords,
+			String semanticGroups,
+			int pageNumber,
+			int pageSize
+	) {
+		return query(buildStatementsSupplier(emci, keywords, semanticGroups, pageNumber, pageSize));
+	}
+	
+	public CompletableFuture<List<Evidence>> getEvidences(
+			String statementId,
+			String keywords,
+			int pageNumber,
+			int pageSize
+	) {
+		return query(buildEvidenceSupplier(statementId, keywords, pageNumber, pageSize));
+	}
+	
+	private ListSupplier<Concept> buildConceptSupplier(
 			String keywords,
 			String semanticGroups,
 			int pageNumber,
 			int pageSize
 		) {
-		return new ListSupplier<ConceptImpl>() {
+		return new ListSupplier<Concept>() {
 
 			@Override
-			public List<ConceptImpl> get() {
+			public List<Concept> get() {
 				ConceptsApi conceptsApi = new ConceptsApi(getApiClient());
 				
 				try {
 					List<InlineResponse2001> responses =
 							conceptsApi.getConcepts(keywords, semanticGroups, pageNumber, pageSize);
-					List<ConceptImpl> concepts = new ArrayList<ConceptImpl>();
+					List<Concept> concepts = new ArrayList<Concept>();
 					for (InlineResponse2001 response : responses) {
 						SemanticGroup semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
 						ConceptImpl concept = new ConceptImpl(
@@ -92,16 +124,16 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 		};
 	}
 	
-	private ListSupplier<ConceptImpl> buildConceptDetailsSupplier(String conceptId) {
-		return new ListSupplier<ConceptImpl>() {
+	private ListSupplier<Concept> buildConceptDetailsSupplier(String conceptId) {
+		return new ListSupplier<Concept>() {
 
 			@Override
-			public List<ConceptImpl> get() {
+			public List<Concept> get() {
 				ConceptsApi conceptsApi = new ConceptsApi(getApiClient());
 				
 				try {
 					List<InlineResponse200> responses = conceptsApi.getConceptDetails(conceptId);
-					List<ConceptImpl> concepts = new ArrayList<ConceptImpl>();
+					List<Concept> concepts = new ArrayList<Concept>();
 					
 					for (InlineResponse200 response : responses) {
 						SemanticGroup semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
@@ -126,17 +158,91 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 		};
 	}
 	
-//	private ListSupplier<Statement> buildStatementsSupplier(String emci, ) {
-//		return new ListSupplier<Statement>() {
-//
-//			@Override
-//			public List<Statement> get() {
-//				StatementsApi statementsApi = new StatementsApi(getApiClient());
-//				
-//				statementsApi.getStatements(emci, pageNumber, pageSize, keywords, semgroups);
-//				return null;
-//			}
-//			
-//		};
-//	}
+	private ListSupplier<Statement> buildStatementsSupplier(
+			String emci, 
+			String keywords,
+			String semanticGroups,
+			int pageNumber,
+			int pageSize
+	) {
+		return new ListSupplier<Statement>() {
+
+			@Override
+			public List<Statement> get() {
+				StatementsApi statementsApi = new StatementsApi(getApiClient());
+				
+				try {
+					List<InlineResponse2003> responses =
+							statementsApi.getStatements(emci, pageNumber, pageSize, keywords, semanticGroups);
+					List<Statement> statements = new ArrayList<Statement>();
+					
+					for (InlineResponse2003 response : responses) {
+						String id = response.getId();
+						StatementsObject statementsObject = response.getObject();
+						StatementsSubject statementsSubject = response.getSubject();
+						StatementsPredicate statementsPredicate = response.getPredicate();
+						
+						ConceptImpl subject = new ConceptImpl(
+								statementsSubject.getId(),
+								null,
+								statementsSubject.getName()
+						);
+						
+						ConceptImpl object = new ConceptImpl(
+								statementsObject.getId(),
+								null,
+								statementsObject.getName()
+						);
+						
+						PredicateImpl predicate = new PredicateImpl(
+								statementsPredicate.getName()
+						);
+						
+						statements.add(new GeneralStatement(id, subject, predicate, object));
+					}
+					
+					return statements;
+					
+				} catch (ApiException e) {
+					throw new RuntimeException(e.getMessage(), e.getCause());
+				}
+			}
+		};
+	}
+	
+	public ListSupplier<Evidence> buildEvidenceSupplier(
+			String statementId,
+			String keywords,
+			int pageNumber,
+			int pageSize
+	) {
+		return new ListSupplier<Evidence>() {
+
+			@Override
+			public List<Evidence> get() {
+				EvidenceApi evidenceApi = new EvidenceApi(getApiClient());
+				
+				try {
+					List<InlineResponse2004> responses =
+							evidenceApi.getEvidence(statementId, keywords, pageNumber, pageSize);
+					
+					List<Evidence> evidences = new ArrayList<Evidence>();
+					
+					for (InlineResponse2004 response : responses) {
+						EvidenceImpl evidence = new EvidenceImpl();
+						evidence.setAccessionId(response.getId());
+						evidence.setName(response.getLabel());
+						evidence.setPublicationDate(response.getDate());
+						
+						evidences.add(evidence);
+					}
+					
+					return evidences;
+					
+				} catch (ApiException e) {
+					throw new RuntimeException(e.getMessage(), e.getCause());
+				}
+			}
+		};
+	}
 }

@@ -50,6 +50,16 @@ public class EvidenceImpl extends AbstractIdentifiedEntity implements Evidence {
 	private Set<Annotation> annotations = new HashSet<Annotation>() ;
 
 	private Integer count = 0;
+	
+	private String publicationDate;
+	
+	public String getPublicationDate() {
+		return publicationDate;
+	}
+	
+	public void setPublicationDate(String date) {
+		this.publicationDate = date;
+	}
 
 	public EvidenceImpl() {}
 
