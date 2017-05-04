@@ -137,7 +137,7 @@ public interface AnnotationRepository extends GraphRepository<Annotation> {
 			" WHERE annotation.userId = {userId} AND annotation.visible = false"+
 			" OR annotation.visible = true"+
 			" OR annotation.visible IS NULL AND annotation.userId IS NULL"+
-			" WHERE LOWER(annotation.annotation)  CONTAINS LOWER({filter}) OR" +
+			" AND LOWER(annotation.annotation) CONTAINS LOWER({filter}) OR" +
 			      " LOWER(annotation.description) CONTAINS LOWER({filter})"	+
 			" RETURN annotation as annotation, reference as reference, (reference.year*365+reference.month*31+reference.day) as publicationDate"+
 			" ORDER BY  CASE {2}['sort'][0]['direction'] "+
@@ -149,7 +149,7 @@ public interface AnnotationRepository extends GraphRepository<Annotation> {
 			" SKIP  {2}.pageNumber*{2}.pageSize"+
 			" LIMIT {2}.pageSize" 
 		  )
-	List<Map<String, Object>> findByEvidenceFiltered( @Param("evidenceId") Evidence evidence, @Param("filter")String filter, @Param("pageable") Pageable pageable, @Param("userId") String userId);
+	List<Map<String, Object>> findByEvidenceFiltered( @Param("evidenceId") Evidence evidence, @Param("filter") String filter, @Param("pageable") Pageable pageable, @Param("userId") String userId);
 	
 	/**
 	 * @param evidence
