@@ -26,6 +26,7 @@
 package bio.knowledge.model.core.neo4j;
 
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
 
 import bio.knowledge.model.RdfUtil;
 import bio.knowledge.model.core.IdentifiedEntity;
@@ -46,7 +47,8 @@ public class Neo4jAbstractIdentifiedEntity
 
     /**
      */
-	private String accessionId = "";
+	@Property(name="accessionId")
+	private String id = "";
 
     /**
      */
@@ -75,10 +77,10 @@ public class Neo4jAbstractIdentifiedEntity
         this.description = description ;
     }
     
-    public Neo4jAbstractIdentifiedEntity( String accessionId, String name, String description ) {
+    public Neo4jAbstractIdentifiedEntity( String id, String name, String description ) {
     	this(name,description) ;
-        this.accessionId = accessionId ;
-        this.uri = RdfUtil.resolveUri(accessionId);
+        this.id = id ;
+        this.uri = RdfUtil.resolveUri(id);
     }
 
     /* (non-Javadoc)
@@ -101,8 +103,8 @@ public class Neo4jAbstractIdentifiedEntity
 	 * @see bio.knowledge.model.core.IdentifiedEntity#setId(java.lang.String)
 	 */
     @Override
-	public void setId(String accessionId) {
-        this.accessionId = accessionId;
+	public void setId(String id) {
+        this.id = id;
     }
 
 	/* (non-Javadoc)
@@ -110,7 +112,7 @@ public class Neo4jAbstractIdentifiedEntity
 	 */
 	@Override
 	public String getId() { 
-		return accessionId;
+		return id;
 	}
 	
     /* (non-Javadoc)
@@ -156,10 +158,10 @@ public class Neo4jAbstractIdentifiedEntity
     /* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 * 
-	 * IdentifiedEntity are ordered to one another by accessionId (only)
+	 * IdentifiedEntity are ordered to one another by id (only)
 	 * if available; otherwise, order by name.
 	 * 
-	 * Obviously, neither the accessionId nor the name of 
+	 * Obviously, neither the id nor the name of 
 	 * the current IdentifiedEntity instance 
 	 * nor that of the "other" IdentifiedEntity, 
 	 * should be null as this would generate a null pointer exception!
@@ -167,12 +169,12 @@ public class Neo4jAbstractIdentifiedEntity
 	@Override
 	public int compareTo(IdentifiedEntity other) {
 		if(!( 
-				accessionId==null || 
-				accessionId.isEmpty() ||
+				id==null || 
+				id.isEmpty() ||
 				other.getId()==null ||
 				other.getId().isEmpty())
 		)
-			return accessionId.compareTo(other.getId());
+			return id.compareTo(other.getId());
 		else
 			return name.compareTo(other.getName());
 	}
