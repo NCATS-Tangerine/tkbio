@@ -107,9 +107,9 @@ public class AuthenticationManager {
 		authListeners.add(listener);
 	}
 	
-	private void notifyOfLogin(Account account) {
+	private void notifyOfLogin(UserProfile user) {
 		for (AuthenticationListener listener : this.authListeners) {
-			listener.onLogin(account);
+			listener.onLogin(user);
 		}
 	}
 	
@@ -153,7 +153,7 @@ public class AuthenticationManager {
 			Account account = result.getAccount();
 			currentUser = new UserProfile(account);
 			
-			notifyOfLogin(account);
+			notifyOfLogin(currentUser);
 			
 			// because some data are visible or not visible depending on the user, 
 			// we need to clear out the cache which may have been calibrated to data for a different user or no user.

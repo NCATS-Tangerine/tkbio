@@ -27,7 +27,6 @@ package bio.knowledge.web.view;
 
 import java.util.Collection;
 
-import com.stormpath.sdk.account.Account;
 import com.stormpath.sdk.resource.ResourceException;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.GeneratedPropertyContainer;
@@ -58,6 +57,8 @@ import bio.knowledge.authentication.Role;
 import bio.knowledge.authentication.UserGroup;
 import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.authentication.exceptions.AuthenticationException;
+import bio.knowledge.authentication.exceptions.EmailAlreadyInUseException;
+import bio.knowledge.authentication.exceptions.UsernameAlreadyInUseException;
 import bio.knowledge.validation.ValidationHandler;
 import bio.knowledge.web.design.AboutUserDesign;
 import bio.knowledge.web.ui.DesktopUI;
@@ -433,33 +434,28 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 				
 				try {
 					userProfile.setEmail(email1);
-				} catch (ResourceException e1) {
-					if (e1.getCode() == 409) {
-						validationHandler.addProhibitedMatchValidator(
-								emailField,
-								email1,
-								"That email is already in use."
-						);
-						validationHandler.validateImmediately(emailField);
-						
-					} else {
-						Notification.show("Unknown error occurred with setting email to " + email1, Type.ERROR_MESSAGE);
-					}
+				} catch (EmailAlreadyInUseException e1) {
+					validationHandler.addProhibitedMatchValidator(
+							emailField,
+							email1,
+							"That email is already in use."
+					);
+					validationHandler.validateImmediately(emailField);
+				} catch (ResourceException e2) {
+					Notification.show("Unknown error occurred with setting email to " + email1, Type.ERROR_MESSAGE);					
 				}
 				
 				try {
 					userProfile.setUsername(username1);
-				} catch (ResourceException e2) {
-					if (e2.getCode() == 409) {
-						validationHandler.addProhibitedMatchValidator(
-								usernameField,
-								username1,
-								"That username is already in use."
-						);
-						validationHandler.validateImmediately(usernameField);
-					} else {
-						Notification.show("Unknown error occurred with setting username to " + username1, Type.ERROR_MESSAGE);
-					}
+				} catch (UsernameAlreadyInUseException e3) {
+					validationHandler.addProhibitedMatchValidator(
+							usernameField,
+							username1,
+							"That username is already in use."
+					);
+					validationHandler.validateImmediately(usernameField);
+				} catch (ResourceException e4) {
+					Notification.show("Unknown error occurred with setting username to " + username1, Type.ERROR_MESSAGE);
 				}
 			}
 			
@@ -474,9 +470,9 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 	}
 
 	@Override
-	public void onLogin(Account account) { 
+	public void onLogin(UserProfile user) { 
 		
-	};
+	}
 
 	@Override
 	public void onLogout() {

@@ -28,7 +28,6 @@ package bio.knowledge.web.view;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.stormpath.sdk.account.Account;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -134,7 +133,7 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 		
 		AuthenticationListener authListener = new AuthenticationListener() {
 			@Override
-			public void onLogin(Account account) {
+			public void onLogin(UserProfile user) {
 				loginBtn.setVisible(false);
 				logoutBtn.setVisible(true);
 				userAccountBtn.setVisible(true);

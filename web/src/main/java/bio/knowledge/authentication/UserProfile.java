@@ -35,6 +35,9 @@ import com.stormpath.sdk.group.Group;
 import com.stormpath.sdk.group.GroupList;
 import com.stormpath.sdk.resource.ResourceException;
 
+import bio.knowledge.authentication.exceptions.EmailAlreadyInUseException;
+import bio.knowledge.authentication.exceptions.UsernameAlreadyInUseException;
+
 /**
  * 
  * This class wraps the stormpath Account object, and provides an interface
@@ -129,27 +132,37 @@ public class UserProfile {
 		return account.getHref();
 	}
 
-	public void setEmail(String email) {
+	public void setEmail(String email) throws EmailAlreadyInUseException {
 		String currentEmail = account.getEmail();
 		account.setEmail(email);
 
 		try {
 			save();
 		} catch (ResourceException e) {
+			
 			account.setEmail(currentEmail);
-			throw e;
+			if (e.getCode() == 409) {
+				throw new EmailAlreadyInUseException(e.getMessage());
+			} else {
+				throw e;
+			}
 		}
 	}
 
-	public void setUsername(String username) {
+	public void setUsername(String username) throws UsernameAlreadyInUseException {
 		String currentUsername = account.getUsername();
 		account.setUsername(username);
 
 		try {
 			save();
 		} catch (ResourceException e) {
+			
 			account.setUsername(currentUsername);
-			throw e;
+			if (e.getCode() == 409) {
+				throw new UsernameAlreadyInUseException(e.getMessage());
+			} else {
+				throw e;
+			}
 		}
 	}
 
