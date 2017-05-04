@@ -25,8 +25,6 @@
  */
 package bio.knowledge.model.core;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-
 import bio.knowledge.model.RdfUtil;
 import bio.knowledge.model.core.IdentifiedEntity;
 
@@ -38,7 +36,7 @@ import bio.knowledge.model.core.IdentifiedEntity;
  */
 public class AbstractIdentifiedEntity implements IdentifiedEntity {
 
-	protected Long id = 0L;
+	protected Long dbid = 0L;
 	
     /**
      */
@@ -194,17 +192,6 @@ public class AbstractIdentifiedEntity implements IdentifiedEntity {
 	}
 
 	@Override
-	public Long getId() {
-		// TODO Auto-generated method stub
-		return id;
-	}
-
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	@Override
 	public Integer getVersion() {
 		// TODO Auto-generated method stub
 		return null;
@@ -226,5 +213,16 @@ public class AbstractIdentifiedEntity implements IdentifiedEntity {
 	public void setVersionDate(long versionDate) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Long getDbId() {
+		// TODO Auto-generated method stub
+		return dbid;
+	}
+
+	@Override
+	public void setDbId(Long id) {
+		this.dbid = dbid;
 	}
 }

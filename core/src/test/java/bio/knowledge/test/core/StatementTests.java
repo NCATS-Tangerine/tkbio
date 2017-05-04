@@ -148,18 +148,18 @@ public class StatementTests {
 		assertNotNull(guCit.getMonthPublished()) ;
 		assertNotNull(guCit.getDayPublished()) ;
 		
-		System.out.println("Reference NodeId (before saving):\t"+guCit.getId()) ;
+		System.out.println("Reference NodeId (before saving):\t"+guCit.getDbId()) ;
 		
 		guCit = referenceRepository.save(guCit);
 		
-		System.out.println("Reference NodeId (after saving):\t"+guCit.getId()) ;
+		System.out.println("Reference NodeId (after saving):\t"+guCit.getDbId()) ;
 
 		// retrieve reference by PMID
 		Neo4jReference c = referenceRepository.findByPmid(  referenceTestData.PMID5905393 ) ;
 		
 		assertNotNull(c) ;
 		
-		assertEquals( c.getId(), guCit.getId() ) ;
+		assertEquals( c.getDbId(), guCit.getDbId() ) ;
 		assertEquals( c.getPmid(),   guCit.getPmid() ) ;
 		assertEquals( c.getIssn(),   guCit.getIssn() ) ;
 		assertNotNull(c.getYearPublished()) ;
@@ -245,7 +245,7 @@ public class StatementTests {
 		TestData geneTestdata = new TestData() ;
 		Neo4jConcept ngly1 = conceptRepository.save(geneTestdata.NGLY1) ;
 		Neo4jConcept ngly1_saved = conceptRepository.findByAccessionId(geneTestdata.NGLY1.getAccessionId()) ;
-		assertEquals("Finding what I saved:",ngly1.getId(),ngly1_saved.getId());
+		assertEquals("Finding what I saved:",ngly1.getDbId(),ngly1_saved.getDbId());
 	}
 	
 	@Test
@@ -255,21 +255,21 @@ public class StatementTests {
 		ReferenceTestData referenceTestData = new ReferenceTestData() ;
 		
 		// Reference should exist and be added to the Annotation?
-		System.out.println("Reference NodeId (before saving):\t"+referenceTestData.PMID5905393_REFERENCE.getId()) ;
+		System.out.println("Reference NodeId (before saving):\t"+referenceTestData.PMID5905393_REFERENCE.getDbId()) ;
 
 		Neo4jReference UMBL_REFERENCE =
 				referenceRepository.save( referenceTestData.PMID5905393_REFERENCE );
 		
-		System.out.println("Reference NodeId (after saving):\t"+UMBL_REFERENCE.getId()) ;
+		System.out.println("Reference NodeId (after saving):\t"+UMBL_REFERENCE.getDbId()) ;
 		
 		Neo4jAnnotation glyp2umbl = referenceTestData.GLYP_UMBL_ANNOTATION ;
 		glyp2umbl.setReference(UMBL_REFERENCE);
 		
-		System.out.println("Annotation NodeId (before saving):\t"+glyp2umbl.getId()) ;
+		System.out.println("Annotation NodeId (before saving):\t"+glyp2umbl.getDbId()) ;
 		
 		glyp2umbl = annotationRepository.save(glyp2umbl);
 		
-		System.out.println("Annotation NodeId (after saving):\t"+glyp2umbl.getId()) ;
+		System.out.println("Annotation NodeId (after saving):\t"+glyp2umbl.getDbId()) ;
 		
 		Neo4jReference reference = referenceRepository.findByPmid( referenceTestData.PMID5905393 ) ;
 		
@@ -279,10 +279,10 @@ public class StatementTests {
 		
 		assertNotNull(annotation) ;
 		
-		assertEquals( annotation.getId(),   glyp2umbl.getId() ) ;
+		assertEquals( annotation.getDbId(),   glyp2umbl.getDbId() ) ;
 		assertEquals( annotation.getType(),     glyp2umbl.getType() ) ;
 		// TODO: Ids are a database entity property. do these tests need to be generalized? see Reference interface for the call for this Id.
-		assertEquals( annotation.getReference().getId(), glyp2umbl.getReference().getId() ) ;
+		assertEquals( annotation.getReference().getDbId(), glyp2umbl.getReference().getDbId() ) ;
 		assertEquals( annotation.getReference().getPmid(), referenceTestData.PMID5905393 ) ;
 	}
 	
@@ -323,32 +323,32 @@ public class StatementTests {
 		ReferenceTestData referenceTestData = new ReferenceTestData() ;
 		
 		// Reference should exist and be added to the Annotation?
-		System.out.println("Reference NodeId (before saving):\t"+referenceTestData.PMID5905393_REFERENCE.getId()) ;
+		System.out.println("Reference NodeId (before saving):\t"+referenceTestData.PMID5905393_REFERENCE.getDbId()) ;
 
 		Neo4jReference UMBL_REFERENCE =
 				referenceRepository.save( referenceTestData.PMID5905393_REFERENCE );
 		
-		System.out.println("Reference NodeId (after saving):\t"+UMBL_REFERENCE.getId()) ;
+		System.out.println("Reference NodeId (after saving):\t"+UMBL_REFERENCE.getDbId()) ;
 
 		// The Reference is added to the Annotation that should should exist before Evidence link is created?
 		referenceTestData.GLYP_UMBL_ANNOTATION.setReference(UMBL_REFERENCE);
 		
-		System.out.println("Annotation NodeId (before saving):\t"+referenceTestData.GLYP_UMBL_ANNOTATION.getId()) ;
+		System.out.println("Annotation NodeId (before saving):\t"+referenceTestData.GLYP_UMBL_ANNOTATION.getDbId()) ;
 
 		Neo4jAnnotation GLYP_UMBL_SENTENCE = 
 				annotationRepository.save( referenceTestData.GLYP_UMBL_ANNOTATION ) ; 
 
-		System.out.println("Annotation NodeId (after saving):\t"+GLYP_UMBL_SENTENCE.getId()) ;
+		System.out.println("Annotation NodeId (after saving):\t"+GLYP_UMBL_SENTENCE.getDbId()) ;
 
 		// Annotation should exist before Evidence link is created?
 		Neo4jEvidence GLYP_UMBL_EVIDENCE = new Neo4jEvidence() ;
 		GLYP_UMBL_EVIDENCE.addAnnotation(GLYP_UMBL_SENTENCE) ;
 
-		System.out.println("Evidence NodeId (before saving):\t"+GLYP_UMBL_EVIDENCE.getId()) ;
+		System.out.println("Evidence NodeId (before saving):\t"+GLYP_UMBL_EVIDENCE.getDbId()) ;
 
 		GLYP_UMBL_EVIDENCE = evidenceRepository.save(GLYP_UMBL_EVIDENCE) ;
 
-		System.out.println("Evidence NodeId (before saving):\t"+GLYP_UMBL_EVIDENCE.getId()) ;
+		System.out.println("Evidence NodeId (before saving):\t"+GLYP_UMBL_EVIDENCE.getDbId()) ;
 
 		/*
 			+----------------+-------------+--------+
@@ -376,25 +376,25 @@ public class StatementTests {
 		Neo4jGeneralStatement UMBL_LOCATION_OF_GLYP = new Neo4jGeneralStatement( "540408", csUmbArt, predicate, csGProt ) ;
 		UMBL_LOCATION_OF_GLYP.setEvidence(GLYP_UMBL_EVIDENCE);
 		
-		System.out.println("NodeId (before saving):\t"+UMBL_LOCATION_OF_GLYP.getId()) ;
+		System.out.println("NodeId (before saving):\t"+UMBL_LOCATION_OF_GLYP.getDbId()) ;
 		
 		UMBL_LOCATION_OF_GLYP = statementRepository.save(UMBL_LOCATION_OF_GLYP);
 		
-		System.out.println("NodeId (after saving):\t"+UMBL_LOCATION_OF_GLYP.getId()) ;
+		System.out.println("NodeId (after saving):\t"+UMBL_LOCATION_OF_GLYP.getDbId()) ;
 		
-		Neo4jGeneralStatement p = statementRepository.findOne(UMBL_LOCATION_OF_GLYP.getId()) ;
+		Neo4jGeneralStatement p = statementRepository.findOne(UMBL_LOCATION_OF_GLYP.getDbId()) ;
 		
 		assertNotNull(p) ;
 		
 		System.out.println( "\nTesting findOne() of UMBL_LOCATION_OF_GLYP:");
-		assertEquals( p.getId(), UMBL_LOCATION_OF_GLYP.getId() ) ;
+		assertEquals( p.getDbId(), UMBL_LOCATION_OF_GLYP.getDbId() ) ;
 		
 		List<Concept> subjects = p.getSubjects() ;
 		assertNotNull(subjects) ;
 		assertTrue("Statement has subjects?",!subjects.isEmpty()) ;
 		Concept subject = subjects.get(0) ;
 		Concept origSubject = UMBL_LOCATION_OF_GLYP.getSubjects().get(0);
-		assertEquals( subject.getId(), origSubject.getId() ) ;
+		assertEquals( subject.getDbId(), origSubject.getDbId() ) ;
 		assertEquals( subject.getAccessionId(), origSubject.getAccessionId() ) ;
 		System.out.println( "Subject accession id: "+subject.getAccessionId());
 		
@@ -406,22 +406,22 @@ public class StatementTests {
 		assertTrue("Statement has objects?",!objects.isEmpty()) ;
 		Concept object = objects.get(0) ;
 		Concept origObject = UMBL_LOCATION_OF_GLYP.getObjects().get(0);
-		assertEquals( object.getId(),  origObject.getId() ) ;
+		assertEquals( object.getDbId(),  origObject.getDbId() ) ;
 		assertEquals( object.getAccessionId(),  origObject.getAccessionId() ) ;
 		System.out.println( "Object accession id: "+object.getAccessionId());
 		
 		Evidence evidence = p.getEvidence() ;
 		assertNotNull(evidence) ;
-		System.out.println("Evidence id:\t"+evidence.getId()) ;
+		System.out.println("Evidence id:\t"+evidence.getDbId()) ;
 		
 		assertTrue("Statement has some evidence?",!evidence.getAnnotations().isEmpty()) ;
 		
 		for( Annotation annotation : evidence.getAnnotations() ) {
 			System.out.println("Evidence Annotation found:\t"+annotation.getAccessionId()) ;
-			assertEquals( annotation.getId(), GLYP_UMBL_SENTENCE.getId() ) ;
+			assertEquals( annotation.getDbId(), GLYP_UMBL_SENTENCE.getDbId() ) ;
 			
 			Neo4jReference reference = (Neo4jReference) annotation.getReference();
-			assertEquals( reference.getId(), UMBL_REFERENCE.getId() ) ;
+			assertEquals( reference.getDbId(), UMBL_REFERENCE.getDbId() ) ;
 			System.out.println("Annotation Reference found:\t"+reference.getAccessionId()) ;
 			
 			break ;

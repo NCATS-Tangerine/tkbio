@@ -1259,7 +1259,7 @@ public class DesktopUI extends UI implements MessageService {
 
 			if (conceptOpt.isPresent()) {
 				Concept cst = conceptOpt.get();
-				query.setCurrentQueryConceptById(cst.getId().toString());
+				query.setCurrentQueryConceptById(cst.getDbId().toString());
 
 				if (query.getCurrentQueryConcept().isPresent()) {
 					setCurrentConceptTitle(query.getCurrentQueryConcept().get().getName());

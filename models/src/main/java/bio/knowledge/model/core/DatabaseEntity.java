@@ -32,8 +32,8 @@ package bio.knowledge.model.core;
  */
 public interface DatabaseEntity extends VersionedObject {
 
-	Long getId();
+	Long getDbId();
 
-	void setId(Long id);
+	void setDbId(Long id);
 
 }

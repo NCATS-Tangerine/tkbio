@@ -175,7 +175,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 
 		Evidence evidence = evidenceOpt.get() ;
 		
-		Long evidenceId = evidence.getId();
+		Long evidenceId = evidence.getDbId();
 		String pageKey = new Integer(pageable.hashCode()).toString();
 		CacheLocation cacheLocation = 
 				cache.searchForResultSet(
@@ -225,7 +225,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 		if( !evidenceOpt.isPresent() ) return 0 ;
 		Evidence evidence = evidenceOpt.get() ;
 		
-		Long evidenceId = evidence.getId();
+		Long evidenceId = evidence.getDbId();
 		// creating cache key using (evidenceId + textFilter)
 		//String cacheKey = (evidenceId + "#" + filter);
 		//cacheKey = Base64.getEncoder().encodeToString(cacheKey.getBytes());

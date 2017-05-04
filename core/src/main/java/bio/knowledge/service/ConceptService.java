@@ -185,7 +185,7 @@ public class ConceptService
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	// TODO: I think this is where the refactoring faltered
 	private Page<Concept> findAllFiltered(String filter, Pageable pageable) {
-		CompletableFuture<List<ConceptImpl>> future = kbService.getConcepts(
+		CompletableFuture<List<Concept>> future = kbService.getConcepts(
 				filter,
 				null,
 				pageable.getPageNumber(),
@@ -193,7 +193,7 @@ public class ConceptService
 		);
 		
 		try {
-			List<ConceptImpl> concepts = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+			List<Concept> concepts = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
 			
 //			String searchString = query.getCurrentQueryText();
 //			if ( 
