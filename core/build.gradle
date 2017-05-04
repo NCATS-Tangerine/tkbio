@@ -5,4 +5,5 @@ evaluationDependsOn(':services')
 
 dependencies {
 	compile project(':services')
+	compile 'com.opencsv:opencsv:3.9'
 }

@@ -107,7 +107,7 @@ public class WikiDataService
 					
 				// Check if current property resolves directly to a WikiData Entity
 				ConceptDescriptor descriptor = 
-						ConceptDescriptor.lookUpByAccessionId(property);
+						ConceptDescriptor.lookUpById(property);
 				
 				// My heuristic for this is the resource qualifier
 				if(descriptor.isWikiDatum()) {

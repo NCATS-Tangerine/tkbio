@@ -120,3 +120,5 @@ stormpath.application.name = Knowledge.Bio
 application.hostname=knowledge.bio
 google.tracking_id=<your Google tracking id>
 
+#your path to the initial csv file containing your knowledge sources
+knowledgeBeacon.table.path=<project path>/tkbio/config/knowledge-sources.csv
