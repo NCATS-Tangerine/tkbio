@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.client.ApiException;
+import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.api.EvidenceApi;
 import bio.knowledge.client.api.StatementsApi;
@@ -35,6 +35,12 @@ import bio.knowledge.model.Statement;
  *         it is necessary because we're asynchrounously setting their ApiClient
  *         objects (which encapsulate the URI to be queried) in
  *         {@code GenericDataService}.
+ *         <br><br>
+ *         The methods in this class are ugly and confusing.. But it's somewhat
+ *         unavoidable. Take a look at how they are used in
+ *         {@code GenericKnowledgeService}. A SupplierBuilder builds a
+ *         ListSupplier which extends a Supplier, which is used to generate
+ *         CompletableFutures.
  *
  */
 @Service
@@ -55,16 +61,89 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			int pageNumber,
 			int pageSize
 	) {
-		return query(buildConceptSupplier(
-				keywords,
-				semanticGroups,
-				pageNumber,
-				pageSize
-		));
+		SupplierBuilder<Concept> builder = new SupplierBuilder<Concept>() {
+
+			@Override
+			public ListSupplier<Concept> build(ApiClient apiClient) {
+				return new ListSupplier<Concept>() {
+
+					@Override
+					public List<Concept> getList() {
+						ConceptsApi conceptsApi = new ConceptsApi(apiClient);
+						
+						try {
+							List<InlineResponse2001> responses =
+									conceptsApi.getConcepts(keywords, semanticGroups, pageNumber, pageSize);
+							List<Concept> concepts = new ArrayList<Concept>();
+							for (InlineResponse2001 response : responses) {
+								SemanticGroup semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
+								ConceptImpl concept = new ConceptImpl(
+										response.getId(),
+										semgroup,
+										response.getName()
+								);
+								
+								concept.setSynonyms(String.join(" ", response.getSynonyms()));
+								concept.setDescription(response.getDefinition());
+								
+								concepts.add(concept);
+							}
+							return concepts;
+							
+						} catch (Exception e) {
+							return new ArrayList<Concept>();
+						}
+					}
+					
+				};
+			}
+			
+		};
+		
+		return query(builder);
 	}
 	
 	public CompletableFuture<List<Concept>> getConceptDetails(String conceptId) {
-		return query(buildConceptDetailsSupplier(conceptId));
+		SupplierBuilder<Concept> builder = new SupplierBuilder<Concept>() {
+
+			@Override
+			public ListSupplier<Concept> build(ApiClient apiClient) {
+				return new ListSupplier<Concept>() {
+
+					@Override
+					public List<Concept> getList() {
+						ConceptsApi conceptsApi = new ConceptsApi(apiClient);
+						
+						try {
+							List<InlineResponse200> responses = conceptsApi.getConceptDetails(conceptId);
+							List<Concept> concepts = new ArrayList<Concept>();
+							
+							for (InlineResponse200 response : responses) {
+								SemanticGroup semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
+								ConceptImpl concept = new ConceptImpl(
+										response.getId(),
+										semgroup,
+										response.getName()
+								);
+								
+								concept.setSynonyms(String.join(" ", response.getSynonyms()));
+								concept.setDescription(response.getDefinition());
+								
+								concepts.add(concept);
+							}
+							
+							return concepts;
+							
+						} catch (Exception e) {
+							return new ArrayList<Concept>();
+						}
+					}
+					
+				};
+			}
+			
+		};
+		return query(builder);
 	}
 	
 	public CompletableFuture<List<Statement>> getStatements(
@@ -74,7 +153,58 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			int pageNumber,
 			int pageSize
 	) {
-		return query(buildStatementsSupplier(emci, keywords, semanticGroups, pageNumber, pageSize));
+		SupplierBuilder<Statement> builder = new SupplierBuilder<Statement>() {
+
+			@Override
+			public ListSupplier<Statement> build(ApiClient apiClient) {
+				return new ListSupplier<Statement>() {
+
+					@Override
+					public List<Statement> getList() {
+						StatementsApi statementsApi = new StatementsApi(apiClient);
+						
+						try {
+							List<InlineResponse2003> responses =
+									statementsApi.getStatements(emci, pageNumber, pageSize, keywords, semanticGroups);
+							List<Statement> statements = new ArrayList<Statement>();
+							
+							for (InlineResponse2003 response : responses) {
+								String id = response.getId();
+								StatementsObject statementsObject = response.getObject();
+								StatementsSubject statementsSubject = response.getSubject();
+								StatementsPredicate statementsPredicate = response.getPredicate();
+								
+								ConceptImpl subject = new ConceptImpl(
+										statementsSubject.getId(),
+										null,
+										statementsSubject.getName()
+								);
+								
+								ConceptImpl object = new ConceptImpl(
+										statementsObject.getId(),
+										null,
+										statementsObject.getName()
+								);
+								
+								PredicateImpl predicate = new PredicateImpl(
+										statementsPredicate.getName()
+								);
+								
+								statements.add(new GeneralStatement(id, subject, predicate, object));
+							}
+							
+							return statements;
+							
+						} catch (Exception e) {
+							return new ArrayList<Statement>();
+						}
+					}
+					
+				};
+			}
+			
+		};
+		return query(builder);
 	}
 	
 	public CompletableFuture<List<Evidence>> getEvidences(
@@ -83,166 +213,43 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			int pageNumber,
 			int pageSize
 	) {
-		return query(buildEvidenceSupplier(statementId, keywords, pageNumber, pageSize));
-	}
-	
-	private ListSupplier<Concept> buildConceptSupplier(
-			String keywords,
-			String semanticGroups,
-			int pageNumber,
-			int pageSize
-		) {
-		return new ListSupplier<Concept>() {
+		SupplierBuilder<Evidence> builder = new SupplierBuilder<Evidence>() {
 
 			@Override
-			public List<Concept> get() {
-				ConceptsApi conceptsApi = new ConceptsApi(getApiClient());
-				
-				try {
-					List<InlineResponse2001> responses =
-							conceptsApi.getConcepts(keywords, semanticGroups, pageNumber, pageSize);
-					List<Concept> concepts = new ArrayList<Concept>();
-					for (InlineResponse2001 response : responses) {
-						SemanticGroup semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
-						ConceptImpl concept = new ConceptImpl(
-								response.getId(),
-								semgroup,
-								response.getName()
-						);
+			public ListSupplier<Evidence> build(ApiClient apiClient) {
+				return new ListSupplier<Evidence>() {
+
+					@Override
+					public List<Evidence> getList() {
+						EvidenceApi evidenceApi = new EvidenceApi(apiClient);
 						
-						concept.setSynonyms(String.join(" ", response.getSynonyms()));
-						concept.setDescription(response.getDefinition());
-						
-						concepts.add(concept);
+						try {
+							List<InlineResponse2004> responses =
+									evidenceApi.getEvidence(statementId, keywords, pageNumber, pageSize);
+							
+							List<Evidence> evidences = new ArrayList<Evidence>();
+							
+							for (InlineResponse2004 response : responses) {
+								EvidenceImpl evidence = new EvidenceImpl();
+								evidence.setAccessionId(response.getId());
+								evidence.setName(response.getLabel());
+								evidence.setPublicationDate(response.getDate());
+								
+								evidences.add(evidence);
+							}
+							
+							return evidences;
+							
+						} catch (Exception e) {
+							return new ArrayList<Evidence>();
+						}
 					}
-					return concepts;
 					
-				} catch (ApiException e) {
-					throw new RuntimeException(e.getMessage(), e.getCause());
-				}
+				};
 			}
+			
 		};
+		return query(builder);
 	}
 	
-	private ListSupplier<Concept> buildConceptDetailsSupplier(String conceptId) {
-		return new ListSupplier<Concept>() {
-
-			@Override
-			public List<Concept> get() {
-				ConceptsApi conceptsApi = new ConceptsApi(getApiClient());
-				
-				try {
-					List<InlineResponse200> responses = conceptsApi.getConceptDetails(conceptId);
-					List<Concept> concepts = new ArrayList<Concept>();
-					
-					for (InlineResponse200 response : responses) {
-						SemanticGroup semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
-						ConceptImpl concept = new ConceptImpl(
-								response.getId(),
-								semgroup,
-								response.getName()
-						);
-						
-						concept.setSynonyms(String.join(" ", response.getSynonyms()));
-						concept.setDescription(response.getDefinition());
-						
-						concepts.add(concept);
-					}
-					
-					return concepts;
-					
-				} catch (ApiException e) {
-					throw new RuntimeException(e.getMessage(), e.getCause());
-				}
-			}
-		};
-	}
-	
-	private ListSupplier<Statement> buildStatementsSupplier(
-			String emci, 
-			String keywords,
-			String semanticGroups,
-			int pageNumber,
-			int pageSize
-	) {
-		return new ListSupplier<Statement>() {
-
-			@Override
-			public List<Statement> get() {
-				StatementsApi statementsApi = new StatementsApi(getApiClient());
-				
-				try {
-					List<InlineResponse2003> responses =
-							statementsApi.getStatements(emci, pageNumber, pageSize, keywords, semanticGroups);
-					List<Statement> statements = new ArrayList<Statement>();
-					
-					for (InlineResponse2003 response : responses) {
-						String id = response.getId();
-						StatementsObject statementsObject = response.getObject();
-						StatementsSubject statementsSubject = response.getSubject();
-						StatementsPredicate statementsPredicate = response.getPredicate();
-						
-						ConceptImpl subject = new ConceptImpl(
-								statementsSubject.getId(),
-								null,
-								statementsSubject.getName()
-						);
-						
-						ConceptImpl object = new ConceptImpl(
-								statementsObject.getId(),
-								null,
-								statementsObject.getName()
-						);
-						
-						PredicateImpl predicate = new PredicateImpl(
-								statementsPredicate.getName()
-						);
-						
-						statements.add(new GeneralStatement(id, subject, predicate, object));
-					}
-					
-					return statements;
-					
-				} catch (ApiException e) {
-					throw new RuntimeException(e.getMessage(), e.getCause());
-				}
-			}
-		};
-	}
-	
-	public ListSupplier<Evidence> buildEvidenceSupplier(
-			String statementId,
-			String keywords,
-			int pageNumber,
-			int pageSize
-	) {
-		return new ListSupplier<Evidence>() {
-
-			@Override
-			public List<Evidence> get() {
-				EvidenceApi evidenceApi = new EvidenceApi(getApiClient());
-				
-				try {
-					List<InlineResponse2004> responses =
-							evidenceApi.getEvidence(statementId, keywords, pageNumber, pageSize);
-					
-					List<Evidence> evidences = new ArrayList<Evidence>();
-					
-					for (InlineResponse2004 response : responses) {
-						EvidenceImpl evidence = new EvidenceImpl();
-						evidence.setAccessionId(response.getId());
-						evidence.setName(response.getLabel());
-						evidence.setPublicationDate(response.getDate());
-						
-						evidences.add(evidence);
-					}
-					
-					return evidences;
-					
-				} catch (ApiException e) {
-					throw new RuntimeException(e.getMessage(), e.getCause());
-				}
-			}
-		};
-	}
 }

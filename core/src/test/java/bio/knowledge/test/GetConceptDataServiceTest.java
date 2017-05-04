@@ -30,71 +30,74 @@ public class GetConceptDataServiceTest {
 	
 	@Test
 	public void testSingleKnowledgeSource() {
-		KnowledgeBeacon ks = new KnowledgeBeacon(serverUrl);
-		GenericKnowledgeService service = new GenericKnowledgeService(ks);
-		
-		CompletableFuture<List<ConceptImpl>> future =
-				service.query(filters, semanticGroups, pageNumber, pageSize);
-		
-		try {
-			List<ConceptImpl> concepts = future.get(timeDuration, timeUnit);
-			
-			assertTrue(concepts.size() == expectedNumberOfResults);
-		} catch (InterruptedException | ExecutionException e) {
-			fail("Unexpected Exception");
-		} catch (TimeoutException e) {
-			fail("Timeout");
-		}
+		fail();
+//		KnowledgeBeacon ks = new KnowledgeBeacon(serverUrl);
+//		GenericKnowledgeService service = new GenericKnowledgeService(ks);
+//		
+//		CompletableFuture<List<ConceptImpl>> future =
+//				service.query(filters, semanticGroups, pageNumber, pageSize);
+//		
+//		try {
+//			List<ConceptImpl> concepts = future.get(timeDuration, timeUnit);
+//			
+//			assertTrue(concepts.size() == expectedNumberOfResults);
+//		} catch (InterruptedException | ExecutionException e) {
+//			fail("Unexpected Exception");
+//		} catch (TimeoutException e) {
+//			fail("Timeout");
+//		}
 	}
 	
 	@Test
 	public void testDuplicateKnowledgeSources() {
-		KnowledgeBeacon ks1 = new KnowledgeBeacon(serverUrl);
-		KnowledgeBeacon ks2 = new KnowledgeBeacon(serverUrl);
-		KnowledgeBeaconService ksPool = new KnowledgeBeaconService();
-		
-		ksPool.add(ks1);
-		ksPool.add(ks2);
-		
-		GenericKnowledgeService service = new GenericKnowledgeService(ksPool);
-		
-		CompletableFuture<List<ConceptImpl>> future =
-				service.query(filters, semanticGroups, pageNumber, pageSize);
-		
-		try {
-			List<ConceptImpl> concepts = future.get(timeDuration, timeUnit);
-			
-			assertTrue(concepts.size() == 2 * expectedNumberOfResults);
-		} catch (InterruptedException | ExecutionException e) {
-			fail("Unexpected Exception");
-		} catch (TimeoutException e) {
-			fail("Timeout");
-		}
+		fail();
+//		KnowledgeBeacon ks1 = new KnowledgeBeacon(serverUrl);
+//		KnowledgeBeacon ks2 = new KnowledgeBeacon(serverUrl);
+//		KnowledgeBeaconService ksPool = new KnowledgeBeaconService();
+//		
+//		ksPool.add(ks1);
+//		ksPool.add(ks2);
+//		
+//		GenericKnowledgeService service = new GenericKnowledgeService(ksPool);
+//		
+//		CompletableFuture<List<ConceptImpl>> future =
+//				service.query(filters, semanticGroups, pageNumber, pageSize);
+//		
+//		try {
+//			List<ConceptImpl> concepts = future.get(timeDuration, timeUnit);
+//			
+//			assertTrue(concepts.size() == 2 * expectedNumberOfResults);
+//		} catch (InterruptedException | ExecutionException e) {
+//			fail("Unexpected Exception");
+//		} catch (TimeoutException e) {
+//			fail("Timeout");
+//		}
 	}
 	
 	@Test
 	public void testBrokenKnowledgeSources() {
-		KnowledgeBeacon ks1 = new KnowledgeBeacon(serverUrl);
-		KnowledgeBeacon ks2 = new KnowledgeBeacon("Broken URL");
-		KnowledgeBeaconService ksPool = new KnowledgeBeaconService();
-		
-		ksPool.add(ks1);
-		ksPool.add(ks2);
-		
-		GenericKnowledgeService service = new GenericKnowledgeService(ksPool);
-		
-		CompletableFuture<List<ConceptImpl>> future =
-				service.query(filters, semanticGroups, pageNumber, pageSize);
-		
-		try {
-			List<ConceptImpl> concepts = future.get(timeDuration, timeUnit);
-			
-			assertTrue(concepts.size() == expectedNumberOfResults);
-		} catch (InterruptedException | ExecutionException e) {
-			fail("Unexpected Exception");
-		} catch (TimeoutException e) {
-			fail("Timeout");
-		}
+		fail();
+//		KnowledgeBeacon ks1 = new KnowledgeBeacon(serverUrl);
+//		KnowledgeBeacon ks2 = new KnowledgeBeacon("Broken URL");
+//		KnowledgeBeaconService ksPool = new KnowledgeBeaconService();
+//		
+//		ksPool.add(ks1);
+//		ksPool.add(ks2);
+//		
+//		GenericKnowledgeService service = new GenericKnowledgeService(ksPool);
+//		
+//		CompletableFuture<List<ConceptImpl>> future =
+//				service.query(filters, semanticGroups, pageNumber, pageSize);
+//		
+//		try {
+//			List<ConceptImpl> concepts = future.get(timeDuration, timeUnit);
+//			
+//			assertTrue(concepts.size() == expectedNumberOfResults);
+//		} catch (InterruptedException | ExecutionException e) {
+//			fail("Unexpected Exception");
+//		} catch (TimeoutException e) {
+//			fail("Timeout");
+//		}
 	}
 
 }
