@@ -81,7 +81,7 @@ public interface AnnotationRepository extends GraphRepository<Annotation> {
 	 * @return matching Annotation
 	 */
 	@Query( "MATCH ( annotation:Annotation { accessionId:{accessionId} } ) RETURN annotation")
-	Neo4jAnnotation findByAccessionId(  @Param("accessionId") String accessionId ) ;
+	Neo4jAnnotation findById(  @Param("accessionId") String accessionId ) ;
 	
 	
 	@Query( "MATCH (annotation:Annotation { accessionId:{accessionId} } )-[:REFERENCE]->(reference:Reference) RETURN reference LIMIT 1")

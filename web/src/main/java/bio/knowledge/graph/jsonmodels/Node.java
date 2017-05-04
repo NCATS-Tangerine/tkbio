@@ -173,7 +173,7 @@ public class Node extends HashMap<String, HashMap<String, Serializable>> impleme
 	 * @param concept
 	 */
 	public Node(Concept concept) {
-		this(new NodeData(concept.getAccessionId(), concept.getName()));
+		this(new NodeData(concept.getId(), concept.getName()));
 	}
 
 	@Override

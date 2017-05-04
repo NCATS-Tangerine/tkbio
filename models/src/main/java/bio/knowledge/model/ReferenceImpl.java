@@ -69,7 +69,7 @@ public class ReferenceImpl extends AbstractAnnotatedEntity implements Reference 
 	public void setPmid(String pmid) {
 		this.pmid = pmid;
 		setUri(PUBMED_BASE_URI+pmid);
-		setAccessionId("pubmed:"+pmid);
+		setId("pubmed:"+pmid);
 	}
 
 	/* (non-Javadoc)

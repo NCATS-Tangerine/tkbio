@@ -73,7 +73,7 @@ public class Neo4jReference extends Neo4jAbstractAnnotatedEntity implements Refe
 	public void setPmid(String pmid) {
 		this.pmid = pmid;
 		setUri(PUBMED_BASE_URI+pmid);
-		setAccessionId("pubmed:"+pmid);
+		setId("pubmed:"+pmid);
 	}
 
 	/* (non-Javadoc)

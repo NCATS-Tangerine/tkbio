@@ -230,7 +230,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 					
 					for (InlineResponse2004 response : responses) {
 						EvidenceImpl evidence = new EvidenceImpl();
-						evidence.setAccessionId(response.getId());
+						evidence.setId(response.getId());
 						evidence.setName(response.getLabel());
 						evidence.setPublicationDate(response.getDate());
 						

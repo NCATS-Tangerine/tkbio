@@ -6,8 +6,6 @@ public interface Predicate extends IdentifiedEntity {
 
 	String getDescription();
 
-	String getAccessionId();
-
 	String getName();
 
 }

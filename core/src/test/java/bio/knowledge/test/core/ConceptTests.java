@@ -92,7 +92,7 @@ public class ConceptTests {
 		String TESTDEF  = "Hyperglycemia in the newborn due to a defect "
 				        + "in the secretion or function of insulin.(NICHD)" ;
 		
-		Neo4jConcept concept = conceptRepository.findByAccessionId(TESTCUI) ;
+		Neo4jConcept concept = conceptRepository.findById(TESTCUI) ;
 		if(concept==null) {
 			concept = new Neo4jConcept( TESTCUI, SemanticGroup.PHEN, TESTNAME );
 			concept = conceptRepository.save(concept) ;
@@ -100,7 +100,7 @@ public class ConceptTests {
 		
 		conceptService.addDefinition( concept, NCI_SAB_TAG_NAME, TESTAUI, TESTDEF );
 		
-		concept = conceptRepository.findByAccessionId(TESTCUI) ;
+		concept = conceptRepository.findById(TESTCUI) ;
 		assertNotNull("Concept associated with Concept '"+TESTCUI+"' should not be null!",concept) ;
 		assertEquals("Retrieval of 'name' associated with Concept '"+TESTCUI+"'?", concept.getName(), TESTNAME ) ;
 		
@@ -126,7 +126,7 @@ public class ConceptTests {
 		String TESTDEF  = "Hyperglycemia in the newborn due to a defect "
 				        + "in the secretion or function of insulin.(NICHD)" ;
 		
-		Neo4jConcept concept = conceptRepository.findByAccessionId(TESTCUI) ;
+		Neo4jConcept concept = conceptRepository.findById(TESTCUI) ;
 		if(concept==null) {
 			concept = new Neo4jConcept( TESTCUI, SemanticGroup.PHEN, TESTNAME );
 			concept = conceptRepository.save(concept) ;

@@ -138,7 +138,7 @@ public class ConceptRestController {
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
 	public Concept update(@PathVariable Long id, @RequestBody Concept concept) {
 		Concept update = conceptRepository.findOne(id);
-		update.setAccessionId(concept.getAccessionId());
+		update.setId(concept.getId());
 		update.setName(concept.getName());
 		update.setSemanticGroup(concept.getSemanticGroup());
 		return conceptRepository.save((Neo4jConcept) update);

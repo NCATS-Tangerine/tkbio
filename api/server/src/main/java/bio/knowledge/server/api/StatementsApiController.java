@@ -66,21 +66,21 @@ public class StatementsApiController implements StatementsApi {
 			Predicate relation = (Predicate) entry.get("relation");
 			
 			if (statement != null) {
-				response.setId(statement.getAccessionId());
+				response.setId(statement.getId());
 			}
 
 			if (object != null) {
-				statementsObject.setId(object.getAccessionId());
+				statementsObject.setId(object.getId());
 				statementsObject.setName(object.getName());
 			}
 
 			if (subject != null) {
-				statementsSubject.setId(subject.getAccessionId());
+				statementsSubject.setId(subject.getId());
 				statementsSubject.setName(subject.getName());
 			}
 
 			if (relation != null) {
-				statementsPredicate.setId(relation.getAccessionId());
+				statementsPredicate.setId(relation.getId());
 				statementsPredicate.setName(relation.getName());
 			}
 			

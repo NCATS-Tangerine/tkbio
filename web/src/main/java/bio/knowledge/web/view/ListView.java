@@ -1655,7 +1655,7 @@ public class ListView extends BaseView {
 		if (searchMode.equals(RelationSearchMode.WIKIDATA) && role.equals(ConceptRole.OBJECT)) {
 
 			// This is a WikiData item property value...
-			wd_handler.displayDataPage(predicate.getAccessionId(), object.getName());
+			wd_handler.displayDataPage(predicate.getId(), object.getName());
 
 		} else {
 
@@ -1823,7 +1823,7 @@ public class ListView extends BaseView {
 
 			// 27-Oct-2016: Hack to reverse a side-effect of
 			// queryUpdate's setConceptInSession's highlighter code
-			String accessionId = concept.getAccessionId();
+			String accessionId = concept.getId();
 			Node node = ui.getConceptMap().getElements().getNodes().getNodeById(accessionId);
 			if (node != null)
 				node.getData().setState("add");

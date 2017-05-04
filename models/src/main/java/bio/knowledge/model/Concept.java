@@ -105,6 +105,4 @@ public interface Concept extends IdentifiedEntity, AnnotatedEntity {
 
 	String getName();
 
-	String getAccessionId();
-
 }

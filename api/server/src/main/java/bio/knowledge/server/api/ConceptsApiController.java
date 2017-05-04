@@ -34,7 +34,7 @@ public class ConceptsApiController implements ConceptsApi {
 		if (concept != null) {
 			InlineResponse200 response = new InlineResponse200();
 			response.setDefinition(concept.getDescription());
-			response.setId(concept.getAccessionId());
+			response.setId(concept.getId());
 			response.setName(concept.getName());
 			String semanticType = concept.getSemanticGroup().name();
 			response.setSemanticGroup(semanticType);
@@ -66,7 +66,7 @@ public class ConceptsApiController implements ConceptsApi {
 		for (Concept concept : concepts) {
 			InlineResponse2001 response = new InlineResponse2001();
 			
-			response.setId(concept.getAccessionId());
+			response.setId(concept.getId());
 			response.setName(concept.getName());
 			response.setSemanticGroup(concept.getSemanticGroup().name());
 			response.setDefinition(concept.getDescription());

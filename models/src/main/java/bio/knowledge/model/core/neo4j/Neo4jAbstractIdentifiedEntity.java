@@ -82,7 +82,7 @@ public class Neo4jAbstractIdentifiedEntity
     }
 
     /* (non-Javadoc)
-	 * @see bio.knowledge.model.core.IdentifiedEntity#setAccessionId(java.lang.String)
+	 * @see bio.knowledge.model.core.IdentifiedEntity#setId(java.lang.String)
 	 */
     @Override
 	public void setUri(String uri) {
@@ -90,7 +90,7 @@ public class Neo4jAbstractIdentifiedEntity
     }
 
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.core.Identification#getAccessionId()
+	 * @see bio.knowledge.model.core.IdentifiedEntity#getId()
 	 */
 	@Override
 	public String getUri() { 
@@ -98,18 +98,18 @@ public class Neo4jAbstractIdentifiedEntity
 	}
 
     /* (non-Javadoc)
-	 * @see bio.knowledge.model.core.IdentifiedEntity#setAccessionId(java.lang.String)
+	 * @see bio.knowledge.model.core.IdentifiedEntity#setId(java.lang.String)
 	 */
     @Override
-	public void setAccessionId(String accessionId) {
+	public void setId(String accessionId) {
         this.accessionId = accessionId;
     }
 
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.core.Identification#getAccessionId()
+	 * @see bio.knowledge.model.core.IdentifiedEntity#getId()
 	 */
 	@Override
-	public String getAccessionId() { 
+	public String getId() { 
 		return accessionId;
 	}
 	
@@ -122,7 +122,7 @@ public class Neo4jAbstractIdentifiedEntity
     }
 
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.core.Identification#getName()
+	 * @see bio.knowledge.model.core.IdentifiedEntity#getName()
 	 */
 	@Override
 	public String getName() { 
@@ -138,7 +138,7 @@ public class Neo4jAbstractIdentifiedEntity
     }
 
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.core.general.Identification#getDescription()
+	 * @see bio.knowledge.model.core.general.IdentifiedEntity#getDescription()
 	 */
 	@Override
 	public String getDescription() {
@@ -169,16 +169,16 @@ public class Neo4jAbstractIdentifiedEntity
 		if(!( 
 				accessionId==null || 
 				accessionId.isEmpty() ||
-				other.getAccessionId()==null ||
-				other.getAccessionId().isEmpty())
+				other.getId()==null ||
+				other.getId().isEmpty())
 		)
-			return accessionId.compareTo(other.getAccessionId());
+			return accessionId.compareTo(other.getId());
 		else
 			return name.compareTo(other.getName());
 	}
 
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.core.Identification#getSynonyms()
+	 * @see bio.knowledge.model.core.IdentifiedEntity#getSynonyms()
 	 */
 	@Override
 	public String getSynonyms() {

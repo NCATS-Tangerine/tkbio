@@ -47,7 +47,7 @@ public class EvidenceApiController implements EvidenceApi {
 			Annotation annotation = (Annotation) entry.get("annotation");
 			
 			InlineResponse2004 response = new InlineResponse2004();
-			response.setId(annotation.getAccessionId());
+			response.setId(annotation.getId());
 			response.setLabel(annotation.getName());
 			response.setDate(year + "-" + month + "-" + day);
 			

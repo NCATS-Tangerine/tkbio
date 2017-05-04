@@ -207,7 +207,7 @@ public class StatementService
 		}
 
 		Concept concept = currentConceptOpt.get() ;
-		String accessionId = concept.getAccessionId() ;
+		String accessionId = concept.getId() ;
 		
 		// this is key used for caching purpose,(conceptId + Selected SemanticType + textFilter + pageable)
 
@@ -364,11 +364,11 @@ public class StatementService
 		} 
 	}
 
-	public Neo4jGeneralStatement findbySourceAndTargetAccessionId(String sourceAccessionId, String targetAccessionId, String relationName){
+	public Neo4jGeneralStatement findbySourceAndTargetId(String sourceAccessionId, String targetId, String relationName){
 
 		List<Map<String, Object>> result = null ;
 		result = statementRepository.
-					findBySourceTargetAndRelation(sourceAccessionId,targetAccessionId,relationName);
+					findBySourceTargetAndRelation(sourceAccessionId,targetId,relationName);
 	
 		if(result==null || result.isEmpty()) return null ;
 		
@@ -415,7 +415,7 @@ public class StatementService
 		if (!currentConceptOpt.isPresent()) return 0L;
 		
 		Concept concept = currentConceptOpt.get() ;
-		String accessionId = concept.getAccessionId();
+		String accessionId = concept.getId();
 		
 		Optional<Set<SemanticGroup>> currentConceptTypes = query.getConceptTypes();
 		ArrayList<String> conceptTypeFilter = new ArrayList<>();
@@ -743,7 +743,7 @@ public class StatementService
 				Neo4jPredicate property = new Neo4jPredicate( propUri, plPart[0], pdPart[0] ) ;
 				String propValue = (String) r.get("propValue") ;
 								
-				String statementId = subject.getAccessionId()+"-"+propId+"-"+propValue ;
+				String statementId = subject.getId()+"-"+propId+"-"+propValue ;
 				Neo4jGeneralStatement p = new Neo4jGeneralStatement( 
 						statementId, // not yet sure what unique id to put here...
 			    		property 
@@ -775,13 +775,13 @@ public class StatementService
 								propValueId 
 						) ;
 				
-				wikiItem.setAccessionId(qualifiedPropValueId);
+				wikiItem.setId(qualifiedPropValueId);
 				
 				// Important: non-SemMedDb, WikiData or other CST's must have
 				// a XML namespace qualifier prefix added to their identifiers
 				// which are, by default, the propValue
 				// TODO: What about propValues that are already full URI's?
-				wikiItem.setAccessionId(qualifiedPropValueId);
+				wikiItem.setId(qualifiedPropValueId);
 				
 				p.addObject(wikiItem);
 				
@@ -826,7 +826,7 @@ public class StatementService
 
 		if(concept!=null) {
 
-			String accessionId = concept.getAccessionId();
+			String accessionId = concept.getId();
 			
 			// this is key used for caching purpose,("WikiData" + conceptId + textFilter + pageable)
 			//String cacheKey = ("WikiData" + "#" + accessionId + "#" + filter + "#" + pageable.hashCode());

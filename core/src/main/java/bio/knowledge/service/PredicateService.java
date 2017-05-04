@@ -91,7 +91,7 @@ public class PredicateService {
      */
     public Predicate annotate(Predicate predicate) {
     	
-    	String accId = predicate.getAccessionId();
+    	String accId = predicate.getId();
     	
     	// NOP - can't do any better here without an accession id
     	if(accId.isEmpty()) {
@@ -113,7 +113,7 @@ public class PredicateService {
 			
 			// Not cached... then first, attempt to retrieve it from the local database
 			Predicate databasePredicate = 
-					predicateRepository.findPredicateByAccessionId(accId);
+					predicateRepository.findPredicateById(accId);
 			
 			if( databasePredicate == null ) {
 				// Predicate is not yet even registered in the database
@@ -144,7 +144,7 @@ public class PredicateService {
 				SimpleDataService<String> sds = (SimpleDataService<String>)ds ;
 				
 				CompletableFuture<ResultSet> futureMyGeneResultSet = 
-						sds.query(predicate.getAccessionId());
+						sds.query(predicate.getId());
 				try {
 					ResultSet resultSet = 
 							futureMyGeneResultSet.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);

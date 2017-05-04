@@ -309,8 +309,8 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 				+ "evidence  AS evidence "
 			+ "LIMIT 1")
 	List<Map<String, Object>> findBySourceTargetAndRelation( 
-			@Param("source")   String sourceAccessionId, 
-			@Param("target")   String targetAccessionId, 
+			@Param("source")   String sourceId, 
+			@Param("target")   String targetId, 
 			@Param("relation") String relation
 	) ;
 	

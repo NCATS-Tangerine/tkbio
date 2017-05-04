@@ -326,7 +326,7 @@ public class DesktopUI extends UI implements MessageService {
 	 */
 	public void addEdgeToConceptMap(Concept sourceNode, Concept targetNode) {
 		getConceptMap().getElements().getEdges()
-				.addEdge(new Edge(sourceNode.getAccessionId(), targetNode.getAccessionId()));
+				.addEdge(new Edge(sourceNode.getId(), targetNode.getId()));
 	}
 
 	/**
@@ -477,7 +477,7 @@ public class DesktopUI extends UI implements MessageService {
 		// point
 
 		// Highlighting new current concept node
-		lastHighlightNodeId = currentConcept.getAccessionId();
+		lastHighlightNodeId = currentConcept.getId();
 		highlightNode(HighlightStatus.YES);
 	}
 
@@ -532,7 +532,7 @@ public class DesktopUI extends UI implements MessageService {
 		}
 
 		// Highlighting new current concept edge
-		lastHighlightEdgeId = (source.getAccessionId() + target.getAccessionId() + label).hashCode();
+		lastHighlightEdgeId = (source.getId() + target.getId() + label).hashCode();
 		highlightEdge(HighlightStatus.YES);
 	}
 
@@ -602,7 +602,7 @@ public class DesktopUI extends UI implements MessageService {
 		// RelationSearchModes?
 		switch (mode) {
 		case RELATIONS:
-			query.setCurrentQueryConceptById(concept.getAccessionId());
+			query.setCurrentQueryConceptById(concept.getId());
 			break;
 		default:
 			// do nothing?
@@ -1248,14 +1248,14 @@ public class DesktopUI extends UI implements MessageService {
 			// calling import concept map
 			cm.importConceptMap(content);
 
-			String id = cst_matcher.group(1);
-			String accessionId = id.replaceAll(",", "");
+			String cstid = cst_matcher.group(1);
+			String id = cstid.replaceAll(",", "");
 
 			// Setting manual layout while loading
 			desktopView.getCmLayoutSelect().setValue(MANUAL_CM_LAYOUT);
 
 			// set current concept
-			Optional<Concept> conceptOpt = conceptService.getDetailsByAccessionId(accessionId);
+			Optional<Concept> conceptOpt = conceptService.getDetailsById(id);
 
 			if (conceptOpt.isPresent()) {
 				Concept cst = conceptOpt.get();
