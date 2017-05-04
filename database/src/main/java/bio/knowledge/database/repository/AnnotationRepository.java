@@ -137,8 +137,8 @@ public interface AnnotationRepository extends GraphRepository<Annotation> {
 			" WHERE annotation.userId = {userId} AND annotation.visible = false"+
 			" OR annotation.visible = true"+
 			" OR annotation.visible IS NULL AND annotation.userId IS NULL"+
-			" WHERE toLower(annotation.annotation)  CONTAINS toLower({filter}) OR" +
-			      " toLower(annotation.description) CONTAINS toLower({filter})"	+
+			" AND LOWER(annotation.annotation) CONTAINS LOWER({filter}) OR" +
+			      " LOWER(annotation.description) CONTAINS LOWER({filter})"	+
 			" RETURN annotation as annotation, reference as reference, (reference.year*365+reference.month*31+reference.day) as publicationDate"+
 			" ORDER BY  CASE {2}['sort'][0]['direction'] "+
 			" WHEN 'ASC' THEN publicationDate"+
