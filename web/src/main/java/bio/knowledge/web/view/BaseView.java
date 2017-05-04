@@ -42,7 +42,18 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import bio.knowledge.authentication.AuthenticationContext;
+import bio.knowledge.model.core.IdentifiedEntity;
+import bio.knowledge.service.AnnotationService;
+import bio.knowledge.service.AuthenticationState;
+import bio.knowledge.service.ConceptMapArchiveService;
+import bio.knowledge.service.ConceptService;
+import bio.knowledge.service.KBQuery;
+import bio.knowledge.service.StatementService;
+import bio.knowledge.service.core.IdentifiedEntityService;
 import bio.knowledge.service.core.MessageService;
+import bio.knowledge.service.core.OntologyTermService;
+import bio.knowledge.service.organization.ContactFormService;
 import bio.knowledge.web.ui.DesktopUI;
 
 /**
@@ -54,6 +65,40 @@ public abstract class BaseView extends VerticalLayout implements View, MessageSe
 	private static final long serialVersionUID = -137428743692695008L;
 	
 	protected Logger _logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	protected KBQuery query;
+
+	@Autowired
+	Registry registry;
+	
+	@Autowired
+	protected AuthenticationContext context;
+
+	@Autowired
+	protected OntologyTermService ontologyTermService;
+
+	@Autowired
+	protected IdentifiedEntityService<IdentifiedEntity> identifierService;
+
+	@Autowired
+	protected ContactFormService contactFormService;
+
+	@Autowired
+	protected ConceptService conceptService ;
+
+	@Autowired
+	protected ConceptMapArchiveService conceptMapArchiveService;
+
+	@Autowired
+	protected StatementService statementService ;
+	
+	@Autowired
+	protected AnnotationService annotationService ;
+	
+	@Autowired
+	protected AuthenticationState authenticationState;
+
 	
 	@Autowired
 	private MessageSource messageSource ;
