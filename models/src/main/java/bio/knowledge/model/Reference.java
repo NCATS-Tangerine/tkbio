@@ -52,10 +52,7 @@ public interface Reference extends IdentifiedEntity {
 	String toString();
 
 	String getUri();
-	
-	// TODO: Is this a general property of all References? Called in Reference view, wasn't in interface yet.
-	String getAccessionId();
-	
+
 	void setUri(String uri);
 
 }

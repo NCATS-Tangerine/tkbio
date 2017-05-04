@@ -164,7 +164,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 	 * @return
 	 */
 	public Reference getReference(Annotation annotation) {
-		return  annotationRepository.findReferenceByAnnotation(annotation.getAccessionId()) ;
+		return  annotationRepository.findReferenceByAnnotation(annotation.getId()) ;
 	}
 
 	private Page<Annotation> findHelper(String filter, Pageable pageable) {
@@ -315,7 +315,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 	 * @param annotationId
 	 * @return
 	 */
-	public Annotation findByAccessionId(String annotationId) {
-		return annotationRepository.findByAccessionId(annotationId);
+	public Annotation findById(String annotationId) {
+		return annotationRepository.findById(annotationId);
 	}
 }

@@ -244,7 +244,7 @@ public class SaveWindow extends Window {
 	
 	private void generateArchive(String jsonContent, String pngContent, ConceptMapArchive archive) {
 		Concept concept = query.getCurrentQueryConcept().get();
-		jsonContent = MessageFormat.format(skeleton, concept.getName(), concept.getAccessionId(), jsonContent);
+		jsonContent = MessageFormat.format(skeleton, concept.getName(), concept.getId(), jsonContent);
 		
 		// first clear node ids
 		query.clearNodeIdsFromConceptMap();
@@ -267,7 +267,7 @@ public class SaveWindow extends Window {
 		archive.setConceptMapSif(conceptMapDisplay.convertToSIF());
 		archive.setConceptMapTsv(conceptMapDisplay.converterToTSV());
 
-		archive.setAccessionId(concept.getAccessionId());
+		archive.setId(concept.getId());
 		archive.setVersion(1);
 		archive.setVersionDate(new Date().getTime());
 		
@@ -317,7 +317,7 @@ public class SaveWindow extends Window {
 					@Override
 					public void processRequestedContent(String jsonContent, String pngContent) {
 						Concept concept = query.getCurrentQueryConcept().get();
-						jsonContent = MessageFormat.format(skeleton, concept.getName(), concept.getAccessionId(), jsonContent);
+						jsonContent = MessageFormat.format(skeleton, concept.getName(), concept.getId(), jsonContent);
 						
 						// first clear node ids
 						query.clearNodeIdsFromConceptMap();
@@ -340,7 +340,7 @@ public class SaveWindow extends Window {
 						newArchive.setConceptMapSif(conceptMapDisplay.convertToSIF());
 						newArchive.setConceptMapTsv(conceptMapDisplay.converterToTSV());
 
-						newArchive.setAccessionId(concept.getAccessionId());
+						newArchive.setId(concept.getId());
 						newArchive.setVersion(1);
 						newArchive.setVersionDate(new Date().getTime());
 						

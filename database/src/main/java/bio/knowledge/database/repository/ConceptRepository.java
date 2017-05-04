@@ -45,7 +45,7 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 	
 	@Query( "CREATE CONSTRAINT ON (concept:Concept)"
 	      + " ASSERT concept.accessionId IS UNIQUE")
-	public void createUniqueConstraintOnConceptAccessionId() ;
+	public void createUniqueConstraintOnConceptId() ;
 	
 	/**
 	 * @return
@@ -58,20 +58,20 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 	 */
 	@Query( "DROP CONSTRAINT ON (concept:Concept)"
 	      + " ASSERT concept.accessionId IS UNIQUE")
-	public void dropUniqueConstraintOnConceptAccessionId() ;
+	public void dropUniqueConstraintOnConceptId() ;
 	
 	/**
 	 * 
 	 */
 	@Query( "DROP INDEX ON :Concept(accessionId)")
-	public void dropIndexOnConceptAccessionId() ;
+	public void dropIndexOnConceptId() ;
 	
 	/**
 	 * @param accessionId
 	 * @return Concept identified by the accessionId
 	 */
 	@Query( "MATCH ( concept:Concept ) WHERE concept.accessionId = {accessionId} RETURN concept")
-	public Neo4jConcept findByAccessionId( @Param("accessionId") String accessionId ) ;
+	public Neo4jConcept findById( @Param("accessionId") String accessionId ) ;
 	
 	/**
 	 * 

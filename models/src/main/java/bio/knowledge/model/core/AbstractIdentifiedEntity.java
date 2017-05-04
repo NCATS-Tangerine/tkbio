@@ -43,8 +43,9 @@ public class AbstractIdentifiedEntity implements IdentifiedEntity {
 	private String uri = "";
 
     /**
+     * The CURIE of the object
      */
-	private String accessionId = "";
+	private String id = "";
 
     /**
      */
@@ -73,14 +74,14 @@ public class AbstractIdentifiedEntity implements IdentifiedEntity {
         this.description = description ;
     }
     
-    public AbstractIdentifiedEntity( String accessionId, String name, String description ) {
+    public AbstractIdentifiedEntity( String id, String name, String description ) {
     	this(name,description) ;
-        this.accessionId = accessionId ;
-        this.uri = RdfUtil.resolveUri(accessionId);
+        this.id = id ;
+        this.uri = RdfUtil.resolveUri(id);
     }
 
     /* (non-Javadoc)
-	 * @see bio.knowledge.model.core.IdentifiedEntity#setAccessionId(java.lang.String)
+	 * @see bio.knowledge.model.core.IdentifiedEntity#setId(java.lang.String)
 	 */
     @Override
 	public void setUri(String uri) {
@@ -88,7 +89,7 @@ public class AbstractIdentifiedEntity implements IdentifiedEntity {
     }
 
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.core.Identification#getAccessionId()
+	 * @see bio.knowledge.model.core.Identification#getId()
 	 */
 	@Override
 	public String getUri() { 
@@ -96,19 +97,19 @@ public class AbstractIdentifiedEntity implements IdentifiedEntity {
 	}
 
     /* (non-Javadoc)
-	 * @see bio.knowledge.model.core.IdentifiedEntity#setAccessionId(java.lang.String)
+	 * @see bio.knowledge.model.core.IdentifiedEntity#setId(java.lang.String)
 	 */
     @Override
-	public void setAccessionId(String accessionId) {
-        this.accessionId = accessionId;
+	public void setId(String id) {
+        this.id = id;
     }
 
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.core.Identification#getAccessionId()
+	 * @see bio.knowledge.model.core.Identification#getId()
 	 */
 	@Override
-	public String getAccessionId() { 
-		return accessionId;
+	public String getId() { 
+		return id;
 	}
 	
     /* (non-Javadoc)
@@ -154,10 +155,10 @@ public class AbstractIdentifiedEntity implements IdentifiedEntity {
     /* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 * 
-	 * IdentifiedEntity are ordered to one another by accessionId (only)
+	 * IdentifiedEntity are ordered to one another by id (only)
 	 * if available; otherwise, order by name.
 	 * 
-	 * Obviously, neither the accessionId nor the name of 
+	 * Obviously, neither the id nor the name of 
 	 * the current IdentifiedEntity instance 
 	 * nor that of the "other" IdentifiedEntity, 
 	 * should be null as this would generate a null pointer exception!
@@ -165,12 +166,12 @@ public class AbstractIdentifiedEntity implements IdentifiedEntity {
 	@Override
 	public int compareTo(IdentifiedEntity other) {
 		if(!( 
-				accessionId==null || 
-				accessionId.isEmpty() ||
-				other.getAccessionId()==null ||
-				other.getAccessionId().isEmpty())
+				id==null || 
+				id.isEmpty() ||
+				other.getId()==null ||
+				other.getId().isEmpty())
 		)
-			return accessionId.compareTo(other.getAccessionId());
+			return id.compareTo(other.getId());
 		else
 			return name.compareTo(other.getName());
 	}

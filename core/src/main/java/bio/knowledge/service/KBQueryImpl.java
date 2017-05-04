@@ -81,7 +81,7 @@ public class KBQueryImpl implements KBQuery {
 	@Override
 	public void setCurrentQueryConceptById(String identifier) {
 		resetQuery();
-		queryConcept = conceptService.getDetailsByConceptAccessionId(identifier) ;
+		queryConcept = conceptService.getDetailsByConceptId(identifier) ;
 	}
 
 	/* (non-Javadoc)
@@ -186,8 +186,8 @@ public class KBQueryImpl implements KBQuery {
 		if(query==null)
 			selectedConcept = Optional.empty() ;
 		else {
-			String identifier = query.getAccessionId();
-			selectedConcept = conceptService.getDetailsByConceptAccessionId(identifier) ;
+			String identifier = query.getId();
+			selectedConcept = conceptService.getDetailsByConceptId(identifier) ;
 		}
 	}
 

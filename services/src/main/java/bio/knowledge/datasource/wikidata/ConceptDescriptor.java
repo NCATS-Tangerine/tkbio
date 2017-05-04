@@ -201,7 +201,7 @@ public enum ConceptDescriptor {
 		return null;
 	}
 	
-    public static ConceptDescriptor lookUpByAccessionId(String id) {
+    public static ConceptDescriptor lookUpById(String id) {
         	
         	// ignore any qualifier prefix when matching the id
         	int colonIdx = id.indexOf(':') ;

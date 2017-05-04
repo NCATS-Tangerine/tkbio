@@ -31,7 +31,44 @@ package bio.knowledge.model.core;
  *
  */
 public interface IdentifiedEntity 
-	extends DatabaseEntity, Identification, Comparable<IdentifiedEntity> {
+	extends DatabaseEntity, Comparable<IdentifiedEntity> {
+
+	//
+	// Do we need UUID's in Knowledge.Bio?
+	//
+	// https://en.wikipedia.org/wiki/Universally_unique_identifier
+	//
+	// String getUuid() ;
+	
+	/**
+	 * 
+	 * @return a machine readable Uniform Resource Identifier of the identified entity
+	 */
+	String getUri();
+
+	/**
+	 * 
+	 * @return a human readable canonical accession identifier of the identified entity
+	 */
+	String getId();
+
+	/**
+	 * 
+	 * @return a human readable name or title of the identified entity
+	 */
+	String getName();
+
+	/**
+	 * 
+	 * @return a String description of the identified entity
+	 */
+	String getDescription();
+	
+	/**
+	 * 
+	 * @return synonyms is a String of (pipe delimited?) alias identifiers of the entity
+	 */
+	String getSynonyms();
 
 	/**
 	 * @param uri is a machine readable Uniform Resource Identifier
@@ -42,7 +79,7 @@ public interface IdentifiedEntity
 	 * Any prefix included in the Accession String should designate the Source ExternalDatabase namespace
 	 * @param accessionId is a human readable canonical accession identifier of the identified entity
 	 */
-	void setAccessionId(String accessionId);
+	void setId(String id);
 	
 	/**
 	 * 

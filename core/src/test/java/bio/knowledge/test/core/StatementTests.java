@@ -244,7 +244,7 @@ public class StatementTests {
 		 */
 		TestData geneTestdata = new TestData() ;
 		Neo4jConcept ngly1 = conceptRepository.save(geneTestdata.NGLY1) ;
-		Neo4jConcept ngly1_saved = conceptRepository.findByAccessionId(geneTestdata.NGLY1.getAccessionId()) ;
+		Neo4jConcept ngly1_saved = conceptRepository.findById(geneTestdata.NGLY1.getId()) ;
 		assertEquals("Finding what I saved:",ngly1.getDbId(),ngly1_saved.getDbId());
 	}
 	
@@ -395,8 +395,8 @@ public class StatementTests {
 		Concept subject = subjects.get(0) ;
 		Concept origSubject = UMBL_LOCATION_OF_GLYP.getSubjects().get(0);
 		assertEquals( subject.getDbId(), origSubject.getDbId() ) ;
-		assertEquals( subject.getAccessionId(), origSubject.getAccessionId() ) ;
-		System.out.println( "Subject accession id: "+subject.getAccessionId());
+		assertEquals( subject.getId(), origSubject.getId() ) ;
+		System.out.println( "Subject accession id: "+subject.getId());
 		
 		assertEquals( p.getRelation(), UMBL_LOCATION_OF_GLYP.getRelation() ) ;
 		System.out.println( "Relation Name: "+UMBL_LOCATION_OF_GLYP.getRelation().getName() );
@@ -407,8 +407,8 @@ public class StatementTests {
 		Concept object = objects.get(0) ;
 		Concept origObject = UMBL_LOCATION_OF_GLYP.getObjects().get(0);
 		assertEquals( object.getDbId(),  origObject.getDbId() ) ;
-		assertEquals( object.getAccessionId(),  origObject.getAccessionId() ) ;
-		System.out.println( "Object accession id: "+object.getAccessionId());
+		assertEquals( object.getId(),  origObject.getId() ) ;
+		System.out.println( "Object accession id: "+object.getId());
 		
 		Evidence evidence = p.getEvidence() ;
 		assertNotNull(evidence) ;
@@ -417,12 +417,12 @@ public class StatementTests {
 		assertTrue("Statement has some evidence?",!evidence.getAnnotations().isEmpty()) ;
 		
 		for( Annotation annotation : evidence.getAnnotations() ) {
-			System.out.println("Evidence Annotation found:\t"+annotation.getAccessionId()) ;
+			System.out.println("Evidence Annotation found:\t"+annotation.getId()) ;
 			assertEquals( annotation.getDbId(), GLYP_UMBL_SENTENCE.getDbId() ) ;
 			
 			Neo4jReference reference = (Neo4jReference) annotation.getReference();
 			assertEquals( reference.getDbId(), UMBL_REFERENCE.getDbId() ) ;
-			System.out.println("Annotation Reference found:\t"+reference.getAccessionId()) ;
+			System.out.println("Annotation Reference found:\t"+reference.getId()) ;
 			
 			break ;
 		}
@@ -435,7 +435,7 @@ public class StatementTests {
 			assertNotNull(subjects) ;
 			assertTrue("Statement has subjects?",!subjects.isEmpty()) ;
 			subject = subjects.get(0) ;
-			System.out.println("Subject accessionId: "+subject.getAccessionId());
+			System.out.println("Subject id: "+subject.getId());
 			
 			Predicate relation = p.getRelation();
 			System.out.println("Relation: "+relation.getName());
@@ -444,20 +444,20 @@ public class StatementTests {
 			assertNotNull(objects) ;
 			assertTrue("Statement has objects?",!objects.isEmpty()) ;
 			object = objects.get(0) ;
-			System.out.println("Object accessionId: "+object.getAccessionId());
+			System.out.println("Object id: "+object.getId());
 		}
 		
 		System.out.println(
-				"\nTesting findBySourceAndTargetAccessionId()"
-				+ " retrieval of ("+subject.getAccessionId()+")-[:"
+				"\nTesting findBySourceAndTargetId()"
+				+ " retrieval of ("+subject.getId()+")-[:"
 				+ UMBL_LOCATION_OF_GLYP.getRelation().getName()+"]->("
-				+object.getAccessionId()+")"
+				+object.getId()+")"
 		);
 
 		List<Map<String, Object>> stmtList = 
 				statementRepository.findBySourceTargetAndRelation( 
-					subject.getAccessionId(), 
-					object.getAccessionId(), 
+					subject.getId(), 
+					object.getId(), 
 					UMBL_LOCATION_OF_GLYP.getRelation().getName()
 			) ;
 		
@@ -466,7 +466,7 @@ public class StatementTests {
 		Map<String, Object> stmtMap = stmtList.get(0);
 		assertNotNull("Have a non-null Statement Map?",stmtMap) ;
 		assertTrue("Have a non-empty Statement Map?",!stmtMap.isEmpty()) ;
-		System.out.println("\n\nStatement contents successfully retrieved\nby findBySourceAndTargetAccessionId():\n");
+		System.out.println("\n\nStatement contents successfully retrieved\nby findBySourceAndTargetId():\n");
 		for( Entry<String,Object> item : stmtMap.entrySet()) {
 			System.out.println(item.getKey()+" = "+item.getValue().toString());
 		}

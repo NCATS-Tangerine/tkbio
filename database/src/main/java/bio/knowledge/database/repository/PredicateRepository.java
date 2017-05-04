@@ -51,7 +51,7 @@ public interface PredicateRepository extends GraphRepository<Neo4jPredicate> {
 	 * @return
 	 */
 	@Query("MATCH (predicate:Predicate) WHERE predicate.accessionId = {accessionId} RETURN predicate")
-	public Neo4jPredicate findPredicateByAccessionId(@Param("accessionId")String accessionId );
+	public Neo4jPredicate findPredicateById(@Param("accessionId")String accessionId );
 
 	/**
 	 * 

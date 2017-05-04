@@ -87,7 +87,7 @@ public class ReferenceView extends ReferenceDesign implements View {
 			Annotation annotation = annotationOpt.get();
 			reference = annotationService.getReference(annotation);
 			
-			String accId = reference.getAccessionId();
+			String accId = reference.getId();
 			
 			if(!accId.isEmpty()) {
 				baseUri  = RdfUtil.resolveBaseUri(accId);

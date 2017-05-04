@@ -52,8 +52,8 @@ public class AbstractAnnotatedEntity
     	super(name,description) ;
     }
 	
-    public AbstractAnnotatedEntity(String accessionId, String name, String description) {
-    	super(accessionId,name,description) ;
+    public AbstractAnnotatedEntity(String id, String name, String description) {
+    	super(id,name,description) ;
     }
 	
     private Set<Feature> features = new HashSet<Feature>() ;

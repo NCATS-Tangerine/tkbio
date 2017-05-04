@@ -79,9 +79,9 @@ public class Neo4jAbstractOntologyTerm
     public Neo4jAbstractOntologyTerm( Ontology ontology, String name ) {
         super(name);
         setOntology( ontology );
-        String ns = ontology.getAccessionId() ;
+        String ns = ontology.getId() ;
         if(ns==null) ns = "" ;
-        setAccessionId(ns+":"+name) ;
+        setId(ns+":"+name) ;
     }
     
     /**

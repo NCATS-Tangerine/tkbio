@@ -104,7 +104,7 @@ public class WikiDetailsHandler {
 		typeLabel.setCaption("Semantic Group:");
 
 		if (selectedConcept != null) {
-			accessionLabel.setValue(selectedConcept.getAccessionId());
+			accessionLabel.setValue(selectedConcept.getId());
 			nameLabel.setValue(selectedConcept.getName());
 			typeLabel.setValue(selectedConcept.getSemanticGroup().getDescription());
 		} else {
