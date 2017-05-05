@@ -29,6 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,11 +40,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import bio.knowledge.database.repository.AnnotationRepository;
+import bio.knowledge.datasource.DataService;
 import bio.knowledge.model.Annotation;
+import bio.knowledge.model.AnnotationImpl;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Reference;
+import bio.knowledge.model.Statement;
 import bio.knowledge.service.Cache.CacheLocation;
+import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
+import bio.knowledge.service.core.TableSorter;
 
 /**
  * @author Richard
@@ -58,6 +66,34 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 
     @Autowired
 	private AnnotationRepository annotationRepository ;
+    
+    @Autowired
+    private KnowledgeBeaconService kbService;
+    
+    @Override
+    public List<Annotation> getDataPage(
+    		int pageIndex,
+    		int pageSize,
+    		String filter,
+    		TableSorter sorter,
+    		boolean isAscending
+    ) {
+    	Optional<Evidence> evidenceOpt = query.getCurrentEvidence() ;
+		if( !evidenceOpt.isPresent() ) return null ;
+		Evidence ev = evidenceOpt.get() ;
+		Statement statement = ev.getStatement();
+		String statementId = statement.getId();
+    	CompletableFuture<List<Annotation>> future =
+    			kbService.getEvidences(statementId, null, pageIndex, pageSize);
+    	
+    	try {
+			List<Annotation> annotations =
+					future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+			return annotations;
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			return new ArrayList<Annotation>();
+		}
+    }
 
     /* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#getIdentifiers()

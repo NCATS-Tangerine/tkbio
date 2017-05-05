@@ -17,6 +17,8 @@ import bio.knowledge.client.model.InlineResponse2004;
 import bio.knowledge.client.model.StatementsObject;
 import bio.knowledge.client.model.StatementsPredicate;
 import bio.knowledge.client.model.StatementsSubject;
+import bio.knowledge.model.Annotation;
+import bio.knowledge.model.AnnotationImpl;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptImpl;
 import bio.knowledge.model.Evidence;
@@ -45,6 +47,20 @@ import bio.knowledge.model.Statement;
  */
 @Service
 public class KnowledgeBeaconService extends GenericKnowledgeService {
+	
+	/**
+	 * Periods sometimes drop out of queries if they are not URL encoded. This
+	 * is <b>not</b> a complete URL encoding. I have only encoded those few
+	 * characters that might be problematic. We may have to revisit this in
+	 * the future, and implement a proper encoder.
+	 */
+	private String urlEncode(String string) {
+		if (string != null) {
+			return string.replace(".", "%2E").replace(" ", "%20").replace(":", "%3A");
+		} else {
+			return null;
+		}
+	}
 
 	/**
 	 * Gets a list of concepts satisfying a query with the given parameters.
@@ -72,8 +88,12 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 						ConceptsApi conceptsApi = new ConceptsApi(apiClient);
 						
 						try {
-							List<InlineResponse2001> responses =
-									conceptsApi.getConcepts(keywords, semanticGroups, pageNumber, pageSize);
+							List<InlineResponse2001> responses = conceptsApi.getConcepts(
+									urlEncode(keywords),
+									urlEncode(semanticGroups),
+									pageNumber,
+									pageSize
+							);
 							List<Concept> concepts = new ArrayList<Concept>();
 							for (InlineResponse2001 response : responses) {
 								SemanticGroup semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
@@ -115,7 +135,9 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 						ConceptsApi conceptsApi = new ConceptsApi(apiClient);
 						
 						try {
-							List<InlineResponse200> responses = conceptsApi.getConceptDetails(conceptId);
+							List<InlineResponse200> responses = conceptsApi.getConceptDetails(
+									urlEncode(conceptId)
+							);
 							List<Concept> concepts = new ArrayList<Concept>();
 							
 							for (InlineResponse200 response : responses) {
@@ -164,8 +186,13 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 						StatementsApi statementsApi = new StatementsApi(apiClient);
 						
 						try {
-							List<InlineResponse2003> responses =
-									statementsApi.getStatements(emci, pageNumber, pageSize, keywords, semanticGroups);
+							List<InlineResponse2003> responses = statementsApi.getStatements(
+									urlEncode(emci),
+									pageNumber,
+									pageSize,
+									urlEncode(keywords),
+									urlEncode(semanticGroups)
+							);
 							List<Statement> statements = new ArrayList<Statement>();
 							
 							for (InlineResponse2003 response : responses) {
@@ -207,41 +234,48 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 		return query(builder);
 	}
 	
-	public CompletableFuture<List<Evidence>> getEvidences(
+	/**
+	 * In our project, annotations really play this role of evidence.
+	 */
+	public CompletableFuture<List<Annotation>> getEvidences(
 			String statementId,
 			String keywords,
 			int pageNumber,
 			int pageSize
 	) {
-		SupplierBuilder<Evidence> builder = new SupplierBuilder<Evidence>() {
+		SupplierBuilder<Annotation> builder = new SupplierBuilder<Annotation>() {
 
 			@Override
-			public ListSupplier<Evidence> build(ApiClient apiClient) {
-				return new ListSupplier<Evidence>() {
+			public ListSupplier<Annotation> build(ApiClient apiClient) {
+				return new ListSupplier<Annotation>() {
 
 					@Override
-					public List<Evidence> getList() {
+					public List<Annotation> getList() {
 						EvidenceApi evidenceApi = new EvidenceApi(apiClient);
 						
 						try {
-							List<InlineResponse2004> responses =
-									evidenceApi.getEvidence(statementId, keywords, pageNumber, pageSize);
+							List<InlineResponse2004> responses = evidenceApi.getEvidence(
+									urlEncode(statementId),
+									urlEncode(keywords),
+									pageNumber,
+									pageSize
+							);
 							
-							List<Evidence> evidences = new ArrayList<Evidence>();
+							List<Annotation> annotations = new ArrayList<Annotation>();
 							
 							for (InlineResponse2004 response : responses) {
-								EvidenceImpl evidence = new EvidenceImpl();
-								evidence.setId(response.getId());
-								evidence.setName(response.getLabel());
-								evidence.setPublicationDate(response.getDate());
+								Annotation annotation = new AnnotationImpl();
+								annotation.setId(response.getId());
+								annotation.setName(response.getLabel());
+								annotation.setPublicationDate(response.getDate());
 								
-								evidences.add(evidence);
+								annotations.add(annotation);
 							}
 							
-							return evidences;
+							return annotations;
 							
 						} catch (Exception e) {
-							return new ArrayList<Evidence>();
+							return new ArrayList<Annotation>();
 						}
 					}
 					

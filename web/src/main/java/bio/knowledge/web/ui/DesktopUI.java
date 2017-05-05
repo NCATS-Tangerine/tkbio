@@ -414,7 +414,7 @@ public class DesktopUI extends UI implements MessageService {
 
 		}
 
-		relationsTabNavigator.navigateTo(ViewName.RELATIONS_VIEW);
+		relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW);
 
 		TabSheet tabsheet = desktopView.getDataTabSheet();
 		tabsheet.setSelectedTab(relationsTab);
@@ -557,7 +557,7 @@ public class DesktopUI extends UI implements MessageService {
 
 			Navigator navigator = new Navigator(this, referenceTab);
 			navigator.addProvider(viewProvider);
-			navigator.navigateTo(ViewName.EVIDENCE_VIEW);
+			navigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.EVIDENCE_VIEW);
 
 			TabSheet tabsheet = desktopView.getDataTabSheet();
 			tabsheet.setSelectedTab(referenceTab);
@@ -838,9 +838,9 @@ public class DesktopUI extends UI implements MessageService {
 			if (caption.equals(ViewName.REFERENCE_TAB)) {
 				pubmedTabNavigator.navigateTo(ReferenceView.NAME);
 			} else if (caption.equals(ViewName.EVIDENCE_TAB)) {
-				evidenceTabNavigator.navigateTo(ViewName.EVIDENCE_VIEW);
+				evidenceTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.EVIDENCE_VIEW);
 			} else if (caption.equals(ViewName.RELATIONS_TAB)) {
-				relationsTabNavigator.navigateTo(ViewName.RELATIONS_VIEW);
+				relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW);
 			}
 		});
 
@@ -1248,18 +1248,18 @@ public class DesktopUI extends UI implements MessageService {
 			// calling import concept map
 			cm.importConceptMap(content);
 
-			String cstid = cst_matcher.group(1);
-			String id = cstid.replaceAll(",", "");
+			String id = cst_matcher.group(1);
+			String accessionId = id.replaceAll(",", "");
 
 			// Setting manual layout while loading
 			desktopView.getCmLayoutSelect().setValue(MANUAL_CM_LAYOUT);
 
 			// set current concept
-			Optional<Concept> conceptOpt = conceptService.getDetailsById(id);
+			Optional<Concept> conceptOpt = conceptService.getDetailsById(accessionId);
 
 			if (conceptOpt.isPresent()) {
 				Concept cst = conceptOpt.get();
-				query.setCurrentQueryConceptById(cst.getDbId().toString());
+				query.setCurrentQueryConceptById(cst.getId().toString());
 
 				if (query.getCurrentQueryConcept().isPresent()) {
 					setCurrentConceptTitle(query.getCurrentQueryConcept().get().getName());
