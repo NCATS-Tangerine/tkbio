@@ -167,7 +167,7 @@ public class ListView extends BaseView {
 	private GeneratedPropertyContainer gpcontainer;
 
 	// Identification/Unique Keys
-	private bio.knowledge.grid.Grid dataTable = null;
+	private Grid dataTable = null;
 
 	// view's name
 	private String viewName = "";
@@ -1000,9 +1000,9 @@ public class ListView extends BaseView {
 			}
 			
 		};
-		dataTable = new bio.knowledge.grid.Grid(sl);
+//		dataTable = new bio.knowledge.grid.Grid(sl);
 		listContainer.setPageSize(50);
-//		dataTable = new Grid();
+		dataTable = new Grid();
 		dataTable.setWidth("100%");
 		dataTable.setHeightMode(HeightMode.ROW);
 		dataTable.setHeightByRows(ROWS_TO_DISPLAY);
@@ -1901,6 +1901,7 @@ public class ListView extends BaseView {
 		registry.setMapping(ViewName.RELATIONS_VIEW, new BeanItemContainer<Statement>(Statement.class),
 				statementService, new String[] { "subject|*", COL_ID_RELATION, "object|*", "evidence|*" }, null);
 
+		
 		registry.addSelectionHandler(ViewName.RELATIONS_VIEW, COL_ID_SUBJECT,
 				e -> onConceptDetailsSelection(e, ConceptRole.SUBJECT));
 
