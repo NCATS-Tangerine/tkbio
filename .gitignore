@@ -22,3 +22,4 @@ neo4j/logs/*
 
 # Vagrant VM state folder
 /.vagrant/
+knowledge-sources.csv

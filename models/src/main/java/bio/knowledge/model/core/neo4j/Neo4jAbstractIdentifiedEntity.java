@@ -48,7 +48,7 @@ public class Neo4jAbstractIdentifiedEntity
     /**
      */
 	@Property(name="accessionId")
-	private String id = "";
+	private String accessionId = "";
 
     /**
      */
@@ -77,10 +77,10 @@ public class Neo4jAbstractIdentifiedEntity
         this.description = description ;
     }
     
-    public Neo4jAbstractIdentifiedEntity( String id, String name, String description ) {
+    public Neo4jAbstractIdentifiedEntity( String accessionId, String name, String description ) {
     	this(name,description) ;
-        this.id = id ;
-        this.uri = RdfUtil.resolveUri(id);
+        this.accessionId = accessionId ;
+        this.uri = RdfUtil.resolveUri(accessionId);
     }
 
     /* (non-Javadoc)
@@ -103,8 +103,8 @@ public class Neo4jAbstractIdentifiedEntity
 	 * @see bio.knowledge.model.core.IdentifiedEntity#setId(java.lang.String)
 	 */
     @Override
-	public void setId(String id) {
-        this.id = id;
+	public void setId(String accessionId) {
+        this.accessionId = accessionId;
     }
 
 	/* (non-Javadoc)
@@ -112,7 +112,7 @@ public class Neo4jAbstractIdentifiedEntity
 	 */
 	@Override
 	public String getId() { 
-		return id;
+		return accessionId;
 	}
 	
     /* (non-Javadoc)
@@ -158,10 +158,10 @@ public class Neo4jAbstractIdentifiedEntity
     /* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 * 
-	 * IdentifiedEntity are ordered to one another by id (only)
+	 * IdentifiedEntity are ordered to one another by accessionId (only)
 	 * if available; otherwise, order by name.
 	 * 
-	 * Obviously, neither the id nor the name of 
+	 * Obviously, neither the accessionId nor the name of 
 	 * the current IdentifiedEntity instance 
 	 * nor that of the "other" IdentifiedEntity, 
 	 * should be null as this would generate a null pointer exception!
@@ -169,12 +169,12 @@ public class Neo4jAbstractIdentifiedEntity
 	@Override
 	public int compareTo(IdentifiedEntity other) {
 		if(!( 
-				id==null || 
-				id.isEmpty() ||
+				accessionId==null || 
+				accessionId.isEmpty() ||
 				other.getId()==null ||
 				other.getId().isEmpty())
 		)
-			return id.compareTo(other.getId());
+			return accessionId.compareTo(other.getId());
 		else
 			return name.compareTo(other.getName());
 	}
