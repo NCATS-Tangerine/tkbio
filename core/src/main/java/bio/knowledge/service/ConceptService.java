@@ -110,17 +110,17 @@ public class ConceptService
     @Autowired
     private KnowledgeBeaconService kbService;
     
-    @Override
-    public List<Concept> getDataPage(
-    		int pageIndex,
-    		int pageSize,
-    		String filter,
-    		TableSorter sorter,
-    		boolean isAscending
-    ) {
-    	kbService.getConcepts(filter, null, pageIndex, pageSize);
-    	return null;
-    }
+//    @Override
+//    public List<Concept> getDataPage(
+//    		int pageIndex,
+//    		int pageSize,
+//    		String filter,
+//    		TableSorter sorter,
+//    		boolean isAscending
+//    ) {
+//    	CompletableFuture<>kbService.getConcepts(filter, null, pageIndex, pageSize);
+//    	return null;
+//    }
     
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])
