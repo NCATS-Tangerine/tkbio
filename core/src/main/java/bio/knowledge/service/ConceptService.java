@@ -70,6 +70,7 @@ import bio.knowledge.service.Cache.CacheLocation;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.service.core.FeatureService;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
+import bio.knowledge.service.core.TableSorter;
 import bio.knowledge.service.wikidata.WikiDataService;
 
 /**
@@ -105,7 +106,22 @@ public class ConceptService
     
     @Autowired
     private AuthenticationState authenticationState;
-
+    
+    @Autowired
+    private KnowledgeBeaconService kbService;
+    
+    @Override
+    public List<Concept> getDataPage(
+    		int pageIndex,
+    		int pageSize,
+    		String filter,
+    		TableSorter sorter,
+    		boolean isAscending
+    ) {
+    	kbService.getConcepts(filter, null, pageIndex, pageSize);
+    	return null;
+    }
+    
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])
 	 */
@@ -178,9 +194,6 @@ public class ConceptService
 		_logger.trace("Inside ConceptService.findByNameLike()");
 		return findAllFiltered(filter,pageable);
 	}
-	
-	@Autowired
-	private KnowledgeBeaconService kbService;
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	// TODO: I think this is where the refactoring faltered
