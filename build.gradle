@@ -28,10 +28,11 @@ buildscript {
 
 allprojects {
 
-	// Version 3.0 revised the domain model in a significant manner to make it more flexible
+	// Version 4.0 now uses the new Translator Knowledge Beacon API
 	
-	// March 26, 2017 Reference release of Knowledge.Bio
-    version = '3.1.1'  // Apr 3, 2017 - fixed concept map node deletion bug  
+	// May 4, 2017 - operating baseline implementation of the 
+	// Knowledge Beacon server wrapping KB 3.0 data
+	version = '4.0.1'  
     
     apply plugin: 'maven'
     apply plugin: 'java'
