@@ -32,6 +32,10 @@ public class EvidenceApiController implements EvidenceApi {
 		if (pageSize == null || pageSize < 1) { pageSize = 10; }
 		
 		statementId = UrlDecoder.decode(statementId);
+		
+		// RMB: May 5, 2017 - Statement ID hack here to fix ID truncation problem
+		statementId = statementId.replaceAll("_",".");
+				
 		keywords = UrlDecoder.decode(keywords);
 		
 		String[] filter = keywords != null ? keywords.split(" ") : null;

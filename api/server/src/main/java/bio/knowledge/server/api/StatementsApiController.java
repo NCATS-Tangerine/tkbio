@@ -66,7 +66,10 @@ public class StatementsApiController implements StatementsApi {
 			Predicate relation = (Predicate) entry.get("relation");
 			
 			if (statement != null) {
-				response.setId(statement.getId());
+				// RMB: May 5, 2017 - Statement ID hack here to fix ID truncation problem
+				String statementId = statement.getId().replaceAll("\\.","_");
+
+				response.setId(statementId);
 			}
 
 			if (object != null) {

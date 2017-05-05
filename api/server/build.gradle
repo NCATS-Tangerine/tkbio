@@ -9,7 +9,7 @@ dependencies {
 
     compile("org.springframework:spring-context:4.2.6.RELEASE")
 
-compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-web")
 
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version: '1.5.2.RELEASE'
