@@ -78,16 +78,11 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
     		TableSorter sorter,
     		boolean isAscending
     ) {
-    	Optional<Evidence> evidenceOpt = query.getCurrentEvidence() ;
-		if( !evidenceOpt.isPresent() ) return new ArrayList<Annotation>() ;
-		Evidence ev = evidenceOpt.get() ;
-		Statement statement = ev.getStatement();
-		String statementId;
-		if (statement != null) {
-			statementId = statement.getId();
-		} else {
-			return new ArrayList<Annotation>();
-		}
+    	Optional<Statement> statementOpt = query.getCurrentStatement();
+		if( !statementOpt.isPresent() ) return new ArrayList<Annotation>() ;
+		Statement statement = statementOpt.get();
+		String statementId = statement.getId();
+		
     	CompletableFuture<List<Annotation>> future =
     			kbService.getEvidences(statementId, null, pageIndex, pageSize);
     	
@@ -275,18 +270,23 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 		// Long count = cache.getCountCache().get(cacheKey);
 		Long count = cacheLocation.getCounter();
 		
-		if (count == null) {
-			if (filter.trim().isEmpty()) {
-				count = annotationRepository.countByEvidence(evidence);
-			} else {
-				count = annotationRepository.countByEvidenceFiltered(evidence, filter);
-			}
-			// put fetched result to map before returning
-			//cache.getCountCache().put(cacheKey, count);
-			cacheLocation.setCounter(count);
-		}
 		
-		return count;
+		return 0;
+		// TODO: Figure out why this code was not working??? But it's being phased out anyway...
+		
+//		if (count == null && evidence != null) {
+//			
+//			if (filter.trim().isEmpty()) {
+//				count = annotationRepository.countByEvidence(evidence);
+//			} else {
+//				count = annotationRepository.countByEvidenceFiltered(evidence, filter);
+//			}
+//			// put fetched result to map before returning
+//			//cache.getCountCache().put(cacheKey, count);
+//			cacheLocation.setCounter(count);
+//		}
+//		
+//		return count;
 	}
 
 	private Page<Annotation> findHelperByPMID(String filter, Pageable pageable){

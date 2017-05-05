@@ -114,6 +114,9 @@ public class StatementService
 		
 		try {
 			List<Statement> statements = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+			
+			
+			
 			return statements;
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			e.printStackTrace();
