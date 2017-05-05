@@ -29,7 +29,7 @@ of the Lawrence Berkeley Laboratory, San Francisco, CA, USA, with direct funding
 
 	Dr. Christopher Chute
 	
-and others at the INSTITUTE for CLINICAL & TRANSLATIONAL RESEARCH (ICTR), Johns Hopkins University – School of Medicine, Baltimore, MD, USA. 
+and others at the INSTITUTE for CLINICAL & TRANSLATIONAL RESEARCH (ICTR), Johns Hopkins University ï¿½ School of Medicine, Baltimore, MD, USA. 
 
 ##Pre-Requisites##
 
@@ -87,6 +87,8 @@ Particular parameters likely to be set in either file (but also review the other
 	spring.mail.username - username of the email account being used for forwarding admin emails
 	
 	spring.mail.password - password of the email account being used for forwarding admin emails
+	
+Importantly, one must set up a path to the Knowledge Beacons you will be using for the project in the application.properties file for 'web'. This property, 'knowledgeBeacon.table.path', must point to a csv file that contains a URL pointing to a valid Knowledge Beacon api. One such csv file is provided for example by default in the 'config' folder.
 
 For the Neo4j back end database, some basic configuration is required. Since the current implementation uses Spring Data 4.0, a remote Neo4j server (latest release 3.1.* or better?) is assumed to be installed and on localhost port 7474.  
 
