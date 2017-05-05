@@ -82,7 +82,12 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 		if( !evidenceOpt.isPresent() ) return new ArrayList<Annotation>() ;
 		Evidence ev = evidenceOpt.get() ;
 		Statement statement = ev.getStatement();
-		String statementId = statement.getId();
+		String statementId;
+		if (statement != null) {
+			statementId = statement.getId();
+		} else {
+			return new ArrayList<Annotation>();
+		}
     	CompletableFuture<List<Annotation>> future =
     			kbService.getEvidences(statementId, null, pageIndex, pageSize);
     	
