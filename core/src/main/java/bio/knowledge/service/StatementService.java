@@ -106,7 +106,7 @@ public class StatementService
 	public List<Statement> getDataPage(int pageIndex, int pageSize, String filter, TableSorter sorter, boolean isAscending) {
 		
 		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
-		if (!currentConceptOpt.isPresent()) return null;
+		if (!currentConceptOpt.isPresent()) return new ArrayList<Statement>();
 		Concept concept = currentConceptOpt.get() ;
 		String emci = concept.getId() ;
 		

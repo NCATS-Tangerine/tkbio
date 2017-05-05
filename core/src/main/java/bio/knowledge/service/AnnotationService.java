@@ -79,7 +79,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
     		boolean isAscending
     ) {
     	Optional<Evidence> evidenceOpt = query.getCurrentEvidence() ;
-		if( !evidenceOpt.isPresent() ) return null ;
+		if( !evidenceOpt.isPresent() ) return new ArrayList<Annotation>() ;
 		Evidence ev = evidenceOpt.get() ;
 		Statement statement = ev.getStatement();
 		String statementId = statement.getId();
