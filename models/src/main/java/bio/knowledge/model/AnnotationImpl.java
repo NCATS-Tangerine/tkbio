@@ -58,7 +58,7 @@ public class AnnotationImpl extends AbstractIdentifiedEntity implements Annotati
 	@Relationship(type="REFERENCE")
     private Reference reference ;
     
-    AnnotationImpl() {}
+    public AnnotationImpl() {}
     
     /**
      * 

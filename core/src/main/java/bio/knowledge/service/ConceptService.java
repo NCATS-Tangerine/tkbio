@@ -110,17 +110,23 @@ public class ConceptService
     @Autowired
     private KnowledgeBeaconService kbService;
     
-//    @Override
-//    public List<Concept> getDataPage(
-//    		int pageIndex,
-//    		int pageSize,
-//    		String filter,
-//    		TableSorter sorter,
-//    		boolean isAscending
-//    ) {
-//    	CompletableFuture<>kbService.getConcepts(filter, null, pageIndex, pageSize);
-//    	return null;
-//    }
+    @Override
+    public List<Concept> getDataPage(
+    		int pageIndex,
+    		int pageSize,
+    		String filter,
+    		TableSorter sorter,
+    		boolean isAscending
+    ) {
+    	CompletableFuture<List<Concept>> future =
+    			kbService.getConcepts(filter, null, pageIndex, pageSize);
+    	
+    	try {
+			return future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			return new ArrayList<Concept>();
+		}
+    }
     
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])

@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -66,7 +68,9 @@ import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
 import bio.knowledge.model.wikidata.WikiDataPropertySemanticType;
 import bio.knowledge.service.Cache.CacheLocation;
+import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
+import bio.knowledge.service.core.TableSorter;
 
 /**
  * StatementService evolved from KB2 PredicationService
@@ -94,6 +98,28 @@ public class StatementService
 	private StatementRepository statementRepository;
 
 	private String SEPARATOR = " ";
+	
+	@Autowired
+	private KnowledgeBeaconService kbService;
+	
+	@Override
+	public List<Statement> getDataPage(int pageIndex, int pageSize, String filter, TableSorter sorter, boolean isAscending) {
+		
+		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
+		if (!currentConceptOpt.isPresent()) return null;
+		Concept concept = currentConceptOpt.get() ;
+		String emci = concept.getId() ;
+		
+		CompletableFuture<List<Statement>> future = kbService.getStatements(emci, filter, null, pageIndex, pageSize);
+		
+		try {
+			List<Statement> statements = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+			return statements;
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			e.printStackTrace();
+			return new ArrayList<Statement>();
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
