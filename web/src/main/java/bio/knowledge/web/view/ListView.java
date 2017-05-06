@@ -88,10 +88,11 @@ import com.vaadin.ui.renderers.ClickableRenderer.RendererClickListener;
 import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
-import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.graph.jsonmodels.Node;
+import bio.knowledge.model.Annotation;
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.DomainModelException;
 import bio.knowledge.model.Evidence;
@@ -101,28 +102,18 @@ import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.OntologyTerm;
-import bio.knowledge.model.neo4j.Neo4jAnnotation;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.organization.ContactForm;
 import bio.knowledge.model.umls.SemanticType;
-import bio.knowledge.service.AnnotationService;
-import bio.knowledge.service.AuthenticationState;
 import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
-import bio.knowledge.service.ConceptService;
 import bio.knowledge.service.DataServiceException;
-import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
-import bio.knowledge.service.StatementService;
-import bio.knowledge.service.core.IdentifiedEntityService;
 import bio.knowledge.service.core.ListTableEntryCounter;
 import bio.knowledge.service.core.ListTableFilteredHitCounter;
 import bio.knowledge.service.core.ListTablePageCounter;
 import bio.knowledge.service.core.ListTablePager;
-import bio.knowledge.service.core.OntologyTermService;
 import bio.knowledge.service.core.TableSorter;
-import bio.knowledge.service.organization.ContactFormService;
 import bio.knowledge.web.ui.DesktopUI;
 import bio.knowledge.web.ui.PopupWindow;
 import bio.knowledge.web.ui.WikiDetailsHandler;
@@ -362,11 +353,12 @@ public class ListView extends BaseView {
 						authenticationState.setState(null, null);
 					}
 					String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+					
 					container.addAll(pager.getDataPage(currentPageIndex, pageSize, filter, sorter, isAscending));
 				}
 			}
 
-			createPageControls(listContainer);
+//			createPageControls(listContainer);
 		}
 
 		/**
@@ -800,7 +792,7 @@ public class ListView extends BaseView {
 
 		listContainer.setFirstPage();
 
-		createPageControls(listContainer);
+//		createPageControls(listContainer);
 
 		// button that can add row(s) of the grid to the graph
 		if (viewName.equals(ViewName.RELATIONS_VIEW)) {
@@ -1920,7 +1912,7 @@ public class ListView extends BaseView {
 		});
 
 		registry.setMapping(ViewName.EVIDENCE_VIEW, 
-				new BeanItemContainer<Neo4jAnnotation>(Neo4jAnnotation.class),
+				new BeanItemContainer<Annotation>(Annotation.class),
 				annotationService,
 				new String[] { /* "reference|*", */"publicationDate", "supportingText|*" /* ,"evidenceCode" */ }, 
 				null, 
@@ -1930,7 +1922,7 @@ public class ListView extends BaseView {
 				ViewName.EVIDENCE_VIEW, 
 				COL_ID_SUPPORTING_TEXT, 
 				event -> {
-					Neo4jAnnotation annotation = (Neo4jAnnotation) event.getItemId();
+					Annotation annotation = (Annotation) event.getItemId();
 		
 					_logger.trace("Display PubMed Reference for Annotation " + annotation.toString() + "...");
 		
