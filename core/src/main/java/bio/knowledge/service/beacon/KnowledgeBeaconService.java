@@ -1,6 +1,7 @@
 package bio.knowledge.service.beacon;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -12,6 +13,7 @@ import bio.knowledge.client.api.EvidenceApi;
 import bio.knowledge.client.api.StatementsApi;
 import bio.knowledge.client.model.InlineResponse200;
 import bio.knowledge.client.model.InlineResponse2001;
+import bio.knowledge.client.model.InlineResponse2002;
 import bio.knowledge.client.model.InlineResponse2003;
 import bio.knowledge.client.model.InlineResponse2004;
 import bio.knowledge.client.model.StatementsObject;
@@ -185,9 +187,15 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 					public List<Statement> getList() {
 						StatementsApi statementsApi = new StatementsApi(apiClient);
 						
+						String[] emcis = emci.split(" ");
+						
+						for (int i = 0; i < emcis.length; i++) {
+							emcis[i] = urlEncode(emcis[i]);
+						}
+						
 						try {
-							List<InlineResponse2003> responses = statementsApi.getStatements(
-									urlEncode(emci),
+							List<InlineResponse2002> responses = statementsApi.getStatements(
+									Arrays.asList(emcis),
 									pageNumber,
 									pageSize,
 									urlEncode(keywords),
@@ -195,7 +203,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 							);
 							List<Statement> statements = new ArrayList<Statement>();
 							
-							for (InlineResponse2003 response : responses) {
+							for (InlineResponse2002 response : responses) {
 								String id = response.getId();
 								StatementsObject statementsObject = response.getObject();
 								StatementsSubject statementsSubject = response.getSubject();
@@ -254,7 +262,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 						EvidenceApi evidenceApi = new EvidenceApi(apiClient);
 						
 						try {
-							List<InlineResponse2004> responses = evidenceApi.getEvidence(
+							List<InlineResponse2003> responses = evidenceApi.getEvidence(
 									urlEncode(statementId),
 									urlEncode(keywords),
 									pageNumber,
@@ -263,7 +271,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 							
 							List<Annotation> annotations = new ArrayList<Annotation>();
 							
-							for (InlineResponse2004 response : responses) {
+							for (InlineResponse2003 response : responses) {
 								Annotation annotation = new AnnotationImpl();
 								annotation.setId(response.getId());
 								annotation.setName(response.getLabel());

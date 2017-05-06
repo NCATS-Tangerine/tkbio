@@ -14,7 +14,7 @@ Method | HTTP request | Description
 
 
 
-Retrieves a list of qualified identifiers of \&quot;exact match\&quot; concepts, [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch) associated with a specified (url-encoded) CURIE (without brackets) concept object identifier,  typically, of a concept selected from the list of concepts originally returned by a /concepts API call on a given KS. This API call should generally only be run against the same KS (only) from which the originally selected concept was retrieved. 
+Retrieves a list of qualified identifiers of \&quot;exact match\&quot; concepts, [sensa SKOS](http://www.w3.org/2004/02/skos/core#exactMatch) associated with a specified (url-encoded) CURIE (without brackets) concept object identifier,  typically, of a concept selected from the list of concepts originally returned by a /concepts API call on a given KS.  
 
 ### Example
 ```java
@@ -55,7 +55,7 @@ No authorization required
 
 <a name="getExactMatchesToConceptList"></a>
 # **getExactMatchesToConceptList**
-> List&lt;InlineResponse2002&gt; getExactMatchesToConceptList(emci)
+> List&lt;String&gt; getExactMatchesToConceptList(c)
 
 
 
@@ -69,9 +69,9 @@ Given an input list of [CURIE](https://www.w3.org/TR/curie/) identifiers of know
 
 
 ExactmatchesApi apiInstance = new ExactmatchesApi();
-String emci = "emci_example"; // String | a (url-encoded) space-delimited set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, to be used in a search for additional exactly matching concepts 
+List<String> c = Arrays.asList("c_example"); // List<String> | set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, to be used in a search for additional exactly matching concepts [*sensa*-SKOS](http://www.w3.org/2004/02/skos/core#exactMatch). 
 try {
-    List<InlineResponse2002> result = apiInstance.getExactMatchesToConceptList(emci);
+    List<String> result = apiInstance.getExactMatchesToConceptList(c);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ExactmatchesApi#getExactMatchesToConceptList");
@@ -83,11 +83,11 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **emci** | **String**| a (url-encoded) space-delimited set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, to be used in a search for additional exactly matching concepts  |
+ **c** | [**List&lt;String&gt;**](String.md)| set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, to be used in a search for additional exactly matching concepts [*sensa*-SKOS](http://www.w3.org/2004/02/skos/core#exactMatch).  |
 
 ### Return type
 
-[**List&lt;InlineResponse2002&gt;**](InlineResponse2002.md)
+**List&lt;String&gt;**
 
 ### Authorization
 

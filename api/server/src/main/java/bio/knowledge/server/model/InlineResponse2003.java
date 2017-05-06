@@ -1,27 +1,25 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
  * InlineResponse2003
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-02T16:41:12.704-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-05T22:03:23.165-07:00")
 
 public class InlineResponse2003   {
   @JsonProperty("id")
   private String id = null;
 
-  @JsonProperty("subject")
-  private StatementsSubject subject = null;
+  @JsonProperty("label")
+  private String label = null;
 
-  @JsonProperty("predicate")
-  private StatementsPredicate predicate = null;
-
-  @JsonProperty("object")
-  private StatementsObject object = null;
+  @JsonProperty("date")
+  private String date = null;
 
   public InlineResponse2003 id(String id) {
     this.id = id;
@@ -29,10 +27,10 @@ public class InlineResponse2003   {
   }
 
    /**
-   * CURIE-encoded identifier for statement (can be used to retrieve associated evidence)
+   * CURIE-encoded identifier to an associated external resources (e.g. PMID of a pubmed citation) 
    * @return id
   **/
-  @ApiModelProperty(value = "CURIE-encoded identifier for statement (can be used to retrieve associated evidence)")
+  @ApiModelProperty(value = "CURIE-encoded identifier to an associated external resources (e.g. PMID of a pubmed citation) ")
   public String getId() {
     return id;
   }
@@ -41,58 +39,40 @@ public class InlineResponse2003   {
     this.id = id;
   }
 
-  public InlineResponse2003 subject(StatementsSubject subject) {
-    this.subject = subject;
+  public InlineResponse2003 label(String label) {
+    this.label = label;
     return this;
   }
 
    /**
-   * Get subject
-   * @return subject
+   * canonical human readable and searchable label of the annotation (i.e. comment, matched sentence, etc.) 
+   * @return label
   **/
-  @ApiModelProperty(value = "")
-  public StatementsSubject getSubject() {
-    return subject;
+  @ApiModelProperty(value = "canonical human readable and searchable label of the annotation (i.e. comment, matched sentence, etc.) ")
+  public String getLabel() {
+    return label;
   }
 
-  public void setSubject(StatementsSubject subject) {
-    this.subject = subject;
+  public void setLabel(String label) {
+    this.label = label;
   }
 
-  public InlineResponse2003 predicate(StatementsPredicate predicate) {
-    this.predicate = predicate;
+  public InlineResponse2003 date(String date) {
+    this.date = date;
     return this;
   }
 
    /**
-   * Get predicate
-   * @return predicate
+   * publication date of annotation (generally of format 'yyyy-mm-dd') 
+   * @return date
   **/
-  @ApiModelProperty(value = "")
-  public StatementsPredicate getPredicate() {
-    return predicate;
+  @ApiModelProperty(value = "publication date of annotation (generally of format 'yyyy-mm-dd') ")
+  public String getDate() {
+    return date;
   }
 
-  public void setPredicate(StatementsPredicate predicate) {
-    this.predicate = predicate;
-  }
-
-  public InlineResponse2003 object(StatementsObject object) {
-    this.object = object;
-    return this;
-  }
-
-   /**
-   * Get object
-   * @return object
-  **/
-  @ApiModelProperty(value = "")
-  public StatementsObject getObject() {
-    return object;
-  }
-
-  public void setObject(StatementsObject object) {
-    this.object = object;
+  public void setDate(String date) {
+    this.date = date;
   }
 
 
@@ -106,14 +86,13 @@ public class InlineResponse2003   {
     }
     InlineResponse2003 inlineResponse2003 = (InlineResponse2003) o;
     return Objects.equals(this.id, inlineResponse2003.id) &&
-        Objects.equals(this.subject, inlineResponse2003.subject) &&
-        Objects.equals(this.predicate, inlineResponse2003.predicate) &&
-        Objects.equals(this.object, inlineResponse2003.object);
+        Objects.equals(this.label, inlineResponse2003.label) &&
+        Objects.equals(this.date, inlineResponse2003.date);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, subject, predicate, object);
+    return Objects.hash(id, label, date);
   }
 
   @Override
@@ -122,9 +101,8 @@ public class InlineResponse2003   {
     sb.append("class InlineResponse2003 {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    subject: ").append(toIndentedString(subject)).append("\n");
-    sb.append("    predicate: ").append(toIndentedString(predicate)).append("\n");
-    sb.append("    object: ").append(toIndentedString(object)).append("\n");
+    sb.append("    label: ").append(toIndentedString(label)).append("\n");
+    sb.append("    date: ").append(toIndentedString(date)).append("\n");
     sb.append("}");
     return sb.toString();
   }

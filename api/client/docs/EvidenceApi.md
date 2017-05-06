@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 <a name="getEvidence"></a>
 # **getEvidence**
-> List&lt;InlineResponse2004&gt; getEvidence(statementId, keywords, pageNumber, pageSize)
+> List&lt;InlineResponse2003&gt; getEvidence(statementId, keywords, pageNumber, pageSize)
 
 
 
@@ -28,7 +28,7 @@ String keywords = "keywords_example"; // String | (url-encoded, space delimited)
 Integer pageNumber = 56; // Integer | (1-based) number of the page to be returned in a paged set of query results 
 Integer pageSize = 56; // Integer | number of cited references per page to be returned in a paged set of query results 
 try {
-    List<InlineResponse2004> result = apiInstance.getEvidence(statementId, keywords, pageNumber, pageSize);
+    List<InlineResponse2003> result = apiInstance.getEvidence(statementId, keywords, pageNumber, pageSize);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling EvidenceApi#getEvidence");
@@ -47,7 +47,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;InlineResponse2004&gt;**](InlineResponse2004.md)
+[**List&lt;InlineResponse2003&gt;**](InlineResponse2003.md)
 
 ### Authorization
 
