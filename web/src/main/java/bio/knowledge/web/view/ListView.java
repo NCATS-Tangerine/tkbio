@@ -152,6 +152,8 @@ public class ListView extends BaseView {
 	private static final String CURRENT_PAGE_SIZE_STYLE = "current-page-size";
 	private static final String PAGE_BUTTON_STYLE = "page-button";
 	private static final String PAGE_CONTROL_BUTTON_STYLE = "pagecontrol-button";
+	
+	private static final int DATA_PAGE_SIZE = 15;
 
 	// Wrapper for datasource container,
 	// to add extra action columns for 'details', 'data download', etc.
@@ -206,7 +208,7 @@ public class ListView extends BaseView {
 
 		private static final int PAGE_WINDOW_OFFSET = PAGE_WINDOW_SIZE / 2;
 
-		private static final int DEFAULT_PAGE_SIZE = 10;
+		private static final int DEFAULT_PAGE_SIZE = 15;
 		private static final int DEFAULT_CURRENT_PAGE_INDEX = 0;
 		private static final boolean DEFAULT_IS_ASCENDING = false;
 
@@ -353,12 +355,36 @@ public class ListView extends BaseView {
 						authenticationState.setState(null, null);
 					}
 					String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
-					
+					// We always want to fill the table with enough rows so that the scroll bar shows.
+					int pageSize = (int) dataTable.getHeightByRows() + 5;
 					container.addAll(pager.getDataPage(currentPageIndex, pageSize, filter, sorter, isAscending));
+					loadedAllData = false;
 				}
 			}
 
 //			createPageControls(listContainer);
+		}
+		
+		private boolean loadedAllData = false;
+		private boolean loadingDataPage = false;
+		private int nextPageNumber = 0;
+		public void loadNextPage() {
+			if (pager != null && !loadedAllData) {
+				loadingDataPage = true;
+				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+				List<? extends IdentifiedEntity> data = 
+						pager.getDataPage(nextPageNumber, DATA_PAGE_SIZE, filter, sorter, isAscending);
+				container.addAll(data);
+				nextPageNumber++;
+				loadingDataPage = false;
+				
+				if (data.size() < DATA_PAGE_SIZE) {
+					loadedAllData = true;
+				}
+			}
+		}
+		public boolean isLoading() {
+			return loadingDataPage;
 		}
 
 		/**
@@ -984,17 +1010,18 @@ public class ListView extends BaseView {
 	private VerticalLayout formatGenericTableComponents(String datatype) {
 
 		// use datatype here to possibly get custom list of fields(?)
-		bio.knowledge.grid.Grid.ScrollListener sl = new bio.knowledge.grid.Grid.ScrollListener() {
+		bio.knowledge.grid.Grid.ScrollListener scrollListener = new bio.knowledge.grid.Grid.ScrollListener() {
 
 			@Override
 			public void scrolledToBottom() {
-				listContainer.addData(100);
+				if (!listContainer.isLoading()) {
+					listContainer.loadNextPage();
+				}
 			}
 			
 		};
-//		dataTable = new bio.knowledge.grid.Grid(sl);
-		listContainer.setPageSize(50);
-		dataTable = new Grid();
+		
+		dataTable = new bio.knowledge.grid.Grid(scrollListener);
 		dataTable.setWidth("100%");
 		dataTable.setHeightMode(HeightMode.ROW);
 		dataTable.setHeightByRows(ROWS_TO_DISPLAY);
