@@ -28,6 +28,9 @@ package bio.knowledge.authentication;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.stormpath.sdk.account.Account;
 import com.stormpath.sdk.group.Group;
 import com.stormpath.sdk.resource.ResourceException;
@@ -42,9 +45,15 @@ import bio.knowledge.authentication.exceptions.AuthenticationException;
  *
  */
 public class UserGroup {
-	private Group group;
+	
+	@Autowired
+	UserManager users;	//todo: should this be here?
+	
+	private String group;
 
-	protected Group getGroup() {
+	private UserManager userManager;
+
+	protected String getGroup() {
 		return this.group;
 	}
 
@@ -57,6 +66,10 @@ public class UserGroup {
 	 */
 	public static boolean isValid(Group group) {
 		return group.getName().matches(".*::.*");
+	}
+	
+	public static boolean isValid(String group) {
+		return group.matches(".*::.*");
 	}
 
 	public static String makeValidGroupName(UserProfile groupOwner, String groupName) {
@@ -80,17 +93,19 @@ public class UserGroup {
 	 * A group's name specifies the href of the user who owns it.
 	 * 
 	 * @param group
+	 * @param userManager 
 	 */
-	public UserGroup(Group group) {
+	public UserGroup(String group, UserManager userManager) {
 		if (isValid(group)) {
 			this.group = group;
+			this.userManager = userManager;
 		} else {
 			throw new RuntimeException("Invalid name: must take the form \"<creator's account's href>::<name>\"");
 		}
 	}
 
 	public void addMember(UserProfile user) {
-		group.addAccount(user.getAccount());
+		users.addUserToGroup(user.getUsername(), group); //todo: usernames could change...?
 	}
 
 	public void addMember(String hrefOrEmailOrUsername) throws AuthenticationException {
@@ -99,7 +114,7 @@ public class UserGroup {
 		}
 		
 		try {
-			group.addAccount(hrefOrEmailOrUsername);
+			users.addUserToGroup(hrefOrEmailOrUsername, group); //todo: handle email or href
 //		} catch (IllegalStateException e) {
 //			throw new AuthenticationException("There is no account corresponding to: " + hrefOrEmailOrUsername);
 		} catch (ResourceException e) {
@@ -115,27 +130,28 @@ public class UserGroup {
 
 	public boolean removeMember(UserProfile user) {
 		try {
-			group.removeAccount(user.getAccount());
+			users.removeUserFromGroup(user.getUsername(), group);
 			return true;
-		} catch (IllegalStateException e) {
+		} catch (IllegalStateException e) { //todo: what kind of exception
 			return false;
 		}
 	}
 
 	public String getName() {
-		String[] split = group.getName().split("::");
+		String[] split = group.split("::");
 		return split[1];
 	}
 
 	public String getId() {
-		return group.getHref();
+		return group;
 	}
 
 	public List<UserProfile> getMembers() {
 		List<UserProfile> userProfiles = new ArrayList<UserProfile>();
 
-		for (Account account : group.getAccounts()) {
-			userProfiles.add(new UserProfile(account));
+		for (String username : users.findUsersInGroup(group)) {
+			UserProfile user = users.loadUserByUsername(username);
+			userProfiles.add(user);
 		}
 
 		return userProfiles;

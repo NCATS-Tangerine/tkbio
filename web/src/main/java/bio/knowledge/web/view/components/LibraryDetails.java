@@ -25,6 +25,8 @@
  */
 package bio.knowledge.web.view.components;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.ExternalResource;
@@ -43,6 +45,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.authentication.AuthenticationManager;
+import bio.knowledge.authentication.UserManager;
 import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.service.ConceptMapArchiveService;
@@ -54,7 +57,7 @@ public class LibraryDetails extends VerticalLayout {
 	
 	private static final long serialVersionUID = 6011165323751217447L;
 	
-	private AuthenticationContext context;
+	private UserManager userManager;
 
 	// these aren't autowired because this is not a spring @component.
 	// TODO: Refactor into Spring Component?
@@ -70,10 +73,11 @@ public class LibraryDetails extends VerticalLayout {
 			ConceptMapArchive map,
 			KBQuery query,
 			AuthenticationContext context,
+			UserManager userManager,
 			ClickListener onGoBackClickListener
 	) {
 		this.onGoBackClickListener = onGoBackClickListener;
-		this.context = context;
+		this.userManager = userManager;
 		this.query = query;
 		this.conceptMapArchiveService = ((DesktopUI) UI.getCurrent()).getConceptMapArchiveService();
 		this.userId = map.getAuthorsAccountId();
@@ -143,7 +147,7 @@ public class LibraryDetails extends VerticalLayout {
 		String name;
 		
 		if (userId != null) {
-			name = context.getUserProfile(userId).getUsername();
+			name = userManager.loadUserByUsername(userId).getUsername();
 		} else {
 			name = "an anonymous user";
 		}

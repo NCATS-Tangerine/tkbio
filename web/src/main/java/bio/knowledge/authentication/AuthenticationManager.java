@@ -33,15 +33,15 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.stormpath.sdk.account.Account;
-import com.stormpath.sdk.authc.AuthenticationRequest;
-import com.stormpath.sdk.authc.AuthenticationResult;
-import com.stormpath.sdk.authc.UsernamePasswordRequestBuilder;
-import com.stormpath.sdk.authc.UsernamePasswordRequests;
-import com.stormpath.sdk.client.Client;
-import com.stormpath.sdk.group.Group;
-import com.stormpath.sdk.group.GroupList;
-import com.stormpath.sdk.group.GroupMembership;
 import com.stormpath.sdk.resource.ResourceException;
 import com.vaadin.ui.UI;
 
@@ -70,12 +70,11 @@ public class AuthenticationManager {
 
 	@Autowired
 	private AuthenticationContext context;
+
+	private org.springframework.security.authentication.AuthenticationManager manager;
 	
 	@Autowired
-	private KBQuery query;
-	
-	@Autowired
-	private Cache cache;
+	private UserManager userManager;
 	
 	private final List<AuthenticationListener> authListeners = new ArrayList<AuthenticationListener>();
 	
@@ -119,6 +118,14 @@ public class AuthenticationManager {
 		}
 	}
 	
+	private List<GrantedAuthority> defaultRoles() {
+		List<GrantedAuthority> defaultRoles = new ArrayList<>();
+		String client = Role.CLIENT.getSpringRole();
+		GrantedAuthority clientAuth = new SimpleGrantedAuthority(client); //todo: make Role -> GA?
+		defaultRoles.add(clientAuth);
+		return defaultRoles;
+	}
+	
 	public void logout() {
 		//TODO: Delete any cookies that have been put on the users computer for persistent authentication
 		this.currentUser = null;
@@ -132,7 +139,7 @@ public class AuthenticationManager {
 	public void login(String usernameOrEmail, String password)
 			throws InvalidUsernameOrPasswordException, AccountDisabledException, AccountNotVerifiedException,
 			AccountIsLockedException, AccountDoesNotExistException {
-		
+				
 		boolean invalidUsername = usernameOrEmail == null || usernameOrEmail.isEmpty();
 		boolean invalidPassword = password == null || password.isEmpty();
 		
@@ -140,7 +147,18 @@ public class AuthenticationManager {
 			throw new InvalidUsernameOrPasswordException("Username and password strings cannot be empty or null");
 		}
 		
-		UsernamePasswordRequestBuilder builder = UsernamePasswordRequests.builder();
+		Authentication token = new UsernamePasswordAuthenticationToken(usernameOrEmail, password); //todo: handle email or password
+		Authentication auth;
+		try {
+			auth = manager.authenticate(token);
+			notifyOfLogin(currentUser);
+		} catch(org.springframework.security.core.AuthenticationException e) {
+			throw new InvalidUsernameOrPasswordException(e.getMessage());
+		}
+		SecurityContextHolder.getContext().setAuthentication(auth);
+		currentUser = userManager.loadUserByUsername(usernameOrEmail);
+		
+		/*UsernamePasswordRequestBuilder builder = UsernamePasswordRequests.builder();
 		builder.setUsernameOrEmail(usernameOrEmail);
 		builder.setPassword(password);
 		
@@ -195,14 +213,19 @@ public class AuthenticationManager {
 			} else {
 				throw ex;
 			}
-		}
+		}*/
 	}
 	
 	public UserGroup createGroup(UserProfile owner, String groupName) throws AuthenticationException {
 		if (owner == null) throw new RuntimeException("Owner must not be null");
 		if (groupName.isEmpty()) throw new AuthenticationException("Group name must not be empty");
 		
-		Client client = context.getClient();
+		String name = UserGroup.makeValidGroupName(owner, groupName);
+		userManager.createGroup(name, new ArrayList<>()); //todo: what roles here
+		userManager.addUserToGroup(owner.getUsername(), name);
+		return new UserGroup(name, userManager);
+		
+		/*Client client = context.getClient();
 		Group group = client.instantiate(Group.class);
 		String name = UserGroup.makeValidGroupName(owner, groupName);
 		group.setName(name);
@@ -219,7 +242,7 @@ public class AuthenticationManager {
 
 		group.addAccount(account);
 
-		return new UserGroup(group);
+		return new UserGroup(group);*/
 	}
 	
 	public void createAccount(String username, String firstName, String lastName, String email, String password)
@@ -232,7 +255,11 @@ public class AuthenticationManager {
 			throw new MissingNameException("The firstName and lastName cannot be null, empty or blank");
 		}
 		
-		Client client = context.getClient();
+		UserProfile user = new UserProfile(email, username, password, defaultRoles(), userManager);
+		user.setFirstName(firstName);
+		user.setLastName(lastName);
+		
+		/*Client client = context.getClient();
 		Account newAccount = client.instantiate(Account.class);
 		newAccount.setEmail(email);
 		newAccount.setPassword(password);
@@ -265,10 +292,11 @@ public class AuthenticationManager {
 			} else {
 				throw exp;
 			}
-		}	
+		}*/	
 	}
 
-	private void assignRoleToAccount(Account account, Role role) {
+	/*private void assignRoleToAccount(UserProfile user, Role role) {
+				
 		GroupList groups = context.getApplication().getGroups();
 		
 		for (Group group : groups) {
@@ -276,7 +304,7 @@ public class AuthenticationManager {
 				group.addAccount(account);
 			}
 		}
-	}
+	}*/ //todo: delete
 	
 	public void sendPasswordResetEmail(String email) throws AccountDoesNotExistException,
 			InvalidEmailFormatException {

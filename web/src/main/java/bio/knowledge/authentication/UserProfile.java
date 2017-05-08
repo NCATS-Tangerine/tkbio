@@ -26,9 +26,17 @@
 package bio.knowledge.authentication;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.eclipse.jetty.util.security.Password;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.stormpath.sdk.account.Account;
 import com.stormpath.sdk.group.Group;
@@ -49,33 +57,46 @@ import bio.knowledge.authentication.exceptions.UsernameAlreadyInUseException;
  * @author Richard Bruskiewich
  *
  */
-public class UserProfile {
+public class UserProfile implements UserDetails {
 	
-	protected final static String FACEBOOK_URL_KEY = "facebookUrl";
-	protected final static String LINKEDIN_URL_KEY = "linkedInUrl";
-	protected final static String TWITTER_URL_KEY = "twitterUrl";
+	private static final long serialVersionUID = 7612194811588599365L;
+
+	private UserManager userManager;
 	
-	public final static String NAME_PUBLICIZED_PERMISSION = "nameIsPublic";
-	public final static String EMAIL_PUBLICIZED_PERMISSION = "emailIsPublic";
-	
-	private final Account account;
-	
+	private String userID;
+	private String email;
+	private String username;
+	private String password;
+	private String givenName;
+	private String middleName;
+	private String surname;
+	private String dateJoined;
+	private String facebookUrl;
+	private String linkedInUrl;
+	private String twitterUrl;
+	private boolean nameIsPublic;
+	private boolean emailIsPublic;
+		
 	private Map<Role, Boolean> current_user_group_permission = new HashMap<Role, Boolean>();
 	
-	protected Account getAccount() {
-		return this.account;
+	public UserProfile(String email, String username, String password,
+			Collection<GrantedAuthority> authorities, UserManager userManager) {
+		
+		this.email = email;
+		this.username = username;
+		this.password = password;
+		for (GrantedAuthority authority : authorities) {
+			current_user_group_permission.put(
+					Role.lookUpSpringRole(authority.getAuthority()), true);
+		}
+
+		this.userManager = userManager;
+		userManager.createUser(this);
 	}
 	
-	public UserProfile(Account account) {
-		if (account != null) {
-			this.account = account;
-		} else {
-			throw new RuntimeException("account cannot be null");
-		}
-	}
-
 	private void save() {
-		account.save();
+		System.out.println(userManager);
+		userManager.updateUser(this);
 	}
 
 	// package private
@@ -99,10 +120,11 @@ public class UserProfile {
 	public List<UserGroup> getGroupsOwned() {
 		List<UserGroup> groupList = new ArrayList<UserGroup>();
 		
-		for (Group group : account.getGroups()) {
-			String href = group.getName().split("::")[0];
-			if (UserGroup.isValid(group) && account.getHref().equals(href)) {
-				groupList.add(new UserGroup(group));
+		for (String group : userManager.findGroupsForUser(username)) {
+			
+			String groupUserID = group.split("::")[0];
+			if (UserGroup.isValid(group) && userID.equals(groupUserID)) {
+				groupList.add(new UserGroup(group, userManager));
 			}
 		}
 		
@@ -110,15 +132,7 @@ public class UserProfile {
 	}
 	
 	public String[] getIdsOfGroupsBelongedTo() {
-		List<String> idList = new ArrayList<String>();
-		GroupList groupList = account.getGroups();
-		
-		for (Group group : account.getGroups()) {
-			if (UserGroup.isValid(group)) {
-				idList.add(group.getHref());
-			}
-		}
-		
+		List<String> idList = userManager.findGroupsForUser(username);
 		String[] idArray = new String[idList.size()];
 		
 		for (int i = 0; i < idList.size(); i++) {
@@ -129,18 +143,21 @@ public class UserProfile {
 	}
 
 	public String getId() {
-		return account.getHref();
+		return userID;
 	}
 
+	public void setID(String userID) {
+		this.userID = userID;
+	}
+	
 	public void setEmail(String email) throws EmailAlreadyInUseException {
-		String currentEmail = account.getEmail();
-		account.setEmail(email);
+		String currentEmail = this.email;
+		this.email = email;
 
 		try {
 			save();
-		} catch (ResourceException e) {
-			
-			account.setEmail(currentEmail);
+		} catch (ResourceException e) {			
+			this.email = currentEmail;
 			if (e.getCode() == 409) {
 				throw new EmailAlreadyInUseException(e.getMessage());
 			} else {
@@ -150,14 +167,14 @@ public class UserProfile {
 	}
 
 	public void setUsername(String username) throws UsernameAlreadyInUseException {
-		String currentUsername = account.getUsername();
-		account.setUsername(username);
+		String currentUsername = this.username;
+		this.username = username;
 
 		try {
 			save();
 		} catch (ResourceException e) {
 			
-			account.setUsername(currentUsername);
+			this.username = currentUsername;
 			if (e.getCode() == 409) {
 				throw new UsernameAlreadyInUseException(e.getMessage());
 			} else {
@@ -165,49 +182,57 @@ public class UserProfile {
 			}
 		}
 	}
+	
+	public void setPassword(String newPassword) {
+		userManager.changePassword(password, newPassword);
+		this.password = newPassword;
+	}
 
 	public void setFirstName(String firstName) {
-		account.setGivenName(firstName);
+		this.givenName = firstName;
 		save();
 	}
 
 	public void setMiddleName(String middleName) {
-		account.setMiddleName(middleName);
+		this.middleName = middleName;
 		save();
 	}
 
 	public void setLastName(String lastName) {
-		account.setSurname(lastName);
+		this.surname = lastName;
 		save();
 	}
 
 	public void setFacebookUrl(String facebookUrl) {
-		account.getCustomData().put(FACEBOOK_URL_KEY, facebookUrl);
+		this.facebookUrl = facebookUrl;
 		save();
 	}
 
 	public void setLinkedInUrl(String linkedInUrl) {
-		account.getCustomData().put(LINKEDIN_URL_KEY, linkedInUrl);
+		this.linkedInUrl = linkedInUrl;
 		save();
 	}
 
 	public void setTwitterUrl(String twitterUrl) {
-		account.getCustomData().put(TWITTER_URL_KEY, twitterUrl);
+		this.twitterUrl = twitterUrl;
 		save();
 	}
 
-	public void setPermission(String permission, boolean permitted) {
-		account.getCustomData().put(permission, permitted);
+	public void setNamePublicized(boolean permitted) {
+		this.nameIsPublic = permitted;
+		save();
+	}
+	
+	public boolean getNamePublicized() {
+		return this.nameIsPublic;
+	}
+	
+	public void setEmailPublicized(boolean permitted) {
+		this.emailIsPublic = permitted;
 	}
 
-	public boolean getPermission(String permission) {
-		Object o = account.getCustomData().get(permission);
-
-		if (o instanceof Boolean) {
-			return (boolean) o;
-		} else {
-			return false;
-		}
+	public boolean getEmailPublicized() {
+		return this.emailIsPublic;
 	}
 
 	/**
@@ -217,7 +242,12 @@ public class UserProfile {
 	 * @return
 	 */
 	public String getEmail() {
-		return account.getEmail();
+		return email;
+	}
+	
+	@Override
+	public String getPassword() {
+		return password;
 	}
 
 	/**
@@ -227,27 +257,19 @@ public class UserProfile {
 	 * @return
 	 */
 	public String getDateJoined() {
-		return account.getCreatedAt().toString();
+		return dateJoined;
 	}
 
 	public String getFacebookUrl() {
-		return getCustomData(FACEBOOK_URL_KEY);
+		return facebookUrl;
 	}
 
 	public String getLinkedInUrl() {
-		return getCustomData(LINKEDIN_URL_KEY);
+		return linkedInUrl;
 	}
 
 	public String getTwitterUrl() {
-		return getCustomData(TWITTER_URL_KEY);
-	}
-
-	private String getCustomData(String key) {
-		if (account.getCustomData().containsKey(key)) {
-			return (String) account.getCustomData().get(key);
-		} else {
-			return "";
-		}
+		return twitterUrl;
 	}
 
 	/**
@@ -259,33 +281,34 @@ public class UserProfile {
 	 * @return
 	 */
 	public String getFullName() {
-		if (account == null)
+		if (userID == null)
 			return "Guest";
-		return account.getFullName();
+		return givenName + " " + middleName + " " + surname;
 	}
 
 	public String getFirstName() {
-		if (account == null)
+		if (userID == null)
 			return "";
-		return account.getGivenName();
+		return givenName;
 	}
 
 	public String getMiddleName() {
-		if (account == null)
+		if (userID == null)
 			return "";
-		return account.getMiddleName();
+		return middleName;
 	}
 
 	public String getLastName() {
-		if (account == null)
-			return "";
-		return account.getSurname();
+		if (userID == null)
+			return "";		
+		return surname;
 	}
 
+	@Override
 	public String getUsername() {
-		if (account == null)
-			return "";
-		return account.getUsername();
+		if (userID == null)
+			return "";	
+		return username;
 	}
 	
 	@Override
@@ -307,4 +330,31 @@ public class UserProfile {
 	public String toString() {
 		return this.getUsername();
 	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
 }

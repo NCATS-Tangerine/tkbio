@@ -89,12 +89,8 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
      * as it is initialized in the DesktopUI.
 	 * @param authenticationManager 
      */
-	public ApplicationLayout(
-			AuthenticationManager authenticationManager, 
-			AuthenticationContext context
-		) {
+	public ApplicationLayout(AuthenticationManager authenticationManager) {
 		
-		this.setContext(context);
 		navigator = new Navigator(UI.getCurrent(), (ViewDisplay)this);
 		navigator.setErrorView(new ErrorView());
 		

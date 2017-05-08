@@ -374,11 +374,11 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 		
 		DesktopUI ui = (DesktopUI)UI.getCurrent();
 		UserProfile userProfile = ui.getAuthenticationManager().getCurrentUser();
-		if ( userProfile.getPermission(UserProfile.EMAIL_PUBLICIZED_PERMISSION)) {
+		if ( userProfile.getEmailPublicized()) {
 			optionGroup.select(showEmail);
 		}
 		
-		if (userProfile.getPermission(UserProfile.NAME_PUBLICIZED_PERMISSION)) {
+		if (userProfile.getNamePublicized()) {
 			optionGroup.select(showName);
 		}
 		
@@ -421,16 +421,8 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 				userProfile.setLastName(lastname1);
 				userProfile.setLinkedInUrl(linkedinUrl);
 				userProfile.setMiddleName(middlename1);
-				
-				userProfile.setPermission(
-						UserProfile.EMAIL_PUBLICIZED_PERMISSION,
-						((Collection) optionGroup.getValue()).contains(showEmail)
-				);
-				
-				userProfile.setPermission(
-						UserProfile.NAME_PUBLICIZED_PERMISSION,
-						((Collection) optionGroup.getValue()).contains(showName)
-				);
+				userProfile.setEmailPublicized(((Collection) optionGroup.getValue()).contains(showEmail));
+				userProfile.setNamePublicized(((Collection) optionGroup.getValue()).contains(showName));
 				
 				try {
 					userProfile.setEmail(email1);

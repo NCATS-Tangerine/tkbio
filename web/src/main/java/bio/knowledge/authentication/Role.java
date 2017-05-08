@@ -60,4 +60,12 @@ public enum Role {
     	}
     	throw new UserAuthenticationException("Invalid User Role: "+roleName) ;
     }
+    
+    public static Role lookUpSpringRole(String roleName) throws UserAuthenticationException {
+    	for(Role r: Role.values()) {
+    		if(r.getSpringRole().equals(roleName))
+    			return r;
+    	}
+    	throw new UserAuthenticationException("Invalid User Role: "+roleName) ;
+    }
 }

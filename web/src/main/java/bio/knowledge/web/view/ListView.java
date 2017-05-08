@@ -89,6 +89,7 @@ import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.authentication.AuthenticationManager;
+import bio.knowledge.authentication.UserManager;
 import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.model.Annotation;
@@ -154,6 +155,9 @@ public class ListView extends BaseView {
 	private static final String PAGE_CONTROL_BUTTON_STYLE = "pagecontrol-button";
 	
 	private static final int DATA_PAGE_SIZE = 15;
+
+	@Autowired
+	private UserManager userManager;
 
 	// Wrapper for datasource container,
 	// to add extra action columns for 'details', 'data download', etc.

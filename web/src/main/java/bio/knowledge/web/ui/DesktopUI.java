@@ -84,6 +84,7 @@ import com.vaadin.ui.Window;
 
 import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.authentication.AuthenticationManager;
+import bio.knowledge.authentication.UserManager;
 import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.graph.ConceptMapDisplay;
 import bio.knowledge.graph.jsonmodels.Edge;
@@ -168,6 +169,9 @@ public class DesktopUI extends UI implements MessageService {
 		return authenticationManager;
 	}
 
+	@Autowired
+	private UserManager userManager;
+	
 	@Autowired
 	private AuthenticationContext context;
 

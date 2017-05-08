@@ -96,16 +96,6 @@ public class SaveWindow extends Window {
 
 	private Book book;
 	
-	private AuthenticationContext context;
-
-	public AuthenticationContext getContext() {
-		return context;
-	}
-
-	public void setContext(AuthenticationContext context) {
-		this.context = context;
-	}
-	
 	private final String defaultName;
 
 	// public abstract void save();
@@ -113,7 +103,6 @@ public class SaveWindow extends Window {
 	public SaveWindow(
 			String defaultName,
 			KBQuery query, 
-			AuthenticationContext context, 
 			Mapping mapping,
 			ConceptMapDisplay conceptMapDisplay, 
 			Navigator navigator, 
@@ -126,7 +115,6 @@ public class SaveWindow extends Window {
 		this.query = query;
 		this.mapping = mapping;
 		this.navigator = navigator;
-		this.setContext(context);
 
 		setupLayout();
 		setConceptMapName(defaultName);

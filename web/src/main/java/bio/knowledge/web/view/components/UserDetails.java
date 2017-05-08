@@ -41,9 +41,7 @@ import bio.knowledge.web.view.LibrarySearchResults;
 public class UserDetails extends VerticalLayout {
 
 	private static final long serialVersionUID = -2963574283905392754L;
-	
-	private AuthenticationContext context;
-	
+		
 	private LibrarySearchResults librarySearchResults;
 	
 	private Button goBackBtn = new Button("Go back");
@@ -81,8 +79,8 @@ public class UserDetails extends VerticalLayout {
 		infoGrid.addComponent(new Label("Date joined:"));
 		infoGrid.addComponent(new Label(userProfile.getDateJoined()));
 		
-		boolean showName  = userProfile.getPermission(UserProfile.NAME_PUBLICIZED_PERMISSION);
-		boolean showEmail = userProfile.getPermission(UserProfile.EMAIL_PUBLICIZED_PERMISSION);
+		boolean showName  = userProfile.getNamePublicized();
+		boolean showEmail = userProfile.getEmailPublicized();
 		
 		if (showName) {
 			infoGrid.addComponent(new Label("Name:"));

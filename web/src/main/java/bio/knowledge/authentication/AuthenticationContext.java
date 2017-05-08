@@ -26,7 +26,9 @@
 
 package bio.knowledge.authentication;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -145,7 +147,7 @@ public class AuthenticationContext {
 			try {
 
 				Account account = client.getResource(href, Account.class);
-				userProfile = new UserProfile(account);
+				userProfile = new UserProfile("no@dummy.com", "dummy", "password", new ArrayList<>(), null);
 				cachedProfiles.put(href, Pair.of(userProfile, System.currentTimeMillis()));
 
 			} catch (ResourceException e) {
