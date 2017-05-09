@@ -53,7 +53,8 @@ public class StatementsApiTest {
     @Test
     public void getStatementsTest() throws ApiException {
     	// Just testing to see if it reaches the server
-    	api.getStatements("", null, null, null, null);
+//    	api.getStatements("", null, null, null, null);
+    	fail();
     }
     
 }

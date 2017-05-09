@@ -18,6 +18,8 @@ import bio.knowledge.client.model.InlineResponse2002;
 import org.junit.Test;
 import org.junit.Ignore;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,8 +61,9 @@ public class ExactmatchesApiTest {
     @Test
     public void getExactMatchesToConceptListTest() throws ApiException {
         String emci = null;
-        List<InlineResponse2002> response = api.getExactMatchesToConceptList(emci);
+//        List<InlineResponse2002> response = api.getExactMatchesToConceptList(emci);
 
+        fail();
         // TODO: test validations
     }
     
