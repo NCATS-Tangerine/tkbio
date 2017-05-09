@@ -79,6 +79,10 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			int pageNumber,
 			int pageSize
 	) {
+		if (semanticGroups == null) {
+//			semanticGroups = "";
+		}
+		final String sg = semanticGroups;
 		SupplierBuilder<Concept> builder = new SupplierBuilder<Concept>() {
 
 			@Override
@@ -92,7 +96,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 						try {
 							List<InlineResponse2001> responses = conceptsApi.getConcepts(
 									urlEncode(keywords),
-									urlEncode(semanticGroups),
+									urlEncode(sg),
 									pageNumber,
 									pageSize
 							);
@@ -113,6 +117,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 							return concepts;
 							
 						} catch (Exception e) {
+							e.printStackTrace();
 							return new ArrayList<Concept>();
 						}
 					}

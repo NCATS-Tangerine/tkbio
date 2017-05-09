@@ -28,6 +28,8 @@ public class KnowledgeBeaconRegistry {
 	
 	@PostConstruct
 	public void init() {
+		
+		ApiClient api = new ApiClient();
 		// TODO: Once we've got our own knowledge.bio beacon online, change the
 		// default URL. We always want our own knowledge source in the pool
 		// (though in the future we could give the user the opportunity to

@@ -484,7 +484,7 @@ public class ListView extends BaseView {
 		listContainer.refresh();
 
 		// refresh page controls
-		createPageControls(listContainer);
+//		createPageControls(listContainer);
 	}
 
 	/**
