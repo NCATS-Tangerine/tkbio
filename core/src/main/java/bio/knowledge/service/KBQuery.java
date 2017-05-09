@@ -290,5 +290,9 @@ public interface KBQuery {
 	// we use string instead of the userprofile object since the Userprofile object is defined in a package whose dependencies are downstream from core.
 	public String currentUserId() ;
 	public void currentUserId(String userId);
+
+	public String currentConceptId=null;
+
+	public String getCurrentQueryConceptId();
 	
 }

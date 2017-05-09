@@ -81,9 +81,13 @@ public class KBQueryImpl implements KBQuery {
 	@Override
 	public void setCurrentQueryConceptById(String identifier) {
 		resetQuery();
-		queryConcept = conceptService.getDetailsByConceptId(identifier) ;
+		this.currentQueryConceptId = identifier;
 	}
-
+	private String currentQueryConceptId = null;
+	@Override public String getCurrentQueryConceptId() {
+		return this.currentQueryConceptId;
+	}
+	
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#getCurrentQueryConcept()
 	 */

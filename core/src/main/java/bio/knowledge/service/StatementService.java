@@ -105,10 +105,10 @@ public class StatementService
 	@Override
 	public List<Statement> getDataPage(int pageIndex, int pageSize, String filter, TableSorter sorter, boolean isAscending) {
 		
-		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
-		if (!currentConceptOpt.isPresent()) return new ArrayList<Statement>();
-		Concept concept = currentConceptOpt.get() ;
-		String emci = concept.getId() ;
+//		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
+//		if (!currentConceptOpt.isPresent()) return new ArrayList<Statement>();
+//		Concept concept = currentConceptOpt.get() ;
+		String emci = query.getCurrentQueryConceptId();
 		
 		CompletableFuture<List<Statement>> future = kbService.getStatements(emci, filter, null, pageIndex, pageSize);
 		
