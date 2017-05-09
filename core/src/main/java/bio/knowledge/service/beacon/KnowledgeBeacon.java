@@ -1,13 +1,9 @@
 package bio.knowledge.service.beacon;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 import bio.knowledge.client.ApiClient;
-import bio.knowledge.model.ConceptImpl;
 
 /**
  * This was originally going to wrap a {@code ApiClient} object, but I'm not

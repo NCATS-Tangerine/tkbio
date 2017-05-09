@@ -1,7 +1,5 @@
 package bio.knowledge.grid.client;
 
-import com.vaadin.client.widget.grid.events.ScrollEvent;
-import com.vaadin.client.widget.grid.events.ScrollHandler;
 import com.vaadin.client.widgets.Escalator;
 
 //import java.util.logging.Level;

@@ -25,21 +25,15 @@
  */
 package bio.knowledge.service;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +48,6 @@ import bio.knowledge.datasource.DataService;
 import bio.knowledge.datasource.DataServiceUtility;
 import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.datasource.DataSourceRegistry;
-import bio.knowledge.model.ConceptImpl;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
 import bio.knowledge.model.Concept;
@@ -159,7 +152,7 @@ public class ConceptService
     
 	//@Autowired
 	//private GraphDatabaseService graphDb;
-    
+   /* 
     private Stream<Concept> getConceptStream() {
     	List<Concept> Concepts = new ArrayList<Concept>() ;
     	for(Concept c : conceptRepository.getConcepts()) {
@@ -174,13 +167,20 @@ public class ConceptService
     	}
     	return Concepts ;
     }
+    */
     
     /* (non-Javadoc)
+     * 
+     * Should never actually be called since the system 
+     * has a non-null ListView mapping to Concept data
+     * so I return an empty list for expediency
+     * 
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#getIdentifiers()
 	 */
 	@Override
 	public List<Concept> getIdentifiers() {
-		return getConcepts();
+		//return getConcepts();
+		return new ArrayList<Concept>();
 	}
 
 	/* (non-Javadoc)
@@ -189,7 +189,7 @@ public class ConceptService
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<Concept> getIdentifiers(Pageable pageable) {
-		return (Page<Concept>)(Page)conceptRepository.findAll(pageable);
+		throw new RuntimeException("Not implemented in KB 4.0!") ;
 	}
 
 	/* (non-Javadoc)
@@ -471,8 +471,19 @@ public class ConceptService
 	 * @param cui of the Concept to match
 	 * @return
 	 */
-	public Concept findById(String id) {
-		return conceptRepository.findById(id);
+	public Concept findById(String conceptId) {
+		
+		CompletableFuture<List<Concept>> future = 
+				kbService.getConceptDetails(conceptId);
+		
+		List<Concept> results = null ;
+    	try {
+    		results = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			results = null ;
+		}
+    	
+		return results != null && !results.isEmpty() ? results.get(0) : null ;
 	}
 	
 	/**
@@ -481,7 +492,7 @@ public class ConceptService
 	 */
 	public Optional<Concept> getDetailsByConceptId(String id) {
 		
-		Concept concept = conceptRepository.findById(id) ;
+		Concept concept = findById(id) ;
 		
 		/*  // deprecated complexity!
 		if(RdfUtil.getQualifier(conceptId).isEmpty()) {
@@ -602,7 +613,7 @@ public class ConceptService
 	public Optional<Concept> getDetailsById(String id) {
 		
 		// Try first to find this item in the local database(?)
-		Concept concept = conceptRepository.findById(id);
+		Concept concept = findById(id);
 		if(concept==null) {
 			/* 
 			 * This is a qualified URI identifying a local data item, 
