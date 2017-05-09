@@ -1,5 +1,6 @@
 package bio.knowledge.service.beacon;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -23,8 +26,8 @@ import bio.knowledge.client.ApiClient;
 public class KnowledgeBeaconRegistry {
 	private List<ApiClient> apiClients = new ArrayList<ApiClient>();
 
-	@Value("${knowledgeBeacon.table.path}")
-	private String knowledgeBeaconTablePath;
+	@Value("${knowledgeBeacon.table.filename}")
+	private String knowledgeBeaconTableFileName;
 	
 	@PostConstruct
 	public void init() {
@@ -34,11 +37,16 @@ public class KnowledgeBeaconRegistry {
 		// default URL. We always want our own knowledge source in the pool
 		// (though in the future we could give the user the opportunity to
 		// remove a knowledge source).
-		assert (knowledgeBeaconTablePath != null);
-		System.out.println(knowledgeBeaconTablePath);
+		assert (knowledgeBeaconTableFileName != null);
+		System.out.println(knowledgeBeaconTableFileName);
+		
+		DefaultResourceLoader loader = new DefaultResourceLoader();
+		Resource beaconTableResource = loader.getResource("classpath:"+knowledgeBeaconTableFileName);
 
+		CSVReader knowledgeSourceReader = null ;
 		try {
-			CSVReader knowledgeSourceReader = new CSVReader(new FileReader(knowledgeBeaconTablePath));
+			File knowledgeBeaconTableFile = beaconTableResource.getFile();
+			knowledgeSourceReader = new CSVReader(new FileReader(knowledgeBeaconTableFile));
 			List<String[]> knoweldgeSourceUrls = knowledgeSourceReader.readAll();
 			Iterator<String[]> ksuIterator = knoweldgeSourceUrls.iterator();
 			while (ksuIterator.hasNext()) {
@@ -47,9 +55,15 @@ public class KnowledgeBeaconRegistry {
 			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			
 			e.printStackTrace();
+		} finally {
+			if(knowledgeSourceReader!=null)
+				try {
+					knowledgeSourceReader.close();
+				} catch (IOException e) {
+					System.err.println(e.getMessage());
+					//e.printStackTrace();
+				}
 		}
 
 	}

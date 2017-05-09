@@ -199,8 +199,4 @@ then update these dependencies to the latest versions, as required.  Afterwards,
 
 	Project..Clean...
 
-and
-
-	Gradle (STS)..Refresh All  
-
 from the popup menu. For good measure, it sometimes also helps to close then reopen the root project and its related sub-projects. When desperate, exit Eclipse then restart it, then rebuild the project.  This magical mixture of activities often helps to purge the system to give a cleaner build.
