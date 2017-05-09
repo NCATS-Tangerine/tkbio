@@ -137,7 +137,12 @@ public class Neo4jEvidence extends Neo4jAbstractIdentifiedEntity implements Evid
 		/*
 		 *  The String representation of Evidence is simply the count of Annotations
 		 */
-		return getCount().toString() ;
+		Integer count = getCount();
+		String label = "";
+		if(count.intValue()>0) {
+			label = count.toString();
+		}
+		return label; // blank if zero
 	}
 	
 	/* (non-Javadoc)
