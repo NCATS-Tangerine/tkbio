@@ -14,6 +14,7 @@ import bio.knowledge.database.repository.EvidenceRepository;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.server.model.InlineResponse2003;
 import bio.knowledge.server.utilities.UrlDecoder;
+import bio.knowledge.server.utilities.Utilities;
 import io.swagger.annotations.ApiParam;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-05T22:03:23.165-07:00")
 
@@ -38,7 +39,7 @@ public class EvidenceApiController implements EvidenceApi {
 				
 		keywords = UrlDecoder.decode(keywords);
 		
-		String[] filter = keywords != null ? keywords.split(" ") : null;
+		String[] filter = Utilities.buildArray(keywords);
 		
 		List<Map<String, Object>> data = evidenceRepository.apiGetEvidence(statementId, filter, pageNumber, pageSize);
 		

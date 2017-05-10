@@ -37,6 +37,8 @@ import com.vaadin.navigator.ViewProvider;
 import com.vaadin.server.Page;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -144,8 +146,12 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 				loginBtn.setVisible(true);
 				logoutBtn.setVisible(false);
 				userAccountBtn.setVisible(false);
-			}			
+			}
 		};
+		
+		this.addBeaconBtn.addClickListener(event -> {
+			((DesktopUI) UI.getCurrent()).openKnowledgeBeaconWindow();
+		});
 		
 		authenticationManager.addListener(authListener);
 		

@@ -20,6 +20,7 @@ import bio.knowledge.server.model.StatementsObject;
 import bio.knowledge.server.model.StatementsPredicate;
 import bio.knowledge.server.model.StatementsSubject;
 import bio.knowledge.server.utilities.UrlDecoder;
+import bio.knowledge.server.utilities.Utilities;
 import io.swagger.annotations.ApiParam;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-05T22:03:23.165-07:00")
 
@@ -43,8 +44,8 @@ public class StatementsApiController implements StatementsApi {
 		semgroups = UrlDecoder.decode(semgroups);
 
 		String[] curies = c.toArray(new String[c.size()]);
-		String[] filter = keywords != null ? keywords.split(" ") : null;
-		String[] semanticGroups = semgroups != null ? semgroups.split(" ") : null;
+		String[] filter = Utilities.buildArray(keywords);
+		String[] semanticGroups = Utilities.buildArray(semgroups);
 
 		List<InlineResponse2002> responses = new ArrayList<InlineResponse2002>();
 

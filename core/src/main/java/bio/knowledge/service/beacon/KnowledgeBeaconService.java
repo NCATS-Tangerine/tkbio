@@ -77,6 +77,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			int pageSize
 	) {
 		final String sg = semanticGroups;
+		
 		SupplierBuilder<Concept> builder = new SupplierBuilder<Concept>() {
 
 			@Override

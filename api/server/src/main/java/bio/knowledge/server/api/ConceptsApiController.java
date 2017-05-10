@@ -18,6 +18,7 @@ import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.server.model.InlineResponse200;
 import bio.knowledge.server.model.InlineResponse2001;
 import bio.knowledge.server.utilities.UrlDecoder;
+import bio.knowledge.server.utilities.Utilities;
 import io.swagger.annotations.ApiParam;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-05T22:03:23.165-07:00")
 
@@ -57,8 +58,8 @@ public class ConceptsApiController implements ConceptsApi {
 		keywords = UrlDecoder.decode(keywords);
 		semgroups = UrlDecoder.decode(semgroups);
 
-		String[] filter = keywords != null ? keywords.split(" ") : null;
-		String[] semanticGroups = semgroups != null ? semgroups.split(" ") : null;
+		String[] filter = Utilities.buildArray(keywords);
+		String[] semanticGroups = Utilities.buildArray(semgroups);
 
 		List<Neo4jConcept> concepts = conceptRepository.apiGetConcepts(filter, semanticGroups, pageNumber, pageSize);
 		List<InlineResponse2001> responses = new ArrayList<InlineResponse2001>();

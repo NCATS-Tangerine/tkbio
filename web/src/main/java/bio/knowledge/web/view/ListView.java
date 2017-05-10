@@ -197,7 +197,6 @@ public class ListView extends BaseView {
 	 */
 	@Override
 	public void enter(ViewChangeEvent event) {
-		((DesktopUI) UI.getCurrent()).openKnowledgeBeaconWindow();
 		this.viewName = event.getParameters();
 		renderDisplay();
 	}

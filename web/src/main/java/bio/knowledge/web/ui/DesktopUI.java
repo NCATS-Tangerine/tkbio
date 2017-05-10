@@ -27,6 +27,9 @@ package bio.knowledge.web.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
@@ -46,10 +49,12 @@ import org.springframework.context.NoSuchMessageException;
 import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 
+import com.gargoylesoftware.htmlunit.javascript.host.Text;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Widgetset;
+import com.vaadin.client.ui.layout.VLayoutSlot;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
@@ -68,6 +73,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
@@ -77,6 +83,7 @@ import com.vaadin.ui.PopupView;
 import com.vaadin.ui.PopupView.Content;
 import com.vaadin.ui.Slider;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -184,6 +191,9 @@ public class DesktopUI extends UI implements MessageService {
 	public AuthenticationState getAuthenticationState() {
 		return authenticationState;
 	}
+	
+	@ Autowired
+	KnowledgeBeaconRegistry beaconRegistry;
 
 	@Autowired
 	private SpringViewProvider viewProvider;
@@ -295,29 +305,57 @@ public class DesktopUI extends UI implements MessageService {
 	KnowledgeBeaconRegistry kbRegistry;
 	
 	public void openKnowledgeBeaconWindow() {
-		Window window = new Window();
+		
+		Window window = new Window("Add a Knowledge Beacon");
 		
 		VerticalLayout vlayout = new VerticalLayout();
-		TextField textField = new TextField();
-		Button button = new Button();
+		vlayout.setMargin(true);
+		vlayout.setSpacing(true);
 		
-		button.addClickListener(new ClickListener() {
+		FormLayout flayout = new FormLayout();
+		flayout.setMargin(false);
+		flayout.setWidth(3, Unit.INCH);
+		
+		TextField nameField = new TextField("Name");
+		TextField urlField = new TextField("URL");
+		TextArea descrArea = new TextArea("Description");	
+		
+		nameField.setWidth("100%");
+		urlField.setWidth("100%");
+		descrArea.setWidth("100%");
+		
+		Button addButton = new Button();
 
+		addButton.setCaption("Add Beacon");
+		
+		addButton.addClickListener(new ClickListener() {
+			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				kbRegistry.addKnowledgeBeacon("name", "description", textField.getValue());
-				Notification.show("Knowledge beacon " + textField.getValue() + " added");
+//				kbRegistry.addKnowledgeBeacon("name", "description", textField.getValue());
+//				Notification.show("Knowledge beacon " + textField.getValue() + " added");
+//				
+				String name = nameField.getValue();
+				String description = descrArea.getValue();
+				String url = urlField.getValue();
+				
+				kbRegistry.addKnowledgeBeacon(name, description, url);
+				
+				try {
+					URL trueUrl = new URL(url);
+					trueUrl.toURI();
+					//todo: call registry method
+				} catch (MalformedURLException | URISyntaxException e) {
+					// TODO: handle exception
+				}			
 			}
 			
 		});
-		
-		textField.setInputPrompt("knowledge beacon url");
-		
-		button.setCaption("Add Beacon");
-		
+	
+		flayout.addComponents(nameField, urlField, descrArea);		
+		vlayout.addComponents(flayout, addButton);
+		vlayout.setComponentAlignment(addButton, Alignment.BOTTOM_RIGHT);
 		window.setContent(vlayout);
-		vlayout.addComponent(textField);
-		vlayout.addComponent(button);
 		
 		window.center();
 		this.addWindow(window);
