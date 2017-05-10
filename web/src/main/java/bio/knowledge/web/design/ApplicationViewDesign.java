@@ -30,6 +30,8 @@ public class ApplicationViewDesign extends VerticalLayout {
 	protected NativeButton loginBtn;
 	protected NativeButton logoutBtn;
 	protected NativeButton userAccountBtn;
+	protected NativeButton addBeaconBtn;
+	
 	protected Panel content;
 
 	public ApplicationViewDesign() {

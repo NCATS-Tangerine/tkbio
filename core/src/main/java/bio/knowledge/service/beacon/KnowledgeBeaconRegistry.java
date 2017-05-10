@@ -87,9 +87,19 @@ public class KnowledgeBeaconRegistry {
 	 * 
 	 * @param url
 	 */
-	public void addKnowledgeSource(String url) {
+	private void addKnowledgeSource(String url) {
 		ApiClient apiClient = new ApiClient();
 		apiClient.setBasePath(url);
 		apiClients.add(apiClient);
 	}
+	
+	/**
+	 * Adds a Knowledge Beacon with the given URL to the application Registry
+	 * 
+	 * @param url
+	 */
+	public void addKnowledgeBeacon(String url) {
+
+	}
+
 }
