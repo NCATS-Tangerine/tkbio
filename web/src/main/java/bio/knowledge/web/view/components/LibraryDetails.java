@@ -44,9 +44,8 @@ import com.vaadin.ui.VerticalLayout;
 import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.authentication.UserProfile;
-import bio.knowledge.database.repository.ConceptMapArchiveRepository;
-import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.model.ConceptMapArchive;
+import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.web.ui.DesktopUI;
 

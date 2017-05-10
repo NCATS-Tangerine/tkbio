@@ -10,7 +10,6 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;

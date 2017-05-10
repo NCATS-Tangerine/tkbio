@@ -1,13 +1,5 @@
 package bio.knowledge.grid;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.vaadin.shared.MouseEventDetails;
-import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.shared.ui.grid.GridConstants.Section;
-import com.vaadin.ui.Notification;
-
 import bio.knowledge.grid.client.GridServerRpc;
 
 public class Grid extends com.vaadin.ui.Grid {
