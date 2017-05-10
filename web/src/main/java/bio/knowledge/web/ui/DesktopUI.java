@@ -103,6 +103,7 @@ import bio.knowledge.service.ConceptService;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
+import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.core.MessageService;
 import bio.knowledge.web.KBUploader;
 import bio.knowledge.web.view.AboutView;
@@ -290,6 +291,8 @@ public class DesktopUI extends UI implements MessageService {
 
 	private ConceptMapDisplay cm = new ConceptMapDisplay();
 
+	@Autowired
+	KnowledgeBeaconRegistry kbRegistry;
 	
 	public void openKnowledgeBeaconWindow() {
 		Window window = new Window();
@@ -302,6 +305,7 @@ public class DesktopUI extends UI implements MessageService {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+				kbRegistry.addKnowledgeBeacon("name", "description", textField.getValue());
 				Notification.show("Knowledge beacon " + textField.getValue() + " added");
 			}
 			

@@ -109,6 +109,7 @@ import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
 import bio.knowledge.service.DataServiceException;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
+import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.core.ListTableEntryCounter;
 import bio.knowledge.service.core.ListTableFilteredHitCounter;
 import bio.knowledge.service.core.ListTablePageCounter;
@@ -186,7 +187,7 @@ public class ListView extends BaseView {
 		this.registerViews();
 		setSizeFull();
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -196,6 +197,7 @@ public class ListView extends BaseView {
 	 */
 	@Override
 	public void enter(ViewChangeEvent event) {
+		((DesktopUI) UI.getCurrent()).openKnowledgeBeaconWindow();
 		this.viewName = event.getParameters();
 		renderDisplay();
 	}
