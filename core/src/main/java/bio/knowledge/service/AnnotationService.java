@@ -42,7 +42,6 @@ import org.springframework.stereotype.Service;
 import bio.knowledge.database.repository.AnnotationRepository;
 import bio.knowledge.datasource.DataService;
 import bio.knowledge.model.Annotation;
-import bio.knowledge.model.AnnotationImpl;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Reference;
 import bio.knowledge.model.Statement;

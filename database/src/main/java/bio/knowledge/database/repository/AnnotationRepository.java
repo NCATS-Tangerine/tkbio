@@ -37,8 +37,6 @@ import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Reference;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
-import bio.knowledge.model.neo4j.Neo4jEvidence;
-import bio.knowledge.model.neo4j.Neo4jReference;
 
 /**
  * @author Richard
