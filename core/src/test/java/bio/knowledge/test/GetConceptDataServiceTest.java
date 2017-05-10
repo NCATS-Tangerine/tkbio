@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import bio.knowledge.model.ConceptImpl;
 import bio.knowledge.service.beacon.GenericKnowledgeService;
-import bio.knowledge.service.beacon.KnowledgeBeacon;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 
 public class GetConceptDataServiceTest {

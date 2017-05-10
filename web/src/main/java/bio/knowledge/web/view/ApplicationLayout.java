@@ -76,7 +76,6 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 	public void setContext(AuthenticationContext context) {
 		this.context = context;
 	}
-
 	
 	public LoginView getLoginView() {
 		return this.loginView;
@@ -120,7 +119,6 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 		
 		setCommonNavigationViews();
 		
-		
 		// Navigates to the landing page view if the URI fragment is empty
 		if (navigator.getState().isEmpty()) {
 			navigator.navigateTo(LandingPageView.NAME);
@@ -161,10 +159,7 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 				navigator.navigateTo(PasswordResetView.NAME);
 			}
 		}
-		
-		
 	}
-
 	
 	private void setupRestrictedAccess(AuthenticationManager authenticationManager) {
 		navigator.addViewChangeListener(new ViewChangeListener() {

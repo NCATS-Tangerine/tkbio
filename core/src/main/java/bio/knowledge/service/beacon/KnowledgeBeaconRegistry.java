@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import au.com.bytecode.opencsv.CSVReader;
 import bio.knowledge.client.ApiClient;
+import bio.knowledge.database.repository.beacon.BeaconRepository;
+import bio.knowledge.model.beacon.neo4j.Neo4jKnowledgeBeacon;
 
 @Service
 @PropertySource("classpath:application.properties")
@@ -25,6 +28,9 @@ public class KnowledgeBeaconRegistry {
 
 	@Value("${knowledgeBeacon.table.filename}")
 	private String knowledgeBeaconTableFileName;
+	
+	@Autowired
+	BeaconRepository beaconRepository;
 	
 	@PostConstruct
 	public void init() {
@@ -94,12 +100,29 @@ public class KnowledgeBeaconRegistry {
 	}
 	
 	/**
-	 * Adds a Knowledge Beacon with the given URL to the application Registry
+	 * Adds a Knowledge Beacon specification to the application Registry
 	 * 
 	 * @param url
 	 */
-	public void addKnowledgeBeacon(String url) {
-
+	public void addKnowledgeBeacon( String name, String description, String url ) {
+		
+		Neo4jKnowledgeBeacon beacon = beaconRepository.findByUri(url) ;
+		if(beacon==null) {
+			beacon = new Neo4jKnowledgeBeacon( name, description, url );
+			beaconRepository.save(beacon) ;
+			
+			// add it to the current session?
+			addKnowledgeSource(url) ;
+		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<Neo4jKnowledgeBeacon> findAllBeacons() {
+		List<Neo4jKnowledgeBeacon> beacons = beaconRepository.findAllBeacons();
+		return beacons ;
 	}
 
 }
