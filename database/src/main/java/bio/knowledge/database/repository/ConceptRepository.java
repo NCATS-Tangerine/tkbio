@@ -150,7 +150,7 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 			"     ANY (x IN {semanticGroups} WHERE LOWER(concept.semanticGroup) = LOWER(x)) " +
 			" ) " +
 			" RETURN concept " +
-			" SKIP  {pageNumber} * {pageSize} " +
+			" SKIP  ({pageNumber} - 1) * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
 	public List<Neo4jConcept> apiGetConcepts(

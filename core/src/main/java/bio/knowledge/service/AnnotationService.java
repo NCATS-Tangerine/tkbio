@@ -83,7 +83,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 		String statementId = statement.getId();
 		
     	CompletableFuture<List<Annotation>> future =
-    			kbService.getEvidences(statementId, null, pageIndex, pageSize);
+    			kbService.getEvidences(statementId, "", pageIndex, pageSize);
     	
     	try {
 			List<Annotation> annotations =

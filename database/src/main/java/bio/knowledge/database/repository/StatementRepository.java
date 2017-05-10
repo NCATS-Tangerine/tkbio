@@ -337,7 +337,7 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 			" )) " +
 			" RETURN DISTINCT statement as statement, subject as subject, relation as relation, object as object, evidence as evidence" +
 			" ORDER BY evidence.count DESC " +
-			" SKIP {pageNumber} * {pageSize} " +
+			" SKIP ({pageNumber} - 1) * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
 	List<Map<String, Object>> apiFindById(

@@ -51,7 +51,7 @@ public class ConceptsApiController implements ConceptsApi {
          @ApiParam(value = "(1-based) number of the page to be returned in a paged set of query results ") @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
          @ApiParam(value = "number of concepts per page to be returned in a paged set of query results ") @RequestParam(value = "pageSize", required = false) Integer pageSize) {
     	
-    	if (pageNumber == null || pageNumber < 0) { pageNumber = 0; }
+    	if (pageNumber == null || pageNumber < 1) { pageNumber = 1; }
 		if (pageSize == null || pageSize < 1) { pageSize = 10; }
 
 		keywords = UrlDecoder.decode(keywords);

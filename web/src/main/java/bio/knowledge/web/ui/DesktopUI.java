@@ -290,6 +290,36 @@ public class DesktopUI extends UI implements MessageService {
 
 	private ConceptMapDisplay cm = new ConceptMapDisplay();
 
+	
+	public void openKnowledgeBeaconWindow() {
+		Window window = new Window();
+		
+		VerticalLayout vlayout = new VerticalLayout();
+		TextField textField = new TextField();
+		Button button = new Button();
+		
+		button.addClickListener(new ClickListener() {
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				Notification.show("Knowledge beacon " + textField.getValue() + " added");
+			}
+			
+		});
+		
+		textField.setInputPrompt("knowledge beacon url");
+		
+		button.setCaption("Add Beacon");
+		
+		window.setContent(vlayout);
+		vlayout.addComponent(textField);
+		vlayout.addComponent(button);
+		
+		window.center();
+		this.addWindow(window);
+	}
+	
+	
 	/**
 	 * 
 	 * @return the current ConceptMapDisplay
@@ -1348,10 +1378,6 @@ public class DesktopUI extends UI implements MessageService {
 	 * @return
 	 */
 	private boolean saveMap(boolean isClearMap) {
-		if (!query.getCurrentQueryConcept().isPresent()) {
-			return true;
-		}
-
 		SaveWindow saveWindow = new SaveWindow(getCurrentConceptMapName(), query, context,
 				registry.getMapping(ViewName.LIBRARY_VIEW), cm, applicationNavigator, cache);
 

@@ -76,9 +76,6 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			int pageNumber,
 			int pageSize
 	) {
-		if (semanticGroups == null) {
-//			semanticGroups = "";
-		}
 		final String sg = semanticGroups;
 		SupplierBuilder<Concept> builder = new SupplierBuilder<Concept>() {
 
@@ -99,12 +96,21 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 							);
 							List<Concept> concepts = new ArrayList<Concept>();
 							for (InlineResponse2001 response : responses) {
-								SemanticGroup semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
-								ConceptImpl concept = new ConceptImpl(
-										response.getId(),
-										semgroup,
-										response.getName()
-								);
+								ConceptImpl concept;
+								try {
+									SemanticGroup semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
+									concept = new ConceptImpl(
+											response.getId(),
+											null,
+											response.getName()
+									);
+								} catch (IllegalArgumentException ex) {
+									concept = new ConceptImpl(
+											response.getId(),
+											null,
+											response.getName()
+									);
+								}
 								
 								concept.setSynonyms(String.join(" ", response.getSynonyms()));
 								concept.setDescription(response.getDefinition());
@@ -200,8 +206,8 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 									Arrays.asList(emcis),
 									pageNumber,
 									pageSize,
-									urlEncode(keywords),
-									urlEncode(semanticGroups)
+									"",
+									""
 							);
 							List<Statement> statements = new ArrayList<Statement>();
 							
