@@ -27,6 +27,7 @@ package bio.knowledge.database.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
@@ -198,6 +199,14 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 			"  WHERE concept.usage > 0 "+
 			"RETURN count(concept)")
 	public long countAll();
+	
+	/**
+	 * 
+	 */
+	@Query( "MATCH (n:Concept) " +
+			  "WHERE NOT n.semanticGroup IS NULL "+
+			  "RETURN n.semanticGroup AS type, COUNT(n.semanticGroup) AS frequency")
+	public List<Map<String,Object>> countAllGroupBySemanticGroup();
 	
 	/**
 	 * Right now accountId and groupId are only being used to count the number

@@ -27,15 +27,12 @@ package bio.knowledge.database;
 
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
-import org.springframework.data.neo4j.server.Neo4jServer;
-import org.springframework.data.neo4j.server.RemoteServer;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -65,6 +62,7 @@ public class DatabaseConfiguration extends Neo4jConfiguration {
         return super.getSession();
     }
     
+    /*
     @Value("${neo4j.url}")
 	private String neo4j_url ;
 
@@ -78,6 +76,6 @@ public class DatabaseConfiguration extends Neo4jConfiguration {
     public Neo4jServer neo4jServer() {
         return new RemoteServer( neo4j_url,neo4j_username,neo4j_password );
     }
-
+*/
     
 }

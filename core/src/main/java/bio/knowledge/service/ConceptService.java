@@ -471,8 +471,18 @@ public class ConceptService
 	 * @param cui of the Concept to match
 	 * @return
 	 */
-	public Concept findById(String id) {
-		return conceptRepository.findById(id);
+	public Concept findById(String conceptId) {
+		//return conceptRepository.findById(id);
+    	CompletableFuture<List<Concept>> future =
+    			kbService.getConceptDetails(conceptId);
+   
+    	List<Concept> result = null ;
+    	try {
+			result = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+			return result.size()>0 ? result.get(0) : null ;
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			return null;
+		}		
 	}
 	
 	/**
@@ -481,7 +491,7 @@ public class ConceptService
 	 */
 	public Optional<Concept> getDetailsByConceptId(String id) {
 		
-		Concept concept = conceptRepository.findById(id) ;
+		Concept concept = findById(id) ;
 		
 		/*  // deprecated complexity!
 		if(RdfUtil.getQualifier(conceptId).isEmpty()) {
