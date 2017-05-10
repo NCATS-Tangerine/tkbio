@@ -57,6 +57,7 @@ import com.vaadin.annotations.Widgetset;
 import com.vaadin.client.ui.layout.VLayoutSlot;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.Validator;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -322,6 +323,21 @@ public class DesktopUI extends UI implements MessageService {
 		urlField.setWidth("100%");
 		descrArea.setWidth("100%");
 		
+		urlField.addValidator(new Validator() {
+
+			@Override
+			public void validate(Object value) throws InvalidValueException {
+				String url = (String) value;
+				try {
+					URL trueUrl = new URL(url);
+					trueUrl.toURI();
+				} catch (MalformedURLException | URISyntaxException e) {
+					throw new InvalidValueException(url + " is not a valid URL");
+				}
+			}
+			
+		});
+		
 		Button addButton = new Button();
 
 		addButton.setCaption("Add Beacon");
@@ -335,13 +351,6 @@ public class DesktopUI extends UI implements MessageService {
 				String description = descrArea.getValue();
 				String url = urlField.getValue();
 				
-				try {
-					URL trueUrl = new URL(url);
-					trueUrl.toURI();
-					//todo: call registry method
-				} catch (MalformedURLException | URISyntaxException e) {
-					// TODO: handle exception
-				}			
 			}
 			
 		});
