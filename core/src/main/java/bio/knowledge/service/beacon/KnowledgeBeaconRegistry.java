@@ -6,16 +6,20 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.database.repository.beacon.BeaconRepository;
 import bio.knowledge.model.beacon.KnowledgeBeacon;
 import bio.knowledge.model.beacon.neo4j.Neo4jKnowledgeBeacon;
 
-@Service
-@PropertySource("classpath:application.properties")
+//@Service
+//@PropertySource("classpath:application.properties")
+@Component
+@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class KnowledgeBeaconRegistry {
 	
 	private List<ApiClient> apiClients = new ArrayList<ApiClient>();
@@ -84,18 +88,18 @@ public class KnowledgeBeaconRegistry {
 		createBeacon(
 				"Knowledge.Bio Beacon", 
 				"KB 3.0 reference implementation", 
-				"beacon.medgeninformatics.net" 
+				"beacon.medgeninformatics.net/api" 
 		);
 		
 		List<Neo4jKnowledgeBeacon> beacons = findAllBeacons();
 		
 		for(KnowledgeBeacon beacon : beacons) {
-			System.out.println("\nInitializing Beacon\nId:"+beacon.getId().toString());
-			System.out.println("Name:"+beacon.getName());
-			System.out.println("Description:"+beacon.getDescription());
+			System.out.println("\nInitializing Beacon\nId: "+beacon.getId().toString());
+			System.out.println("Name: "+beacon.getName());
+			System.out.println("Description: "+beacon.getDescription());
 			
 			String url = beacon.getUri();
-			System.out.println("URL:"+url);
+			System.out.println("URL: "+url);
 
 			// during initialization, I add knowledge sources I have previously persisted
 			addKnowledgeSource(url);
@@ -121,7 +125,11 @@ public class KnowledgeBeaconRegistry {
 		apiClients.add(apiClient);
 	}
 
+	@Transactional
 	private boolean createBeacon( String name, String description, String url ) {
+		
+		// Sanity check - make sure that url's have an http or https protocol prefix
+		if(!(url.startsWith("http://") || url.startsWith("https://"))) url = "http://"+url;
 		
 		Neo4jKnowledgeBeacon beacon = beaconRepository.findByUri(url) ;
 		if(beacon==null) {
