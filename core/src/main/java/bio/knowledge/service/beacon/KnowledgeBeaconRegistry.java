@@ -1,33 +1,40 @@
 package bio.knowledge.service.beacon;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import au.com.bytecode.opencsv.CSVReader;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.database.repository.beacon.BeaconRepository;
+import bio.knowledge.model.beacon.KnowledgeBeacon;
 import bio.knowledge.model.beacon.neo4j.Neo4jKnowledgeBeacon;
 
 @Service
 @PropertySource("classpath:application.properties")
 public class KnowledgeBeaconRegistry {
+	
 	private List<ApiClient> apiClients = new ArrayList<ApiClient>();
 
-	@Value("${knowledgeBeacon.table.filename}")
-	private String knowledgeBeaconTableFileName;
+
+	/**
+	 * TODO: Make it return an unmodifiable list? Maybe unnecessary, since this
+	 * method cannot be used outside this package.
+	 * 
+	 * @return a list of the API clients currently added to the knowledge source
+	 *         pool. Some knowledge sources will be added by default.
+	 */
+	protected List<ApiClient> getApiClients() {
+		return apiClients;
+	}
+
+	// RMB May 10 - deprecated use of local CSV file(?)... won't delete the code for now
+	//@Value("${knowledgeBeacon.table.filename}")
+	//private String knowledgeBeaconTableFileName;
 	
 	@Autowired
 	BeaconRepository beaconRepository;
@@ -35,6 +42,7 @@ public class KnowledgeBeaconRegistry {
 	@PostConstruct
 	public void init() {
 		
+		/* // RMB May 10 - deprecated use of local CSV file(?)... won't delete the code for now
 		ApiClient api = new ApiClient();
 		// TODO: Once we've got our own knowledge.bio beacon online, change the
 		// default URL. We always want our own knowledge source in the pool
@@ -68,24 +76,38 @@ public class KnowledgeBeaconRegistry {
 					//e.printStackTrace();
 				}
 		}
+		*/
+		
+		// Sanity check: add in the reference knowledge beacon
+		// Since the method doesn't create a beacon with a URL that is already there
+		// this is idempotent for future startup sessions
+		createBeacon(
+				"Knowledge.Bio Beacon", 
+				"KB 3.0 reference implementation", 
+				"beacon.medgeninformatics.net" 
+		);
+		
+		List<Neo4jKnowledgeBeacon> beacons = findAllBeacons();
+		
+		for(KnowledgeBeacon beacon : beacons) {
+			System.out.println("\nInitializing Beacon\nId:"+beacon.getId().toString());
+			System.out.println("Name:"+beacon.getName());
+			System.out.println("Description:"+beacon.getDescription());
+			
+			String url = beacon.getUri();
+			System.out.println("URL:"+url);
+
+			// during initialization, I add knowledge sources I have previously persisted
+			addKnowledgeSource(url);
+		}
 
 	}
 
+	/*
 	private boolean check(String url) {		
-		// TODO: Check if URL is satisfying syntax here
 		return true;
 	}
-
-	/**
-	 * TODO: Make it return an unmodifiable list? Maybe unnecessary, since this
-	 * method cannot be used outside this package.
-	 * 
-	 * @return a list of the API clients currently added to the knowledge source
-	 *         pool. Some knowledge sources will be added by default.
-	 */
-	protected List<ApiClient> getApiClients() {
-		return apiClients;
-	}
+	*/
 
 	/**
 	 * Adds a knowledge source with the given URL to the knowledge source pool
@@ -98,22 +120,31 @@ public class KnowledgeBeaconRegistry {
 		apiClient.setBasePath(url);
 		apiClients.add(apiClient);
 	}
-	
-	/**
-	 * Adds a Knowledge Beacon specification to the application Registry
-	 * 
-	 * @param url
-	 */
-	public void addKnowledgeBeacon( String name, String description, String url ) {
+
+	private boolean createBeacon( String name, String description, String url ) {
 		
 		Neo4jKnowledgeBeacon beacon = beaconRepository.findByUri(url) ;
 		if(beacon==null) {
 			beacon = new Neo4jKnowledgeBeacon( name, description, url );
 			beaconRepository.save(beacon) ;
-			
-			// add it to the current session?
+			return true;
+		} else
+			return false;
+	}
+	
+	/**
+	 * Adds a Knowledge Beacon specification to the application Registry.
+	 * This is idempotent with respect to the url argument - url's only added if not there already
+	 *  
+	 * @param name
+	 * @param description
+	 * @param url
+	 */
+	public void addKnowledgeBeacon( String name, String description, String url ) {
+		
+		if(createBeacon(name, description, url))
+			// if a new beacon, add it to the current session?
 			addKnowledgeSource(url) ;
-		}
 	}
 	
 	/**

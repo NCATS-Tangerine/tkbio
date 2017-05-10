@@ -17,6 +17,7 @@ public class GenericKnowledgeService {
 	KnowledgeBeaconRegistry registry;
 
 	protected <T> CompletableFuture<List<T>> query(SupplierBuilder<T> builder) {
+		
 		@SuppressWarnings("unchecked")
 		CompletableFuture<List<T>>[] futures = new CompletableFuture[registry.getApiClients().size()];
 

@@ -60,11 +60,13 @@ public class BeaconTests {
 		List<Neo4jKnowledgeBeacon> beacons = beaconRegistry.findAllBeacons();
 		
 		for(KnowledgeBeacon beacon : beacons) {
-			System.out.println("\nBeacon\nId:"+beacon.getId().toString());
+			System.out.println("\nBeacon\nId:"+beacon.getDbId().toString());
 			System.out.println("Name:"+beacon.getName());
 			System.out.println("Description:"+beacon.getDescription());
 			System.out.println("URL:"+beacon.getUri());
 		}
+		System.out.println();
+		
 	}		
 
 }
