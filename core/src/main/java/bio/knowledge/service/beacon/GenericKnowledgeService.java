@@ -18,11 +18,14 @@ public class GenericKnowledgeService {
 
 	protected <T> CompletableFuture<List<T>> query(SupplierBuilder<T> builder) {
 		
+		List<ApiClient> apiClients = registry.getApiClients() ;
+		int numberOfCLients = apiClients.size();
+		
 		@SuppressWarnings("unchecked")
-		CompletableFuture<List<T>>[] futures = new CompletableFuture[registry.getApiClients().size()];
+		CompletableFuture<List<T>>[] futures = new CompletableFuture[numberOfCLients];
 
 		int i = 0;
-		for (ApiClient apiClient : registry.getApiClients()) {
+		for (ApiClient apiClient : apiClients) {
 			ListSupplier<T> supplier = builder.build(apiClient);
 
 			CompletableFuture<List<T>> future = CompletableFuture.supplyAsync(supplier);

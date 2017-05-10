@@ -1,7 +1,9 @@
 package bio.knowledge.service.beacon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -22,8 +24,7 @@ import bio.knowledge.model.beacon.neo4j.Neo4jKnowledgeBeacon;
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class KnowledgeBeaconRegistry {
 	
-	private List<ApiClient> apiClients = new ArrayList<ApiClient>();
-
+	private Map<String, ApiClient> apiClients = new HashMap<String,ApiClient>();
 
 	/**
 	 * TODO: Make it return an unmodifiable list? Maybe unnecessary, since this
@@ -33,7 +34,7 @@ public class KnowledgeBeaconRegistry {
 	 *         pool. Some knowledge sources will be added by default.
 	 */
 	protected List<ApiClient> getApiClients() {
-		return apiClients;
+		return new ArrayList<ApiClient>(apiClients.values());
 	}
 
 	// RMB May 10 - deprecated use of local CSV file(?)... won't delete the code for now
@@ -94,7 +95,7 @@ public class KnowledgeBeaconRegistry {
 		List<Neo4jKnowledgeBeacon> beacons = findAllBeacons();
 		
 		for(KnowledgeBeacon beacon : beacons) {
-			System.out.println("\nInitializing Beacon\nId: "+beacon.getId().toString());
+			System.out.println("\nInitializing Beacon\nId: "+beacon.getDbId().toString());
 			System.out.println("Name: "+beacon.getName());
 			System.out.println("Description: "+beacon.getDescription());
 			
@@ -120,9 +121,11 @@ public class KnowledgeBeaconRegistry {
 	 * @param url
 	 */
 	private void addKnowledgeSource(String url) {
-		ApiClient apiClient = new ApiClient();
-		apiClient.setBasePath(url);
-		apiClients.add(apiClient);
+		if(!apiClients.containsKey(url)) {
+			ApiClient apiClient = new ApiClient();
+			apiClient.setBasePath(url);
+			apiClients.put(url,apiClient);
+		}
 	}
 
 	@Transactional
@@ -142,7 +145,8 @@ public class KnowledgeBeaconRegistry {
 	
 	/**
 	 * Adds a Knowledge Beacon specification to the application Registry.
-	 * This is idempotent with respect to the url argument - url's only added if not there already
+	 * This is idempotent with respect to the url argument as identity:
+	 * Beacons are only added if not there already
 	 *  
 	 * @param name
 	 * @param description
