@@ -110,7 +110,7 @@ public class StatementService
 //		Concept concept = currentConceptOpt.get() ;
 		String emci = query.getCurrentQueryConceptId();
 		
-		CompletableFuture<List<Statement>> future = kbService.getStatements(emci, filter, null, pageIndex, pageSize);
+		CompletableFuture<List<Statement>> future = kbService.getStatements(emci, filter, "", pageIndex, pageSize);
 		
 		try {
 			List<Statement> statements = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);

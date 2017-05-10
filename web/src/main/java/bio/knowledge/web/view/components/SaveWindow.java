@@ -390,14 +390,14 @@ public class SaveWindow extends Window {
 		mainLayout.setMargin(true);
 
 		saveBar.addComponent(nameField);
-		saveBar.addComponent(saveButton);
+//		saveBar.addComponent(saveButton);
 		saveBar.addComponent(exportButton);
 		saveBar.addComponent(cancelButton);
-		saveBar.addComponent(cancelButton);
-
-		saveBar.setExpandRatio(nameField, 3);
-		saveBar.setExpandRatio(saveButton, 1);
-		saveBar.setExpandRatio(cancelButton, 1);
+//		saveBar.addComponent(cancelButton);
+//
+//		saveBar.setExpandRatio(nameField, 3);
+//		saveBar.setExpandRatio(saveButton, 1);
+//		saveBar.setExpandRatio(cancelButton, 1);
 
 		saveBar.setSizeFull();
 		nameField.setSizeFull();

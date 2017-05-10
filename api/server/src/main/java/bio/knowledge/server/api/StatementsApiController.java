@@ -35,7 +35,7 @@ public class StatementsApiController implements StatementsApi {
          @ApiParam(value = "a (url-encoded, space-delimited) string of keywords or substrings against which to match the subject, predicate or object names of the set of concept-relations matched by any of the input exact matching concepts ") @RequestParam(value = "keywords", required = false) String keywords,
          @ApiParam(value = "a (url-encoded, space-delimited) string of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes) ") @RequestParam(value = "semgroups", required = false) String semgroups) {
     	
-    	if (pageNumber == null || pageNumber < 0) { pageNumber = 0; }
+    	if (pageNumber == null || pageNumber < 1) { pageNumber = 1; }
 		if (pageSize == null || pageSize < 1) { pageSize = 10; }
 
 		c = UrlDecoder.decode(c);

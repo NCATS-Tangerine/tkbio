@@ -1349,10 +1349,6 @@ public class DesktopUI extends UI implements MessageService {
 	 * @return
 	 */
 	private boolean saveMap(boolean isClearMap) {
-		if (!query.getCurrentQueryConcept().isPresent()) {
-			return true;
-		}
-
 		SaveWindow saveWindow = new SaveWindow(getCurrentConceptMapName(), query, context,
 				registry.getMapping(ViewName.LIBRARY_VIEW), cm, applicationNavigator, cache);
 

@@ -119,7 +119,7 @@ public class ConceptService
     		boolean isAscending
     ) {
     	CompletableFuture<List<Concept>> future =
-    			kbService.getConcepts(filter, null, pageIndex, pageSize);
+    			kbService.getConcepts(filter, "", pageIndex, pageSize);
     	
     	try {
 			return future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
