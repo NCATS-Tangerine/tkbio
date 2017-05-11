@@ -32,9 +32,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,6 +62,7 @@ import com.vaadin.client.ui.layout.VLayoutSlot;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.Validator;
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -80,6 +85,7 @@ import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.PopupView.Content;
 import com.vaadin.ui.Slider;
@@ -111,6 +117,7 @@ import bio.knowledge.service.ConceptService;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
+import bio.knowledge.service.beacon.KnowledgeBeacon;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.core.MessageService;
 import bio.knowledge.web.KBUploader;
@@ -305,6 +312,7 @@ public class DesktopUI extends UI implements MessageService {
 	@Autowired
 	KnowledgeBeaconRegistry kbRegistry;
 	
+	@SuppressWarnings("unused")
 	public void openKnowledgeBeaconWindow() {
 		
 		Window window = new Window("Add a Knowledge Beacon");
@@ -330,17 +338,26 @@ public class DesktopUI extends UI implements MessageService {
 			@Override
 			public void validate(Object value) throws InvalidValueException {
 				String url = (String) value;
+				
+				if (url.isEmpty()) return;
+				
 				try {
 					URL trueUrl = new URL(url);
 					trueUrl.toURI();
 				} catch (MalformedURLException | URISyntaxException e) {
 					throw new InvalidValueException(url + " is not a valid URL");
 				}
+				
+				if (url.endsWith("/")) {
+					throw new InvalidValueException("URL must not end in /");
+				}
 			}
 			
 		});
 		
 		Button addButton = new Button();
+		OptionGroup optionGroup = new OptionGroup("Knowledge Beacons");
+		refreshOptionGroup(optionGroup);
 
 		addButton.setCaption("Add Beacon");
 		
@@ -354,6 +371,17 @@ public class DesktopUI extends UI implements MessageService {
 				String name = nameField.getValue();
 				String description = descrArea.getValue();
 				String url = urlField.getValue();
+				
+				if (url.isEmpty()) return;
+				
+				try {
+					urlField.validate();
+				} catch (InvalidValueException e) {
+					return;
+				}
+				
+				kbRegistry.addKnowledgeBeacon(name, description, url);
+				refreshOptionGroup(optionGroup);
 			}
 			
 		});
@@ -365,8 +393,40 @@ public class DesktopUI extends UI implements MessageService {
 		
 		window.center();
 		this.addWindow(window);
+		
+		optionGroup.addValueChangeListener(new ValueChangeListener() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				Collection<KnowledgeBeacon> selected = 
+						(Collection<KnowledgeBeacon>) event.getProperty().getValue();
+				
+				for (KnowledgeBeacon k : kbRegistry.getKnowledgeBeacons()) {
+					k.setEnabled(false);
+				}
+				
+				for (KnowledgeBeacon k : selected) {
+					k.setEnabled(true);
+				}
+			}
+			
+		});
+		
+		vlayout.addComponent(optionGroup);
 	}
 	
+	private void refreshOptionGroup(OptionGroup optionGroup) {
+		List<KnowledgeBeacon> kbs = kbRegistry.getKnowledgeBeacons();
+		optionGroup.removeAllItems();
+		optionGroup.setMultiSelect(true);
+		for (KnowledgeBeacon kb : kbs) {
+			optionGroup.addItem(kb);
+			optionGroup.setItemCaption(kb, kb.getUrl());
+			if (kb.isEnabled())
+				optionGroup.select(kb);
+		}
+	}
 	
 	/**
 	 * 

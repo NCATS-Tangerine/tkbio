@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.database.repository.beacon.BeaconRepository;
-import bio.knowledge.model.beacon.KnowledgeBeacon;
 import bio.knowledge.model.beacon.neo4j.Neo4jKnowledgeBeacon;
 
 //@Service
@@ -24,68 +23,17 @@ import bio.knowledge.model.beacon.neo4j.Neo4jKnowledgeBeacon;
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class KnowledgeBeaconRegistry {
 	
-	private Map<String, ApiClient> apiClients = new HashMap<String,ApiClient>();
-
-	/**
-	 * TODO: Make it return an unmodifiable list? Maybe unnecessary, since this
-	 * method cannot be used outside this package.
-	 * 
-	 * @return a list of the API clients currently added to the knowledge source
-	 *         pool. Some knowledge sources will be added by default.
-	 */
-	protected List<ApiClient> getApiClients() {
-		return new ArrayList<ApiClient>(apiClients.values());
-	}
-
-	// RMB May 10 - deprecated use of local CSV file(?)... won't delete the code for now
-	//@Value("${knowledgeBeacon.table.filename}")
-	//private String knowledgeBeaconTableFileName;
-	
 	@Autowired
 	BeaconRepository beaconRepository;
 	
+	private List<KnowledgeBeacon> knowledgeBeacons = new ArrayList<KnowledgeBeacon>();
+	
+	public List<KnowledgeBeacon> getKnowledgeBeacons() {
+		return this.knowledgeBeacons;
+	}
+	
 	@PostConstruct
 	public void init() {
-		
-		/* // RMB May 10 - deprecated use of local CSV file(?)... won't delete the code for now
-		ApiClient api = new ApiClient();
-		// TODO: Once we've got our own knowledge.bio beacon online, change the
-		// default URL. We always want our own knowledge source in the pool
-		// (though in the future we could give the user the opportunity to
-		// remove a knowledge source).
-		assert (knowledgeBeaconTableFileName != null);
-		System.out.println(knowledgeBeaconTableFileName);
-		
-		DefaultResourceLoader loader = new DefaultResourceLoader();
-		Resource beaconTableResource = loader.getResource("classpath:"+knowledgeBeaconTableFileName);
-
-		CSVReader knowledgeSourceReader = null ;
-		try {
-			File knowledgeBeaconTableFile = beaconTableResource.getFile();
-			knowledgeSourceReader = new CSVReader(new FileReader(knowledgeBeaconTableFile));
-			List<String[]> knoweldgeSourceUrls = knowledgeSourceReader.readAll();
-			Iterator<String[]> ksuIterator = knoweldgeSourceUrls.iterator();
-			while (ksuIterator.hasNext()) {
-				String url = ksuIterator.next()[0];
-				addKnowledgeSource(url);
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if(knowledgeSourceReader!=null)
-				try {
-					knowledgeSourceReader.close();
-				} catch (IOException e) {
-					System.err.println(e.getMessage());
-					//e.printStackTrace();
-				}
-		}
-		*/
-		
-		// Sanity check: add in the reference knowledge beacon
-		// Since the method doesn't create a beacon with a URL that is already there
-		// this is idempotent for future startup sessions
 		createBeacon(
 				"Knowledge.Bio Beacon", 
 				"KB 3.0 reference implementation", 
@@ -94,7 +42,7 @@ public class KnowledgeBeaconRegistry {
 		
 		List<Neo4jKnowledgeBeacon> beacons = findAllBeacons();
 		
-		for(KnowledgeBeacon beacon : beacons) {
+		for(Neo4jKnowledgeBeacon beacon : beacons) {
 			System.out.println("\nInitializing Beacon\nId: "+beacon.getDbId().toString());
 			System.out.println("Name: "+beacon.getName());
 			System.out.println("Description: "+beacon.getDescription());
@@ -103,7 +51,7 @@ public class KnowledgeBeaconRegistry {
 			System.out.println("URL: "+url);
 
 			// during initialization, I add knowledge sources I have previously persisted
-			addKnowledgeSource(url);
+			addKnowledgeSource(url, beacon.getName(), beacon.getDescription());
 		}
 
 	}
@@ -120,11 +68,10 @@ public class KnowledgeBeaconRegistry {
 	 * 
 	 * @param url
 	 */
-	private void addKnowledgeSource(String url) {
-		if(!apiClients.containsKey(url)) {
-			ApiClient apiClient = new ApiClient();
-			apiClient.setBasePath(url);
-			apiClients.put(url,apiClient);
+	private void addKnowledgeSource(String url, String name, String description) {
+		KnowledgeBeacon kb = new KnowledgeBeacon(url, name, description);
+		if (!knowledgeBeacons.contains(kb)) {
+			this.knowledgeBeacons.add(kb);
 		}
 	}
 
@@ -133,6 +80,9 @@ public class KnowledgeBeaconRegistry {
 		
 		// Sanity check - make sure that url's have an http or https protocol prefix
 		if(!(url.startsWith("http://") || url.startsWith("https://"))) url = "http://"+url;
+		if (url.endsWith("/")) {
+			url = url.substring(0, url.length() - 1);
+		}
 		
 		Neo4jKnowledgeBeacon beacon = beaconRepository.findByUri(url) ;
 		if(beacon==null) {
@@ -156,13 +106,9 @@ public class KnowledgeBeaconRegistry {
 		
 		if(createBeacon(name, description, url))
 			// if a new beacon, add it to the current session?
-			addKnowledgeSource(url) ;
+			addKnowledgeSource(url, name, description) ;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public List<Neo4jKnowledgeBeacon> findAllBeacons() {
 		List<Neo4jKnowledgeBeacon> beacons = beaconRepository.findAllBeacons();
 		return beacons ;
