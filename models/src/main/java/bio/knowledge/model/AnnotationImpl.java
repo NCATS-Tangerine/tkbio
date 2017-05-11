@@ -42,6 +42,8 @@ import bio.knowledge.model.core.AbstractIdentifiedEntity;
  */
 public class AnnotationImpl extends AbstractIdentifiedEntity implements Annotation {
 	
+	private String url;
+	
 	// Default Display Label Length
 	private static final int DDLL = 20 ;
 	
@@ -244,6 +246,16 @@ public class AnnotationImpl extends AbstractIdentifiedEntity implements Annotati
 	@Override
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+
+	@Override
+	public String getUrl() {
+		return this.url;
+	}
+
+	@Override
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 }

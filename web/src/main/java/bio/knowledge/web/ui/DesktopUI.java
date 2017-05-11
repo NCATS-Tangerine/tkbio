@@ -134,8 +134,10 @@ import bio.knowledge.web.view.PasswordResetView;
 import bio.knowledge.web.view.ReferenceView;
 import bio.knowledge.web.view.Registry;
 import bio.knowledge.web.view.ViewName;
+import bio.knowledge.web.view.components.KnowledgeBeaconWindow;
 import bio.knowledge.web.view.components.LibraryDetails;
 import bio.knowledge.web.view.components.SaveWindow;
+import bio.knowledge.web.view.components.SingleRadioButton;
 import bio.knowledge.web.view.components.UserDetails;
 
 /**
@@ -314,118 +316,8 @@ public class DesktopUI extends UI implements MessageService {
 	
 	@SuppressWarnings("unused")
 	public void openKnowledgeBeaconWindow() {
-		
-		Window window = new Window("Add a Knowledge Beacon");
-		
-		VerticalLayout vlayout = new VerticalLayout();
-		vlayout.setMargin(true);
-		vlayout.setSpacing(true);
-		
-		FormLayout flayout = new FormLayout();
-		flayout.setMargin(false);
-		flayout.setWidth(3, Unit.INCH);
-		
-		TextField nameField = new TextField("Name");
-		TextField urlField = new TextField("URL");
-		TextArea descrArea = new TextArea("Description");	
-		
-		nameField.setWidth("100%");
-		urlField.setWidth("100%");
-		descrArea.setWidth("100%");
-		
-		urlField.addValidator(new Validator() {
-
-			@Override
-			public void validate(Object value) throws InvalidValueException {
-				String url = (String) value;
-				
-				if (url.isEmpty()) return;
-				
-				try {
-					URL trueUrl = new URL(url);
-					trueUrl.toURI();
-				} catch (MalformedURLException | URISyntaxException e) {
-					throw new InvalidValueException(url + " is not a valid URL");
-				}
-				
-				if (url.endsWith("/")) {
-					throw new InvalidValueException("URL must not end in /");
-				}
-			}
-			
-		});
-		
-		Button addButton = new Button();
-		OptionGroup optionGroup = new OptionGroup("Knowledge Beacons");
-		refreshOptionGroup(optionGroup);
-
-		addButton.setCaption("Add Beacon");
-		
-		addButton.addClickListener(new ClickListener() {
-			
-			@Override
-			public void buttonClick(ClickEvent event) {
-//				kbRegistry.addKnowledgeBeacon("name", "description", textField.getValue());
-//				Notification.show("Knowledge beacon " + textField.getValue() + " added");
-//				
-				String name = nameField.getValue();
-				String description = descrArea.getValue();
-				String url = urlField.getValue();
-				
-				if (url.isEmpty()) return;
-				
-				try {
-					urlField.validate();
-				} catch (InvalidValueException e) {
-					return;
-				}
-				
-				kbRegistry.addKnowledgeBeacon(name, description, url);
-				refreshOptionGroup(optionGroup);
-			}
-			
-		});
-	
-		flayout.addComponents(nameField, urlField, descrArea);		
-		vlayout.addComponents(flayout, addButton);
-		vlayout.setComponentAlignment(addButton, Alignment.BOTTOM_RIGHT);
-		window.setContent(vlayout);
-		
-		window.center();
-		this.addWindow(window);
-		
-		optionGroup.addValueChangeListener(new ValueChangeListener() {
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				Collection<KnowledgeBeacon> selected = 
-						(Collection<KnowledgeBeacon>) event.getProperty().getValue();
-				
-				for (KnowledgeBeacon k : kbRegistry.getKnowledgeBeacons()) {
-					k.setEnabled(false);
-				}
-				
-				for (KnowledgeBeacon k : selected) {
-					k.setEnabled(true);
-				}
-			}
-			
-		});
-		
-		vlayout.addComponent(optionGroup);
-	}
-	
-	private void refreshOptionGroup(OptionGroup optionGroup) {
-		List<KnowledgeBeacon> kbs = kbRegistry.getKnowledgeBeacons();
-		optionGroup.removeAllItems();
-		optionGroup.setMultiSelect(true);
-		for (KnowledgeBeacon kb : kbs) {
-			optionGroup.addItem(kb);
-			optionGroup.setItemCaption(kb, kb.getUrl());
-			if (kb.isEnabled())
-				optionGroup.select(kb);
-		}
+		KnowledgeBeaconWindow kbWindow = new KnowledgeBeaconWindow(kbRegistry, query);
+		this.addWindow(kbWindow);
 	}
 	
 	/**

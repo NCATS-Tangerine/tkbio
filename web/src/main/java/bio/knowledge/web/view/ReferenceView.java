@@ -82,31 +82,37 @@ public class ReferenceView extends ReferenceDesign implements View {
 		
 		Reference reference = null ;
 		final String[] uri = new String[1] ;
+		
 		if (annotationOpt.isPresent()) {
 			
 			Annotation annotation = annotationOpt.get();
-			reference = annotationService.getReference(annotation);
 			
-			String accId = reference.getId();
-			
-			if(!accId.isEmpty()) {
-				baseUri  = RdfUtil.resolveBaseUri(accId);
-				
-				String objectId = RdfUtil.getQualifiedObjectId(accId);
-				
-				// display the qualified identifier to the end user
-				refIdSearchField.setValue(accId);
-				
-				String qualifier = RdfUtil.getQualifier(accId);
-				if(qualifier.equals(RdfUtil.PUBMED_QUALIFIER)) 
-					IS_PUBMED_ARTICLE = true ;
-				
-				uri[0] = baseUri+objectId ;
-				
+			if (annotation.getUrl() != null) {
+				uri[0] = annotation.getUrl();
 			} else {
+				reference = annotationService.getReference(annotation);
 				
-				uri[0] = reference.getUri().trim();
-				if(uri[0].isEmpty()) return ;
+				String accId = reference.getId();
+				
+				if(!accId.isEmpty()) {
+					baseUri  = RdfUtil.resolveBaseUri(accId);
+					
+					String objectId = RdfUtil.getQualifiedObjectId(accId);
+					
+					// display the qualified identifier to the end user
+					refIdSearchField.setValue(accId);
+					
+					String qualifier = RdfUtil.getQualifier(accId);
+					if(qualifier.equals(RdfUtil.PUBMED_QUALIFIER)) 
+						IS_PUBMED_ARTICLE = true ;
+					
+					uri[0] = baseUri+objectId ;
+					
+				} else {
+					
+					uri[0] = reference.getUri().trim();
+					if(uri[0].isEmpty()) return ;
+				}
 			}
 			
 		} else {

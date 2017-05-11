@@ -1132,7 +1132,7 @@ public class ApiClient {
                 }
             }
         }
-
+        System.out.println("QUERYING: " + url.toString());
         return url.toString();
     }
 

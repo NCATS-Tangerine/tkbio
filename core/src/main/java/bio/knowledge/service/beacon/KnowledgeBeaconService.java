@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import bio.knowledge.client.ApiClient;
@@ -26,6 +27,8 @@ import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
+import bio.knowledge.service.KBQuery;
+import bio.knowledge.service.KBQueryImpl;
 
 /**
  * 
@@ -277,9 +280,15 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 					public List<Annotation> getList() {
 						EvidenceApi evidenceApi = new EvidenceApi(apiClient);
 						
+						/**
+						 * Wikidata statement id's sometimes contain url's. We want to extract that!
+						 */
+						String[] strings = statementId.split("\\|");
+						String id = strings.length != 0 ? strings[0] : statementId;
+						
 						try {
 							List<InlineResponse2003> responses = evidenceApi.getEvidence(
-									urlEncode(statementId),
+									urlEncode(id),
 									urlEncode(keywords),
 									pageNumber,
 									pageSize
@@ -292,6 +301,11 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 								annotation.setId(response.getId());
 								annotation.setName(response.getLabel());
 								annotation.setPublicationDate(response.getDate());
+								
+								if (strings.length >= 2) {
+									// There can be an id in here!
+									annotation.setUrl(strings[1]);
+								}
 								
 								annotations.add(annotation);
 							}

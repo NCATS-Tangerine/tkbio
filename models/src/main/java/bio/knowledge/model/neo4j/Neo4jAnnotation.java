@@ -25,6 +25,7 @@
  */
 package bio.knowledge.model.neo4j;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
@@ -247,6 +248,16 @@ public class Neo4jAnnotation extends Neo4jAbstractIdentifiedEntity implements An
 	@Override
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+
+	@Override
+	public String getUrl() {
+		throw new NotImplementedException("not implemented");
+	}
+
+	@Override
+	public void setUrl(String url) {
+		throw new NotImplementedException("not implemented");
 	}
 
 }
