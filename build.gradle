@@ -32,8 +32,8 @@ allprojects {
 	
 	// May 2017 - operating baseline implementation of the Translator Knowledge.Bio
 	// including a Knowledge Beacon server wrapping KB 3.0 data
-	version = '4.0.5'  // May 9, repaired TKBio part of interim release 1.0.11 server plus KB 4.0 baseline build 
-    
+	version = '4.0.6'  // May 10, added "Beacon form registration"
+
     apply plugin: 'maven'
     apply plugin: 'java'
     apply plugin: 'eclipse-wtp'
