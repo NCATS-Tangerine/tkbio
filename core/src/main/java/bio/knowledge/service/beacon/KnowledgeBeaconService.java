@@ -60,6 +60,11 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			return null;
 		}
 	}
+	
+	private void printError(ApiClient apiClient, Exception e) {
+		System.err.println("Error Querying: " + apiClient.getBasePath());
+		System.err.println(e.getMessage());
+	}
 
 	/**
 	 * Gets a list of concepts satisfying a query with the given parameters.
@@ -121,7 +126,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 							return concepts;
 							
 						} catch (Exception e) {
-							e.printStackTrace();
+							printError(apiClient, e);
 							return new ArrayList<Concept>();
 						}
 					}
@@ -168,6 +173,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 							return concepts;
 							
 						} catch (Exception e) {
+							printError(apiClient, e);
 							return new ArrayList<Concept>();
 						}
 					}
@@ -240,6 +246,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 							return statements;
 							
 						} catch (Exception e) {
+							printError(apiClient, e);
 							return new ArrayList<Statement>();
 						}
 					}
@@ -292,6 +299,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 							return annotations;
 							
 						} catch (Exception e) {
+							printError(apiClient, e);
 							return new ArrayList<Annotation>();
 						}
 					}
