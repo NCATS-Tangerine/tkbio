@@ -8,6 +8,8 @@ import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.JsonSyntaxException;
+
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.api.EvidenceApi;
@@ -57,16 +59,20 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 	 * the future, and implement a proper encoder.
 	 */
 	private String urlEncode(String string) {
-		if (string != null) {
-			return string.replace(".", "%2E").replace(" ", "%20").replace(":", "%3A");
-		} else {
-			return null;
-		}
+//		if (string != null) {
+//			return string.replace(".", "%2E").replace(" ", "%20").replace(":", "%3A");
+//		} else {
+//			return null;
+//		}
+		return string;
 	}
 	
 	private void printError(ApiClient apiClient, Exception e) {
-		System.err.println("Error Querying: " + apiClient.getBasePath());
-		System.err.println(e.getMessage());
+		System.err.println("Error Querying:   " + apiClient.getBasePath());
+		System.err.println("Error message:    " + e.getMessage());
+		if (e instanceof JsonSyntaxException) {
+			System.err.println("PROBLEM WITH DESERIALIZING SERVER RESPONSE");
+		}
 	}
 
 	/**
