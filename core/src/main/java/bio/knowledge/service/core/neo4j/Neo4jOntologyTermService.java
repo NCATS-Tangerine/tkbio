@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.domain.Page;
@@ -40,7 +41,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.database.repository.core.Neo4jOntologyTermRepository;
 import bio.knowledge.model.core.ModelException;
 import bio.knowledge.model.core.Ontology;
 import bio.knowledge.model.core.OntologyTerm;
@@ -56,9 +56,6 @@ public class Neo4jOntologyTermService
 
     @Autowired
 	private Neo4jOntologyService ontologyService ;
-    
-    @Autowired
-	private Neo4jOntologyTermRepository ontologyTermRepository ;
 
     private static Map<String, Map<String,OntologyTerm>> ontologyMap = 
     								new HashMap<String,Map<String,OntologyTerm>>() ;
@@ -96,11 +93,7 @@ public class Neo4jOntologyTermService
 	 */
 	@Override
 	public OntologyTerm getOntologyTermByAccessionId( String accessionId ) throws ModelException {
-		
-    	if(accessionId==null || accessionId.isEmpty())
-    		throw new ModelException("Null or empty accessionId argument given to getOntologyTermByAccessionId()?!") ;
-		
-		return (OntologyTerm)ontologyTermRepository.findByAccessionIdEquals( accessionId );
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
     /* (non-Javadoc)
@@ -108,43 +101,7 @@ public class Neo4jOntologyTermService
 	 */
     @Override
 	public OntologyTerm getOntologyTermByName( Ontology ontology, String termName ) throws ModelException {
-    	
-    	if(ontology==null)
-    		throw new ModelException("Null ontology argument given to getOntologyTermByName() - don't know which ontology to search!") ;
-    	
-    	String ontologyName = ontology.getName() ;
-    	
-		OntologyTerm term = null ;
-		
-		try {
-		
-			Map<String,OntologyTerm> termCatalog = ontologyMap.get(ontologyName) ;
-			
-			if( termCatalog != null && termCatalog.containsKey(termName) )
-				
-				term = termCatalog.get(termName) ;
-				
-			else {
-				// Ontology ontology is assumed in 
-				// this Neo4j application to be a Neo4jOntology
-				term = ontologyTermRepository.
-						   findByOntologyAndNameEquals( (Neo4jAbstractOntology)ontology, termName ) ;
-				
-				// Cache the term if found...
-				if( term != null ) {
-					if( termCatalog == null ) {
-						termCatalog = new HashMap<String,OntologyTerm>() ;
-						ontologyMap.put( ontologyName, termCatalog ) ; 
-					}
-					termCatalog.put(termName,term) ;
-				}
-			}
-
-		} catch ( RuntimeException e) {
-			e.printStackTrace();
-			throw new ModelException("Severe error encountered while retrieving term with name '"+termName+"' from ontology '"+ontologyName+"'?") ;
-		}
-    	return term ; // may be null if not found
+    	throw new NotImplementedException("Removed all reference to neo4j");
     }
 
     /* (non-Javadoc)
@@ -163,17 +120,7 @@ public class Neo4jOntologyTermService
 	 */
     @Override
 	public OntologyTerm getOntologyTermByName( String termName ) throws ModelException {
-    	OntologyTerm term = null ;
-    	try {
-    		term = ontologyTermRepository.findOntologyTermByNameEquals( termName ) ;
-		} catch ( IncorrectResultSizeDataAccessException irsdae) {
-			irsdae.printStackTrace();
-			throw new ModelException("Term name '"+termName+"' not globally unique?") ;
-		} catch ( RuntimeException rte ){
-			rte.printStackTrace();
-			throw new ModelException("Severe error encountered while retrieving term with presumed globally unique name '"+termName+"'?") ;
-		}
-    	return term ;
+    	throw new NotImplementedException("Removed all reference to neo4j");
     }
 
     /* (non-Javadoc)
@@ -186,26 +133,7 @@ public class Neo4jOntologyTermService
     		String termName, 
     		String definition
     ) throws ModelException {
-    	String ontologyName = ontology.getName() ;
-    	
-    	// Cache the ontology terms in a local catalog
-    	Map<String,OntologyTerm> termCatalog = null ;
-		if( ontologyMap.containsKey(ontologyName) ) {
-			termCatalog = ontologyMap.get(ontologyName) ;
-		} else {
-			termCatalog = new HashMap<String,OntologyTerm>() ;
-			ontologyMap.put( ontologyName, termCatalog ) ; 
-		}
-		
-		// Retrieve existing external ontology term 
-		// (by name) if it exists, otherwise, create and cache it
-		OntologyTerm ontologyTerm = getOntologyTermByAccessionId( accessionId ) ;
-		if( ontologyTerm == null ) {
-			ontologyTerm = new Neo4jAbstractOntologyTerm( ontology, termName, definition ) ;
-			ontologyTerm = ontologyTermRepository.save( (Neo4jAbstractOntologyTerm)ontologyTerm ) ;
-			termCatalog.put(termName, ontologyTerm) ;
-		}
-		return ontologyTerm ;
+    	throw new NotImplementedException("Removed all reference to neo4j");
     }
 	
 	/* (non-Javadoc)
@@ -214,7 +142,7 @@ public class Neo4jOntologyTermService
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<OntologyTerm> findByNameLike( String filter, Pageable pageable ){
-		return (Page<OntologyTerm>)(Page)new PageImpl( ontologyTermRepository.findByNameLikeIgnoreCase( filter, pageable )) ;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/* (non-Javadoc)
@@ -223,7 +151,7 @@ public class Neo4jOntologyTermService
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<OntologyTerm> findAll(Pageable pageable) {
-		return (Page<OntologyTerm>)(Page)ontologyTermRepository.findAll(pageable);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	
 	/* (non-Javadoc)
@@ -231,7 +159,7 @@ public class Neo4jOntologyTermService
 	 */
 	@Override
 	public long countEntries() {
-		return ontologyTermRepository.count() ;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/* (non-Javadoc)
@@ -239,7 +167,7 @@ public class Neo4jOntologyTermService
 	 */
 	@Override
 	public long countHitsByNameLike(String filter) {
-		return ontologyTermRepository.countByNameLikeIgnoreCase(filter);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
     private List<OntologyTerm> terms = new ArrayList<OntologyTerm>() ;
@@ -248,20 +176,7 @@ public class Neo4jOntologyTermService
 	//private GraphDatabaseService graphDb;
     
     private Stream<OntologyTerm> getTermStream() {
-    	List<OntologyTerm> terms = new ArrayList<OntologyTerm>() ;
-    	// 
-    	// SDN 4.0 Doesn't appear to instantiate a GraphDatabaseService instance?
-    	//
-    	// Accessing a collection from the repository 
-    	// needs to be explicitly wrapped in a Neo4j Transaction?
-    	// see http://stackoverflow.com/questions/11485090/org-neo4j-graphdb-notintransactionexception
-    	//try (Transaction tx = graphDb.beginTx()) {
-	    	for(OntologyTerm c : ontologyTermRepository.getOntologyTerms()) {
-	    		terms.add(c) ;
-	    	}
-	    //	tx.success() ;
-    	//}
-    	return terms.stream() ;
+    	throw new NotImplementedException("Removed all reference to neo4j");
     }
     
     public List<OntologyTerm> getOntologyTerms() {
@@ -285,7 +200,7 @@ public class Neo4jOntologyTermService
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<OntologyTerm> getIdentifiers(Pageable pageable) {
-		return (Page<OntologyTerm>)(Page)ontologyTermRepository.findAll( pageable ) ;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 }

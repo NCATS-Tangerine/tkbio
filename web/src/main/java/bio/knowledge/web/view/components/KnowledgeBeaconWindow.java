@@ -59,6 +59,8 @@ public class KnowledgeBeaconWindow extends Window {
 		VerticalLayout panel = new VerticalLayout();
 		optionGroup.setCaption("Set active knowledge beacons");
 		
+		refreshOptionGroup();
+		
 		optionGroup.addValueChangeListener(new ValueChangeListener() {
 
 			@SuppressWarnings("unchecked")
@@ -77,8 +79,6 @@ public class KnowledgeBeaconWindow extends Window {
 			}
 			
 		});
-		
-		refreshOptionGroup();
 		
 		panel.addComponent(optionGroup);
 		

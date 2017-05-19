@@ -33,13 +33,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.database.repository.core.Neo4jExternalDatabaseRepository;
 import bio.knowledge.model.core.ExternalDatabase;
 import bio.knowledge.model.core.ModelException;
 import bio.knowledge.model.core.neo4j.Neo4jAbstractExternalDatabase;
@@ -50,9 +50,6 @@ import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
 public class Neo4jExternalDatabaseService
 	extends IdentifiedEntityServiceImpl<ExternalDatabase> 
 	implements ExternalDatabaseService {
-	
-    @Autowired
-	private Neo4jExternalDatabaseRepository databaseRepository ;
 
     private static Map<String,ExternalDatabase> databaseCatalog = new HashMap<String,ExternalDatabase>() ;
 
@@ -86,20 +83,7 @@ public class Neo4jExternalDatabaseService
      */
     @Override
 	public ExternalDatabase getDatabaseByName(String databaseName) throws ModelException {
-    	ExternalDatabase database = null ;
-		try {
-			if(databaseCatalog.containsKey(databaseName)) {
-				database = databaseCatalog.get(databaseName) ;
-			} else {
-				database = databaseRepository.findUniqueByNameEquals(databaseName) ;
-			}
-		} catch ( RuntimeException e) {
-			throw new ModelException("Error retrieving database with name '"+databaseName+"': "+e.getMessage()) ;
-		}
-		if( database!=null && !databaseCatalog.containsKey(databaseName) ) {
-			databaseCatalog.put(databaseName,database) ;
-		}
-    	return database ;
+    	throw new NotImplementedException("Removed all reference to neo4j");
     }
     
     /*
@@ -112,17 +96,7 @@ public class Neo4jExternalDatabaseService
     		String description, 
     		String url
     ) throws ModelException {
-		// Retrieve existing External Database (by name) if it exists, otherwise, create it
-    	// Fields: source(ExternalDatabase), name, description, url, version
-    	ExternalDatabase database = getDatabaseByName( name ) ;
-		if( database == null ) {
-			database = new Neo4jAbstractExternalDatabase( name, description, url ) ;
-			database = databaseRepository.save( (Neo4jAbstractExternalDatabase)database ) ;
-		}
-		if(!databaseCatalog.containsKey( name )) {
-			databaseCatalog.put( name , database ) ;
-		}
-		return database ;
+    	throw new NotImplementedException("Removed all reference to neo4j");
     }
 
     private List<ExternalDatabase> databases = new ArrayList<ExternalDatabase>() ;
@@ -131,20 +105,7 @@ public class Neo4jExternalDatabaseService
 	//private GraphDatabaseService graphDb;
     
     private Stream<ExternalDatabase> getDatabaseStream() {
-    	List<ExternalDatabase> databases = new ArrayList<ExternalDatabase>() ;
-    	// 
-    	// SDN 4.0 Doesn't appear to instantiate a GraphDatabaseService instance?
-    	//
-    	// Accessing a collection from the repository 
-    	// needs to be explicitly wrapped in a Neo4j Transaction?
-    	// see http://stackoverflow.com/questions/11485090/org-neo4j-graphdb-notintransactionexception
-    	//try (Transaction tx = graphDb.beginTx()) {
-	    	for(ExternalDatabase d : databaseRepository.getExternalDatabases()) {
-	    		databases.add(d) ;
-	    	}
-	    //	tx.success() ;
-    	//}
-    	return databases.stream() ;
+    	throw new NotImplementedException("Removed all reference to neo4j");
     }
     
     public List<ExternalDatabase> getExternalDatabases() {
@@ -167,7 +128,7 @@ public class Neo4jExternalDatabaseService
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Page<ExternalDatabase> getIdentifiers(Pageable pageable) {
-		return (Page<ExternalDatabase>)(Page)databaseRepository.findAll(pageable);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	
 	/* (non-Javadoc)
@@ -175,7 +136,7 @@ public class Neo4jExternalDatabaseService
 	 */
 	@Override
 	public long countEntries() {
-		return databaseRepository.count();
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/* (non-Javadoc)
@@ -183,7 +144,7 @@ public class Neo4jExternalDatabaseService
 	 */
 	@Override
 	public long countHitsByNameLike(String filter) {
-		return databaseRepository.countByNameLikeIgnoreCase(filter);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/* (non-Javadoc)
@@ -192,7 +153,7 @@ public class Neo4jExternalDatabaseService
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Page<ExternalDatabase> findAll(Pageable pageable) {
-		return (Page<ExternalDatabase>)(Page)databaseRepository.findAll(pageable);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/* (non-Javadoc)
@@ -201,7 +162,7 @@ public class Neo4jExternalDatabaseService
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<ExternalDatabase> findByNameLike(String filter, Pageable pageable) {
-		return (Page<ExternalDatabase>)(Page)new PageImpl( databaseRepository.findByNameLikeIgnoreCase( filter, pageable ) );
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 }

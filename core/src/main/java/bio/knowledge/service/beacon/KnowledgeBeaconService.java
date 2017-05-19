@@ -290,7 +290,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 						 * Wikidata statement id's sometimes contain url's. We want to extract that!
 						 */
 						String[] strings = statementId.split("\\|");
-						String id = strings.length != 0 ? strings[0] : statementId;
+						String id = strings.length >= 2 ? strings[2] : statementId;
 						
 						try {
 							List<InlineResponse2003> responses = evidenceApi.getEvidence(

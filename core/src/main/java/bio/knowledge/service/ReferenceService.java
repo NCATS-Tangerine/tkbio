@@ -25,10 +25,10 @@
  */
 package bio.knowledge.service;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.database.repository.ReferenceRepository;
 import bio.knowledge.model.Reference;
 import bio.knowledge.model.neo4j.Neo4jReference;
 
@@ -39,15 +39,12 @@ import bio.knowledge.model.neo4j.Neo4jReference;
 @Service
 public class ReferenceService {
 
-    @Autowired
-	private ReferenceRepository referenceRepository ;
-
 	/**
 	 * @param uri
 	 * @return
 	 */
 	public Reference findByUri(String uri) {
-		return referenceRepository.findByUri(uri);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/**
@@ -55,7 +52,7 @@ public class ReferenceService {
 	 * @return
 	 */
 	public Reference save(Neo4jReference reference) {
-		return (Reference) referenceRepository.save(reference);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	
 

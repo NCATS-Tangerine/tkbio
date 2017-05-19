@@ -30,11 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.database.repository.core.Neo4jAnnotatedEntityRepository;
-import bio.knowledge.database.repository.core.Neo4jFeatureRepository;
 import bio.knowledge.model.core.AnnotatedEntity;
 import bio.knowledge.model.core.Feature;
 import bio.knowledge.model.core.ModelException;
@@ -49,12 +48,6 @@ public class Neo4jFeatureService implements FeatureService {
 	@Autowired
 	private Neo4jOntologyTermService ontologyTermService ;
 	
-	@Autowired
-	private Neo4jFeatureRepository featureRepository ;
-
-	@Autowired
-	private Neo4jAnnotatedEntityRepository annotatedEntityRepository ;
-
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.FeatureService#createFeature(bio.knowledge.model.core.AnnotatedEntity, java.lang.String, java.lang.String)
 	 */
@@ -78,19 +71,8 @@ public class Neo4jFeatureService implements FeatureService {
 	 */
 	@Override
 	public Feature createFeature( AnnotatedEntity owner, String accessionId, OntologyTerm tagTerm, String value ) {
-		Feature feature = 
-				new Neo4jAbstractFeature(
-						owner,
-						accessionId,
-						tagTerm,
-						value
-				) ;
-		feature = featureRepository.save((Neo4jAbstractFeature)feature) ;
-		// Need to ensure reciprocal persistence of owner, when Feature set is updated?
-		Set<Feature> features = owner.getFeatures() ;
-		features.add(feature) ;
-		annotatedEntityRepository.save((Neo4jAbstractAnnotatedEntity)owner) ;
-		return feature ;	}
+		throw new NotImplementedException("Removed all reference to neo4j");
+	}
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.FeatureService#createFeature(bio.knowledge.model.core.AnnotatedEntity, bio.knowledge.model.core.OntologyTerm, java.lang.String)
@@ -100,7 +82,7 @@ public class Neo4jFeatureService implements FeatureService {
 	}
 	
 	public Feature save(Feature feature) {
-		return featureRepository.save((Neo4jAbstractFeature)feature) ;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/* (non-Javadoc)
@@ -108,7 +90,7 @@ public class Neo4jFeatureService implements FeatureService {
 	 */
 	@Override
 	public List<Feature> findFeaturesByTagName( AnnotatedEntity owner, String tagName ) {
-		return featureRepository.findFeaturesByTagName( owner, tagName ) ;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/* (non-Javadoc)
@@ -116,18 +98,7 @@ public class Neo4jFeatureService implements FeatureService {
 	 */
 	@Override
 	public Feature findFeatureByPrecedence( AnnotatedEntity owner, String[] filters ) {
-		List<Feature> featuresMatched = featureRepository.findFeatureByPrecedence( owner, filters ) ;
-		Map<String,Feature> featureMap = new HashMap<String,Feature>() ;
-		for(Feature feature : featuresMatched ) {
-			featureMap.put(feature.getName(), feature) ;
-		}
-		// String[] filters array is assumed to be an 
-		// ordered precedence for selecting the feature
-		for(String filter:filters) {
-			if(featureMap.containsKey(filter)) 
-				return featureMap.get(filter) ;
-		}
-		return null ;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 }
