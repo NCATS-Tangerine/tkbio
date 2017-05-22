@@ -110,6 +110,8 @@ public class StatementService
 //		Concept concept = currentConceptOpt.get() ;
 		String emci = query.getCurrentQueryConceptId();
 		
+		emci = kbService.discoverExactMatchClique(emci) ;
+		
 		CompletableFuture<List<Statement>> future = kbService.getStatements(emci, filter, "", pageIndex, pageSize);
 		
 		try {
