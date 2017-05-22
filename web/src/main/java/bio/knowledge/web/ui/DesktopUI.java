@@ -298,7 +298,6 @@ public class DesktopUI extends UI implements MessageService {
 	@Autowired
 	KnowledgeBeaconRegistry kbRegistry;
 	
-	@SuppressWarnings("unused")
 	public void openKnowledgeBeaconWindow() {
 		KnowledgeBeaconWindow kbWindow = new KnowledgeBeaconWindow(kbRegistry, query);
 		this.addWindow(kbWindow);
@@ -1513,8 +1512,8 @@ public class DesktopUI extends UI implements MessageService {
 						user != null ? user.getIdsOfGroupsBelongedTo() : new String[0]);
 				if (map != null) {
 					conceptMapLibraryWindow = new Window();
-					UserProfile userProfile = getAuthenticationManager().getCurrentUser();
-					String userId = userProfile != null ? userProfile.getId() : null;
+					//UserProfile userProfile = getAuthenticationManager().getCurrentUser();
+					//String userId = userProfile != null ? userProfile.getId() : null;
 					LibraryDetails libraryDetails = new LibraryDetails(map, query, context,
 							event -> {
 								conceptMapLibraryWindow.close();

@@ -6,14 +6,9 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.Validator;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TextArea;
@@ -27,12 +22,16 @@ import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 
 public class KnowledgeBeaconWindow extends Window {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3216657180755749441L;
+	
 	private final KnowledgeBeaconRegistry kbRegistry;
-	private final KBQuery query;
+
 	private OptionGroup optionGroup = new OptionGroup();
 
 	public KnowledgeBeaconWindow(KnowledgeBeaconRegistry kbRegistry, KBQuery query) {
-		this.query = query;
 		this.kbRegistry = kbRegistry;
 		
 		setCaption("Knowledge Beacon Tools");
@@ -44,35 +43,33 @@ public class KnowledgeBeaconWindow extends Window {
 		mainLayout.setMargin(true);
 		mainLayout.setSpacing(true);
 		
-		FormLayout addKbPanel = buildAddKbPanel();
 		VerticalLayout chooseKbPanel = buildChooseKbPanel();
 		
-		mainLayout.addComponents(addKbPanel, chooseKbPanel);
+		FormLayout addKbPanel = buildAddKbPanel();
+		addKbPanel.setCaption("Add New Knowledge Beacon:");
+		
+		mainLayout.addComponents( chooseKbPanel, addKbPanel);
 	}
 
 	private VerticalLayout buildChooseKbPanel() {
 		VerticalLayout panel = new VerticalLayout();
-		optionGroup.setCaption("Set active knowledge beacons");
+		optionGroup.setCaption("Set Active Knowledge Beacons:");
 		
 		refreshOptionGroup();
 		
-		optionGroup.addValueChangeListener(new ValueChangeListener() {
-
+		optionGroup.addValueChangeListener(event -> {
+			
 			@SuppressWarnings("unchecked")
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				Collection<KnowledgeBeacon> selected = 
-						(Collection<KnowledgeBeacon>) event.getProperty().getValue();
-				
-				for (KnowledgeBeacon k : kbRegistry.getKnowledgeBeacons()) {
-					k.setEnabled(false);
-				}
-				
-				for (KnowledgeBeacon k : selected) {
-					k.setEnabled(true);
-				}
+			Collection<KnowledgeBeacon> selected = 
+					(Collection<KnowledgeBeacon>) event.getProperty().getValue();
+			
+			for (KnowledgeBeacon k1 : kbRegistry.getKnowledgeBeacons()) {
+				k1.setEnabled(false);
 			}
 			
+			for (KnowledgeBeacon k2 : selected) {
+				k2.setEnabled(true);
+			}
 		});
 		
 		panel.addComponent(optionGroup);
@@ -93,55 +90,45 @@ public class KnowledgeBeaconWindow extends Window {
 		urlField.setWidth("100%");
 		descrArea.setWidth("100%");
 		
-		urlField.addValidator(new Validator() {
-
-			@Override
-			public void validate(Object value) throws InvalidValueException {
-				String url = (String) value;
-				
-				if (url.isEmpty()) return;
-				
-				try {
-					URL trueUrl = new URL(url);
-					trueUrl.toURI();
-				} catch (MalformedURLException | URISyntaxException e) {
-					throw new InvalidValueException(url + " is not a valid URL");
-				}
-				
-				if (url.endsWith("/")) {
-					throw new InvalidValueException("URL must not end in /");
-				}
+		urlField.addValidator(value -> {
+			String url = (String) value;
+			
+			if (url.isEmpty()) return;
+			
+			try {
+				URL trueUrl = new URL(url);
+				trueUrl.toURI();
+			} catch (MalformedURLException | URISyntaxException e) {
+				throw new InvalidValueException(url + " is not a valid URL");
 			}
 			
+			if (url.endsWith("/")) {
+				throw new InvalidValueException("URL must not end in /");
+			}
 		});
 		
 		Button addButton = new Button();
 
 		addButton.setCaption("Add Beacon");
 		
-		addButton.addClickListener(new ClickListener() {
-			
-			@Override
-			public void buttonClick(ClickEvent event) {
+		addButton.addClickListener(event -> {
 //				kbRegistry.addKnowledgeBeacon("name", "description", textField.getValue());
 //				Notification.show("Knowledge beacon " + textField.getValue() + " added");
 //				
-				String name = nameField.getValue();
-				String description = descrArea.getValue();
-				String url = urlField.getValue();
-				
-				if (url.isEmpty()) return;
-				
-				try {
-					urlField.validate();
-				} catch (InvalidValueException e) {
-					return;
-				}
-				
-				kbRegistry.addKnowledgeBeacon(name, description, url);
-				refreshOptionGroup();
+			String name = nameField.getValue();
+			String description = descrArea.getValue();
+			String url = urlField.getValue();
+			
+			if (url.isEmpty()) return;
+			
+			try {
+				urlField.validate();
+			} catch (InvalidValueException e) {
+				return;
 			}
 			
+			kbRegistry.addKnowledgeBeacon(name, description, url);
+			refreshOptionGroup();
 		});
 	
 		flayout.addComponents(nameField, urlField, descrArea, addButton);

@@ -147,7 +147,7 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 			}
 		};
 		
-		this.addBeaconBtn.addClickListener(event -> {
+		this.manageBeaconBtn.addClickListener(event -> {
 			((DesktopUI) UI.getCurrent()).openKnowledgeBeaconWindow();
 		});
 		
