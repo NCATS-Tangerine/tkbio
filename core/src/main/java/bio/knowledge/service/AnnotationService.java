@@ -33,13 +33,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.database.repository.AnnotationRepository;
 import bio.knowledge.datasource.DataService;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Evidence;
@@ -62,9 +62,6 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 	
 	@Autowired
 	private Cache cache;
-
-    @Autowired
-	private AnnotationRepository annotationRepository ;
     
     @Autowired
     private KnowledgeBeaconService kbService;
@@ -98,8 +95,9 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#getIdentifiers()
 	 */
 	@Override
+	@Deprecated
 	public List<Annotation> getIdentifiers() {
-		return (List<Annotation>)(List)annotationRepository.getAnnotations();
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/* (non-Javadoc)
@@ -107,8 +105,9 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
+	@Deprecated
 	public Page<Annotation> getIdentifiers(Pageable pageable) {
-		return (Page<Annotation>)(Page)annotationRepository.findAll(pageable);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/* (non-Javadoc)
@@ -198,54 +197,14 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 	 * @param annotation
 	 * @return
 	 */
+	@Deprecated
 	public Reference getReference(Annotation annotation) {
-		return  annotationRepository.findReferenceByAnnotation(annotation.getId()) ;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
+	@Deprecated
 	private Page<Annotation> findHelper(String filter, Pageable pageable) {
-
-		Optional<Evidence> evidenceOpt = query.getCurrentEvidence() ;
-
-		if( !evidenceOpt.isPresent() ) return null ;
-
-		Evidence evidence = evidenceOpt.get() ;
-		
-		Long evidenceId = evidence.getDbId();
-		String pageKey = new Integer(pageable.hashCode()).toString();
-		CacheLocation cacheLocation = 
-				cache.searchForResultSet(
-						"Annotation", 
-						evidenceId.toString(), 
-						new String[] { filter, pageKey }
-				);
-		
-		@SuppressWarnings("unchecked")
-		List<Annotation> cachedResult = (List<Annotation>) cacheLocation.getResultSet();
-		
-		List<Annotation> annotations;
-		
-		if (cachedResult == null) {
-			
-			String userId = query.currentUserId();
-			List<Map<String, Object>> data;
-
-			data = annotationRepository.findByEvidence((Evidence) evidence, pageable, userId);
-			
-			annotations = new ArrayList<>();
-			
-			for (Map<String, Object> d : data) {
-				Annotation annotation = (Annotation) d.get("annotation");
-				Reference   reference = (Reference)  d.get("reference");
-				annotation.setReference(reference);
-				annotations.add(annotation);
-			}
-			
-			cacheLocation.setResultSet(annotations);
-		} else {
-			annotations = cachedResult;
-		}
-		return new PageImpl<Annotation>(annotations, pageable, annotations.size());
-
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	
 	private long countHelper(String filter) {
@@ -288,74 +247,31 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 //		return count;
 	}
 
+	@Deprecated
 	private Page<Annotation> findHelperByPMID(String filter, Pageable pageable){
-		
-		Optional<String> currentPmidOpt = query.getCurrentPmid() ;
-		
-		if( !currentPmidOpt.isPresent() ) return null ;
-		
-		String pmid = currentPmidOpt.get() ;
-		List<Map<String, Object>> data;
-		if(filter.trim().isEmpty()){
-			 data = annotationRepository.findByPMID(pmid, pageable);
-		}else{
-			 data = annotationRepository.findByPMIDFiltered(pmid, filter, pageable);
-		}
-		List<Annotation> results = new ArrayList<>();
-		for (Map<String, Object> d : data) {
-			Annotation annotation       = (Annotation) d.get("annotation");
-			Reference   fromDbreference = (Reference)   d.get("reference");
-			annotation.setReference(fromDbreference);
-			results.add(annotation);
-		}
-		return new PageImpl<Annotation>(results, pageable, results.size());
-		
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	
+	@Deprecated
 	private long countHelperByPMID(String filter){
-		Optional<String> currentPmidOpt = query.getCurrentPmid() ;
-		if( !currentPmidOpt.isPresent() ) return 0 ;
-		
-		String pmid = currentPmidOpt.get() ;
-		
-		// creating cache key using (conceptId + textFilter)
-		//String cacheKey = (pmid + "#" + filter);
-		//cacheKey = Base64.getEncoder().encodeToString(cacheKey.getBytes());
-
-		CacheLocation cacheLocation = 
-				cache.searchForCounter("PMID", pmid, new String[] { filter });
-		
-		// Is key present ? then fetch it from cache
-		// Long count = cache.getCountCache().get(cacheKey);
-		Long count = cacheLocation.getCounter();
-		
-		if (count == null) {
-			if (filter.trim().isEmpty()) {
-				count = annotationRepository.countByPMID(pmid);
-			} else {
-				count = annotationRepository.countByPMIDFiltered(pmid, filter);
-			}
-			// put fetched result to map before returning
-			//cache.getCountCache().put(cacheKey, count);
-			cacheLocation.setCounter(count);
-		}
-		
-		return count;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/**
 	 * @param annotation
 	 * @return
 	 */
+	@Deprecated
 	public Annotation save(Annotation annotation) {
-		return annotationRepository.save(annotation);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/**
 	 * @param annotationId
 	 * @return
 	 */
+	@Deprecated
 	public Annotation findById(String annotationId) {
-		return annotationRepository.findById(annotationId);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 }

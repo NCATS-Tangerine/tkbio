@@ -25,29 +25,29 @@
  */
 package bio.knowledge.service;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.database.repository.EvidenceRepository;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.neo4j.Neo4jEvidence;
 
 @Service
 public class EvidenceService {
-
-	@Autowired
-	EvidenceRepository evidenceRepository;
 	
+	@Deprecated
 	public Evidence findByEvidenceId(String evidenceId) {
-		return evidenceRepository.findByEvidenceId(evidenceId);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	
+	@Deprecated
 	public Evidence createByEvidenceId(String evidenceId) {
-		return evidenceRepository.createByEvidenceId(evidenceId);		
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
-	
+
+	@Deprecated
 	public Evidence save(Neo4jEvidence evidence) {
-		return evidenceRepository.save(evidence);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
-	
+
 }

@@ -5,7 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.google.gson.JsonSyntaxException;
 
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.api.ConceptsApi;
@@ -26,6 +29,8 @@ import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
+import bio.knowledge.service.KBQuery;
+import bio.knowledge.service.KBQueryImpl;
 
 /**
  * 
@@ -54,16 +59,20 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 	 * the future, and implement a proper encoder.
 	 */
 	private String urlEncode(String string) {
-		if (string != null) {
-			return string.replace(".", "%2E").replace(" ", "%20").replace(":", "%3A");
-		} else {
-			return null;
-		}
+//		if (string != null) {
+//			return string.replace(".", "%2E").replace(" ", "%20").replace(":", "%3A");
+//		} else {
+//			return null;
+//		}
+		return string;
 	}
 	
 	private void printError(ApiClient apiClient, Exception e) {
-		System.err.println("Error Querying: " + apiClient.getBasePath());
-		System.err.println(e.getMessage());
+		System.err.println("Error Querying:   " + apiClient.getBasePath());
+		System.err.println("Error message:    " + e.getMessage());
+		if (e instanceof JsonSyntaxException) {
+			System.err.println("PROBLEM WITH DESERIALIZING SERVER RESPONSE");
+		}
 	}
 
 	/**
@@ -277,9 +286,15 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 					public List<Annotation> getList() {
 						EvidenceApi evidenceApi = new EvidenceApi(apiClient);
 						
+						/**
+						 * Wikidata statement id's sometimes contain url's. We want to extract that!
+						 */
+						String[] strings = statementId.split("\\|");
+						String id = strings.length >= 2 ? strings[2] : statementId;
+						
 						try {
 							List<InlineResponse2003> responses = evidenceApi.getEvidence(
-									urlEncode(statementId),
+									urlEncode(id),
 									urlEncode(keywords),
 									pageNumber,
 									pageSize
@@ -292,6 +307,11 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 								annotation.setId(response.getId());
 								annotation.setName(response.getLabel());
 								annotation.setPublicationDate(response.getDate());
+								
+								if (strings.length >= 2) {
+									// There can be an id in here!
+									annotation.setUrl(strings[1]);
+								}
 								
 								annotations.add(annotation);
 							}

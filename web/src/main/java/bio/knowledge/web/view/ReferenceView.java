@@ -25,7 +25,13 @@
  */
 package bio.knowledge.web.view;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,7 +49,6 @@ import com.vaadin.ui.VerticalLayout;
 
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.RdfUtil;
-import bio.knowledge.model.Reference;
 import bio.knowledge.service.AnnotationService;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.web.design.ReferenceDesign;
@@ -59,6 +64,32 @@ public class ReferenceView extends ReferenceDesign implements View {
 	public static final String NAME = "references";
 
 	private static final long serialVersionUID = -827840039603594744L;
+	
+	private Map<String, String> urlMapping = new HashMap<String, String>();
+	
+	@PostConstruct
+	public void init() {
+		urlMapping.put("RXNAV",		"https://rxnav.nlm.nih.gov/REST/Ndfrt/allInfo?nui=");
+		urlMapping.put("CHEMBL",	"https://www.ebi.ac.uk/chembl/compound/inspect/CHEMBL");
+		urlMapping.put("WD",		"http://www.wikidata.org/entity/");
+		urlMapping.put("OBO",		"http://purl.obolibrary.org/obo/");
+		urlMapping.put("PMID",		"https://www.ncbi.nlm.nih.gov/pubmed/");
+	}
+	
+	private String getUrl(String id) {
+		int i = id.indexOf(":");
+		String objId = id.substring(i+1);
+		id = id.substring(0, i);
+		i = id.lastIndexOf(".");
+		id = id.substring(i+1);
+		id = id.toUpperCase();
+		
+		if (urlMapping.keySet().contains(id)) {
+			return urlMapping.get(id) + objId;
+		} else {
+			return null;
+		}
+	}
 	
 	@Autowired
 	private KBQuery query ;
@@ -80,35 +111,17 @@ public class ReferenceView extends ReferenceDesign implements View {
 		
 		Optional<Annotation> annotationOpt = query.getCurrentAnnotation();
 		
-		Reference reference = null ;
-		final String[] uri = new String[1] ;
+		String[] uri = new String[1];
+		
 		if (annotationOpt.isPresent()) {
-			
-			Annotation annotation = annotationOpt.get();
-			reference = annotationService.getReference(annotation);
-			
-			String accId = reference.getId();
-			
-			if(!accId.isEmpty()) {
-				baseUri  = RdfUtil.resolveBaseUri(accId);
-				
-				String objectId = RdfUtil.getQualifiedObjectId(accId);
-				
-				// display the qualified identifier to the end user
-				refIdSearchField.setValue(accId);
-				
-				String qualifier = RdfUtil.getQualifier(accId);
-				if(qualifier.equals(RdfUtil.PUBMED_QUALIFIER)) 
-					IS_PUBMED_ARTICLE = true ;
-				
-				uri[0] = baseUri+objectId ;
-				
-			} else {
-				
-				uri[0] = reference.getUri().trim();
-				if(uri[0].isEmpty()) return ;
+			String id = annotationOpt.get().getId();
+			try {
+				// TODO: At the moment, evidence id's are URL's
+				URL url = new URL(id);
+				uri[0] = url.toString();
+			} catch (MalformedURLException e) {
+				uri[0] = getUrl(id);
 			}
-			
 		} else {
 			return;
 		}

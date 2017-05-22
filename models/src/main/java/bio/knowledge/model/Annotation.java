@@ -76,5 +76,8 @@ public interface Annotation extends IdentifiedEntity {
 	boolean isVisible();
 
 	void setVisible(boolean visible);
+	
+	public String getUrl();
+	public void setUrl(String url);
 
 }

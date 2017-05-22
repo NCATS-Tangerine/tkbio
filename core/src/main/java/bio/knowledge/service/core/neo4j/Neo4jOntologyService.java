@@ -33,13 +33,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.database.repository.core.Neo4jOntologyRepository;
 import bio.knowledge.model.core.ModelException;
 import bio.knowledge.model.core.Ontology;
 import bio.knowledge.model.core.neo4j.Neo4jAbstractOntology;
@@ -50,9 +50,6 @@ import bio.knowledge.service.core.OntologyService;
 public class Neo4jOntologyService  
 	extends IdentifiedEntityServiceImpl<Ontology> 
 	implements OntologyService {
-
-    @Autowired
-	private Neo4jOntologyRepository ontologyRepository ;
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.String)
@@ -72,22 +69,7 @@ public class Neo4jOntologyService
     private static Map<String,Ontology> ontologyCatalog = new HashMap<String,Ontology>() ;
 
     public Ontology getOntologyByName(String ontologyName) throws ModelException {
-		Ontology ontology = null ;
-		try {
-			if(ontologyCatalog.containsKey(ontologyName)) {
-				ontology = ontologyCatalog.get(ontologyName) ;
-			} else {
-				ontology = ontologyRepository.findUniqueByNameEquals(ontologyName) ;
-			}
-		} catch ( RuntimeException e) {
-			e.printStackTrace();
-			throw new ModelException("Error retrieving Ontology with name '"+ontologyName+"'?") ;
-		}
-		
-		if( ontology != null && ! ontologyCatalog.containsKey(ontologyName)) {
-			ontologyCatalog.put(ontologyName,ontology) ;
-		}
-    	return ontology ;
+    	throw new NotImplementedException("Removed all reference to neo4j");
     }
     
     public Ontology addOntology(
@@ -95,14 +77,7 @@ public class Neo4jOntologyService
     		String name, 
     		String description
     ) throws ModelException {
-		// Retrieve existing external database record (by name) if it exists, otherwise, create it
-    	// Fields: source(ExternalDatabase), name, description, url, version
-		Ontology ontology = getOntologyByName( name ) ;
-		if( ontology == null ) {
-			ontology = new Neo4jAbstractOntology( source, name, description ) ;
-			ontology = ontologyRepository.save( (Neo4jAbstractOntology)ontology ) ;
-		}
-		return ontology ;
+    	throw new NotImplementedException("Removed all reference to neo4j");
     }
 
 	/* (non-Javadoc)
@@ -111,7 +86,7 @@ public class Neo4jOntologyService
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<Ontology> findByNameLike(String filter, Pageable pageable) {
-		return (Page<Ontology>)(Page)new PageImpl( ontologyRepository.findByNameLikeIgnoreCase( filter, pageable ));
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/* (non-Javadoc)
@@ -120,7 +95,7 @@ public class Neo4jOntologyService
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Page<Ontology> findAll(Pageable pageable) {
-		return (Page<Ontology>)(Page)ontologyRepository.findAll(pageable);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
     private List<Ontology> ontology = new ArrayList<Ontology>() ;
@@ -129,20 +104,7 @@ public class Neo4jOntologyService
 	//private GraphDatabaseService graphDb;
     
     private Stream<Ontology> getOntologyStream() {
-    	List<Ontology> ontology = new ArrayList<Ontology>() ;
-    	// 
-    	// SDN 4.0 Doesn't appear to instantiate a GraphDatabaseService instance?
-    	//
-    	// Accessing a collection from the repository 
-    	// needs to be explicitly wrapped in a Neo4j Transaction?
-    	// see http://stackoverflow.com/questions/11485090/org-neo4j-graphdb-notintransactionexception
-    	//try (Transaction tx = graphDb.beginTx()) {
-	    	for(Ontology c : ontologyRepository.getOntology()) {
-	    		ontology.add(c) ;
-	    	}
-	    //	tx.success() ;
-    	//}
-    	return ontology.stream() ;
+    	throw new NotImplementedException("Removed all reference to neo4j");
     }
     
     public List<Ontology> getOntology() {
@@ -166,7 +128,7 @@ public class Neo4jOntologyService
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<Ontology> getIdentifiers(Pageable pageable) {
-		return (Page<Ontology>)(Page)ontologyRepository.findAll(pageable);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/* (non-Javadoc)
@@ -174,7 +136,7 @@ public class Neo4jOntologyService
 	 */
 	@Override
 	public long countEntries() {
-		return ontologyRepository.count() ;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/* (non-Javadoc)
@@ -182,7 +144,7 @@ public class Neo4jOntologyService
 	 */
 	@Override
 	public long countHitsByNameLike(String filter) {
-		return ontologyRepository.countByNameLikeIgnoreCase(filter);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 

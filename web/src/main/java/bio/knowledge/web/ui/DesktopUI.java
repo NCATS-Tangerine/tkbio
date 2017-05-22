@@ -27,9 +27,6 @@ package bio.knowledge.web.ui;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
@@ -49,15 +46,12 @@ import org.springframework.context.NoSuchMessageException;
 import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 
-import com.gargoylesoftware.htmlunit.javascript.host.Text;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Widgetset;
-import com.vaadin.client.ui.layout.VLayoutSlot;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.Validator;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -74,7 +68,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
@@ -84,7 +77,6 @@ import com.vaadin.ui.PopupView;
 import com.vaadin.ui.PopupView.Content;
 import com.vaadin.ui.Slider;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -127,6 +119,7 @@ import bio.knowledge.web.view.PasswordResetView;
 import bio.knowledge.web.view.ReferenceView;
 import bio.knowledge.web.view.Registry;
 import bio.knowledge.web.view.ViewName;
+import bio.knowledge.web.view.components.KnowledgeBeaconWindow;
 import bio.knowledge.web.view.components.LibraryDetails;
 import bio.knowledge.web.view.components.SaveWindow;
 import bio.knowledge.web.view.components.UserDetails;
@@ -306,67 +299,9 @@ public class DesktopUI extends UI implements MessageService {
 	KnowledgeBeaconRegistry kbRegistry;
 	
 	public void openKnowledgeBeaconWindow() {
-		
-		Window window = new Window("Add a Knowledge Beacon");
-		
-		VerticalLayout vlayout = new VerticalLayout();
-		vlayout.setMargin(true);
-		vlayout.setSpacing(true);
-		
-		FormLayout flayout = new FormLayout();
-		flayout.setMargin(false);
-		flayout.setWidth(3, Unit.INCH);
-		
-		TextField nameField = new TextField("Name");
-		TextField urlField = new TextField("URL");
-		TextArea descrArea = new TextArea("Description");	
-		
-		nameField.setWidth("100%");
-		urlField.setWidth("100%");
-		descrArea.setWidth("100%");
-		
-		urlField.addValidator(new Validator() {
-
-			@Override
-			public void validate(Object value) throws InvalidValueException {
-				String url = (String) value;
-				try {
-					URL trueUrl = new URL(url);
-					trueUrl.toURI();
-				} catch (MalformedURLException | URISyntaxException e) {
-					throw new InvalidValueException(url + " is not a valid URL");
-				}
-			}
-			
-		});
-		
-		Button addButton = new Button();
-
-		addButton.setCaption("Add Beacon");
-		
-		addButton.addClickListener(new ClickListener() {
-			
-			@Override
-			public void buttonClick(ClickEvent event) {
-//				kbRegistry.addKnowledgeBeacon("name", "description", textField.getValue());
-//				Notification.show("Knowledge beacon " + textField.getValue() + " added");
-//				
-				String name = nameField.getValue();
-				String description = descrArea.getValue();
-				String url = urlField.getValue();
-			}
-			
-		});
-	
-		flayout.addComponents(nameField, urlField, descrArea);		
-		vlayout.addComponents(flayout, addButton);
-		vlayout.setComponentAlignment(addButton, Alignment.BOTTOM_RIGHT);
-		window.setContent(vlayout);
-		
-		window.center();
-		this.addWindow(window);
+		KnowledgeBeaconWindow kbWindow = new KnowledgeBeaconWindow(kbRegistry, query);
+		this.addWindow(kbWindow);
 	}
-	
 	
 	/**
 	 * 
@@ -1577,8 +1512,8 @@ public class DesktopUI extends UI implements MessageService {
 						user != null ? user.getIdsOfGroupsBelongedTo() : new String[0]);
 				if (map != null) {
 					conceptMapLibraryWindow = new Window();
-					UserProfile userProfile = getAuthenticationManager().getCurrentUser();
-					String userId = userProfile != null ? userProfile.getId() : null;
+					//UserProfile userProfile = getAuthenticationManager().getCurrentUser();
+					//String userId = userProfile != null ? userProfile.getId() : null;
 					LibraryDetails libraryDetails = new LibraryDetails(map, query, context,
 							event -> {
 								conceptMapLibraryWindow.close();

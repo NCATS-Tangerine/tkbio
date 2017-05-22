@@ -109,7 +109,6 @@ import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
 import bio.knowledge.service.DataServiceException;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
-import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.core.ListTableEntryCounter;
 import bio.knowledge.service.core.ListTableFilteredHitCounter;
 import bio.knowledge.service.core.ListTablePageCounter;
@@ -357,7 +356,7 @@ public class ListView extends BaseView {
 					}
 					String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
 					// We always want to fill the table with enough rows so that the scroll bar shows.
-					int pageSize = (int) dataTable.getHeightByRows() + 5;
+					int pageSize = (int) dataTable.getHeightByRows() * 2;
 					container.addAll(pager.getDataPage(1, pageSize, filter, sorter, isAscending));
 					loadedAllData = false;
 					nextPageNumber = 1;
@@ -372,10 +371,11 @@ public class ListView extends BaseView {
 		private int nextPageNumber = 1;
 		public void loadNextPage() {
 			if (pager != null && !loadedAllData) {
+				int pageSize = (int) dataTable.getHeightByRows() * 2;
 				loadingDataPage = true;
 				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
 				List<? extends IdentifiedEntity> data = 
-						pager.getDataPage(nextPageNumber, DATA_PAGE_SIZE, filter, sorter, isAscending);
+						pager.getDataPage(nextPageNumber, pageSize, filter, sorter, isAscending);
 				container.addAll(data);
 				nextPageNumber++;
 				loadingDataPage = false;

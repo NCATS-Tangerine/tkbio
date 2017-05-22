@@ -37,8 +37,6 @@ import com.vaadin.navigator.ViewProvider;
 import com.vaadin.server.Page;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -149,7 +147,7 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 			}
 		};
 		
-		this.addBeaconBtn.addClickListener(event -> {
+		this.manageBeaconBtn.addClickListener(event -> {
 			((DesktopUI) UI.getCurrent()).openKnowledgeBeaconWindow();
 		});
 		

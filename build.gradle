@@ -32,7 +32,9 @@ allprojects {
 	
 	// May 2017 - operating baseline implementation of the Translator Knowledge.Bio
 	// including a Knowledge Beacon server wrapping KB 3.0 data
-	version = '4.0.6'  // May 10, added "Beacon form registration"
+	// Removed REST and API server components
+	// "Manage Beacons" elaborated
+	version = '4.0.7'
 
     apply plugin: 'maven'
     apply plugin: 'java'
@@ -141,7 +143,6 @@ allprojects {
 }
 
 evaluationDependsOn(':dataloader')
-evaluationDependsOn(':rest')
 evaluationDependsOn(':web')
 
 configurations {
@@ -159,7 +160,6 @@ configurations.all {
 
 dependencies {
 	compile project(':dataloader')
-	compile project(':rest')
 	compile project(':web')
 }
 

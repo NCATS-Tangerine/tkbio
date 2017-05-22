@@ -39,6 +39,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.database.repository.StatementRepository;
 import bio.knowledge.datasource.ComplexDataService;
 import bio.knowledge.datasource.DataService;
 import bio.knowledge.datasource.DataServiceUtility;
@@ -93,9 +93,6 @@ public class StatementService
 	
 	@Autowired
 	private PredicateService predicateService ;
-
-	@Autowired
-	private StatementRepository statementRepository;
 
 	private String SEPARATOR = " ";
 	
@@ -167,12 +164,7 @@ public class StatementService
 	private List<Statement> statementList = new ArrayList<Statement>();
 
 	private Stream<Statement> getStatementStream() {
-		// TODO: should this function be RelationSearchMode aware?
-		List<Statement> statements = new ArrayList<Statement>();
-		for (Statement c : statementRepository.getStatements()) {
-			statements.add(c);
-		}
-		return statements.stream();
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	public List<Statement> getStatements() {
@@ -202,7 +194,7 @@ public class StatementService
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<Statement> getIdentifiers(Pageable pageable) {
-		return (Page<Statement>) (Page) statementRepository.findAll(pageable);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/*
@@ -214,111 +206,7 @@ public class StatementService
 	 */
 	@SuppressWarnings({ "unchecked" })
 	private Page<Statement> findByFilter(String filter, Pageable pageable) {
-
-		long startTime = System.currentTimeMillis();
-
-		/*
-		 * Searches are constrained to the currently selected currentQueryConcept; 
-		 */
-		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
-		Optional<Set<SemanticGroup>> currentConceptTypes = query.getConceptTypes();
-		
-		if (!currentConceptOpt.isPresent()) return null;
-
-		ArrayList<String> conceptTypeFilter = new ArrayList<>();
-		String conceptTypeCodes = new String();
-
-		if (currentConceptTypes.isPresent()) {
-			Set<SemanticGroup> ct = currentConceptTypes.get();
-			for (SemanticGroup type : ct) {
-				conceptTypeFilter.add(type.name());
-				// appending all semTypeFilter codes for making cache key "discarding first character i.e T"
-				conceptTypeCodes = conceptTypeCodes + type.name();
-			}
-		}
-
-		Concept concept = currentConceptOpt.get() ;
-		String accessionId = concept.getId() ;
-		
-		// this is key used for caching purpose,(conceptId + Selected SemanticType + textFilter + pageable)
-
-		//String cacheKey = accessionId + "#" + conceptTypeCodes + "#" + filter + "#" + pageable.hashCode();
-		//cacheKey = Base64.getEncoder().encodeToString(cacheKey.getBytes());
-		
-		String pageKey = new Integer(pageable.hashCode()).toString();
-		CacheLocation cacheLocation = 
-				cache.searchForResultSet("Statement", accessionId, new String[] { conceptTypeCodes, filter, pageKey });
-
-		// Is key present ? then fetch it from cache
-		//List<Statement> cachedResult = (List<Statement>) cache.getResultSetCache().get(cacheKey);
-		List<Statement> cachedResult = (List<Statement>) cacheLocation.getResultSet();
-
-		List<Statement> statements ;
-		
-		if (cachedResult == null) {
-			
-			List<Map<String, Object>> data ;
-			
-			if (filter.trim().isEmpty() && !currentConceptTypes.isPresent()) {
-				_logger.trace("Filter Empty : Calling findByConcept ");
-				data = statementRepository.findByConcept((Neo4jConcept) concept, conceptTypeFilter, pageable);
-
-			} else {
-				_logger.trace("Filter is there : " + filter + " Calling findByConceptFiltered");
-				// splitting for word by word search
-				String[] words = filter.split(SEPARATOR);
-				data = statementRepository.findByConceptFiltered((Neo4jConcept) concept, conceptTypeFilter, words,
-						pageable);
-			}
-			
-			statements = new ArrayList<>();
-			for (Map<String, Object> entry : data) {
-				
-				// statement object, used as DAO, without any relationships
-				Statement statement = (Statement) entry.get("statement");
-				
-				// fill  subject relationship
-				if (entry.get("subject") != null) {
-					Concept subject = (Concept) entry.get("subject");
-					statement.setSubject(subject);
-				}
-				if (entry.get("relation") != null) {
-					Predicate relation = (Predicate) entry.get("relation");
-					relation = predicateService.annotate(relation) ;
-					statement.setRelation(relation);
-				}
-				// fill object relationship
-				if (entry.get("object") != null) {
-					Concept object = (Concept) entry.get("object");
-					statement.setObject(object);
-				}
-				
-				// fill evidence relationship
-				Evidence evidence = (Evidence) entry.get("evidence");
-				if ( evidence == null) {
-					// set empty evidence relationship,it means subject and
-					// object available for statement without any evidence
-					evidence =  new Neo4jEvidence();
-				}
-				evidence.setStatement(statement);
-				statement.setEvidence(evidence);
-				
-				statements.add(statement);
-			}
-			// putting fetched result to cache
-			// cache.getResultSetCache().put(cacheKey, statements);
-			cacheLocation.setResultSet(statements);
-			
-			_logger.trace("Fetched from database");
-			
-		} else {
-			_logger.trace("Fetched from cached data");
-			statements = cachedResult;
-		}
-		long endTime = System.currentTimeMillis();
-		_logger.trace("Total Time(in ms) by findByFilter : " + (endTime - startTime));
-		return new PageImpl<Statement>(statements, pageable, statements.size());
-
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	@Override
@@ -396,42 +284,7 @@ public class StatementService
 	}
 
 	public Neo4jGeneralStatement findbySourceAndTargetId(String sourceAccessionId, String targetId, String relationName){
-
-		List<Map<String, Object>> result = null ;
-		result = statementRepository.
-					findBySourceTargetAndRelation(sourceAccessionId,targetId,relationName);
-	
-		if(result==null || result.isEmpty()) return null ;
-		
-		Map<String, Object> entry = result.get(0);
-		Neo4jGeneralStatement statement = (Neo4jGeneralStatement)entry.get("statement");
-
-		Concept subject = (Concept) entry.get("subject");
-		if (subject != null) {
-			statement.setSubject(subject);
-		}
-		
-		Predicate relation = (Predicate) entry.get("relation");
-		if (relation != null) {
-			relation = predicateService.annotate(relation) ;
-			statement.setRelation(relation);
-		}
-		
-		Concept object = (Concept) entry.get("object");
-		if (object != null) {
-			statement.setObject(object);
-		}
-		
-		Neo4jEvidence evidence = (Neo4jEvidence)entry.get("evidence");
-		if ( evidence == null) {
-			// set empty evidence relationship,it means subject and
-			// object available for statement without any evidence
-			evidence =  new Neo4jEvidence();
-		}
-		evidence.setStatement(statement);
-		statement.setEvidence(evidence);
-		
-		return statement;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/**
@@ -441,69 +294,7 @@ public class StatementService
 	 * @return
 	 */
 	private long countHelper(String filter) {
-
-		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
-		if (!currentConceptOpt.isPresent()) return 0L;
-		
-		Concept concept = currentConceptOpt.get() ;
-		String accessionId = concept.getId();
-		
-		Optional<Set<SemanticGroup>> currentConceptTypes = query.getConceptTypes();
-		ArrayList<String> conceptTypeFilter = new ArrayList<>();
-		String conceptTypeCodes = new String();
-		if (currentConceptTypes.isPresent()) {
-			Set<SemanticGroup> conceptTypes = currentConceptTypes.get();
-			for (SemanticGroup type : conceptTypes) {
-				conceptTypeFilter.add(type.name());
-				// appending all semTypeFilter codes for making cache key 
-				// "discarding first character i.e T"
-				conceptTypeCodes = conceptTypeCodes + type.name();
-			}
-		}
-
-		// creating cache key using (conceptId + Selected SemanticType + textFilter)
-		
-		//String cacheKey = ( accessionId + "#" + conceptTypeCodes + "#" + filter );
-		//cacheKey = Base64.getEncoder().encodeToString(cacheKey.getBytes());
-
-		CacheLocation cacheLocation = 
-				cache.searchForCounter(
-						"Statement", 
-						accessionId, 
-						new String[] { conceptTypeCodes, filter }
-				);
-		
-		// Is key present ? then fetch it from cache
-		
-		//Long count = cache.getCountCache().get(cacheKey);
-		
-		Long count = cacheLocation.getCounter();
-		
-		if (filter.trim().isEmpty() &&  !currentConceptTypes.isPresent()) {
-			if (count == null) {
-				count = statementRepository.countByConcept((Neo4jConcept) concept, conceptTypeFilter);
-				_logger.trace("Inside countEntries (From Database) : " + count);
-			}
-			_logger.trace("Inside countEntries (From Cached Result) : " + count);
-
-		} else {
-			if (count == null) {
-				count = statementRepository.
-							countByNameLikeIgnoreCase(
-									(Neo4jConcept) concept,
-									filter.split(" "), 
-									conceptTypeFilter
-							);
-				_logger.trace("Inside countHitsByNameLike (From Database) : " + count);
-			}
-			_logger.trace("Inside countHitsByNameLike (From Cached Result) : " + count);
-		}
-
-		// put fetched result to map before returning
-		//cache.getCountCache().put(cacheKey, count);
-		cacheLocation.setCounter(count);
-
-		return count;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	/***
 	 * Helper for PMID based find by.
@@ -513,84 +304,7 @@ public class StatementService
 	 */
 	@SuppressWarnings({ "unchecked" })
 	private Page<Statement> findByPMID(String filter, Pageable pageable) {
-		
-		long startTime = System.currentTimeMillis();
-
-		List<Statement> statements = new ArrayList<>();
-		List<Map<String, Object>> data = new ArrayList<>();
-		
-		Optional<String> currentPmidOpt = query.getCurrentPmid();
-		if (!currentPmidOpt.isPresent()){
-			return new PageImpl<Statement>(statements, pageable, statements.size());
-		}
-		
-		Optional<Set<SemanticGroup>> currentConceptTypes = query.getConceptTypes();
-
-		ArrayList<String> conceptTypeFilter = new ArrayList<>();
-		String conceptTypeCodes = new String();
-		if (currentConceptTypes.isPresent()) {
-			Set<SemanticGroup> conceptTypes = currentConceptTypes.get();
-			for (SemanticGroup type : conceptTypes) {
-				conceptTypeFilter.add(type.name());
-				conceptTypeCodes = conceptTypeCodes + type.name();
-			}
-		}
-		
-		String PMID = currentPmidOpt.get();
-		//String cacheKey = PMID + "#" + conceptTypeCodes + "#" + filter + "#" + pageable.hashCode();
-		//cacheKey = Base64.getEncoder().encodeToString(cacheKey.getBytes());
-
-		String pageKey = new Integer(pageable.hashCode()).toString();
-		CacheLocation cacheLocation = 
-				cache.searchForResultSet(
-						"Statement", 
-						PMID, 
-						new String[] { conceptTypeCodes, filter, pageKey }
-				);
-		
-		// Is key present ? then fetch it from cache
-		//List<Statement> cachedResult = (List<Statement>) cache.getResultSetCache().get(cacheKey);
-		
-		List<Statement> cachedResult = (List<Statement>) cacheLocation.getResultSet();
-		
-		if (cachedResult == null) {
-				// splitting for word by word search
-				String[] words = filter.split(SEPARATOR);
-				data = statementRepository.findByPMID(currentPmidOpt.get(), conceptTypeFilter, words, pageable);
-			for (Map<String, Object> entry : data) {
-				// statement object without any relationships
-				Neo4jGeneralStatement statement = (Neo4jGeneralStatement) entry.get("statement");
-				
-				statement.setSubject((Concept) entry.get("subject"));
-				
-				Predicate relation = (Predicate) entry.get("relation");
-				relation = predicateService.annotate(relation) ;
-				statement.setRelation(relation);
-				
-				statement.setObject((Concept) entry.get("object"));
-				
-				Neo4jEvidence evidence = (Neo4jEvidence)entry.get("evidence");
-				if ( evidence == null) {
-					// set empty evidence relationship,it means subject and
-					// object available for statement without any evidence
-					evidence =  new Neo4jEvidence();
-				}
-				evidence.setStatement(statement);
-				statement.setEvidence(evidence);
-				
-				statements.add(statement);
-			}
-			// putting fetched result to cache
-			//cache.getResultSetCache().put(cacheKey, statements);		
-			cacheLocation.setResultSet(statements);
-			
-		} else {
-			statements = cachedResult;
-		}
-		long endTime = System.currentTimeMillis();
-		_logger.trace("Total Time(in ms) by findByFilterByPMID : " + (endTime - startTime));
-		return new PageImpl<Statement>(statements, pageable, statements.size());
-
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	
 	/**
@@ -600,44 +314,7 @@ public class StatementService
 	 * @return
 	 */
 	private long countByPMID(String filter) {
-		Optional<String> currentPmidOpt = query.getCurrentPmid();
-		if (!currentPmidOpt.isPresent())
-			return 0;
-		Optional<Set<SemanticGroup>> currentConceptTypes = query.getConceptTypes();
-		ArrayList<String> conceptTypeFilter = new ArrayList<>();
-		String conceptTypeCodes = new String();
-		if (currentConceptTypes.isPresent()) {
-			Set<SemanticGroup> conceptTypes = currentConceptTypes.get();
-			for (SemanticGroup type : conceptTypes) {
-				conceptTypeFilter.add(type.name());
-				conceptTypeCodes = conceptTypeCodes + type.name();
-			}
-		}
-		String PMID = currentPmidOpt.get();
-		//String cacheKey = (PMID + "#" + conceptTypeCodes + "#" + filter);
-		//cacheKey = Base64.getEncoder().encodeToString(cacheKey.getBytes());
-
-		CacheLocation cacheLocation = 
-				cache.searchForCounter(
-						"Statement", 
-						PMID, 
-						new String[] { conceptTypeCodes, filter }
-		);
-		
-		//Long count = cache.getCountCache().get(cacheKey);
-		
-		Long count = cacheLocation.getCounter();
-		
-		if (count == null) {
-			count = statementRepository.countByPMID(currentPmidOpt.get(), conceptTypeFilter, filter.split(SEPARATOR));
-		}
-		
-		_logger.trace("Inside countByPMID : " + count);
-		// put fetched result to map before returning
-		//cache.getCountCache().put(cacheKey, count);
-		cacheLocation.setCounter(count);
-		
-		return count;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/*
@@ -972,7 +649,7 @@ public class StatementService
 	 * @return
 	 */
 	public Neo4jGeneralStatement save(Neo4jGeneralStatement statement) {
-		return statementRepository.save(statement);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	
 }

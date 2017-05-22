@@ -18,22 +18,20 @@ public class GenericKnowledgeService {
 
 	protected <T> CompletableFuture<List<T>> query(SupplierBuilder<T> builder) {
 		
-		List<ApiClient> apiClients = registry.getApiClients() ;
-		int numberOfCLients = apiClients.size();
+		List<CompletableFuture<List<T>>> futures = new ArrayList<CompletableFuture<List<T>>>();
+		
+		for (KnowledgeBeacon beacon : registry.getKnowledgeBeacons()) {
+			if (beacon.isEnabled()) {
+				ListSupplier<T> supplier = builder.build(beacon.getApiClient());
+				CompletableFuture<List<T>> future = CompletableFuture.supplyAsync(supplier);
+				futures.add(future);
+			}
+		}
 		
 		@SuppressWarnings("unchecked")
-		CompletableFuture<List<T>>[] futures = new CompletableFuture[numberOfCLients];
+		CompletableFuture<List<T>>[] futureArray = futures.toArray(new CompletableFuture[futures.size()]);
 
-		int i = 0;
-		for (ApiClient apiClient : apiClients) {
-			ListSupplier<T> supplier = builder.build(apiClient);
-
-			CompletableFuture<List<T>> future = CompletableFuture.supplyAsync(supplier);
-
-			futures[i++] = future;
-		}
-
-		CompletableFuture<List<T>> combinedFuture = combineFutures(futures);
+		CompletableFuture<List<T>> combinedFuture = combineFutures(futureArray);
 
 		return combinedFuture;
 	}

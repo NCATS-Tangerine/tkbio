@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -40,7 +41,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.database.repository.organization.Neo4jContactFormRepository;
 import bio.knowledge.model.organization.ContactForm;
 import bio.knowledge.model.organization.neo4j.Neo4jContactForm;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
@@ -51,9 +51,6 @@ public class Neo4jContactFormService
 	extends IdentifiedEntityServiceImpl<ContactForm> 
 	implements ContactFormService {
 	
-	@Autowired
-	private Neo4jContactFormRepository contactFormRepository ;
-
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])
 	 */
@@ -68,7 +65,7 @@ public class Neo4jContactFormService
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<ContactForm> findByNameLike(String filter, Pageable pageable){
-		return (Page<ContactForm>)(Page)new PageImpl<Neo4jContactForm>( contactFormRepository.findByNameLikeIgnoreCase(filter, pageable ) );
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	
     private List<ContactForm> forms = new ArrayList<ContactForm>() ;
@@ -77,20 +74,7 @@ public class Neo4jContactFormService
 	//private GraphDatabaseService graphDb;
     
     private Stream<ContactForm> getContactFormStream() {
-    	List<ContactForm> forms = new ArrayList<ContactForm>() ;
-    	// 
-    	// SDN 4.0 Doesn't appear to instantiate a GraphDatabaseService instance?
-    	//
-    	// Accessing a collection from the repository 
-    	// needs to be explicitly wrapped in a Neo4j Transaction?
-    	// see http://stackoverflow.com/questions/11485090/org-neo4j-graphdb-notintransactionexception
-    	//try (Transaction tx = graphDb.beginTx()) {
-	    	for(ContactForm c : contactFormRepository.getContactForms()) {
-	    		forms.add(c) ;
-	    	}
-	    //	tx.success() ;
-    	//}
-    	return forms.stream() ;
+    	throw new NotImplementedException("Removed all reference to neo4j");
     }
     
     public List<ContactForm> getContactForms() {
@@ -114,7 +98,7 @@ public class Neo4jContactFormService
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<ContactForm> getIdentifiers(Pageable pageable) {
-		return (Page<ContactForm>)(Page)contactFormRepository.findAll(pageable) ;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	
 	/* (non-Javadoc)
@@ -122,18 +106,18 @@ public class Neo4jContactFormService
 	 */
 	@Override
 	public long countEntries() {
-		return contactFormRepository.count() ;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
     
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List<ContactForm> getContactMessages() {
-		return (List<ContactForm>)(List)contactFormRepository.findAll(new Sort(Direction.ASC,"name")) ;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<ContactForm> findAll(Pageable pageable) {
-		return (Page<ContactForm>)(Page)contactFormRepository.findAll(pageable);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/* (non-Javadoc)
@@ -141,7 +125,7 @@ public class Neo4jContactFormService
 	 */
 	@Override
 	public long countHitsByNameLike(String filter) {
-		return contactFormRepository.countByNameLikeIgnoreCase(filter);
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	/* (non-Javadoc)
@@ -157,18 +141,7 @@ public class Neo4jContactFormService
 			String subject,
 			String message
 	) {
-		ContactForm form = 
-				new Neo4jContactForm(
-						username, 
-						name, 
-						email, 
-						affiliation, 
-						client_country, 
-						subject, 
-						message
-				) ;
-		
-		return contactFormRepository.save((Neo4jContactForm)form) ;
+		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 }
