@@ -6,29 +6,24 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
-import com.vaadin.data.Validator;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.Validator;
 import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Notification.Type;
 
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeacon;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
-import bio.knowledge.web.ui.DesktopUI;
 
 public class KnowledgeBeaconWindow extends Window {
 	

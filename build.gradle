@@ -141,7 +141,6 @@ allprojects {
 }
 
 evaluationDependsOn(':dataloader')
-evaluationDependsOn(':rest')
 evaluationDependsOn(':web')
 
 configurations {
@@ -159,7 +158,6 @@ configurations.all {
 
 dependencies {
 	compile project(':dataloader')
-	compile project(':rest')
 	compile project(':web')
 }
 
