@@ -330,5 +330,14 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 		};
 		return query(builder);
 	}
+
+	/**
+	 * 
+	 * @param emci
+	 * @return
+	 */
+	public String discoverExactMatchClique(String emci) {
+		return emci;
+	}
 	
 }
