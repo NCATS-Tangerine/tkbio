@@ -1,1 +1,1 @@
-include "models", "database", "core", "services", "dataloader", "api:client", "rest", "web", "selenium"
+include "models", "database", "core", "services", "dataloader", "api:client", "web", "selenium"

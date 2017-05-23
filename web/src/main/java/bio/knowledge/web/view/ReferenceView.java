@@ -49,7 +49,6 @@ import com.vaadin.ui.VerticalLayout;
 
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.RdfUtil;
-import bio.knowledge.model.Reference;
 import bio.knowledge.service.AnnotationService;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.web.design.ReferenceDesign;

@@ -27,18 +27,11 @@ package bio.knowledge.web.ui;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,16 +46,12 @@ import org.springframework.context.NoSuchMessageException;
 import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 
-import com.gargoylesoftware.htmlunit.javascript.host.Text;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Widgetset;
-import com.vaadin.client.ui.layout.VLayoutSlot;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.Validator;
-import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -79,18 +68,15 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.PopupView.Content;
 import com.vaadin.ui.Slider;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -117,7 +103,6 @@ import bio.knowledge.service.ConceptService;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
-import bio.knowledge.service.beacon.KnowledgeBeacon;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.core.MessageService;
 import bio.knowledge.web.KBUploader;
@@ -137,7 +122,6 @@ import bio.knowledge.web.view.ViewName;
 import bio.knowledge.web.view.components.KnowledgeBeaconWindow;
 import bio.knowledge.web.view.components.LibraryDetails;
 import bio.knowledge.web.view.components.SaveWindow;
-import bio.knowledge.web.view.components.SingleRadioButton;
 import bio.knowledge.web.view.components.UserDetails;
 
 /**
@@ -314,7 +298,6 @@ public class DesktopUI extends UI implements MessageService {
 	@Autowired
 	KnowledgeBeaconRegistry kbRegistry;
 	
-	@SuppressWarnings("unused")
 	public void openKnowledgeBeaconWindow() {
 		KnowledgeBeaconWindow kbWindow = new KnowledgeBeaconWindow(kbRegistry, query);
 		this.addWindow(kbWindow);
@@ -1529,8 +1512,8 @@ public class DesktopUI extends UI implements MessageService {
 						user != null ? user.getIdsOfGroupsBelongedTo() : new String[0]);
 				if (map != null) {
 					conceptMapLibraryWindow = new Window();
-					UserProfile userProfile = getAuthenticationManager().getCurrentUser();
-					String userId = userProfile != null ? userProfile.getId() : null;
+					//UserProfile userProfile = getAuthenticationManager().getCurrentUser();
+					//String userId = userProfile != null ? userProfile.getId() : null;
 					LibraryDetails libraryDetails = new LibraryDetails(map, query, context,
 							event -> {
 								conceptMapLibraryWindow.close();

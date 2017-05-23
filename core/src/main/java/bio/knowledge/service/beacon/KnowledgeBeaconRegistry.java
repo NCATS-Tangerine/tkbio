@@ -34,10 +34,12 @@ public class KnowledgeBeaconRegistry {
 	
 	@PostConstruct
 	public void init() {
+		
+		// Reference Knowledge Beacon
 		createBeacon(
 				"Knowledge.Bio Beacon", 
 				"KB 3.0 reference implementation", 
-				"beacon.medgeninformatics.net/api" 
+				"beacon.medgeninformatics.net" 
 		);
 		
 		List<Neo4jKnowledgeBeacon> beacons = findAllBeacons();
