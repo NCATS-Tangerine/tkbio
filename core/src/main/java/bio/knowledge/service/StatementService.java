@@ -281,8 +281,20 @@ public class StatementService
 		} 
 	}
 
-	public Neo4jGeneralStatement findbySourceAndTargetId(String sourceAccessionId, String targetId, String relationName){
-		throw new NotImplementedException("Removed all reference to neo4j");
+	public Statement findbySourceAndTargetId(String sourceAccessionId, String targetId, String relationName){
+		CompletableFuture<List<Statement>> future = 
+				kbService.getStatements(sourceAccessionId, null, null, 0, 1);
+		try {
+			List<Statement> statements = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+			if (statements.size() >= 1) {
+				return statements.get(0);
+			} else {
+				return null;
+			}
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**

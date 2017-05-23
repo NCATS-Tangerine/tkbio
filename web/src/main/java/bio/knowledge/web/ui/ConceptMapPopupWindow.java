@@ -232,7 +232,7 @@ public class ConceptMapPopupWindow {
 			basicSkeleton(name, selectedConcept.getSemanticGroup().getDescription(), x, y);
 		}
 	}
-
+	
 	public void conceptMapEdgePopUp(String sourceId, String targetId, String label, int x, int y, String description,
 			String uri) {
 
@@ -252,6 +252,8 @@ public class ConceptMapPopupWindow {
 		// TODO: How to handle the User's Annotation case here?
 		Statement selectedStatement = 
 				statementService.findbySourceAndTargetId(sourceId, targetId, label);
+		
+		if (selectedStatement == null) { return; }
 
 		// Create buttons related to node popup
 		// Okay -> no
