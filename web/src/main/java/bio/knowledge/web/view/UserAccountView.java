@@ -25,9 +25,15 @@
  */
 package bio.knowledge.web.view;
 
+import java.awt.Desktop;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
-import com.stormpath.sdk.resource.ResourceException;
+import org.apache.jena.base.Sys;
+import org.apache.jena.sparql.function.library.e;
+import org.eclipse.jetty.server.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.IndexedContainer;
@@ -53,12 +59,17 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.renderers.ButtonRenderer;
 
 import bio.knowledge.authentication.AuthenticationListener;
-import bio.knowledge.authentication.Role;
-import bio.knowledge.authentication.UserGroup;
-import bio.knowledge.authentication.UserProfile;
+import bio.knowledge.authentication.AuthenticationManager;
+import bio.knowledge.authentication.exceptions.AccountDoesNotExistException;
 import bio.knowledge.authentication.exceptions.AuthenticationException;
 import bio.knowledge.authentication.exceptions.EmailAlreadyInUseException;
 import bio.knowledge.authentication.exceptions.UsernameAlreadyInUseException;
+import bio.knowledge.model.user.Group;
+import bio.knowledge.model.user.Permission;
+import bio.knowledge.model.user.Role;
+import bio.knowledge.model.user.User;
+import bio.knowledge.service.user.GroupService;
+import bio.knowledge.service.user.UserService;
 import bio.knowledge.validation.ValidationHandler;
 import bio.knowledge.web.design.AboutUserDesign;
 import bio.knowledge.web.ui.DesktopUI;
@@ -80,7 +91,7 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 	
 	public UserAccountView(Navigator navigator) {
 		
-		this.navigator = navigator;		
+		this.navigator = navigator;
 		
 		showName = optionGroup.addItem();
 		showEmail = optionGroup.addItem();
@@ -137,7 +148,7 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 		
 		addGroupBtn.addClickListener(event -> {
 			DesktopUI ui = ((DesktopUI)UI.getCurrent());
-			UserProfile user = ui.getAuthenticationManager().getCurrentUser();
+			User user = ui.getAuthenticationManager().getCurrentUser();
 			try {
 				ui.getAuthenticationManager().createGroup(user, newGroupField.getValue());
 				Notification.show("Group created");
@@ -147,7 +158,7 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 			}
 			
 			chooseGroupComboBox.removeAllItems();
-			for (UserGroup group : user.getGroupsOwned()) {
+			for (Group group : user.getGroupsOwned()) {
 				chooseGroupComboBox.addItem(group);
 			}
 		});
@@ -157,11 +168,11 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 		addUserBtn.addClickListener(event -> {
 			String name = newUserField.getValue();
 			name = name.trim();
-			UserGroup group = (UserGroup) chooseGroupComboBox.getValue();
+			Group group = (Group) chooseGroupComboBox.getValue();
 			try {
-				group.addMember(name);
+				((DesktopUI) UI.getCurrent()).getAuthenticationManager().addMember(group, name);
 				newUserField.setValue("");
-			} catch (AuthenticationException e) {
+			} catch (AccountDoesNotExistException e) {
 				Notification.show(e.getMessage());
 			}
 			
@@ -174,7 +185,7 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 
 			@Override
 			public String getValue(Item item, Object itemId, Object propertyId) {
-				return ((UserProfile) itemId).getUsername();
+				return ((User) itemId).getUsername();
 			}
 
 			@Override
@@ -204,9 +215,9 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 		// text as HTML, which is what we need here
 		bio.knowledge.renderer.ButtonRenderer deleteRenderer = new bio.knowledge.renderer.ButtonRenderer();
 		deleteRenderer.addClickListener(event -> {
-			UserGroup group = (UserGroup) chooseGroupComboBox.getValue();
-			UserProfile user = (UserProfile) event.getItemId();
-			group.removeMember(user);
+			Group group = (Group) chooseGroupComboBox.getValue();
+			User user = (User) event.getItemId();
+			((DesktopUI) UI.getCurrent()).getAuthenticationManager().removeMember(group, user);
 			
 			refreshContainer(container, group);
 		});
@@ -215,7 +226,7 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 			Window window = new Window();
 			UI.getCurrent().addWindow(window);
 			
-			UserProfile user = (UserProfile) event.getItemId();
+			User user = (User) event.getItemId();
 			UserDetails userDetails = new UserDetails(user, clickEvent -> {
 				window.close();
 			});
@@ -240,7 +251,7 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 		chooseGroupComboBox.setVisible(true);
 		
 		chooseGroupComboBox.addValueChangeListener(event -> {
-			UserGroup group = (UserGroup) event.getProperty().getValue();
+			Group group = (Group) event.getProperty().getValue();
 			
 			refreshContainer(container, group);
 			if (group != chooseGroupComboBox.getNullSelectionItemId()) {
@@ -331,21 +342,21 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 	}
 	
 	private void refreshGroupChooser() {
-		UserProfile profile = ((DesktopUI) UI.getCurrent()).getAuthenticationManager().getCurrentUser();
+		User user = ((DesktopUI) UI.getCurrent()).getAuthenticationManager().getCurrentUser();
 		chooseGroupComboBox.setInputPrompt("Select a group");
 
 		if (chooseGroupComboBox.removeAllItems()) {
-			for (UserGroup group : profile.getGroupsOwned()) {
+			for (Group group : user.getGroupsOwned()) {
 				chooseGroupComboBox.addItem(group);
 			}
 		}
 	}
 	
-	private void refreshContainer(IndexedContainer container, UserGroup group) {
-		UserProfile currentUser = ((DesktopUI) UI.getCurrent()).getAuthenticationManager().getCurrentUser();
+	private void refreshContainer(IndexedContainer container, Group group) {
+		User currentUser = ((DesktopUI) UI.getCurrent()).getAuthenticationManager().getCurrentUser();
 		container.removeAllItems();
 		if (group != null) {
-			for (UserProfile profile : group.getMembers()) {
+			for (User profile : group.getMembers()) {
 				if (!profile.equals(currentUser)) {
 					container.addItem(profile);
 				}
@@ -356,9 +367,6 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 	@Override
 	public void enter(ViewChangeEvent event) {
 		setup();
-		
-		//DesktopUI ui = (DesktopUI) UI.getCurrent();
-		//UserProfile profile = ui.getAuthenticationManager().getCurrentUser();
 		
 		refreshGroupChooser();
 		
@@ -372,24 +380,26 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 		optionGroup.setItemCaption(showName, "Your full name");
 		optionGroup.setItemCaption(showEmail, "Your email");
 		
-		DesktopUI ui = (DesktopUI)UI.getCurrent();
-		UserProfile userProfile = ui.getAuthenticationManager().getCurrentUser();
-		if ( userProfile.getEmailPublicized()) {
+		DesktopUI ui = (DesktopUI) UI.getCurrent();
+		AuthenticationManager auth = ui.getAuthenticationManager();
+		User user = auth.getCurrentUser();
+		
+		if ( user.getPermission(Permission.EMAIL_PUBLICIZED)) {
 			optionGroup.select(showEmail);
 		}
 		
-		if (userProfile.getNamePublicized()) {
+		if (user.getPermission(Permission.NAME_PUBLICIZED)) {
 			optionGroup.select(showName);
 		}
 		
-		String email      = userProfile.getEmail();
-		String username   = userProfile.getUsername();
-		String facebook   = userProfile.getFacebookUrl();
-		String twitter    = userProfile.getTwitterUrl();
-		String linkedin   = userProfile.getLinkedInUrl();
-		String firstname  = userProfile.getFirstName();
-		String middlename = userProfile.getMiddleName();
-		String lastname   = userProfile.getLastName();
+		String email      = user.getEmail();
+		String username   = user.getUsername();
+		String facebook   = user.getFacebookUrl();
+		String twitter    = user.getTwitterUrl();
+		String linkedin   = user.getLinkedInUrl();
+		String firstname  = user.getFirstName();
+		String middlename = user.getMiddleName();
+		String lastname   = user.getLastName();
 		
 		this.emailField.setValue(email);
 		this.lastnameField.setValue(lastname);
@@ -415,39 +425,37 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 				facebookField.setValue(facebookUrl);
 				linkedInField.setValue(linkedinUrl);
 				twitterField.setValue(twitterUrl);
-				userProfile.setFacebookUrl(facebookUrl);
-				userProfile.setFirstName(firstname1);
-				userProfile.setTwitterUrl(twitterUrl);
-				userProfile.setLastName(lastname1);
-				userProfile.setLinkedInUrl(linkedinUrl);
-				userProfile.setMiddleName(middlename1);
-				userProfile.setEmailPublicized(((Collection) optionGroup.getValue()).contains(showEmail));
-				userProfile.setNamePublicized(((Collection) optionGroup.getValue()).contains(showName));
+				
+				user.setFacebookUrl(facebookUrl);
+				user.setFirstName(firstname1);
+				user.setTwitterUrl(twitterUrl);
+				user.setLastName(lastname1);
+				user.setLinkedInUrl(linkedinUrl);
+				user.setMiddleName(middlename1);
+				
+				user.setPermission(
+						Permission.EMAIL_PUBLICIZED,
+						((Collection) optionGroup.getValue()).contains(showEmail)
+				);
+				
+				user.setPermission(
+						Permission.NAME_PUBLICIZED,
+						((Collection) optionGroup.getValue()).contains(showName)
+				);
+				
+				auth.updateDetails(user);
 				
 				try {
-					userProfile.setEmail(email1);
+					auth.updateEmail(user, email1);
+					auth.updateUsername(user, username1);
+					
 				} catch (EmailAlreadyInUseException e1) {
-					validationHandler.addProhibitedMatchValidator(
-							emailField,
-							email1,
-							"That email is already in use."
-					);
+					validationHandler.addProhibitedMatchValidator(emailField, Pattern.quote(email1), "That email is already in use.");
 					validationHandler.validateImmediately(emailField);
-				} catch (ResourceException e2) {
-					Notification.show("Unknown error occurred with setting email to " + email1, Type.ERROR_MESSAGE);					
-				}
-				
-				try {
-					userProfile.setUsername(username1);
-				} catch (UsernameAlreadyInUseException e3) {
-					validationHandler.addProhibitedMatchValidator(
-							usernameField,
-							username1,
-							"That username is already in use."
-					);
+					
+				} catch (UsernameAlreadyInUseException e2) {
+					validationHandler.addProhibitedMatchValidator(usernameField, Pattern.quote(username1), "That username is already in use.");
 					validationHandler.validateImmediately(usernameField);
-				} catch (ResourceException e4) {
-					Notification.show("Unknown error occurred with setting username to " + username1, Type.ERROR_MESSAGE);
 				}
 			}
 			
@@ -462,7 +470,7 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 	}
 
 	@Override
-	public void onLogin(UserProfile user) { 
+	public void onLogin(User user) { 
 		
 	}
 
@@ -475,6 +483,6 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 
 	@Override
 	public Role[] permittedRoles() {
-		return Role.getAll();
+		return Role.values();
 	}
 }

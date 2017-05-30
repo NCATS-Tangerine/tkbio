@@ -82,10 +82,10 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.authentication.UserManager;
 import bio.knowledge.authentication.UserProfile;
+import bio.knowledge.database.repository.ConceptMapArchiveRepository;
 import bio.knowledge.graph.ConceptMapDisplay;
 import bio.knowledge.graph.jsonmodels.Edge;
 import bio.knowledge.graph.jsonmodels.EdgeData;
@@ -97,6 +97,12 @@ import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
+import bio.knowledge.model.datasource.ResultSet;
+import bio.knowledge.model.semmeddb.ConceptSemanticType;
+import bio.knowledge.model.semmeddb.Predication;
+import bio.knowledge.model.semmeddb.Sentence;
+import bio.knowledge.model.umls.SemanticType;
+import bio.knowledge.model.user.User;
 import bio.knowledge.service.AuthenticationState;
 import bio.knowledge.service.Cache;
 import bio.knowledge.service.ConceptMapArchiveService;
@@ -106,6 +112,8 @@ import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.core.MessageService;
+import bio.knowledge.service.semmeddb.ConceptSemanticTypeService;
+import bio.knowledge.service.user.UserService;
 import bio.knowledge.web.KBUploader;
 import bio.knowledge.web.view.AboutView;
 import bio.knowledge.web.view.ApplicationLayout;
@@ -157,6 +165,12 @@ public class DesktopUI extends UI implements MessageService {
 
 	@Autowired
 	Registry registry;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	private ConceptMapArchiveRepository conceptMapArchiveRepository;
 
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -1508,11 +1522,11 @@ public class DesktopUI extends UI implements MessageService {
 			if (uri.startsWith("map=")) {
 				applicationNavigator.navigateTo(ListView.NAME);
 
-				UserProfile user = authenticationManager.getCurrentUser();
+				User user = authenticationManager.getCurrentUser();
 
 				String conceptMapName = uri.replaceFirst("map=", "");
 				ConceptMapArchive map = conceptMapArchiveService.getConceptMapArchiveByName(conceptMapName,
-						user != null ? user.getId() : null,
+						user != null ? user.getAccountId() : null,
 						user != null ? user.getIdsOfGroupsBelongedTo() : new String[0]);
 				if (map != null) {
 					conceptMapLibraryWindow = new Window();

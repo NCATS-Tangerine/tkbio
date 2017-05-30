@@ -25,7 +25,9 @@
  */
 package bio.knowledge.authentication;
 
+import bio.knowledge.model.user.User;
+
 public interface AuthenticationListener {
-	public void onLogin(UserProfile user);
+	public void onLogin(User user);
 	public void onLogout();
 }

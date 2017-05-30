@@ -89,10 +89,11 @@ import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.authentication.UserManager;
 import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.model.Annotation;
+import bio.knowledge.datasource.DataSourceException;
+import bio.knowledge.datasource.rdf.RDFUtil;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.DomainModelException;
@@ -105,6 +106,8 @@ import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.OntologyTerm;
 import bio.knowledge.model.organization.ContactForm;
 import bio.knowledge.model.umls.SemanticType;
+import bio.knowledge.model.user.User;
+import bio.knowledge.model.wikidata.WikiProperty;
 import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
 import bio.knowledge.service.DataServiceException;
@@ -115,6 +118,12 @@ import bio.knowledge.service.core.ListTableFilteredHitCounter;
 import bio.knowledge.service.core.ListTablePageCounter;
 import bio.knowledge.service.core.ListTablePager;
 import bio.knowledge.service.core.TableSorter;
+import bio.knowledge.service.organization.ContactFormService;
+import bio.knowledge.service.semmeddb.ConceptSemanticTypeService;
+import bio.knowledge.service.semmeddb.PredicationService;
+import bio.knowledge.service.semmeddb.SentenceService;
+import bio.knowledge.service.user.UserService;
+import bio.knowledge.service.wikidata.WikiDataService;
 import bio.knowledge.web.ui.DesktopUI;
 import bio.knowledge.web.ui.PopupWindow;
 import bio.knowledge.web.ui.WikiDetailsHandler;
@@ -352,9 +361,10 @@ public class ListView extends BaseView {
 					AuthenticationManager authenticationManager = ((DesktopUI) UI.getCurrent()).getAuthenticationManager();
 					
 					if (authenticationManager.isUserAuthenticated()) {
-						UserProfile userProfile = authenticationManager.getCurrentUser();
-						
-						authenticationState.setState(userProfile.getId(), userProfile.getIdsOfGroupsBelongedTo());
+
+						User user = authenticationManager.getCurrentUser();
+						authenticationState.setState(user.getId(), user.getIdsOfGroupsBelongedTo());
+
 					} else {
 						authenticationState.setState(null, null);
 					}
@@ -855,8 +865,6 @@ public class ListView extends BaseView {
 
 		tabsheet.addSelectedTabChangeListener(event -> {
 			Label selectedLabel = (Label) tabsheet.getSelectedTab();
-			
-			//UserProfile userProfile = ((DesktopUI)UI.getCurrent()).getAuthenticationManager().getCurrentUser();
 			
 			if (selectedLabel == publicHiddenLabel) {
 				listContainer.setFirstPage();

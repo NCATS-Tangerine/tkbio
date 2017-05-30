@@ -32,8 +32,8 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.UI;
 
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.model.core.IdentifiedEntity;
+import bio.knowledge.model.user.User;
 import bio.knowledge.service.AuthenticationState;
 import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.service.core.ListTableEntryCounter;
@@ -67,15 +67,15 @@ class ListContainer implements Serializable {
 	private boolean isAscending = DEFAULT_IS_ASCENDING;
 	private TableSorter sorter = TableSorter.DEFAULT;
 
-	private UserProfile userProfile;
+	private User user;
 	
 	/**
 	 * Creates a new ListContainer.
 	 * <b>userProfile</b> is the user profile to search concept maps by.
 	 * @param userProfile
 	 */
-	protected ListContainer(UserProfile userProfile) { 
-		this.userProfile = userProfile;
+	protected ListContainer(User user) { 
+		this.user = user;
 	}
 	
 	public Boolean isEmpty() {
@@ -189,8 +189,8 @@ class ListContainer implements Serializable {
 				AuthenticationState authenticationState = ui.getAuthenticationState();
 				
 				if (authenticationManager.isUserAuthenticated()) {
-					UserProfile userProfile = authenticationManager.getCurrentUser();
-					authenticationState.setState(userProfile.getId(), userProfile.getIdsOfGroupsBelongedTo());
+					User user = authenticationManager.getCurrentUser();
+					authenticationState.setState(user.getId(), user.getIdsOfGroupsBelongedTo());
 				} else {
 					authenticationState.setState(null, null);
 				}

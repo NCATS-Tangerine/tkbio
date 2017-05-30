@@ -33,7 +33,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ClickableRenderer.RendererClickListener;
 
-import bio.knowledge.authentication.UserProfile;
+import bio.knowledge.model.user.User;
 import bio.knowledge.web.view.Registry.Mapping;
 
 /**
@@ -53,10 +53,10 @@ public class Book extends VerticalLayout {
 	
 	public Book(String[] columnNames,
 			Map<String, RendererClickListener> clickListenerMap,
-			UserProfile userProfile,
+			User user,
 			Mapping mapping) {
 		
-		listContainer = new ListContainer(userProfile);
+		listContainer = new ListContainer(user);
 		
 		listContainer.setContainer(mapping.getContainer());
 		listContainer.setPager(mapping.getPager());
