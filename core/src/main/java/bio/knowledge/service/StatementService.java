@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -55,15 +54,12 @@ import bio.knowledge.datasource.DataSourceRegistry;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
 import bio.knowledge.model.Concept;
-import bio.knowledge.model.Evidence;
-import bio.knowledge.model.Predicate;
 import bio.knowledge.model.RdfUtil;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
 import bio.knowledge.model.neo4j.Neo4jConcept;
-import bio.knowledge.model.neo4j.Neo4jEvidence;
 import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
 import bio.knowledge.model.wikidata.WikiDataPropertySemanticType;
@@ -90,11 +86,6 @@ public class StatementService
 
 	@Autowired
 	private Cache cache;
-	
-	@Autowired
-	private PredicateService predicateService ;
-
-	private String SEPARATOR = " ";
 	
 	@Autowired
 	private KnowledgeBeaconService kbService;
@@ -191,7 +182,6 @@ public class StatementService
 	 * bio.knowledge.service.core.IdentifiedEntityService#getIdentifiers(org.
 	 * springframework.data.domain.Pageable)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<Statement> getIdentifiers(Pageable pageable) {
 		throw new NotImplementedException("Removed all reference to neo4j");
@@ -204,7 +194,6 @@ public class StatementService
 	 * bio.knowledge.service.core.IdentifiedEntityServiceImpl#findByNameLike(
 	 * java.lang.String, org.springframework.data.domain.Pageable)
 	 */
-	@SuppressWarnings({ "unchecked" })
 	private Page<Statement> findByFilter(String filter, Pageable pageable) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
@@ -314,7 +303,6 @@ public class StatementService
 	 * @param pageable
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked" })
 	private Page<Statement> findByPMID(String filter, Pageable pageable) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}

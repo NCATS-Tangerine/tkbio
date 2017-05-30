@@ -213,9 +213,23 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 
 					@Override
 					public List<Statement> getList() {
+						
 						StatementsApi statementsApi = new StatementsApi(apiClient);
 						ExactmatchesApi exactMatchesApi = new ExactmatchesApi(apiClient);
 						
+						/* *****************************************************************
+						 *  May 27, 2017 RMB: 
+						 *  First implementation of the resolution of 'exact match' concepts
+						 *  is undertaken here, just before statement retrieval; however, this
+						 *  particular implementation may have some limitations.  The basic
+						 *  assumption made here is that the list of input emcis only need 
+						 *  to be locally resolved with the current Knowledge Beacon 
+						 *  processing the call; however, it may be the case that some
+						 *  other Knowledge Beacon knows about an equivalency that may be
+						 *  useful here, in this Knowledge Beacon. This would not be known
+						 *  without querying the whole series of available Knowledge Beacons
+						 *  perhaps iteratively.
+						 ******************************************************************/
 						String[] emcis = emci.split(" ");
 						
 						Set<String> exactMatches = new HashSet<String>();
@@ -233,6 +247,9 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 							exactMatches.addAll(Arrays.asList(emcis));
 							List<String> conceptIds = new ArrayList<String>();
 							conceptIds.addAll(exactMatches);
+							
+							/*-*****************************************************************/
+							
 							List<InlineResponse2002> responses = statementsApi.getStatements(conceptIds, pageNumber,
 									pageSize, keywords, semgroups);
 							List<Statement> statements = new ArrayList<Statement>();
