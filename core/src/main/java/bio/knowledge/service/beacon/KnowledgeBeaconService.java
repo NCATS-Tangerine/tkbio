@@ -7,13 +7,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonSyntaxException;
 
 import bio.knowledge.client.ApiClient;
-import bio.knowledge.client.ApiException;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.api.EvidenceApi;
 import bio.knowledge.client.api.ExactmatchesApi;
@@ -33,8 +31,6 @@ import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
-import bio.knowledge.service.KBQuery;
-import bio.knowledge.service.KBQueryImpl;
 
 /**
  * 
