@@ -1855,7 +1855,7 @@ public class ListView extends BaseView {
 				ViewName.CONCEPTS_VIEW,
 				new BeanItemContainer<Concept>(Concept.class), 
 				conceptService,
-				new String[] { "name|*", "semanticGroup", "synonyms|*", "library|*" },
+				new String[] { "id", "name|*", "semanticGroup", "description|*", "synonyms|*", "library|*" },
 				null, 
 				null);
 
@@ -1884,6 +1884,7 @@ public class ListView extends BaseView {
 		});
 		
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "synonyms",e->{/*NOP*/});
+		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "description",e->{/*NOP*/});
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "library", event -> {
 			Concept concept = (Concept) event.getItemId();
