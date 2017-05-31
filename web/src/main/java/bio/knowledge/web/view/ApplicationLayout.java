@@ -67,16 +67,6 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 	
 	private Navigator navigator;
 	private LoginView loginView;
-
-	private AuthenticationContext context;
-
-	public AuthenticationContext getContext() {
-		return context;
-	}
-
-	public void setContext(AuthenticationContext context) {
-		this.context = context;
-	}
 	
 	public LoginView getLoginView() {
 		return this.loginView;

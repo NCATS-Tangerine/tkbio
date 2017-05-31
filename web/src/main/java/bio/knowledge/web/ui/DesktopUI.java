@@ -83,8 +83,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.authentication.UserManager;
-import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.database.repository.ConceptMapArchiveRepository;
 import bio.knowledge.graph.ConceptMapDisplay;
 import bio.knowledge.graph.jsonmodels.Edge;
@@ -98,9 +96,6 @@ import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.datasource.ResultSet;
-import bio.knowledge.model.semmeddb.ConceptSemanticType;
-import bio.knowledge.model.semmeddb.Predication;
-import bio.knowledge.model.semmeddb.Sentence;
 import bio.knowledge.model.umls.SemanticType;
 import bio.knowledge.model.user.User;
 import bio.knowledge.service.AuthenticationState;
@@ -112,7 +107,6 @@ import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.core.MessageService;
-import bio.knowledge.service.semmeddb.ConceptSemanticTypeService;
 import bio.knowledge.service.user.UserService;
 import bio.knowledge.web.KBUploader;
 import bio.knowledge.web.view.AboutView;
@@ -181,20 +175,6 @@ public class DesktopUI extends UI implements MessageService {
 	 */
 	public AuthenticationManager getAuthenticationManager() {
 		return authenticationManager;
-	}
-
-	@Autowired
-	private UserManager userManager;
-	
-	@Autowired
-	private AuthenticationContext context;
-
-	/**
-	 * 
-	 * @return
-	 */
-	public AuthenticationContext getAuthenticationContext() {
-		return context;
 	}
 
 	@Autowired
@@ -1379,7 +1359,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * @return
 	 */
 	private boolean saveMap(boolean isClearMap) {
-		SaveWindow saveWindow = new SaveWindow(getCurrentConceptMapName(), query, context,
+		SaveWindow saveWindow = new SaveWindow(getCurrentConceptMapName(), query,
 				registry.getMapping(ViewName.LIBRARY_VIEW), cm, applicationNavigator, cache);
 
 		this.addWindow(saveWindow);
@@ -1400,7 +1380,7 @@ public class DesktopUI extends UI implements MessageService {
 			conceptMapLibraryWindow.setCaption(caption);
 		};
 
-		LibraryDetails libraryDetails = new LibraryDetails(map, query, context, goBack);
+		LibraryDetails libraryDetails = new LibraryDetails(map, query, userService, goBack);
 
 		conceptMapLibraryWindow.setCaption("Concept Map Details");
 		conceptMapLibraryWindow.setContent(libraryDetails);
@@ -1492,7 +1472,7 @@ public class DesktopUI extends UI implements MessageService {
 
 		initializeDesktopView();
 
-		ApplicationLayout applicationLayout = new ApplicationLayout(authenticationManager, context);
+		ApplicationLayout applicationLayout = new ApplicationLayout(authenticationManager);
 
 		this.loginView = applicationLayout.getLoginView();
 
@@ -1526,13 +1506,13 @@ public class DesktopUI extends UI implements MessageService {
 
 				String conceptMapName = uri.replaceFirst("map=", "");
 				ConceptMapArchive map = conceptMapArchiveService.getConceptMapArchiveByName(conceptMapName,
-						user != null ? user.getAccountId() : null,
+						user != null ? user.getUserId() : null,
 						user != null ? user.getIdsOfGroupsBelongedTo() : new String[0]);
 				if (map != null) {
 					conceptMapLibraryWindow = new Window();
 					//UserProfile userProfile = getAuthenticationManager().getCurrentUser();
 					//String userId = userProfile != null ? userProfile.getId() : null;
-					LibraryDetails libraryDetails = new LibraryDetails(map, query, context,
+					LibraryDetails libraryDetails = new LibraryDetails(map, query, userService,
 							event -> {
 								conceptMapLibraryWindow.close();
 							});

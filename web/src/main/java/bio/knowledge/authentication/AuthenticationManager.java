@@ -111,9 +111,6 @@ public class AuthenticationManager {
 	public String getRootURL() {
 		return this.ROOT_URL;
 	}
-	
-	@Autowired
-	private AuthenticationContext context;
 
 	@Autowired
 	private MailProperties mailProps;
@@ -191,6 +188,7 @@ public class AuthenticationManager {
         }
         SecurityContextHolder.clearContext();
         
+       // cannot use `ui.getNavigator()` because logging out in Spring causes the session to expire
 		ui.getPage().setLocation(LandingPageView.NAME);
 	}
 	
@@ -209,9 +207,9 @@ public class AuthenticationManager {
 		try {
 			
 			auth = manager.authenticate(token);
-			notifyOfLogin(currentUser);
 			SecurityContextHolder.getContext().setAuthentication(auth);
 			currentUser = userService.findByUsernameOrEmail(usernameOrEmail);
+			notifyOfLogin(currentUser);
 			
 			// because some data are visible or not visible depending on the user, 
 			// we need to clear out the cache which may have been calibrated to data for a different user or no user.
@@ -269,7 +267,7 @@ public class AuthenticationManager {
 	}
 	
 	public User getUser(String accountId) {
-		return userService.findByAccountId(accountId);
+		return userService.findByUserId(accountId);
 	}
 	
 	public void updateEmail(User user, String email) throws EmailAlreadyInUseException {

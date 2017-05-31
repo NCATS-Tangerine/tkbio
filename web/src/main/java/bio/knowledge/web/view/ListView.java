@@ -89,11 +89,9 @@ import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.datasource.DataSourceException;
-import bio.knowledge.datasource.rdf.RDFUtil;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.DomainModelException;
@@ -107,7 +105,6 @@ import bio.knowledge.model.core.OntologyTerm;
 import bio.knowledge.model.organization.ContactForm;
 import bio.knowledge.model.umls.SemanticType;
 import bio.knowledge.model.user.User;
-import bio.knowledge.model.wikidata.WikiProperty;
 import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
 import bio.knowledge.service.DataServiceException;
@@ -119,9 +116,6 @@ import bio.knowledge.service.core.ListTablePageCounter;
 import bio.knowledge.service.core.ListTablePager;
 import bio.knowledge.service.core.TableSorter;
 import bio.knowledge.service.organization.ContactFormService;
-import bio.knowledge.service.semmeddb.ConceptSemanticTypeService;
-import bio.knowledge.service.semmeddb.PredicationService;
-import bio.knowledge.service.semmeddb.SentenceService;
 import bio.knowledge.service.user.UserService;
 import bio.knowledge.service.wikidata.WikiDataService;
 import bio.knowledge.web.ui.DesktopUI;
@@ -164,9 +158,6 @@ public class ListView extends BaseView {
 	private static final String PAGE_CONTROL_BUTTON_STYLE = "pagecontrol-button";
 	
 	private static final int DATA_PAGE_SIZE = 15;
-
-	@Autowired
-	private UserManager userManager;
 
 	// Wrapper for datasource container,
 	// to add extra action columns for 'details', 'data download', etc.
@@ -343,7 +334,7 @@ public class ListView extends BaseView {
 				AuthenticationManager authenticationManager = ((DesktopUI) UI.getCurrent()).getAuthenticationManager();
 				
 				if (authenticationManager.isUserAuthenticated()) {
-					UserProfile userProfile = authenticationManager.getCurrentUser();
+					User userProfile = authenticationManager.getCurrentUser();
 					
 					authenticationState.setState(userProfile.getId(), userProfile.getIdsOfGroupsBelongedTo());
 				} else {
@@ -813,7 +804,7 @@ public class ListView extends BaseView {
 						
 						String userId = map.getAuthorsAccountId();
 						if (userId != null) {
-							UserProfile userProfile = context.getUserProfile(userId);
+							User userProfile = ((DesktopUI) UI.getCurrent()).getAuthenticationManager().getUser(userId);
 							return (String) userProfile.getUsername();
 						} else {
 							return null;

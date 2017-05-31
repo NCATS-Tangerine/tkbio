@@ -63,7 +63,6 @@ import bio.knowledge.graph.ContentRequester;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Library;
-import bio.knowledge.model.semmeddb.ConceptSemanticType;
 import bio.knowledge.model.user.Group;
 import bio.knowledge.model.user.User;
 import bio.knowledge.service.Cache;
@@ -135,7 +134,7 @@ public class SaveWindow extends Window {
 		AuthenticationManager auth = ((DesktopUI) UI.getCurrent()).getAuthenticationManager();
 		
 		if (auth.isUserAuthenticated()) {
-			accountId = auth.getCurrentUser().getAccountId();
+			accountId = auth.getCurrentUser().getUserId();
 		} else {
 			accountId = null;
 		}
@@ -214,7 +213,7 @@ public class SaveWindow extends Window {
 		 
 		try {
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
-			UserProfile userProfile = ui.getAuthenticationManager().getCurrentUser();
+			User userProfile = ui.getAuthenticationManager().getCurrentUser();
 			String userId = userProfile != null ? userProfile.getId() : null;
 			if (conceptMapArchiveService.save(archive, userId, isPublicOption.isChecked())) {
 				if (this.isPublicOption.isChecked()) {
@@ -332,7 +331,7 @@ public class SaveWindow extends Window {
 						newArchive.setVersion(1);
 						newArchive.setVersionDate(new Date().getTime());
 						
-						UserGroup group = (UserGroup) groupChooser.getValue();
+						Group group = (Group) groupChooser.getValue();
 						newArchive.setGroupId(group != null ? group.getId() : null);
 
 						Optional<Library> parentMapOpt = query.getCurrentImportedMaps();
@@ -589,7 +588,7 @@ public class SaveWindow extends Window {
 
 		archive = conceptMapArchiveService.getConceptMapArchiveByName(
 				conceptMapName,
-				user != null ? user.getAccountId() : null,
+				user != null ? user.getUserId() : null,
 				user != null ? user.getIdsOfGroupsBelongedTo() : new String[0]
 		);
 		

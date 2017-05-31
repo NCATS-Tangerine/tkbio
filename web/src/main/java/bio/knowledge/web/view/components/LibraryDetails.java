@@ -25,8 +25,6 @@
  */
 package bio.knowledge.web.view.components;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.ExternalResource;
@@ -44,12 +42,8 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.authentication.UserManager;
-import bio.knowledge.authentication.UserProfile;
-import bio.knowledge.database.repository.ConceptMapArchiveRepository;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.user.User;
-import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.user.UserService;
@@ -75,8 +69,6 @@ public class LibraryDetails extends VerticalLayout {
 	public LibraryDetails(
 			ConceptMapArchive map,
 			KBQuery query,
-			AuthenticationContext context,
-			UserManager userManager,
 			UserService userService,
 			ClickListener onGoBackClickListener
 	) {
@@ -151,7 +143,7 @@ public class LibraryDetails extends VerticalLayout {
 		String name;
 		
 		if (userId != null) {
-			name = userService.findByAccountId(userId).getUsername();
+			name = userService.findByUserId(userId).getUsername();
 		} else {
 			name = "an anonymous user";
 		}
