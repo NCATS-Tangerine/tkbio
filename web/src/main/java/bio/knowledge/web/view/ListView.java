@@ -322,25 +322,6 @@ public class ListView extends BaseView {
 			conceptMapArchiveService.setSearchMode(searchMode);
 			refresh();
 		}
-		
-		private boolean loadingData = false;
-		public void addData(int pageSize) {
-			if (pager != null && !loadingData) {
-				loadingData = true;
-				AuthenticationManager authenticationManager = ((DesktopUI) UI.getCurrent()).getAuthenticationManager();
-				
-				if (authenticationManager.isUserAuthenticated()) {
-					UserProfile userProfile = authenticationManager.getCurrentUser();
-					
-					authenticationState.setState(userProfile.getId(), userProfile.getIdsOfGroupsBelongedTo());
-				} else {
-					authenticationState.setState(null, null);
-				}
-				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
-				container.addAll(pager.getDataPage(currentPageIndex, pageSize, filter, sorter, isAscending));
-				loadingData = false;
-			}
-		}
 
 		public void refresh() {
 			if (pager != null) {
@@ -357,9 +338,10 @@ public class ListView extends BaseView {
 					String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
 					// We always want to fill the table with enough rows so that the scroll bar shows.
 					int pageSize = (int) dataTable.getHeightByRows() * 2;
-					container.addAll(pager.getDataPage(1, pageSize, filter, sorter, isAscending));
+					List<? extends IdentifiedEntity> data = pager.getDataPage(1, pageSize, filter, sorter, isAscending);
+					container.addAll(data);
 					loadedAllData = false;
-					nextPageNumber = 1;
+					nextPageNumber = 2;
 				}
 			}
 
@@ -368,7 +350,7 @@ public class ListView extends BaseView {
 		
 		private boolean loadedAllData = false;
 		private boolean loadingDataPage = false;
-		private int nextPageNumber = 1;
+		private int nextPageNumber;
 		public void loadNextPage() {
 			if (pager != null && !loadedAllData) {
 				int pageSize = (int) dataTable.getHeightByRows() * 2;
