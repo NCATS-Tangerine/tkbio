@@ -111,21 +111,18 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 							);
 							List<Concept> concepts = new ArrayList<Concept>();
 							for (InlineResponse2001 response : responses) {
-								ConceptImpl concept;
+								SemanticGroup semgroup;
 								try {
-									SemanticGroup semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
-									concept = new ConceptImpl(
-											response.getId(),
-											null,
-											response.getName()
-									);
+									semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
 								} catch (IllegalArgumentException ex) {
-									concept = new ConceptImpl(
-											response.getId(),
-											null,
-											response.getName()
-									);
+									semgroup = null;
 								}
+								
+								Concept concept = new ConceptImpl(
+										response.getId(),
+										semgroup,
+										response.getName()
+								);
 								
 								concept.setSynonyms(String.join(" ", response.getSynonyms()));
 								concept.setDescription(response.getDefinition());
