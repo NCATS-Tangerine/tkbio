@@ -87,6 +87,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import bio.knowledge.authentication.AuthenticationManager;
+import bio.knowledge.database.repository.ConceptMapArchiveRepository;
 import bio.knowledge.datasource.DataService;
 import bio.knowledge.graph.ConceptMapDisplay;
 import bio.knowledge.graph.jsonmodels.Edge;
