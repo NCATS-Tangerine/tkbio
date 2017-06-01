@@ -67,15 +67,12 @@ class ListContainer implements Serializable {
 	private boolean isAscending = DEFAULT_IS_ASCENDING;
 	private TableSorter sorter = TableSorter.DEFAULT;
 
-	private UserProfile userProfile;
-	
 	/**
 	 * Creates a new ListContainer.
 	 * <b>userProfile</b> is the user profile to search concept maps by.
 	 * @param userProfile
 	 */
-	protected ListContainer(UserProfile userProfile) { 
-		this.userProfile = userProfile;
+	protected ListContainer(UserProfile userProfile) {
 	}
 	
 	public Boolean isEmpty() {
@@ -184,8 +181,6 @@ class ListContainer implements Serializable {
 			if (container.removeAllItems()) {
 				DesktopUI ui = (DesktopUI) UI.getCurrent();
 				AuthenticationManager authenticationManager = ui.getAuthenticationManager();
-				ConceptMapArchiveService conceptMapArchiveService = ui.getConceptMapArchiveService();
-				
 				AuthenticationState authenticationState = ui.getAuthenticationState();
 				
 				if (authenticationManager.isUserAuthenticated()) {

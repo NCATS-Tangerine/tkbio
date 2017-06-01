@@ -336,6 +336,11 @@ public class ListView extends BaseView {
 						authenticationState.setState(null, null);
 					}
 					String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+					
+					// Simplistic addition of text filtering to tables which can use it
+					// Won't really work so well in StatementService, I suspect...
+					if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
+					
 					// We always want to fill the table with enough rows so that the scroll bar shows.
 					int pageSize = (int) dataTable.getHeightByRows() * 2;
 					List<? extends IdentifiedEntity> data = pager.getDataPage(1, pageSize, filter, sorter, isAscending);
@@ -356,6 +361,11 @@ public class ListView extends BaseView {
 				int pageSize = (int) dataTable.getHeightByRows() * 2;
 				loadingDataPage = true;
 				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+				
+				// Simplistic addition of text filtering to tables which can use it
+				// Won't really work so well in StatementService, I suspect...
+				if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
+				
 				List<? extends IdentifiedEntity> data = 
 						pager.getDataPage(nextPageNumber, pageSize, filter, sorter, isAscending);
 				container.addAll(data);
@@ -1936,7 +1946,7 @@ public class ListView extends BaseView {
 				event -> {
 					Annotation annotation = (Annotation) event.getItemId();
 		
-					_logger.trace("Display PubMed Reference for Annotation " + annotation.toString() + "...");
+					_logger.trace("Display 3rd Party Evidence Page for Annotation " + annotation.toString() + "...");
 		
 					DesktopUI ui = (DesktopUI) UI.getCurrent();
 					ui.displayReference(annotation);

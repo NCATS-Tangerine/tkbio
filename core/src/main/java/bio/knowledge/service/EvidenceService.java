@@ -26,7 +26,6 @@
 package bio.knowledge.service;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import bio.knowledge.model.Evidence;

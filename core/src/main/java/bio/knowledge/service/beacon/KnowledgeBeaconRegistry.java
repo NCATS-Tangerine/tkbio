@@ -1,9 +1,7 @@
 package bio.knowledge.service.beacon;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -13,7 +11,6 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import bio.knowledge.client.ApiClient;
 import bio.knowledge.database.repository.beacon.BeaconRepository;
 import bio.knowledge.model.beacon.neo4j.Neo4jKnowledgeBeacon;
 
