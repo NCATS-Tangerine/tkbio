@@ -46,6 +46,8 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Container.Indexed;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
@@ -1366,8 +1368,10 @@ public class ListView extends BaseView {
 		Collection<?> listeners = simpleTextFilter.getListeners(AbstractField.ValueChangeEvent.class);
 
 		if (listeners.isEmpty()) {
-			simpleTextFilter.addTextChangeListener(event -> {
-				String filterText = event.getText().trim();
+			simpleTextFilter.addValueChangeListener(event -> {
+				String filterText = (String) event.getProperty().getValue();
+				filterText = filterText.trim();
+				query.setRelationsTextFilter(filterText);
 				listContainer.setSimpleTextFilter(filterText);
 				gotoPageIndex(0); // refreshes the view
 			});

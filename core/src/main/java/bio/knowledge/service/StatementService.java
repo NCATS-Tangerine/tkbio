@@ -94,6 +94,10 @@ public class StatementService
 	@Override
 	public List<Statement> getDataPage(int pageIndex, int pageSize, String filter, TableSorter sorter, boolean isAscending) {
 
+		/**
+		 * We are not using the {@code filter} field, since here it refers to the main keywords search text
+		 */
+		String extraFilter = query.getRelationsTextFilter();
 		String emci = query.getCurrentQueryConceptId();
 		
 		Optional<Set<SemanticGroup>> optionalSemanticGroupSet = query.getConceptTypes();
@@ -108,7 +112,7 @@ public class StatementService
 			semgroups = semgroups.trim();
 		}
 		
-		CompletableFuture<List<Statement>> future = kbService.getStatements(emci, filter, semgroups, pageIndex, pageSize);
+		CompletableFuture<List<Statement>> future = kbService.getStatements(emci, extraFilter, semgroups, pageIndex, pageSize);
 		
 		try {
 			List<Statement> statements = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
