@@ -35,6 +35,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import javax.annotation.PostConstruct;
 
@@ -92,6 +95,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.authentication.UserProfile;
+import bio.knowledge.datasource.DataService;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
@@ -111,6 +115,7 @@ import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
 import bio.knowledge.service.DataServiceException;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
+import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.service.core.ListTableEntryCounter;
 import bio.knowledge.service.core.ListTableFilteredHitCounter;
 import bio.knowledge.service.core.ListTablePageCounter;
@@ -1689,6 +1694,9 @@ public class ListView extends BaseView {
 	@Autowired
 	WikiDetailsHandler wd_handler;
 	
+	@Autowired
+	KnowledgeBeaconService kbService;
+	
 	private HorizontalLayout buttonsLayout;
 	
 	// Handler for Concept details in various data tables
@@ -1717,16 +1725,25 @@ public class ListView extends BaseView {
 			// int x = 100, y = 400 ;
 
 			String predicateLabel;
-
-			Concept selectedConcept;
-
-			if (role.equals(ConceptRole.SUBJECT)) {
-				selectedConcept = subject;
+			
+			String conceptId;
+			if (role.equals(ConceptRole.SUBJECT)) {				
+				conceptId = subject.getId();
 			} else if (role.equals(ConceptRole.OBJECT)) {
-				selectedConcept = object;
+				conceptId = object.getId();
 				// x+=400 ;
 			} else
 				throw new RuntimeException("Unsupported Relationship Concept Role?");
+			
+			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(subject.getId());
+			Concept selectedConcept;
+			try {
+				List<Concept> concepts = 
+						future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+				selectedConcept = concepts.get(0);
+			} catch (InterruptedException | ExecutionException | TimeoutException | IndexOutOfBoundsException e1) {
+				selectedConcept = role.equals(ConceptRole.SUBJECT) ? subject : object;
+			}
 
 			String conceptName;
 
@@ -1739,7 +1756,8 @@ public class ListView extends BaseView {
 			predicateLabel = predicate.getName();
 
 			Button showRelations = new Button("Show Relations");
-			showRelations.addClickListener(e -> selectionContext(ui, conceptDetailsWindow, selectedConcept));
+			final Concept finallySelectedConcept = selectedConcept;
+			showRelations.addClickListener(e -> selectionContext(ui, conceptDetailsWindow, finallySelectedConcept));
 
 			// RMB: 9 September 2016 - deprecating relation table display of
 			// WikiData
