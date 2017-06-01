@@ -26,9 +26,6 @@
 package bio.knowledge.service;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
@@ -36,16 +33,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.datasource.DataService;
-import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.datasource.DataSourceRegistry;
-import bio.knowledge.datasource.SimpleDataService;
-import bio.knowledge.datasource.wikidata.WikiDataDataSource;
 import bio.knowledge.model.Predicate;
-import bio.knowledge.model.datasource.Result;
-import bio.knowledge.model.datasource.ResultSet;
-import bio.knowledge.model.neo4j.Neo4jPredicate;
-import bio.knowledge.service.Cache.CacheLocation;
 
 /**
  * @author Richard
