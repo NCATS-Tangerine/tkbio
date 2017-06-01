@@ -139,9 +139,11 @@ public class EvidenceImpl extends AbstractIdentifiedEntity implements Evidence {
 	@Override
 	public String toString() {
 		/*
-		 *  The String representation of Evidence is simply the count of Annotations
+		 * We no longer have a evidence count. This is a hack to get the word "show" to appear
+		 * instead of "0".
 		 */
-		return getCount().toString() ;
+		return "view";
+//		return getCount().toString() ;
 	}
 	
 	/* (non-Javadoc)

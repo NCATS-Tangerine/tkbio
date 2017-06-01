@@ -30,8 +30,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,7 +87,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.database.repository.ConceptMapArchiveRepository;
+import bio.knowledge.datasource.DataService;
 import bio.knowledge.graph.ConceptMapDisplay;
 import bio.knowledge.graph.jsonmodels.Edge;
 import bio.knowledge.graph.jsonmodels.EdgeData;
@@ -106,6 +110,7 @@ import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
+import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.service.core.MessageService;
 import bio.knowledge.service.user.UserService;
 import bio.knowledge.web.KBUploader;
@@ -156,6 +161,9 @@ public class DesktopUI extends UI implements MessageService {
 	private static final long serialVersionUID = -7147784018127550717L;
 
 	private Logger _logger = LoggerFactory.getLogger(DesktopUI.class);
+	
+	@Autowired
+	KnowledgeBeaconService knowledgeBeaconService;
 
 	@Autowired
 	Registry registry;
@@ -211,6 +219,10 @@ public class DesktopUI extends UI implements MessageService {
 
 	@Autowired
 	private ConceptService conceptService;
+	
+	public static DesktopUI getCurrent() {
+		return (DesktopUI) UI.getCurrent();
+	}
 
 	@Override
 	/*
@@ -1259,22 +1271,25 @@ public class DesktopUI extends UI implements MessageService {
 			cm.importConceptMap(content);
 
 			String id = cst_matcher.group(1);
-			String accessionId = id.replaceAll(",", "");
+			String conceptId = id.replaceAll(",", "");
 
 			// Setting manual layout while loading
 			desktopView.getCmLayoutSelect().setValue(MANUAL_CM_LAYOUT);
-
-			// set current concept
-			Optional<Concept> conceptOpt = conceptService.getDetailsById(accessionId);
-
-			if (conceptOpt.isPresent()) {
-				Concept cst = conceptOpt.get();
-				query.setCurrentQueryConceptById(cst.getId().toString());
-
-				if (query.getCurrentQueryConcept().isPresent()) {
-					setCurrentConceptTitle(query.getCurrentQueryConcept().get().getName());
-				}
+			
+			CompletableFuture<List<Concept>> future = knowledgeBeaconService.getConceptDetails(conceptId);
+			
+			try {
+				List<Concept> concepts = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+				Concept concept = concepts.get(0);
+				query.setCurrentQueryConceptById(concept.getId());
+				setCurrentConceptTitle(concept.getName());
+				
+			} catch (InterruptedException | ExecutionException | TimeoutException | IndexOutOfBoundsException e) {
+//				e.printStackTrace();
 			}
+			
+			DesktopUI.getCurrent().getConceptMap().alignToCenter();
+			
 			gotoStatementsTable();
 
 		} else {
@@ -1359,10 +1374,11 @@ public class DesktopUI extends UI implements MessageService {
 	 * @return
 	 */
 	private boolean saveMap(boolean isClearMap) {
-		SaveWindow saveWindow = new SaveWindow(getCurrentConceptMapName(), query,
-				registry.getMapping(ViewName.LIBRARY_VIEW), cm, applicationNavigator, cache);
+//		SaveWindow saveWindow = new SaveWindow(getCurrentConceptMapName(), query, context,
+//				registry.getMapping(ViewName.LIBRARY_VIEW), cm, applicationNavigator, cache);
+		SaveWindow.raiseExportWindow("", DesktopUI.getCurrent().getConceptMap(), query, cache);
 
-		this.addWindow(saveWindow);
+//		this.addWindow(saveWindow);
 
 		return true;
 	}

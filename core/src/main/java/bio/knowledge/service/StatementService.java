@@ -55,15 +55,12 @@ import bio.knowledge.datasource.DataSourceRegistry;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
 import bio.knowledge.model.Concept;
-import bio.knowledge.model.Evidence;
-import bio.knowledge.model.Predicate;
 import bio.knowledge.model.RdfUtil;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
 import bio.knowledge.model.neo4j.Neo4jConcept;
-import bio.knowledge.model.neo4j.Neo4jEvidence;
 import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
 import bio.knowledge.model.wikidata.WikiDataPropertySemanticType;
@@ -92,24 +89,30 @@ public class StatementService
 	private Cache cache;
 	
 	@Autowired
-	private PredicateService predicateService ;
-
-	private String SEPARATOR = " ";
-	
-	@Autowired
 	private KnowledgeBeaconService kbService;
 	
 	@Override
 	public List<Statement> getDataPage(int pageIndex, int pageSize, String filter, TableSorter sorter, boolean isAscending) {
-		
-//		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
-//		if (!currentConceptOpt.isPresent()) return new ArrayList<Statement>();
-//		Concept concept = currentConceptOpt.get() ;
+
+		/**
+		 * We are not using the {@code filter} field, since here it refers to the main keywords search text
+		 */
+		String extraFilter = query.getRelationsTextFilter();
 		String emci = query.getCurrentQueryConceptId();
 		
-		emci = kbService.discoverExactMatchClique(emci) ;
+		Optional<Set<SemanticGroup>> optionalSemanticGroupSet = query.getConceptTypes();
 		
-		CompletableFuture<List<Statement>> future = kbService.getStatements(emci, filter, "", pageIndex, pageSize);
+		String semgroups = "";
+		
+		if (optionalSemanticGroupSet.isPresent()) {
+			Set<SemanticGroup> semanticGroupSet = optionalSemanticGroupSet.get();
+			for (SemanticGroup semanticGroup : semanticGroupSet) {
+				semgroups += semanticGroup.name() + " ";
+			}
+			semgroups = semgroups.trim();
+		}
+		
+		CompletableFuture<List<Statement>> future = kbService.getStatements(emci, extraFilter, semgroups, pageIndex, pageSize);
 		
 		try {
 			List<Statement> statements = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
@@ -191,7 +194,6 @@ public class StatementService
 	 * bio.knowledge.service.core.IdentifiedEntityService#getIdentifiers(org.
 	 * springframework.data.domain.Pageable)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<Statement> getIdentifiers(Pageable pageable) {
 		throw new NotImplementedException("Removed all reference to neo4j");
@@ -204,7 +206,6 @@ public class StatementService
 	 * bio.knowledge.service.core.IdentifiedEntityServiceImpl#findByNameLike(
 	 * java.lang.String, org.springframework.data.domain.Pageable)
 	 */
-	@SuppressWarnings({ "unchecked" })
 	private Page<Statement> findByFilter(String filter, Pageable pageable) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
@@ -283,8 +284,20 @@ public class StatementService
 		} 
 	}
 
-	public Neo4jGeneralStatement findbySourceAndTargetId(String sourceAccessionId, String targetId, String relationName){
-		throw new NotImplementedException("Removed all reference to neo4j");
+	public Statement findbySourceAndTargetId(String sourceAccessionId, String targetId, String relationName){
+		CompletableFuture<List<Statement>> future = 
+				kbService.getStatements(sourceAccessionId, null, null, 0, 1);
+		try {
+			List<Statement> statements = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+			if (statements.size() >= 1) {
+				return statements.get(0);
+			} else {
+				return null;
+			}
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
@@ -302,7 +315,6 @@ public class StatementService
 	 * @param pageable
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked" })
 	private Page<Statement> findByPMID(String filter, Pageable pageable) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}

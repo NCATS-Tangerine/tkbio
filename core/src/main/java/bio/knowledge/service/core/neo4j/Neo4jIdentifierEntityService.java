@@ -32,15 +32,12 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.neo4j.Neo4jAbstractExternalDatabase;
-import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity;
 import bio.knowledge.service.core.IdentifiedEntityService;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
 

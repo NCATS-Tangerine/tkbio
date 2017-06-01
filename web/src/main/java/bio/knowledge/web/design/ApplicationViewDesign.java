@@ -25,7 +25,7 @@ public class ApplicationViewDesign extends VerticalLayout {
 	protected CssLayout side_bar;
 	protected NativeButton homeBtn;
 	protected NativeButton faqBtn;
-	protected NativeButton aboutBtn;
+	// protected NativeButton aboutBtn; // deprecated 'about' as redundant to home landing page, for now
 	protected NativeButton contactBtn;
 	protected NativeButton loginBtn;
 	protected NativeButton logoutBtn;

@@ -46,6 +46,8 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Container.Indexed;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
@@ -326,25 +328,6 @@ public class ListView extends BaseView {
 			conceptMapArchiveService.setSearchMode(searchMode);
 			refresh();
 		}
-		
-		private boolean loadingData = false;
-		public void addData(int pageSize) {
-			if (pager != null && !loadingData) {
-				loadingData = true;
-				AuthenticationManager authenticationManager = ((DesktopUI) UI.getCurrent()).getAuthenticationManager();
-				
-				if (authenticationManager.isUserAuthenticated()) {
-					User userProfile = authenticationManager.getCurrentUser();
-					
-					authenticationState.setState(userProfile.getId(), userProfile.getIdsOfGroupsBelongedTo());
-				} else {
-					authenticationState.setState(null, null);
-				}
-				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
-				container.addAll(pager.getDataPage(currentPageIndex, pageSize, filter, sorter, isAscending));
-				loadingData = false;
-			}
-		}
 
 		public void refresh() {
 			if (pager != null) {
@@ -360,11 +343,17 @@ public class ListView extends BaseView {
 						authenticationState.setState(null, null);
 					}
 					String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+					
+					// Simplistic addition of text filtering to tables which can use it
+					// Won't really work so well in StatementService, I suspect...
+					if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
+					
 					// We always want to fill the table with enough rows so that the scroll bar shows.
 					int pageSize = (int) dataTable.getHeightByRows() * 2;
-					container.addAll(pager.getDataPage(1, pageSize, filter, sorter, isAscending));
+					List<? extends IdentifiedEntity> data = pager.getDataPage(1, pageSize, filter, sorter, isAscending);
+					container.addAll(data);
 					loadedAllData = false;
-					nextPageNumber = 1;
+					nextPageNumber = 2;
 				}
 			}
 
@@ -373,12 +362,17 @@ public class ListView extends BaseView {
 		
 		private boolean loadedAllData = false;
 		private boolean loadingDataPage = false;
-		private int nextPageNumber = 1;
+		private int nextPageNumber;
 		public void loadNextPage() {
 			if (pager != null && !loadedAllData) {
 				int pageSize = (int) dataTable.getHeightByRows() * 2;
 				loadingDataPage = true;
 				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+				
+				// Simplistic addition of text filtering to tables which can use it
+				// Won't really work so well in StatementService, I suspect...
+				if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
+				
 				List<? extends IdentifiedEntity> data = 
 						pager.getDataPage(nextPageNumber, pageSize, filter, sorter, isAscending);
 				container.addAll(data);
@@ -1355,13 +1349,14 @@ public class ListView extends BaseView {
 		}
 
 		simpleTextFilter.setValue("");
-
+		simpleTextFilter.setEnabled(true);
 		if (viewName.equals(ViewName.EVIDENCE_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Sentences");
 		} else if (viewName.equals(ViewName.RELATIONS_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Relation Fields");
 		} else if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Concepts");
+			simpleTextFilter.setEnabled(false);
 		} else if (viewName.equals(ViewName.LIBRARY_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Map Names");
 		} else if (viewName.equals(ViewName.ANNOTATIONS_VIEW)) {
@@ -1377,8 +1372,10 @@ public class ListView extends BaseView {
 		Collection<?> listeners = simpleTextFilter.getListeners(AbstractField.ValueChangeEvent.class);
 
 		if (listeners.isEmpty()) {
-			simpleTextFilter.addTextChangeListener(event -> {
-				String filterText = event.getText().trim();
+			simpleTextFilter.addValueChangeListener(event -> {
+				String filterText = (String) event.getProperty().getValue();
+				filterText = filterText.trim();
+				query.setRelationsTextFilter(filterText);
 				listContainer.setSimpleTextFilter(filterText);
 				gotoPageIndex(0); // refreshes the view
 			});
@@ -1858,7 +1855,7 @@ public class ListView extends BaseView {
 				ViewName.CONCEPTS_VIEW,
 				new BeanItemContainer<Concept>(Concept.class), 
 				conceptService,
-				new String[] { "name|*", "semanticGroup", "synonyms|*", "library|*" },
+				new String[] { "id", "name|*", "semanticGroup", "description|*", "synonyms|*", "library|*" },
 				null, 
 				null);
 
@@ -1887,6 +1884,7 @@ public class ListView extends BaseView {
 		});
 		
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "synonyms",e->{/*NOP*/});
+		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "description",e->{/*NOP*/});
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "library", event -> {
 			Concept concept = (Concept) event.getItemId();
@@ -1956,7 +1954,7 @@ public class ListView extends BaseView {
 				event -> {
 					Annotation annotation = (Annotation) event.getItemId();
 		
-					_logger.trace("Display PubMed Reference for Annotation " + annotation.toString() + "...");
+					_logger.trace("Display 3rd Party Evidence Page for Annotation " + annotation.toString() + "...");
 		
 					DesktopUI ui = (DesktopUI) UI.getCurrent();
 					ui.displayReference(annotation);

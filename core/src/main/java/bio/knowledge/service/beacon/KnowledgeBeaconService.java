@@ -2,10 +2,11 @@ package bio.knowledge.service.beacon;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonSyntaxException;
@@ -13,6 +14,7 @@ import com.google.gson.JsonSyntaxException;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.api.EvidenceApi;
+import bio.knowledge.client.api.ExactmatchesApi;
 import bio.knowledge.client.api.StatementsApi;
 import bio.knowledge.client.model.InlineResponse200;
 import bio.knowledge.client.model.InlineResponse2001;
@@ -29,8 +31,6 @@ import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
-import bio.knowledge.service.KBQuery;
-import bio.knowledge.service.KBQueryImpl;
 
 /**
  * 
@@ -111,21 +111,18 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 							);
 							List<Concept> concepts = new ArrayList<Concept>();
 							for (InlineResponse2001 response : responses) {
-								ConceptImpl concept;
+								SemanticGroup semgroup;
 								try {
-									SemanticGroup semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
-									concept = new ConceptImpl(
-											response.getId(),
-											null,
-											response.getName()
-									);
+									semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
 								} catch (IllegalArgumentException ex) {
-									concept = new ConceptImpl(
-											response.getId(),
-											null,
-											response.getName()
-									);
+									semgroup = null;
 								}
+								
+								Concept concept = new ConceptImpl(
+										response.getId(),
+										semgroup,
+										response.getName()
+								);
 								
 								concept.setSynonyms(String.join(" ", response.getSynonyms()));
 								concept.setDescription(response.getDefinition());
@@ -197,7 +194,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 	public CompletableFuture<List<Statement>> getStatements(
 			String emci,
 			String keywords,
-			String semanticGroups,
+			String semgroups,
 			int pageNumber,
 			int pageSize
 	) {
@@ -209,51 +206,66 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 
 					@Override
 					public List<Statement> getList() {
-						StatementsApi statementsApi = new StatementsApi(apiClient);
 						
+						StatementsApi statementsApi = new StatementsApi(apiClient);
+						ExactmatchesApi exactMatchesApi = new ExactmatchesApi(apiClient);
+						
+						/* *****************************************************************
+						 *  May 27, 2017 RMB: 
+						 *  First implementation of the resolution of 'exact match' concepts
+						 *  is undertaken here, just before statement retrieval; however, this
+						 *  particular implementation may have some limitations.  The basic
+						 *  assumption made here is that the list of input emcis only need 
+						 *  to be locally resolved with the current Knowledge Beacon 
+						 *  processing the call; however, it may be the case that some
+						 *  other Knowledge Beacon knows about an equivalency that may be
+						 *  useful here, in this Knowledge Beacon. This would not be known
+						 *  without querying the whole series of available Knowledge Beacons
+						 *  perhaps iteratively.
+						 ******************************************************************/
 						String[] emcis = emci.split(" ");
 						
-						for (int i = 0; i < emcis.length; i++) {
-							emcis[i] = urlEncode(emcis[i]);
-						}
-						
+						Set<String> exactMatches = new HashSet<String>();
 						try {
-							List<InlineResponse2002> responses = statementsApi.getStatements(
-									Arrays.asList(emcis),
-									pageNumber,
-									pageSize,
-									"",
-									""
-							);
-							List<Statement> statements = new ArrayList<Statement>();
+
+							for (int i = 0; i < emcis.length; i++) {
+								emcis[i] = urlEncode(emcis[i]);
+
+								List<String> matches = exactMatchesApi.getExactMatchesToConcept(emcis[i]);
+								if (matches != null) {
+									exactMatches.addAll(matches);
+								}
+							}
+
+							exactMatches.addAll(Arrays.asList(emcis));
+							List<String> conceptIds = new ArrayList<String>();
+							conceptIds.addAll(exactMatches);
 							
+							/*-*****************************************************************/
+							
+							List<InlineResponse2002> responses = statementsApi.getStatements(conceptIds, pageNumber,
+									pageSize, keywords, semgroups);
+							List<Statement> statements = new ArrayList<Statement>();
+
 							for (InlineResponse2002 response : responses) {
 								String id = response.getId();
 								StatementsObject statementsObject = response.getObject();
 								StatementsSubject statementsSubject = response.getSubject();
 								StatementsPredicate statementsPredicate = response.getPredicate();
-								
-								ConceptImpl subject = new ConceptImpl(
-										statementsSubject.getId(),
-										null,
-										statementsSubject.getName()
-								);
-								
-								ConceptImpl object = new ConceptImpl(
-										statementsObject.getId(),
-										null,
-										statementsObject.getName()
-								);
-								
-								PredicateImpl predicate = new PredicateImpl(
-										statementsPredicate.getName()
-								);
-								
+
+								ConceptImpl subject = new ConceptImpl(statementsSubject.getId(), null,
+										statementsSubject.getName());
+
+								ConceptImpl object = new ConceptImpl(statementsObject.getId(), null,
+										statementsObject.getName());
+
+								PredicateImpl predicate = new PredicateImpl(statementsPredicate.getName());
+
 								statements.add(new GeneralStatement(id, subject, predicate, object));
 							}
-							
+
 							return statements;
-							
+
 						} catch (Exception e) {
 							printError(apiClient, e);
 							return new ArrayList<Statement>();
