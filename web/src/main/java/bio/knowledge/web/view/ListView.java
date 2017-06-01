@@ -1351,14 +1351,12 @@ public class ListView extends BaseView {
 		}
 
 		simpleTextFilter.setValue("");
-		simpleTextFilter.setEnabled(true);
 		if (viewName.equals(ViewName.EVIDENCE_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Sentences");
 		} else if (viewName.equals(ViewName.RELATIONS_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Relation Fields");
 		} else if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Concepts");
-			simpleTextFilter.setEnabled(false);
 		} else if (viewName.equals(ViewName.LIBRARY_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Map Names");
 		} else if (viewName.equals(ViewName.ANNOTATIONS_VIEW)) {
