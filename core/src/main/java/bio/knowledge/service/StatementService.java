@@ -94,23 +94,16 @@ public class StatementService
 	@Override
 	public List<Statement> getDataPage(int pageIndex, int pageSize, String filter, TableSorter sorter, boolean isAscending) {
 
-		
-//		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
-//		if (!currentConceptOpt.isPresent()) return new ArrayList<Statement>();
-//		Concept concept = currentConceptOpt.get() ;
 		String emci = query.getCurrentQueryConceptId();
 		
-		// May 31, 2017... RMB: I don't really like this since 
-		// we are not resolving any equivalent concepts here!
-//		emci = kbService.discoverExactMatchClique(emci) ;
+		Optional<Set<SemanticGroup>> optionalSemanticGroupSet = query.getConceptTypes();
 		
-		// Capture the Semantic Group filter for use in the concept query
-		Optional< Set<SemanticGroup> > semgroupsOpt = query.getInitialConceptTypes() ;
-		String semgroups = "" ;
-		if(semgroupsOpt.isPresent()) {
-			Set<SemanticGroup> semgroupSet = semgroupsOpt.get();
-			for(SemanticGroup sg : semgroupSet) {
-				semgroups += sg.name()+" ";
+		String semgroups = "";
+		
+		if (optionalSemanticGroupSet.isPresent()) {
+			Set<SemanticGroup> semanticGroupSet = optionalSemanticGroupSet.get();
+			for (SemanticGroup semanticGroup : semanticGroupSet) {
+				semgroups += semanticGroup.name() + " ";
 			}
 			semgroups = semgroups.trim();
 		}
