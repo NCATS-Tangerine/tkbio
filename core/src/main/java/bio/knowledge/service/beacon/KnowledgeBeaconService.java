@@ -167,7 +167,13 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 							List<Concept> concepts = new ArrayList<Concept>();
 							
 							for (InlineResponse200 response : responses) {
-								SemanticGroup semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
+								SemanticGroup semgroup;
+								try {
+									semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
+								} catch (IllegalArgumentException e) {
+									semgroup = null;
+								}
+								
 								ConceptImpl concept = new ConceptImpl(
 										response.getId(),
 										semgroup,
