@@ -361,6 +361,13 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			int pageNumber,
 			int pageSize
 		) {
+		
+		// If the statement does not contain a beacon URL, then default to querying
+		// every active beacon.
+		if (statement.getBeaconUrl() == null) {
+			return getEvidences(statement.getId(), keywords, pageNumber, pageSize);
+		}
+		
 		ApiClient apiClient = new ApiClient();
 		apiClient.setBasePath(statement.getBeaconUrl());
 		EvidenceApi evidenceApi = new EvidenceApi(apiClient);
