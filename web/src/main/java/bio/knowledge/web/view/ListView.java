@@ -98,6 +98,7 @@ import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.datasource.DataService;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.model.Annotation;
+import bio.knowledge.model.BeaconResponse;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.DomainModelException;
@@ -115,6 +116,8 @@ import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
 import bio.knowledge.service.DataServiceException;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
+import bio.knowledge.service.beacon.KnowledgeBeacon;
+import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.service.core.ListTableEntryCounter;
 import bio.knowledge.service.core.ListTableFilteredHitCounter;
@@ -161,6 +164,9 @@ public class ListView extends BaseView {
 	private static final String PAGE_CONTROL_BUTTON_STYLE = "pagecontrol-button";
 	
 	private static final int DATA_PAGE_SIZE = 15;
+	
+	@Autowired
+	KnowledgeBeaconRegistry kbRegistry;
 
 	// Wrapper for datasource container,
 	// to add extra action columns for 'details', 'data download', etc.
@@ -727,6 +733,26 @@ public class ListView extends BaseView {
 		Container.Indexed container = listContainer.getContainer();
 
 		gpcontainer = new GeneratedPropertyContainer(container);
+		
+		gpcontainer.addGeneratedProperty("beaconSource", new PropertyValueGenerator<String>() {
+
+			@Override
+			public String getValue(Item item, Object object, Object propertyId) {
+				if (object instanceof BeaconResponse) {
+					BeaconResponse beaconResponse = (BeaconResponse) object;
+					String url = beaconResponse.getBeaconUrl();
+					KnowledgeBeacon kb = kbRegistry.getKnowledgeBeaconByUrl(url);
+					return kb.getName();
+				}
+				return "";
+			}
+
+			@Override
+			public Class<String> getType() {
+				return String.class;
+			}
+			
+		});
 
 		// Create a header row to hold column filters
 		// HeaderRow filterRow = dataTable.appendHeaderRow();
@@ -1874,7 +1900,7 @@ public class ListView extends BaseView {
 				ViewName.CONCEPTS_VIEW,
 				new BeanItemContainer<Concept>(Concept.class), 
 				conceptService,
-				new String[] { "id", "name|*", "semanticGroup", "description|*", "synonyms|*", "library|*" },
+				new String[] { "beaconSource", "name|*", "semanticGroup", "description|*", "synonyms|*", "library|*" },
 				null, 
 				null);
 

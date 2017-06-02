@@ -208,5 +208,17 @@ public class ConceptImpl extends AbstractIdentifiedEntity implements Concept {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	private String beaconUrl;
+
+	@Override
+	public void setBeaconUrl(String url) {
+		this.beaconUrl = url;
+	}
+
+	@Override
+	public String getBeaconUrl() {
+		return beaconUrl;
+	}
 
 }

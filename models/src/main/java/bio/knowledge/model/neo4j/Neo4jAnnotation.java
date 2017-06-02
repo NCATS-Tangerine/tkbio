@@ -260,4 +260,16 @@ public class Neo4jAnnotation extends Neo4jAbstractIdentifiedEntity implements An
 		throw new NotImplementedException("not implemented");
 	}
 
+	@Override
+	public void setBeaconUrl(String url) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getBeaconUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
