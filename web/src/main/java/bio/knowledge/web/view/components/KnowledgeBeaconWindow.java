@@ -48,7 +48,12 @@ public class KnowledgeBeaconWindow extends Window {
 		FormLayout addKbPanel = buildAddKbPanel();
 		addKbPanel.setCaption("Add New Knowledge Beacon:");
 		
-		mainLayout.addComponents( chooseKbPanel, addKbPanel);
+		Button closeButton = new Button();
+		closeButton.setCaption("Done");
+		closeButton.addClickListener(event -> { close(); });
+		
+		mainLayout.addComponents( chooseKbPanel, addKbPanel, closeButton );
+		mainLayout.setComponentAlignment(closeButton, Alignment.BOTTOM_RIGHT);
 	}
 
 	private VerticalLayout buildChooseKbPanel() {
@@ -128,14 +133,9 @@ public class KnowledgeBeaconWindow extends Window {
 			kbRegistry.addKnowledgeBeacon(name, description, url);
 			refreshOptionGroup();
 		});
-		
-		Button closeButton = new Button();
-		closeButton.setCaption("Close");
-		closeButton.addClickListener(event -> { close(); });
 	
-		flayout.addComponents(nameField, urlField, descrArea, addButton, closeButton);
+		flayout.addComponents(nameField, urlField, descrArea, addButton);
 		flayout.setComponentAlignment(addButton, Alignment.BOTTOM_LEFT);
-		flayout.setComponentAlignment(closeButton, Alignment.BOTTOM_RIGHT);
 		
 		return flayout;
 	}

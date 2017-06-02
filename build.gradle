@@ -34,8 +34,8 @@ allprojects {
 	// including a Knowledge Beacon server wrapping KB 3.0 data
 	// Removed REST and API server components
 	// "Manage Beacons" elaborated
-	version = '4.0.13' // Iterative bug fixes and enhancements: semgroup and simple string match in relation table now works
-
+	version = '4.0.14' // Iterative bug fixes and enhancements
+	
     apply plugin: 'maven'
     apply plugin: 'java'
     apply plugin: 'eclipse-wtp'
