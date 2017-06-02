@@ -78,6 +78,9 @@ public class ReferenceView extends ReferenceDesign implements View {
 	
 	private String getUrl(String id) {
 		int i = id.indexOf(":");
+		
+		if (i == -1) { throw new RuntimeException("Concept id " + id + " is not a curie"); }
+		
 		String objId = id.substring(i+1);
 		id = id.substring(0, i);
 		i = id.lastIndexOf(".");
