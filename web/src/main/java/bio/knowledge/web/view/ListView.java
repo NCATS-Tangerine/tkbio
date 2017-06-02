@@ -1073,7 +1073,7 @@ public class ListView extends BaseView {
 					break ;
 					
 				case RELATIONS:
-
+					Optional<Statement> statementOpt = query.getCurrentStatement();
 					Optional<Evidence> evidenceOpt = query.getCurrentEvidence() ;
 					if ( evidenceOpt.isPresent() ) {
 						Evidence evidence = evidenceOpt.get() ;
@@ -1083,6 +1083,13 @@ public class ListView extends BaseView {
 							String object       = statement.getObject().getName();
 							String relationship = statement.getRelation().getName();	
 							dataTableLabel = formatDataTableLabel( subject, relationship, object ) ;
+						} else if (statementOpt.isPresent()) {
+							Statement s = statementOpt.get();
+							dataTableLabel = formatDataTableLabel(
+									s.getSubject().getName(),
+									s.getRelation().getName(),
+									s.getObject().getName()
+							);
 						} else
 							dataTableLabel = formatDataTableLabel( "No Statement is Currently Selected?" );
 					} else
