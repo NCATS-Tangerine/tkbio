@@ -7,6 +7,9 @@ import bio.knowledge.model.neo4j.Neo4jEvidence;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
 
 public interface Statement extends IdentifiedEntity {
+	
+	void setBeaconUrl(String url);
+	String getBeaconUrl();
 
 	/**
 	 * 
