@@ -121,6 +121,7 @@ import bio.knowledge.web.view.ConceptSearchResults;
 import bio.knowledge.web.view.ContactView;
 import bio.knowledge.web.view.DesktopView;
 import bio.knowledge.web.view.FaqView;
+import bio.knowledge.web.view.LandingPageView;
 import bio.knowledge.web.view.LibrarySearchResults;
 import bio.knowledge.web.view.ListView;
 import bio.knowledge.web.view.LoginView;
@@ -1511,6 +1512,8 @@ public class DesktopUI extends UI implements MessageService {
 		// Here we manage redirecting the application to other views upon the
 		// loading of a new page, according to particular URI's.
 		String uri = Page.getCurrent().getUriFragment();
+		String passwordResetFragment = "!passwordReset?token=";
+		
 		if (uri != null) {
 			// This allows for maps to be looked up with a URL.
 			// In the future we could also create person lookups by URL, like
@@ -1547,21 +1550,13 @@ public class DesktopUI extends UI implements MessageService {
 							+ "\" was found. You may need to login to view this map.", Type.WARNING_MESSAGE);
 				}
 
-			} else if (uri.equals("!passwordReset")) {
-				// TODO: make sure the password reset link is setup with your
-				// Stormpath account.
-
-				// I had trouble getting the Stormpath password reset link
-				// (which contains the password reset token) to direct
-				// to the PasswordResetView by default. This is how I am getting
-				// around the problem. I made the password reset link have
-				// "!passwordReset" as its URI fragment, and now any time
-				// "!passwordReset" is in the URI fragment upon the
-				// instantiation of this class (i.e., whenever a new page is
-				// loaded), it immediately redirects to the password reset view
-				// with the password reset token portion of the URL
-				// automatically passed along.
-				applicationNavigator.navigateTo(PasswordResetView.NAME);
+			} else if (uri.startsWith(passwordResetFragment)) {
+				
+				String token = uri.replace(passwordResetFragment, "");
+				
+				if (authenticationManager.isValidPasswordToken(token)) {
+					applicationNavigator.navigateTo(PasswordResetView.NAME + "/" + token);
+				}
 			}
 		}
 	}

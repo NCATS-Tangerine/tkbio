@@ -22,7 +22,6 @@ import com.vaadin.ui.declarative.Design;
 @SuppressWarnings("serial")
 public class ResetPasswordDesign extends VerticalLayout {
 	protected NativeButton continueButton;
-	protected TextField resetToken;
 	protected PasswordField firstPassword;
 	protected PasswordField secondPassword;
 	protected Label errorLabel;
