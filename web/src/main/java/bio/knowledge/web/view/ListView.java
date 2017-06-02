@@ -1083,12 +1083,11 @@ public class ListView extends BaseView {
 							String object       = statement.getObject().getName();
 							String relationship = statement.getRelation().getName();	
 							dataTableLabel = formatDataTableLabel( subject, relationship, object ) ;
-
 						} else
 							dataTableLabel = formatDataTableLabel( "No Statement is Currently Selected?" );
-				} else
-					dataTableLabel = formatDataTableLabel("No Evidence is Currently Selected?");
-				break;
+					} else
+						dataTableLabel = formatDataTableLabel("No Evidence is Currently Selected?");
+					break;
 
 			case WIKIDATA:
 				break; // nothing doing here ... yet?
