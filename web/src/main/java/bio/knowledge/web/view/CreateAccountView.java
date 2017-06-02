@@ -75,6 +75,11 @@ public class CreateAccountView extends NewAccountDesign implements View {
 				"Email is invalid."
 		);
 		validationHandler.addNonEmptyValidator(usernameField, "Username");
+		validationHandler.addProhibitedMatchValidator(
+				usernameField,
+				"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
+				"Username cannot be an email address."
+		);
 		validationHandler.addValidator(firstPassword, makeFirstPasswordValidator());
 		validationHandler.addValidator(secondPassword, makeSecondPasswordValidator());
 		
