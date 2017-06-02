@@ -25,7 +25,7 @@ public class KnowledgeBeacon {
 	}
 	
 	public KnowledgeBeacon(String url) {
-		this(null, url, null);
+		this(url, null, null);
 	}
 	
 	public String getName() {
