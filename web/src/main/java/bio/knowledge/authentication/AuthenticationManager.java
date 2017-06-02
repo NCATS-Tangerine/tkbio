@@ -330,6 +330,9 @@ public class AuthenticationManager {
 		
 		Properties props = new Properties();
 		props.putAll(mailProps.getProperties());
+		props.put("mail.smtp.host", mailProps.getHost());
+		props.put("mail.smtp.port", mailProps.getPort());
+
 		Session session = Session.getInstance(props);
 	
 		String username = mailProps.getUsername();
