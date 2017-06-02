@@ -6,12 +6,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonSyntaxException;
 
 import bio.knowledge.client.ApiClient;
+import bio.knowledge.client.ApiException;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.api.EvidenceApi;
 import bio.knowledge.client.api.ExactmatchesApi;
@@ -27,6 +29,8 @@ import bio.knowledge.model.Annotation;
 import bio.knowledge.model.AnnotationImpl;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptImpl;
+import bio.knowledge.model.Evidence;
+import bio.knowledge.model.EvidenceImpl;
 import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.SemanticGroup;
@@ -260,8 +264,10 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 										statementsObject.getName());
 
 								PredicateImpl predicate = new PredicateImpl(statementsPredicate.getName());
-
-								statements.add(new GeneralStatement(id, subject, predicate, object));
+								
+								Statement statement = new GeneralStatement(id, subject, predicate, object);
+								statement.setBeaconUrl(apiClient.getBasePath());
+								statements.add(statement);
 							}
 
 							return statements;
@@ -341,6 +347,42 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			
 		};
 		return query(builder);
+	}
+	
+	public CompletableFuture<List<Annotation>> getEvidences(
+			Statement statement,
+			String keywords,
+			int pageNumber,
+			int pageSize
+		) {
+		ApiClient apiClient = new ApiClient();
+		apiClient.setBasePath(statement.getBeaconUrl());
+		EvidenceApi evidenceApi = new EvidenceApi(apiClient);
+		
+		CompletableFuture<List<Annotation>> future =
+				CompletableFuture.supplyAsync(new Supplier<List<Annotation>>() {
+					@Override
+					public List<Annotation> get() {
+						try {
+							List<InlineResponse2003> responses = 
+									evidenceApi.getEvidence(statement.getId(), keywords, pageNumber, pageSize);
+							
+							List<Annotation> annotations = new ArrayList<Annotation>();
+							for (InlineResponse2003 response : responses) {
+								Annotation annotation = new AnnotationImpl();
+								annotation.setId(response.getId());
+								annotation.setPublicationDate(response.getDate());
+								annotation.setName(response.getLabel());
+								annotations.add(annotation);
+							}
+							return annotations;
+						} catch (ApiException e) {
+							return new ArrayList<Annotation>();
+						}
+					}
+		});
+		
+		return future;
 	}
 
 	/**
