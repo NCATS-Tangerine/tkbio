@@ -35,6 +35,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import javax.annotation.PostConstruct;
 
@@ -91,6 +94,7 @@ import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.authentication.AuthenticationManager;
+import bio.knowledge.datasource.DataService;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.datasource.DataSourceException;
@@ -112,6 +116,7 @@ import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
 import bio.knowledge.service.DataServiceException;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
+import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.service.core.ListTableEntryCounter;
 import bio.knowledge.service.core.ListTableFilteredHitCounter;
 import bio.knowledge.service.core.ListTablePageCounter;
@@ -1081,12 +1086,11 @@ public class ListView extends BaseView {
 							String object       = statement.getObject().getName();
 							String relationship = statement.getRelation().getName();	
 							dataTableLabel = formatDataTableLabel( subject, relationship, object ) ;
-
 						} else
 							dataTableLabel = formatDataTableLabel( "No Statement is Currently Selected?" );
-				} else
-					dataTableLabel = formatDataTableLabel("No Evidence is Currently Selected?");
-				break;
+					} else
+						dataTableLabel = formatDataTableLabel("No Evidence is Currently Selected?");
+					break;
 
 			case WIKIDATA:
 				break; // nothing doing here ... yet?
@@ -1349,14 +1353,12 @@ public class ListView extends BaseView {
 		}
 
 		simpleTextFilter.setValue("");
-		simpleTextFilter.setEnabled(true);
 		if (viewName.equals(ViewName.EVIDENCE_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Sentences");
 		} else if (viewName.equals(ViewName.RELATIONS_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Relation Fields");
 		} else if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Concepts");
-			simpleTextFilter.setEnabled(false);
 		} else if (viewName.equals(ViewName.LIBRARY_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Map Names");
 		} else if (viewName.equals(ViewName.ANNOTATIONS_VIEW)) {
@@ -1692,6 +1694,9 @@ public class ListView extends BaseView {
 	@Autowired
 	WikiDetailsHandler wd_handler;
 	
+	@Autowired
+	KnowledgeBeaconService kbService;
+	
 	private HorizontalLayout buttonsLayout;
 	
 	// Handler for Concept details in various data tables
@@ -1720,16 +1725,25 @@ public class ListView extends BaseView {
 			// int x = 100, y = 400 ;
 
 			String predicateLabel;
-
-			Concept selectedConcept;
-
-			if (role.equals(ConceptRole.SUBJECT)) {
-				selectedConcept = subject;
+			
+			String conceptId;
+			if (role.equals(ConceptRole.SUBJECT)) {				
+				conceptId = subject.getId();
 			} else if (role.equals(ConceptRole.OBJECT)) {
-				selectedConcept = object;
+				conceptId = object.getId();
 				// x+=400 ;
 			} else
 				throw new RuntimeException("Unsupported Relationship Concept Role?");
+			
+			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(subject.getId());
+			Concept selectedConcept;
+			try {
+				List<Concept> concepts = 
+						future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+				selectedConcept = concepts.get(0);
+			} catch (InterruptedException | ExecutionException | TimeoutException | IndexOutOfBoundsException e1) {
+				selectedConcept = role.equals(ConceptRole.SUBJECT) ? subject : object;
+			}
 
 			String conceptName;
 
@@ -1742,7 +1756,8 @@ public class ListView extends BaseView {
 			predicateLabel = predicate.getName();
 
 			Button showRelations = new Button("Show Relations");
-			showRelations.addClickListener(e -> selectionContext(ui, conceptDetailsWindow, selectedConcept));
+			final Concept finallySelectedConcept = selectedConcept;
+			showRelations.addClickListener(e -> selectionContext(ui, conceptDetailsWindow, finallySelectedConcept));
 
 			// RMB: 9 September 2016 - deprecating relation table display of
 			// WikiData

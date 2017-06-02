@@ -133,6 +133,7 @@ public class ConceptMapPopupWindow {
 	private HorizontalLayout buttonsLayout;
 	private Window conceptDetailsWindowOnGraph;
 	private Button showRelations;
+	private Button showEvidence;
 	private Button okay;
 	private Button addAnno;
 	private Button delete;
@@ -271,12 +272,12 @@ public class ConceptMapPopupWindow {
 		if (selectedStatement != null) {
 			query.setCurrentStatement(selectedStatement);
 
-			showRelations = new Button("Show Evidence", e -> {
+			showEvidence = new Button("Show Evidence", e -> {
 				conceptDetailsWindowOnGraph.close();
 				parentUi.displayEvidence();
 			});
 
-			buttonsLayout.addComponent(showRelations);
+			buttonsLayout.addComponent(showEvidence);
 		}
 
 		delete = new Button("Delete", e -> {

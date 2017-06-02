@@ -75,10 +75,9 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
     	Optional<Statement> statementOpt = query.getCurrentStatement();
 		if( !statementOpt.isPresent() ) return new ArrayList<Annotation>() ;
 		Statement statement = statementOpt.get();
-		String statementId = statement.getId();
 		
     	CompletableFuture<List<Annotation>> future =
-    			kbService.getEvidences(statementId, "", pageIndex, pageSize);
+    			kbService.getEvidences(statement, filter, pageIndex, pageSize);
     	
     	try {
 			List<Annotation> annotations =

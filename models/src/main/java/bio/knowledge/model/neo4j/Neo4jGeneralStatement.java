@@ -70,5 +70,17 @@ public class Neo4jGeneralStatement extends Neo4jAbstractStatement {
     ) {
     	super(accessionId,predicateName) ;
     }
+
+	@Override
+	public void setBeaconUrl(String url) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getBeaconUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

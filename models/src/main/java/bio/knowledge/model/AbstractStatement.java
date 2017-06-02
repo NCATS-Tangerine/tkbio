@@ -52,6 +52,8 @@ public abstract class AbstractStatement extends AbstractIdentifiedEntity impleme
 	private Concept object ;
 
 	protected Evidence evidence ;
+	
+	private String beaconUrl;
     
 	protected AbstractStatement() {}
     
@@ -115,6 +117,16 @@ public abstract class AbstractStatement extends AbstractIdentifiedEntity impleme
     		String predicateName
     ) {
     	super(accessionId,predicateName,"") ;
+    }
+    
+    @Override
+	public void setBeaconUrl(String url) {
+    	this.beaconUrl = url;
+	}
+    
+    @Override
+    public String getBeaconUrl() {
+    	return this.beaconUrl;
     }
 
 	/* (non-Javadoc)
