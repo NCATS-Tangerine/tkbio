@@ -108,9 +108,7 @@ public class KnowledgeBeaconWindow extends Window {
 		});
 		
 		Button addButton = new Button();
-
 		addButton.setCaption("Add Beacon");
-		
 		addButton.addClickListener(event -> {
 //				kbRegistry.addKnowledgeBeacon("name", "description", textField.getValue());
 //				Notification.show("Knowledge beacon " + textField.getValue() + " added");
@@ -130,9 +128,14 @@ public class KnowledgeBeaconWindow extends Window {
 			kbRegistry.addKnowledgeBeacon(name, description, url);
 			refreshOptionGroup();
 		});
+		
+		Button closeButton = new Button();
+		closeButton.setCaption("Close");
+		closeButton.addClickListener(event -> { close(); });
 	
-		flayout.addComponents(nameField, urlField, descrArea, addButton);
-		flayout.setComponentAlignment(addButton, Alignment.BOTTOM_RIGHT);
+		flayout.addComponents(nameField, urlField, descrArea, addButton, closeButton);
+		flayout.setComponentAlignment(addButton, Alignment.BOTTOM_LEFT);
+		flayout.setComponentAlignment(closeButton, Alignment.BOTTOM_RIGHT);
 		
 		return flayout;
 	}
