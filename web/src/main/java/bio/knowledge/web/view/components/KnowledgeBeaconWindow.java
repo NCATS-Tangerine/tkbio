@@ -146,7 +146,7 @@ public class KnowledgeBeaconWindow extends Window {
 		optionGroup.setMultiSelect(true);
 		for (KnowledgeBeacon kb : kbs) {
 			optionGroup.addItem(kb);
-			optionGroup.setItemCaption(kb, kb.getUrl());
+			optionGroup.setItemCaption(kb, kb.getName() + " - " + kb.getUrl());
 			if (kb.isEnabled())
 				optionGroup.select(kb);
 		}

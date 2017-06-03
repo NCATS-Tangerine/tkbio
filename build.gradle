@@ -34,7 +34,7 @@ allprojects {
 	// including a Knowledge Beacon server wrapping KB 3.0 data
 	// Removed REST and API server components
 	// "Manage Beacons" elaborated
-	version = '4.0.14' // Iterative bug fixes and enhancements
+	version = '4.0.15' // Knowledge Source acknowledged in concept table
 	
     apply plugin: 'maven'
     apply plugin: 'java'

@@ -130,7 +130,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 								
 								concept.setSynonyms(String.join(" ", response.getSynonyms()));
 								concept.setDescription(response.getDefinition());
-								
+								concept.setBeaconUrl(apiClient.getBasePath());
 								concepts.add(concept);
 							}
 							return concepts;
@@ -182,7 +182,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 								
 								concept.setSynonyms(String.join(" ", response.getSynonyms()));
 								concept.setDescription(response.getDefinition());
-								
+								concept.setBeaconUrl(apiClient.getBasePath());
 								concepts.add(concept);
 							}
 							
@@ -336,7 +336,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 									// There can be an id in here!
 									annotation.setUrl(strings[1]);
 								}
-								
+								annotation.setBeaconUrl(apiClient.getBasePath());
 								annotations.add(annotation);
 							}
 							
@@ -386,6 +386,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 								annotation.setId(response.getId());
 								annotation.setPublicationDate(response.getDate());
 								annotation.setName(response.getLabel());
+								annotation.setBeaconUrl(apiClient.getBasePath());
 								annotations.add(annotation);
 							}
 							return annotations;
