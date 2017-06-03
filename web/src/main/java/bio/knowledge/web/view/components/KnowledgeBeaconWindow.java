@@ -48,7 +48,12 @@ public class KnowledgeBeaconWindow extends Window {
 		FormLayout addKbPanel = buildAddKbPanel();
 		addKbPanel.setCaption("Add New Knowledge Beacon:");
 		
-		mainLayout.addComponents( chooseKbPanel, addKbPanel);
+		Button closeButton = new Button();
+		closeButton.setCaption("Done");
+		closeButton.addClickListener(event -> { close(); });
+		
+		mainLayout.addComponents( chooseKbPanel, addKbPanel, closeButton );
+		mainLayout.setComponentAlignment(closeButton, Alignment.BOTTOM_RIGHT);
 	}
 
 	private VerticalLayout buildChooseKbPanel() {
@@ -108,9 +113,7 @@ public class KnowledgeBeaconWindow extends Window {
 		});
 		
 		Button addButton = new Button();
-
 		addButton.setCaption("Add Beacon");
-		
 		addButton.addClickListener(event -> {
 //				kbRegistry.addKnowledgeBeacon("name", "description", textField.getValue());
 //				Notification.show("Knowledge beacon " + textField.getValue() + " added");
@@ -132,7 +135,7 @@ public class KnowledgeBeaconWindow extends Window {
 		});
 	
 		flayout.addComponents(nameField, urlField, descrArea, addButton);
-		flayout.setComponentAlignment(addButton, Alignment.BOTTOM_RIGHT);
+		flayout.setComponentAlignment(addButton, Alignment.BOTTOM_LEFT);
 		
 		return flayout;
 	}
@@ -143,7 +146,7 @@ public class KnowledgeBeaconWindow extends Window {
 		optionGroup.setMultiSelect(true);
 		for (KnowledgeBeacon kb : kbs) {
 			optionGroup.addItem(kb);
-			optionGroup.setItemCaption(kb, kb.getUrl());
+			optionGroup.setItemCaption(kb, kb.getName() + " - " + kb.getUrl());
 			if (kb.isEnabled())
 				optionGroup.select(kb);
 		}

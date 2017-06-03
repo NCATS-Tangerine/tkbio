@@ -1,15 +1,23 @@
 package bio.knowledge.service.beacon;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.yaml.snakeyaml.Yaml;
 
 import bio.knowledge.database.repository.beacon.BeaconRepository;
 import bio.knowledge.model.beacon.neo4j.Neo4jKnowledgeBeacon;
@@ -20,18 +28,71 @@ import bio.knowledge.model.beacon.neo4j.Neo4jKnowledgeBeacon;
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class KnowledgeBeaconRegistry {
 	
+	private static String yamlUrl = "https://raw.githubusercontent.com/"
+			+ "NCATS-Tangerine/translator-knowledge-beacon/"
+			+ "develop/api/knowledge-beacon-list.yaml";
+	
 	@Autowired
 	BeaconRepository beaconRepository;
 	
 	private List<KnowledgeBeacon> knowledgeBeacons = new ArrayList<KnowledgeBeacon>();
 	
-	public List<KnowledgeBeacon> getKnowledgeBeacons() {
+	public KnowledgeBeacon getKnowledgeBeaconByUrl(String url) {
+		for (KnowledgeBeacon kb : getKnowledgeBeacons()) {
+			if (kb.getUrl().equals(url)) {
+				return kb;
+			}
+		}
+		
+		return null;
+	}
+	
+	public List<KnowledgeBeacon> getKnowledgeBeacons() {		
 		return this.knowledgeBeacons;
 	}
 	
 	@PostConstruct
 	public void init() {
-		
+		yamlInit();
+//		neo4jInit();
+
+	}
+	
+	/**
+	 * Initiates the registry by grabbing beacons from the official yaml file:
+	 * https://raw.githubusercontent.com/NCATS-Tangerine/translator-knowledge-beacon/develop/api/knowledge-beacon-list.yaml
+	 */
+	private void yamlInit() {
+		try {
+			URL site = new URL(yamlUrl);
+			InputStream inputStream = site.openStream();
+			Yaml yaml = new Yaml();
+			Map<String, Object> yamlObject = (Map<String, Object>) yaml.load(inputStream);
+			ArrayList<Map<String, Object>> beacons = (ArrayList<Map<String, Object>>) yamlObject.get("beacons");
+			
+			for (Map<String, Object> beacon : beacons) {
+				String url = (String) beacon.get("url");
+				String name = (String) beacon.get("name");
+				String description = (String) beacon.get("description");
+				String status = (String) beacon.get("status");
+				boolean isEnabled = !"in_progress".equals(status);
+				
+				if (url != null) {
+					this.knowledgeBeacons.add(
+							new KnowledgeBeacon(url, name, description, isEnabled)
+					);
+				}
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Initiates the registry by grabbing beacons from the neo4j database
+	 */
+	private void neo4jInit() {
 		// Reference Knowledge Beacon
 		createBeacon(
 				"Knowledge.Bio Beacon", 
@@ -52,7 +113,6 @@ public class KnowledgeBeaconRegistry {
 			// during initialization, I add knowledge sources I have previously persisted
 			addKnowledgeSource(url, beacon.getName(), beacon.getDescription());
 		}
-
 	}
 
 	/*

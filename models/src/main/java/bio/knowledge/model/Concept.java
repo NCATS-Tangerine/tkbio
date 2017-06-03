@@ -5,7 +5,7 @@ import java.util.Set;
 import bio.knowledge.model.core.AnnotatedEntity;
 import bio.knowledge.model.core.IdentifiedEntity;
 
-public interface Concept extends IdentifiedEntity, AnnotatedEntity {
+public interface Concept extends IdentifiedEntity, AnnotatedEntity, BeaconResponse {
 	
 	public static final String SEMGROUP_FIELD_START = "[" ;
 	public static final String SEMGROUP_FIELD_END   = "]" ;
