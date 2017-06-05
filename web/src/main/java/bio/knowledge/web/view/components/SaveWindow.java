@@ -230,8 +230,13 @@ public class SaveWindow extends Window {
 	}
 	
 	private void generateArchive(String jsonContent, String pngContent, ConceptMapArchive archive) {
-		Concept concept = query.getCurrentQueryConcept().get();
-		jsonContent = MessageFormat.format(skeleton, concept.getName(), concept.getId(), jsonContent);
+		Optional<Concept> conceptOpt = query.getCurrentQueryConcept();
+		if (conceptOpt.isPresent()) {
+			Concept concept = conceptOpt.get();
+			jsonContent = MessageFormat.format(skeleton, concept.getName(), concept.getId(), jsonContent);
+		} else {
+			jsonContent = MessageFormat.format(skeleton, "", "", jsonContent);
+		}
 		
 		// first clear node ids
 		query.clearNodeIdsFromConceptMap();
@@ -254,7 +259,9 @@ public class SaveWindow extends Window {
 		archive.setConceptMapSif(conceptMapDisplay.convertToSIF());
 		archive.setConceptMapTsv(conceptMapDisplay.converterToTSV());
 
-		archive.setId(concept.getId());
+		if (conceptOpt.isPresent()) {
+			archive.setId(conceptOpt.get().getId());
+		}
 		archive.setVersion(1);
 		archive.setVersionDate(new Date().getTime());
 		
@@ -333,14 +340,14 @@ public class SaveWindow extends Window {
 		mainLayout.setMargin(true);
 
 		saveBar.addComponent(nameField);
-//		saveBar.addComponent(saveButton);
+		saveBar.addComponent(saveButton);
 		saveBar.addComponent(exportButton);
 		saveBar.addComponent(cancelButton);
 //		saveBar.addComponent(cancelButton);
-//
-//		saveBar.setExpandRatio(nameField, 3);
-//		saveBar.setExpandRatio(saveButton, 1);
-//		saveBar.setExpandRatio(cancelButton, 1);
+
+		saveBar.setExpandRatio(nameField, 3);
+		saveBar.setExpandRatio(saveButton, 1);
+		saveBar.setExpandRatio(cancelButton, 1);
 
 		saveBar.setSizeFull();
 		nameField.setSizeFull();

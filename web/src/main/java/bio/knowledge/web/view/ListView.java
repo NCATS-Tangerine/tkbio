@@ -823,12 +823,16 @@ public class ListView extends BaseView {
 						
 						String userId = map.getAuthorsAccountId();
 						if (userId != null) {
-							User userProfile = ((DesktopUI) UI.getCurrent()).getAuthenticationManager().getUser(userId);
-							return (String) userProfile.getUsername();
+							User userProfile = DesktopUI.getCurrent().getAuthenticationManager().getUser(userId);
+							
+							if (userProfile != null) {
+								return (String) userProfile.getUsername();
+							} else {
+								return null;
+							}
 						} else {
 							return null;
 						}
-						
 					}
 		
 					@Override

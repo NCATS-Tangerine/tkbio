@@ -1376,11 +1376,17 @@ public class DesktopUI extends UI implements MessageService {
 	 * @return
 	 */
 	private boolean saveMap(boolean isClearMap) {
-//		SaveWindow saveWindow = new SaveWindow(getCurrentConceptMapName(), query, context,
-//				registry.getMapping(ViewName.LIBRARY_VIEW), cm, applicationNavigator, cache);
-		SaveWindow.raiseExportWindow("", DesktopUI.getCurrent().getConceptMap(), query, cache);
+		SaveWindow saveWindow = new SaveWindow(
+				getCurrentConceptMapName(),
+				query,
+				registry.getMapping(ViewName.LIBRARY_VIEW),
+				cm,
+				applicationNavigator,
+				cache
+		);
+//		SaveWindow.raiseExportWindow("", DesktopUI.getCurrent().getConceptMap(), query, cache);
 
-//		this.addWindow(saveWindow);
+		this.addWindow(saveWindow);
 
 		return true;
 	}

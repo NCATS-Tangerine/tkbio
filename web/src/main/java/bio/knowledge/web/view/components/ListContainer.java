@@ -26,6 +26,7 @@
 package bio.knowledge.web.view.components;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
@@ -189,8 +190,8 @@ class ListContainer implements Serializable {
 				} else {
 					authenticationState.setState(null, null);
 				}
-
-				container.addAll(pager.getDataPage(currentPageIndex, pageSize, simpleTextFilter, sorter, isAscending));
+				List<? extends IdentifiedEntity> page = pager.getDataPage(currentPageIndex, pageSize, simpleTextFilter, sorter, isAscending);
+				container.addAll(page);
 			}
 		}
 	}

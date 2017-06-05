@@ -76,6 +76,16 @@ public class User extends Neo4jAbstractIdentifiedEntity {
 		return this.userId;
 	}
 	
+	@Override
+	public String getId() {
+		return getUserId();
+	}
+	
+	@Override
+	public void setId(String userId) {
+		setUserId(userId);
+	}
+	
 	@Transient
 	public String getDateJoined() {
 		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy"); //TODO: locale/timezone?
