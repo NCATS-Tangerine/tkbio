@@ -1,8 +1,6 @@
 package bio.knowledge.web.view.components;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -17,18 +15,21 @@ import com.vaadin.ui.Window;
 
 import bio.knowledge.service.beacon.GenericKnowledgeService.QueryListener;
 import bio.knowledge.service.beacon.KnowledgeBeacon;
-import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 
 public class ConsoleWindow extends Window {
+	private static final long serialVersionUID = 3645524757035928630L;
+	
 	private VerticalLayout layout = new VerticalLayout();
 	ConcurrentLinkedQueue<String> messages = new ConcurrentLinkedQueue<String>();
 	List<KnowledgeBeacon> knowledgeBeacons = new ArrayList<KnowledgeBeacon>();
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ConsoleWindow(KnowledgeBeaconService kbService) {
 		setCaption("API Console");
-		setContent(layout);
+		VerticalLayout mainLayout = new VerticalLayout();
+		mainLayout.addComponent(new Label("Time stamp, Number of responses, API Query"));
+		mainLayout.addComponent(layout);
+		setContent(mainLayout);
 		
 		setResizable(true);
 		setWidth(60, Unit.PERCENTAGE);
@@ -46,12 +47,14 @@ public class ConsoleWindow extends Window {
 						String timeStamp = message.get("timeStamp");
 						
 						if (errorMessage == null) {
-							HorizontalLayout hlayout = new HorizontalLayout();
-							hlayout.setSpacing(true);
-							layout.addComponent(hlayout);
-							hlayout.addComponent(new Label(timeStamp));
-							hlayout.addComponent(new Label(responseCount));
-							hlayout.addComponent(new Label(query));
+							if (query != null) {
+								HorizontalLayout hlayout = new HorizontalLayout();
+								hlayout.setSpacing(true);
+								layout.addComponent(hlayout);
+								hlayout.addComponent(new Label(timeStamp));
+								hlayout.addComponent(new Label(responseCount));
+								hlayout.addComponent(new Label(query));
+							}
 						} else {
 							HorizontalLayout hlayout = new HorizontalLayout();
 							hlayout.setSpacing(true);
@@ -79,12 +82,5 @@ public class ConsoleWindow extends Window {
 			}
 		});
 	}
-	
-//	messages.add(message);
-//	
-//	if (messages.size() >= knowledgeBeacons.size()) {
-//		String timeStamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
-//		layout.addComponent(new Label(timeStamp + " >> " + message));
-//	}
 	
 }
