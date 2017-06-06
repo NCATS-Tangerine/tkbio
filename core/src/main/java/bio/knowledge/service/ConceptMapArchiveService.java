@@ -76,7 +76,8 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
     ) {
 		String accountId = authState.getUserId();
 		String[] groupIds = authState.getGroupIds();
-		String[] keywords = filter.split(" ");
+		String simpleTextFilter = query.getSimpleTextFilter();
+		String[] keywords = simpleTextFilter == null || simpleTextFilter.isEmpty() ? null : simpleTextFilter.split(" ");
 		
 		if (pageSize < 1) pageSize = 1 ;
  		

@@ -1408,7 +1408,7 @@ public class ListView extends BaseView {
 			simpleTextFilter.addValueChangeListener(event -> {
 				String filterText = (String) event.getProperty().getValue();
 				filterText = filterText.trim();
-				query.setRelationsTextFilter(filterText);
+				query.setSimpleTextFilter(filterText);
 				listContainer.setSimpleTextFilter(filterText);
 				gotoPageIndex(0); // refreshes the view
 			});

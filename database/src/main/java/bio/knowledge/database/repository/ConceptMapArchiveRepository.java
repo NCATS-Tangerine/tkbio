@@ -128,9 +128,9 @@ public interface ConceptMapArchiveRepository extends GraphRepository<ConceptMapA
 			@Param("filter") String[] filter, Pageable pageable, @Param("accountId") String accountId, @Param("groupIds") String[] groupIds);
 	
 	@Query(
-	" MATCH (c:Concept)-[:LIBRARY]->(library:Library)-[:ASSOCIATED_MAP]->(cm:ConceptMap) " +
+	" MATCH (cm:ConceptMap) " +
 	" WHERE " +
-	" 	({filter} IS NULL OR ALL (x IN {filter} WHERE LOWER(c.name) CONTAINS LOWER(x) OR LOWER(cm.name) CONTAINS LOWER(x))) " +
+	" 	({filter} IS NULL OR ALL (x IN {filter} WHERE LOWER(cm.name) CONTAINS LOWER(x))) " +
 	" AND " +
 	"	( cm.authorsAccountId = {accountId} OR cm.isPublic = true OR (cm.authorsAccountId IS NULL) OR (cm.isPublic IS NULL) " +
 	" OR " +
@@ -150,9 +150,9 @@ public interface ConceptMapArchiveRepository extends GraphRepository<ConceptMapA
 	);
 	
 	@Query(
-	" MATCH (c:Concept)-[:LIBRARY]->(library:Library)-[:ASSOCIATED_MAP]->(cm:ConceptMap) " +
+	" MATCH (cm:ConceptMap) " +
 	" WHERE " +
-	" 	({filter} IS NULL OR ALL (x IN {filter} WHERE LOWER(c.name) CONTAINS LOWER(x) OR LOWER(cm.name) CONTAINS LOWER(x))) " +
+	" 	({filter} IS NULL OR ALL (x IN {filter} WHERE LOWER(cm.name) CONTAINS LOWER(x))) " +
 	" AND " +
 	"	cm.authorsAccountId = {accountId} " +
 	" OPTIONAL MATCH (cm:ConceptMap)-[:PARENTS]->(parents:Library) " +
@@ -170,9 +170,9 @@ public interface ConceptMapArchiveRepository extends GraphRepository<ConceptMapA
 	);
 	
 	@Query(
-	" MATCH (c:Concept)-[:LIBRARY]->(library:Library)-[:ASSOCIATED_MAP]->(cm:ConceptMap) " +
+	" MATCH (cm:ConceptMap) " +
 	" WHERE " +
-	" 	({filter} IS NULL OR ALL (x IN {filter} WHERE LOWER(c.name) CONTAINS LOWER(x) OR LOWER(cm.name) CONTAINS LOWER(x))) " +
+	" 	({filter} IS NULL OR ALL (x IN {filter} WHERE LOWER(cm.name) CONTAINS LOWER(x))) " +
 	" AND " +
 	"	cm.groupId IN {groupIds} "+
 	" OPTIONAL MATCH (cm:ConceptMap)-[:PARENTS]->(parents:Library) " +
