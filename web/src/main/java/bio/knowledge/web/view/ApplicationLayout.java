@@ -210,7 +210,7 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 	
 	private void setCommonNavigationViews() {
 		setNavigationView(FaqView.NAME, FaqView.class, faqBtn);
-		setNavigationView(AboutView.NAME, AboutView.class, aboutBtn);
+		//setNavigationView(AboutView.NAME, AboutView.class, aboutBtn); // deprecated as redundant page, for now
 		setNavigationView(ContactView.NAME, ContactView.class, contactBtn);
 		setNavigationView(LandingPageView.NAME, LandingPageView.class, homeBtn);
 		setNavigationView(LoginView.NAME, LoginView.class, loginBtn);

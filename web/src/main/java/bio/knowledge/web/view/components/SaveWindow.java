@@ -201,7 +201,7 @@ public class SaveWindow extends Window {
 		}
 	}
 	
-	private String skeleton = 
+	private static String skeleton = 
 			"<!--Knowledge.Bio 3.0 Concept Map Dump--> \n"
 			+ "<version>"
 			+  "3.0"
@@ -311,51 +311,7 @@ public class SaveWindow extends Window {
 		exportButton.addClickListener(new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-				ConceptMapArchive newArchive = new ConceptMapArchive(nameField.getValue());
-				
-				conceptMapDisplay.requestContent(new ContentRequester() {
-					@Override
-					public void processRequestedContent(String jsonContent, String pngContent) {
-						Concept concept = query.getCurrentQueryConcept().get();
-						jsonContent = MessageFormat.format(skeleton, concept.getName(), concept.getId(), jsonContent);
-						
-						// first clear node ids
-						query.clearNodeIdsFromConceptMap();
-						// get nodes
-						Iterator<HashMap<String, HashMap<String, Serializable>>> itr = 
-								conceptMapDisplay.getElements().getNodes().iterator();
-						
-						// Get all node's id from conceptmap and set to kbquery.
-						while (itr.hasNext()) {
-							query.addNodeIdToSet((String) itr.next().get("data").get("id"));
-						}
-						// reset cache to reflect any change in library value for
-						// @todo Ideally, it should be invalidate that particular entry,
-						// however we don't have enough information to build cachekey, So
-						// resetting cache is also fine.
-						cache.resetCache();
-
-						newArchive.setConceptMapJson(jsonContent);
-						newArchive.setConceptMapPng(pngContent);
-						newArchive.setConceptMapSif(conceptMapDisplay.convertToSIF());
-						newArchive.setConceptMapTsv(conceptMapDisplay.converterToTSV());
-
-						newArchive.setId(concept.getId());
-						newArchive.setVersion(1);
-						newArchive.setVersionDate(new Date().getTime());
-						
-						UserGroup group = (UserGroup) groupChooser.getValue();
-						newArchive.setGroupId(group != null ? group.getId() : null);
-
-						Optional<Library> parentMapOpt = query.getCurrentImportedMaps();
-						if (parentMapOpt.isPresent()) {
-							Library parentMaps = parentMapOpt.get();
-							newArchive.setParents(parentMaps);
-						}	
-					}
-				});
-				ExportWindow exportWindow = new ExportWindow(query, newArchive);
-				UI.getCurrent().addWindow(exportWindow);	
+				raiseExportWindow(nameField.getValue(), conceptMapDisplay, query, cache);
 			}
 		});
 		
@@ -477,6 +433,61 @@ public class SaveWindow extends Window {
 		});
 
 		cancelButton.addClickListener(event -> close());
+	}
+	
+	public static void raiseExportWindow(String conceptName, ConceptMapDisplay conceptMapDisplay, KBQuery query, Cache cache) {
+		ConceptMapArchive newArchive = new ConceptMapArchive(conceptName);
+		
+		conceptMapDisplay.requestContent(new ContentRequester() {
+			@Override
+			public void processRequestedContent(String jsonContent, String pngContent) {
+				Optional<Concept> concept = query.getCurrentQueryConcept();
+				String conceptId;
+				String conceptName;
+				if (concept.isPresent()) {
+					conceptId = concept.get().getId();
+					conceptName = concept.get().getName();
+				} else {
+					conceptId = "";
+					conceptName = "";
+				}
+				
+				jsonContent = MessageFormat.format(skeleton, conceptName, conceptId, jsonContent);
+				
+				// first clear node ids
+				query.clearNodeIdsFromConceptMap();
+				// get nodes
+				Iterator<HashMap<String, HashMap<String, Serializable>>> itr = 
+						conceptMapDisplay.getElements().getNodes().iterator();
+				
+				// Get all node's id from conceptmap and set to kbquery.
+				while (itr.hasNext()) {
+					query.addNodeIdToSet((String) itr.next().get("data").get("id"));
+				}
+				// reset cache to reflect any change in library value for
+				// @todo Ideally, it should be invalidate that particular entry,
+				// however we don't have enough information to build cachekey, So
+				// resetting cache is also fine.
+				cache.resetCache();
+
+				newArchive.setConceptMapJson(jsonContent);
+				newArchive.setConceptMapPng(pngContent);
+				newArchive.setConceptMapSif(conceptMapDisplay.convertToSIF());
+				newArchive.setConceptMapTsv(conceptMapDisplay.converterToTSV());
+
+				newArchive.setId(conceptId);
+				newArchive.setVersion(1);
+				newArchive.setVersionDate(new Date().getTime());
+
+				Optional<Library> parentMapOpt = query.getCurrentImportedMaps();
+				if (parentMapOpt.isPresent()) {
+					Library parentMaps = parentMapOpt.get();
+					newArchive.setParents(parentMaps);
+				}	
+			}
+		});
+		ExportWindow exportWindow = new ExportWindow(query, newArchive);
+		UI.getCurrent().addWindow(exportWindow);
 	}
 
 	/**

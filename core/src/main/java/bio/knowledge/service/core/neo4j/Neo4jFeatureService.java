@@ -25,10 +25,7 @@
  */
 package bio.knowledge.service.core.neo4j;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +35,6 @@ import bio.knowledge.model.core.AnnotatedEntity;
 import bio.knowledge.model.core.Feature;
 import bio.knowledge.model.core.ModelException;
 import bio.knowledge.model.core.OntologyTerm;
-import bio.knowledge.model.core.neo4j.Neo4jAbstractAnnotatedEntity;
-import bio.knowledge.model.core.neo4j.Neo4jAbstractFeature;
 import bio.knowledge.service.core.FeatureService;
 
 @Service("FeatureService")

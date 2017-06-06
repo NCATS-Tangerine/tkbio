@@ -35,16 +35,13 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import bio.knowledge.model.core.ModelException;
 import bio.knowledge.model.core.Ontology;
 import bio.knowledge.model.core.OntologyTerm;
-import bio.knowledge.model.core.neo4j.Neo4jAbstractOntology;
 import bio.knowledge.model.core.neo4j.Neo4jAbstractOntologyTerm;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
 import bio.knowledge.service.core.OntologyTermService;

@@ -294,5 +294,8 @@ public interface KBQuery {
 	public String currentConceptId=null;
 
 	public String getCurrentQueryConceptId();
+
+	public void setRelationsTextFilter(String filterText);
+	public String getRelationsTextFilter();
 	
 }

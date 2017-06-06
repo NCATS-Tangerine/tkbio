@@ -258,4 +258,17 @@ public class AnnotationImpl extends AbstractIdentifiedEntity implements Annotati
 		this.url = url;
 	}
 
+	
+	private String beaconUrl;
+	
+	@Override
+	public void setBeaconUrl(String url) {
+		this.beaconUrl = url;
+	}
+
+	@Override
+	public String getBeaconUrl() {
+		return this.beaconUrl;
+	}
+
 }

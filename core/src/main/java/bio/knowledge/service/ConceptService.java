@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -51,7 +52,6 @@ import bio.knowledge.datasource.DataSourceRegistry;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
 import bio.knowledge.model.Concept;
-import bio.knowledge.model.RdfUtil;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.core.Feature;
 import bio.knowledge.model.datasource.Result;
@@ -77,8 +77,6 @@ public class ConceptService
 	
 	private Logger _logger = LoggerFactory.getLogger(ConceptService.class);
 	
-	private static final String SEPARATOR=" ";
-	
 	@Autowired
 	private KBQuery query ;
 	
@@ -95,9 +93,6 @@ public class ConceptService
 	private FeatureService featureService ;
     
     @Autowired
-    private AuthenticationState authenticationState;
-    
-    @Autowired
     private KnowledgeBeaconService kbService;
     
     @Override
@@ -108,8 +103,20 @@ public class ConceptService
     		TableSorter sorter,
     		boolean isAscending
     ) {
+		
+		// Capture the Semantic Group filter for use in the concept query
+		Optional< Set<SemanticGroup> > semgroupsOpt = query.getInitialConceptTypes() ;
+		String semgroups = "" ;
+		if(semgroupsOpt.isPresent()) {
+			Set<SemanticGroup> semgroupSet = semgroupsOpt.get();
+			for(SemanticGroup sg : semgroupSet) {
+				semgroups += sg.name()+" ";
+			}
+			semgroups = semgroups.trim();
+		}
+		
     	CompletableFuture<List<Concept>> future =
-    			kbService.getConcepts(filter, "", pageIndex, pageSize);
+    			kbService.getConcepts(filter, semgroups, pageIndex, pageSize);
     	
     	try {
 			return future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
@@ -144,8 +151,6 @@ public class ConceptService
 		else
 			throw new RuntimeException("Invalid number of ConceptService.createInstance() arguments?");
 	}
-
-    private List<Concept> Concepts = new ArrayList<Concept>() ;
     
 	//@Autowired
 	//private GraphDatabaseService graphDb;
@@ -183,7 +188,6 @@ public class ConceptService
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#getIdentifiers(org.springframework.data.domain.Pageable)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<Concept> getIdentifiers(Pageable pageable) {
 		throw new RuntimeException("Not implemented in KB 4.0!") ;
@@ -201,6 +205,7 @@ public class ConceptService
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	// TODO: I think this is where the refactoring faltered
 	private Page<Concept> findAllFiltered(String filter, Pageable pageable) {
+		
 		CompletableFuture<List<Concept>> future = kbService.getConcepts(
 				filter,
 				null,

@@ -49,7 +49,7 @@ import bio.knowledge.web.ui.DesktopUI;
  *
  */
 @SpringView(name = DesktopView.NAME)
-public class DesktopView extends DesktopDesign implements View{
+public class DesktopView extends DesktopDesign implements View {
 
 	private static final long serialVersionUID = -3941787763184092605L;
 
