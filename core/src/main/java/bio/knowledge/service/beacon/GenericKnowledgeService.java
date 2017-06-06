@@ -52,19 +52,21 @@ public class GenericKnowledgeService {
 				List<Map<String, String>> messages = new ArrayList<Map<String, String>>();
 				
 				for (KnowledgeBeacon beacon : beacons) {
-					String timestamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
-					String count = String.valueOf(beacon.getApiClient().getLastResponseCount());
-					String error = beacon.getApiClient().getLastError();
-					String query = beacon.getApiClient().getLastQuery();
-					
-					Map<String, String> message = new HashMap<String, String>();
-					
-					message.put("timeStamp", timestamp);
-					message.put("responseCount", count);
-					message.put("errorMessage", error);
-					message.put("query", query);
-					
-					messages.add(message);
+					if (beacon.isEnabled()) {
+						String timestamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
+						String count = String.valueOf(beacon.getApiClient().getLastResponseCount());
+						String error = beacon.getApiClient().getLastError();
+						String query = beacon.getApiClient().getLastQuery();
+						
+						Map<String, String> message = new HashMap<String, String>();
+						
+						message.put("timeStamp", timestamp);
+						message.put("responseCount", count);
+						message.put("errorMessage", error);
+						message.put("query", query);
+						
+						messages.add(message);
+					}
 				}
 				return messages;
 			}));

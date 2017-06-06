@@ -27,9 +27,12 @@ public class ConsoleWindow extends Window {
 	public ConsoleWindow(KnowledgeBeaconService kbService) {
 		setCaption("API Console");
 		VerticalLayout mainLayout = new VerticalLayout();
-		mainLayout.addComponent(new Label("Time stamp, Number of responses, API Query"));
+		mainLayout.addComponent(new Label(String.format("<font size=\"2\">Time stamp, Number of responses, API Query"), ContentMode.HTML));
 		mainLayout.addComponent(layout);
 		setContent(mainLayout);
+		
+		mainLayout.setSizeUndefined();
+		layout.setSizeFull();
 		
 		setResizable(true);
 		setWidth(60, Unit.PERCENTAGE);
