@@ -41,7 +41,7 @@
             STEP 1 
           </vaadin-label> 
           <vaadin-label style-name="step-label" plain-text>
-            Search your concept 
+            Search for your concept 
           </vaadin-label> 
          </vaadin-horizontal-layout> 
         </vaadin-horizontal-layout> 
@@ -77,7 +77,7 @@
             STEP 4 
           </vaadin-label> 
           <vaadin-label style-name="step-label" width="200px" plain-text :expand="7">
-            Rearragne the nodes to your preference 
+            Rearrange the nodes to your preference 
           </vaadin-label> 
          </vaadin-horizontal-layout> 
         </vaadin-horizontal-layout> 
@@ -129,6 +129,7 @@
           </vaadin-label> 
          </vaadin-horizontal-layout> 
         </vaadin-horizontal-layout>
+        <!--
         <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
          <vaadin-image source="theme://images/MyAccount.png" style-name="pubmed-img" width="200px" :middle :right :expand></vaadin-image> 
          <vaadin-label width="100px" plain-text></vaadin-label> 
@@ -146,6 +147,7 @@
        </vaadin-vertical-layout> 
        <vaadin-label :expand="2"></vaadin-label> 
       </vaadin-horizontal-layout> 
+      -->
      </vaadin-vertical-layout> 
     </tab> 
     <tab caption="Concept"> 
@@ -163,7 +165,7 @@
          Are there any filters to refine the search results? 
        </vaadin-label> 
        <vaadin-label style-name="faq-answer-label" :middle :center> 
-        <p>Yes! There are two options. 1. The <strong>filter by</strong> drop-down menu which allows you to filter concepts based on their types. 2. The <em>text field</em> to the right of the drop-down menu (<strong>Find concepts</strong>, <strong>Search sentences</strong>). It allows you to type keywords and then filter the result based on matching words.</p> 
+        <p>Yes! There are two options. 1. The <strong>filter by</strong> drop-down menu which allows you to filter concepts based on their types. 2. The <em>text field</em> to the right of the drop-down menu (<strong>Filter Concepts</strong>, <strong>Filter Relation Fields</strong>). It allows you to type keywords and then filter the result based on matching words.</p> 
        </vaadin-label> 
       </vaadin-vertical-layout> 
      </vaadin-vertical-layout> 
@@ -176,8 +178,8 @@
        </vaadin-label> 
        <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
        <vaadin-label style-name="faq-answer-label" :expand="4"> 
-        <p>The 3 tabs on the left side of the Knowledge.Bio desktop - the <strong>Relations</strong>, <strong>Reference Evidence</strong>, and <strong>PubMed Abstract</strong> tab - provide you ways to find concepts, link them to their evidence, and allow you to directly access the associated pubmed articles.
-        The left side of the desktop displays a graphical representation of the concepts and relations of personal interest that you collect from the Relations table (see <strong>Concept Map</strong> FAQ).</p> 
+        <p>The 3 tabs on the left side of the Knowledge.Bio desktop - the <strong>Relations</strong>, <strong>Evidence</strong>, and <strong>Reference</strong> tabs - provide you ways to find concepts, link them to their evidence, and allow you to directly access the associated pubmed articles.
+        The right side of the desktop displays a graphical representation of the concepts and relations of personal interest that you collect from the Relations table (see <strong>Concept Map</strong> FAQ).</p> 
        </vaadin-label> 
       </vaadin-horizontal-layout> 
       <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
@@ -191,7 +193,7 @@
            What are the Subject and Object columns? 
          </vaadin-label> 
          <vaadin-label style-name="faq-answer-label" :expand="4"> 
-          <p>Subject and object refer to the concepts that are connected to each other. Their relationship is shown in the predicate column.</p> 
+          <p>Subject and object refer to the concepts that are connected to each other. Their relationship is shown in the relation column.</p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
         <vaadin-vertical-layout spacing> 
@@ -209,7 +211,7 @@
            What is the Evidence column for? 
          </vaadin-label> 
          <vaadin-label style-name="faq-answer-label" :expand="4"> 
-          <p>To access the articles related to the chosen concept. Simply click on the green buttons under the <strong>Evidence</strong> column (the number represents the number of related articles).</p> 
+          <p>To access the articles related to the chosen concept. Simply click on the green buttons under the <strong>Evidence</strong> column.</p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
         <vaadin-vertical-layout spacing> 
@@ -249,25 +251,26 @@
            How do I find articles related to my searched concept? 
          </vaadin-label> 
          <vaadin-label style-name="faq-answer-label" :expand="4"> 
-          <p>Click the green buttons under the <strong>Evidence</strong> column. It will take you to the <em>Reference Evidence</em> tab which lists all the related article links in the table. Click on any of them will take you to the <em>PubMed Abstract</em> tab where you will be able to view the article.</p> 
+          <p>Click the green buttons under the <strong>Evidence</strong> column. It will take you to the <em>Evidence</em> tab which lists all the related article links in the table. Click on any of them will take you to the <em>Reference</em> tab where you will be able to view the article.</p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
        </vaadin-vertical-layout> 
       </vaadin-horizontal-layout> 
       <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
        <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
-         CITATION EVIDENCE TAB 
+         EVIDENCE TAB 
        </vaadin-label> 
        <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
        <vaadin-vertical-layout spacing :expand="4"> 
         <vaadin-vertical-layout spacing> 
          <vaadin-label style-name="faq-question-label" plain-text>
-           There is nothing under the Reference tab! 
+           There is nothing under the Evidence tab! 
          </vaadin-label> 
          <vaadin-label style-name="faq-answer-label"> 
-          <p>In order to see evidence and references, select a concept by clicking it from the table under the <em>Relations</em> tab.</p> 
+          <p>In order to see the evidence for a relation, click the button in the <strong>Evidence</strong> column next to it in the <em>Relations</em> tab.</p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
+        <!--
         <vaadin-vertical-layout spacing> 
          <vaadin-label style-name="faq-question-label" plain-text>
            What are the long numbers under the Reference column for? 
@@ -276,6 +279,8 @@
           <p>They represent the PMID (PubMed IDentifier) that index the journal references in <a href="http://www.ncbi.nlm.nih.gov/pubmed" target="_blank">PubMed.</a></p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
+        -->
+        <!--
         <vaadin-vertical-layout spacing> 
          <vaadin-label style-name="faq-question-label" plain-text>
            Can I rearrange the articles by date? 
@@ -284,19 +289,20 @@
           <p>Yes! Simply click on the <em>Publication Date</em> column header and it should order the articles from the newest to the oldest, or vice versa.</p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
+        -->
         <vaadin-vertical-layout spacing> 
          <vaadin-label style-name="faq-question-label" plain-text>
            Where do these articles come from and how are they chosen? 
          </vaadin-label> 
          <vaadin-label style-name="faq-answer-label"> 
-          <p>The evidence is searched among the PubMed articles using text-mining technologies to find abstracts that have the mentioned concepts.</p> 
+          <p>Much of the evidence is searched among the PubMed articles using text-mining technologies to find abstracts that have the mentioned concepts.</p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
        </vaadin-vertical-layout> 
       </vaadin-horizontal-layout> 
       <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
        <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
-         PUBMED ABSTRACT TAB 
+         REFERENCE TAB 
        </vaadin-label> 
        <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
        <vaadin-vertical-layout spacing :expand="4"> 
@@ -305,7 +311,7 @@
            How do I access the articles? 
          </vaadin-label> 
          <vaadin-label style-name="faq-answer-label"> 
-          <p>The <em>Reference</em> tab contains links to all the PubMed articles related to your chosen concept. Clicking on one of the sentences under the <em>Sentence</em> column will then direct you to the PubMed article. </p> 
+          <p>The <em>Evidence</em> tab contains links to all the articles related to your chosen concept. Clicking on one of the sentences under the <em>Supporting Text</em> column will open the article in the Reference tab. </p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
         <vaadin-vertical-layout spacing> 
@@ -316,6 +322,7 @@
           <p>Yes! Clicking on the <strong>Show Abstract in New Window</strong> button located above the article to make it easier to read.</p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
+        <!--
         <vaadin-vertical-layout spacing> 
          <vaadin-label style-name="faq-question-label" plain-text>
            What is the "Show Associated Concept Relations" button for? 
@@ -324,6 +331,7 @@
           <p>Clicking it will take you back to the <em>Relations</em> tab to list the concepts that are related to the PubMed article you are reading.</p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
+        -->
        </vaadin-vertical-layout> 
       </vaadin-horizontal-layout> 
      </vaadin-vertical-layout> 
@@ -378,7 +386,7 @@
            How can I find out more about a node? 
          </vaadin-label> 
          <vaadin-label style-name="faq-answer-label"> 
-          <p>Click on a node will bring up a pop-up window that shows its basic information (such as its name and type) as well as options to show its relations in the concept tables under the <em>Relations</em> tab. The window also allows you to delete the node from the map.</p> 
+          <p>Clicking on a node will bring up a pop-up window that shows its basic information (such as its name) as well as the option to show its relations in the <em>Relations</em> tab. The pop-up also allows you to delete the node from the map.</p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
        </vaadin-vertical-layout> 
@@ -405,7 +413,8 @@
           <p>Click on  <img src="VAADIN/themes/kb2/images/saveButton.png" alt="Save Button" style="margin-bottom: -7px; height: 8%; width: 8%;"/>  to save the map.</p>
           <p>You can save your concept map in several formats: <strong>kb</strong>, <strong>sif</strong>, <strong>jpeg</strong>, or <strong>tsv</strong>. Each format has a purpose: </p> 
           <ul> 
-           <li><p><strong>.kb</strong> - a file format specific to Knowledge.Bio that records all the content and layout details about a map and can be reloaded into the application again to be edited.</p>
+           <li><p><strong>.kb</strong> - a file format specific to Knowledge.Bio that records all the content and layout details about a map.</p>
+           <!--
            <ul>
       		 <img src="VAADIN/themes/kb2/images/save_not_loggedin.png" alt="Saving while not logged in"/>
       		 <ul>
@@ -426,6 +435,7 @@
           	<li>When logged in you have two additional options of specifying whether or not you want the map to be publically visible, and what group of persons with accounts on Knowledge.Bio you wish to share your map with.</li>
            	<li>Clicking on a map under "Personal Maps" or "All Maps" redirects you to a preview pane for that map, including an image of its contents, and the option to either add it to your session's graph (without overwriting its current contents), or export it to your local drive.</li>
            </ul>
+           -->
            </li> 
            <li><p><strong>.sif</strong> - the standard <a href="http://www.cytoscape.org/" target="_blank">Cytoscape</a> file format.</p></li> 
            <li><p><strong>.jpeg</strong> - an image file format.</p></li> 
@@ -439,9 +449,10 @@
            How to I clear the map? 
          </vaadin-label> 
          <vaadin-label style-name="faq-answer-label"> 
-          <p>The  <img src="VAADIN/themes/kb2/images/clearButton.png" alt="Clear Button" style="margin-bottom: -7px; height: 8%; width: 8%;"/>  allows you to clear the map along with <em>your current searches</em> in the concept tables. Be careful, once you clear the page, all information will be lost.</p> 
+          <p>The  <img src="VAADIN/themes/kb2/images/clearButton.png" alt="Clear Button" style="margin-bottom: -7px; height: 8%; width: 8%;"/>  allows you to clear the map.</p> 
          </vaadin-label> 
         </vaadin-vertical-layout>
+        <!--
         <vaadin-vertical-layout spacing> 
          <vaadin-label style-name="faq-question-label" plain-text>
            I saved a map in the public library. How do I load it on my map? 
@@ -450,6 +461,7 @@
           <p>To load a map from the Knowledge.Bio public library, make sure you have previously saved it as a <strong>.kb</strong> file and click on  <img src="VAADIN/themes/kb2/images/libraryButton.png" alt="Library Button" style="margin-bottom: -7px; height: 8%; width: 8%;"/>.</p>
          </vaadin-label> 
         </vaadin-vertical-layout> 
+        -->
         <vaadin-vertical-layout spacing> 
          <vaadin-label style-name="faq-question-label" plain-text>
            I lost my map... how can I find it again? / How can I center it? 
@@ -500,7 +512,7 @@
            Why do I need an account? 
          </vaadin-label> 
          <vaadin-label style-name="faq-answer-label"> 
-          <p>A user account in Knowledge.Bio lets you save concept maps you create under your name. Additionally, you may have your own collection of private maps that you can selectively share with others. And finally, being logged into an account lets you add custom relationships to the database reflecting your knowledge, and new pieces of evidence on existing knowledge or relationships in Knowledge.Bio.</p> 
+          <p>A user account in Knowledge.Bio lets you save concept maps you create under your name. Additionally, you may have your own collection of private maps that you can selectively share with others.</p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
         <vaadin-vertical-layout spacing> 
@@ -559,7 +571,7 @@
 		Where can I find the properties of a particular concept I have on the graph?
          </vaadin-label> 
          <vaadin-label style-name="faq-answer-label"> 
-          <p>Click on the node to produce a popup menu for the concept. Press <b>Show Properties</b>. A popup should appear showing the properties for that concept, similarly to if you selected it on the Concept Table.</p> 
+          <p>Click on the node to produce a popup menu for the concept. Press <b>Show Relationships</b>. The Relationship tab will open. Clicking on the name of a concept in this tab will cause a pop-up to appear showing the properties for that concept.</p> 
          </vaadin-label> 
         </vaadin-vertical-layout>
         
@@ -571,7 +583,7 @@
           <p>Every edge displayed on the map is clickable, producing a popup menu. For edges there will be a <b>Show Evidence</b> button. Clicking on it will bring you to the "Evidence" table, showing the sentences giving evidence to the relationship.</p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
-        
+        <!--
         <vaadin-vertical-layout spacing> 
          <vaadin-label style-name="faq-question-label" plain-text>
          Can I put my own relationships on the graph?/Can I add my own evidence that a knowledge relationship statement is true?
@@ -592,7 +604,8 @@
           </p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
-        
+        -->
+        <!--
         <vaadin-vertical-layout spacing> 
          <vaadin-label style-name="faq-question-label" plain-text>
 		My map looks like a hairball. Is there any way that I can organize it?
@@ -612,7 +625,7 @@
           </p> 
          </vaadin-label> 
         </vaadin-vertical-layout> 
-        
+        -->
        </vaadin-vertical-layout> 
       </vaadin-horizontal-layout> 
       
