@@ -35,6 +35,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import javax.annotation.PostConstruct;
 
@@ -89,9 +92,10 @@ import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.authentication.AuthenticationManager;
+import bio.knowledge.datasource.DataService;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.model.Annotation;
-import bio.knowledge.datasource.DataSourceException;
+import bio.knowledge.model.BeaconResponse;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.DomainModelException;
@@ -110,14 +114,14 @@ import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
 import bio.knowledge.service.DataServiceException;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
+import bio.knowledge.service.beacon.KnowledgeBeacon;
+import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
+import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.service.core.ListTableEntryCounter;
 import bio.knowledge.service.core.ListTableFilteredHitCounter;
 import bio.knowledge.service.core.ListTablePageCounter;
 import bio.knowledge.service.core.ListTablePager;
 import bio.knowledge.service.core.TableSorter;
-import bio.knowledge.service.organization.ContactFormService;
-import bio.knowledge.service.user.UserService;
-import bio.knowledge.service.wikidata.WikiDataService;
 import bio.knowledge.web.ui.DesktopUI;
 import bio.knowledge.web.ui.PopupWindow;
 import bio.knowledge.web.ui.WikiDetailsHandler;
@@ -158,6 +162,9 @@ public class ListView extends BaseView {
 	private static final String PAGE_CONTROL_BUTTON_STYLE = "pagecontrol-button";
 	
 	private static final int DATA_PAGE_SIZE = 15;
+	
+	@Autowired
+	KnowledgeBeaconRegistry kbRegistry;
 
 	// Wrapper for datasource container,
 	// to add extra action columns for 'details', 'data download', etc.
@@ -326,25 +333,6 @@ public class ListView extends BaseView {
 			conceptMapArchiveService.setSearchMode(searchMode);
 			refresh();
 		}
-		
-		private boolean loadingData = false;
-		public void addData(int pageSize) {
-			if (pager != null && !loadingData) {
-				loadingData = true;
-				AuthenticationManager authenticationManager = ((DesktopUI) UI.getCurrent()).getAuthenticationManager();
-				
-				if (authenticationManager.isUserAuthenticated()) {
-					User userProfile = authenticationManager.getCurrentUser();
-					
-					authenticationState.setState(userProfile.getId(), userProfile.getIdsOfGroupsBelongedTo());
-				} else {
-					authenticationState.setState(null, null);
-				}
-				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
-				container.addAll(pager.getDataPage(currentPageIndex, pageSize, filter, sorter, isAscending));
-				loadingData = false;
-			}
-		}
 
 		public void refresh() {
 			if (pager != null) {
@@ -360,11 +348,17 @@ public class ListView extends BaseView {
 						authenticationState.setState(null, null);
 					}
 					String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+					
+					// Simplistic addition of text filtering to tables which can use it
+					// Won't really work so well in StatementService, I suspect...
+					if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
+					
 					// We always want to fill the table with enough rows so that the scroll bar shows.
 					int pageSize = (int) dataTable.getHeightByRows() * 2;
-					container.addAll(pager.getDataPage(1, pageSize, filter, sorter, isAscending));
+					List<? extends IdentifiedEntity> data = pager.getDataPage(1, pageSize, filter, sorter, isAscending);
+					container.addAll(data);
 					loadedAllData = false;
-					nextPageNumber = 1;
+					nextPageNumber = 2;
 				}
 			}
 
@@ -373,12 +367,17 @@ public class ListView extends BaseView {
 		
 		private boolean loadedAllData = false;
 		private boolean loadingDataPage = false;
-		private int nextPageNumber = 1;
+		private int nextPageNumber;
 		public void loadNextPage() {
 			if (pager != null && !loadedAllData) {
 				int pageSize = (int) dataTable.getHeightByRows() * 2;
 				loadingDataPage = true;
 				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+				
+				// Simplistic addition of text filtering to tables which can use it
+				// Won't really work so well in StatementService, I suspect...
+				if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
+				
 				List<? extends IdentifiedEntity> data = 
 						pager.getDataPage(nextPageNumber, pageSize, filter, sorter, isAscending);
 				container.addAll(data);
@@ -733,6 +732,26 @@ public class ListView extends BaseView {
 		Container.Indexed container = listContainer.getContainer();
 
 		gpcontainer = new GeneratedPropertyContainer(container);
+		
+		gpcontainer.addGeneratedProperty("beaconSource", new PropertyValueGenerator<String>() {
+
+			@Override
+			public String getValue(Item item, Object object, Object propertyId) {
+				if (object instanceof BeaconResponse) {
+					BeaconResponse beaconResponse = (BeaconResponse) object;
+					String url = beaconResponse.getBeaconUrl();
+					KnowledgeBeacon kb = kbRegistry.getKnowledgeBeaconByUrl(url);
+					return kb.getName();
+				}
+				return "";
+			}
+
+			@Override
+			public Class<String> getType() {
+				return String.class;
+			}
+			
+		});
 
 		// Create a header row to hold column filters
 		// HeaderRow filterRow = dataTable.appendHeaderRow();
@@ -804,12 +823,16 @@ public class ListView extends BaseView {
 						
 						String userId = map.getAuthorsAccountId();
 						if (userId != null) {
-							User userProfile = ((DesktopUI) UI.getCurrent()).getAuthenticationManager().getUser(userId);
-							return (String) userProfile.getUsername();
+							User userProfile = DesktopUI.getCurrent().getAuthenticationManager().getUser(userId);
+							
+							if (userProfile != null) {
+								return (String) userProfile.getUsername();
+							} else {
+								return null;
+							}
 						} else {
 							return null;
 						}
-						
 					}
 		
 					@Override
@@ -1077,7 +1100,7 @@ public class ListView extends BaseView {
 					break ;
 					
 				case RELATIONS:
-
+					Optional<Statement> statementOpt = query.getCurrentStatement();
 					Optional<Evidence> evidenceOpt = query.getCurrentEvidence() ;
 					if ( evidenceOpt.isPresent() ) {
 						Evidence evidence = evidenceOpt.get() ;
@@ -1087,12 +1110,18 @@ public class ListView extends BaseView {
 							String object       = statement.getObject().getName();
 							String relationship = statement.getRelation().getName();	
 							dataTableLabel = formatDataTableLabel( subject, relationship, object ) ;
-
+						} else if (statementOpt.isPresent()) {
+							Statement s = statementOpt.get();
+							dataTableLabel = formatDataTableLabel(
+									s.getSubject().getName(),
+									s.getRelation().getName(),
+									s.getObject().getName()
+							);
 						} else
 							dataTableLabel = formatDataTableLabel( "No Statement is Currently Selected?" );
-				} else
-					dataTableLabel = formatDataTableLabel("No Evidence is Currently Selected?");
-				break;
+					} else
+						dataTableLabel = formatDataTableLabel("No Evidence is Currently Selected?");
+					break;
 
 			case WIKIDATA:
 				break; // nothing doing here ... yet?
@@ -1355,7 +1384,6 @@ public class ListView extends BaseView {
 		}
 
 		simpleTextFilter.setValue("");
-
 		if (viewName.equals(ViewName.EVIDENCE_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Sentences");
 		} else if (viewName.equals(ViewName.RELATIONS_VIEW)) {
@@ -1377,8 +1405,10 @@ public class ListView extends BaseView {
 		Collection<?> listeners = simpleTextFilter.getListeners(AbstractField.ValueChangeEvent.class);
 
 		if (listeners.isEmpty()) {
-			simpleTextFilter.addTextChangeListener(event -> {
-				String filterText = event.getText().trim();
+			simpleTextFilter.addValueChangeListener(event -> {
+				String filterText = (String) event.getProperty().getValue();
+				filterText = filterText.trim();
+				query.setRelationsTextFilter(filterText);
 				listContainer.setSimpleTextFilter(filterText);
 				gotoPageIndex(0); // refreshes the view
 			});
@@ -1695,6 +1725,9 @@ public class ListView extends BaseView {
 	@Autowired
 	WikiDetailsHandler wd_handler;
 	
+	@Autowired
+	KnowledgeBeaconService kbService;
+	
 	private HorizontalLayout buttonsLayout;
 	
 	// Handler for Concept details in various data tables
@@ -1723,16 +1756,25 @@ public class ListView extends BaseView {
 			// int x = 100, y = 400 ;
 
 			String predicateLabel;
-
-			Concept selectedConcept;
-
-			if (role.equals(ConceptRole.SUBJECT)) {
-				selectedConcept = subject;
+			
+			String conceptId;
+			if (role.equals(ConceptRole.SUBJECT)) {				
+				conceptId = subject.getId();
 			} else if (role.equals(ConceptRole.OBJECT)) {
-				selectedConcept = object;
+				conceptId = object.getId();
 				// x+=400 ;
 			} else
 				throw new RuntimeException("Unsupported Relationship Concept Role?");
+			
+			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(subject.getId());
+			Concept selectedConcept;
+			try {
+				List<Concept> concepts = 
+						future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+				selectedConcept = concepts.get(0);
+			} catch (InterruptedException | ExecutionException | TimeoutException | IndexOutOfBoundsException e1) {
+				selectedConcept = role.equals(ConceptRole.SUBJECT) ? subject : object;
+			}
 
 			String conceptName;
 
@@ -1745,7 +1787,8 @@ public class ListView extends BaseView {
 			predicateLabel = predicate.getName();
 
 			Button showRelations = new Button("Show Relations");
-			showRelations.addClickListener(e -> selectionContext(ui, conceptDetailsWindow, selectedConcept));
+			final Concept finallySelectedConcept = selectedConcept;
+			showRelations.addClickListener(e -> selectionContext(ui, conceptDetailsWindow, finallySelectedConcept));
 
 			// RMB: 9 September 2016 - deprecating relation table display of
 			// WikiData
@@ -1858,7 +1901,7 @@ public class ListView extends BaseView {
 				ViewName.CONCEPTS_VIEW,
 				new BeanItemContainer<Concept>(Concept.class), 
 				conceptService,
-				new String[] { "name|*", "semanticGroup", "synonyms|*", "library|*" },
+				new String[] { "beaconSource", "name|*", "semanticGroup", "description|*", "synonyms|*", "library|*" },
 				null, 
 				null);
 
@@ -1887,6 +1930,7 @@ public class ListView extends BaseView {
 		});
 		
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "synonyms",e->{/*NOP*/});
+		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "description",e->{/*NOP*/});
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "library", event -> {
 			Concept concept = (Concept) event.getItemId();
@@ -1956,7 +2000,7 @@ public class ListView extends BaseView {
 				event -> {
 					Annotation annotation = (Annotation) event.getItemId();
 		
-					_logger.trace("Display PubMed Reference for Annotation " + annotation.toString() + "...");
+					_logger.trace("Display 3rd Party Evidence Page for Annotation " + annotation.toString() + "...");
 		
 					DesktopUI ui = (DesktopUI) UI.getCurrent();
 					ui.displayReference(annotation);

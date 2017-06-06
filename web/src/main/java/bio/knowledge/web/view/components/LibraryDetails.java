@@ -142,7 +142,7 @@ public class LibraryDetails extends VerticalLayout {
 		String userId = map.getAuthorsAccountId();
 		String name;
 		
-		if (userId != null) {
+		if (userId != null && !userId.isEmpty()) {
 			name = userService.findByUserId(userId).getUsername();
 		} else {
 			name = "an anonymous user";

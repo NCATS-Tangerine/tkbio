@@ -33,12 +33,14 @@ import java.util.regex.Pattern;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Page;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.UI;
 
+import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.authentication.exceptions.InvalidPasswordResetToken;
 import bio.knowledge.authentication.exceptions.PasswordTooShortException;
 import bio.knowledge.validation.InvalidValueException;
@@ -52,7 +54,9 @@ public class PasswordResetView extends ResetPasswordDesign implements View {
 
 	private static final long serialVersionUID = 8181376937595758934L;
 
-	public static final String NAME = "passwordreset";
+	public static final String NAME = "passwordReset";
+	
+	private String tokenString;
 	
 	private Navigator navigator;
 	
@@ -78,13 +82,12 @@ public class PasswordResetView extends ResetPasswordDesign implements View {
 				String password = firstPassword.getValue();
 				
 				try {
-					ui.getAuthenticationManager().resetPassword(resetToken.getValue(), secondPassword.getValue());
+					ui.getAuthenticationManager().resetPassword(tokenString, password);
 					Notification.show("We have changed your password for you. You may now login.");
 					navigator.navigateTo(LoginView.NAME);
 					
 				} catch (InvalidPasswordResetToken e1) {
-					validationHandler.addProhibitedMatchValidator(resetToken, Pattern.quote(resetToken.getValue()), "Please enter a valid password reset token");
-					validationHandler.validateAll();
+					Notification.show("Reset link has expired.");
 				} catch (PasswordTooShortException e2) {
 					//Already handled by validation
 				}
@@ -115,7 +118,8 @@ public class PasswordResetView extends ResetPasswordDesign implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		validationHandler.resetState();
+		tokenString = event.getParameters();
+		validationHandler.resetState();		
 	}
 	
 	private boolean doPasswordsMatch(PasswordField p1, PasswordField p2) {

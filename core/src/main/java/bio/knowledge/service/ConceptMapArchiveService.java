@@ -34,7 +34,10 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +48,7 @@ import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Library;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
+import bio.knowledge.service.core.TableSorter;
 
 /**
  * @author Richard
@@ -60,6 +64,61 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 	
 	public void setSearchMode(SearchMode mode) {
 		this.searchMode = mode;
+	}
+	
+	@Override
+    public List<ConceptMapArchive> getDataPage(
+    		int pageIndex,
+    		int pageSize,
+    		String filter,
+    		TableSorter sorter,
+    		boolean isAscending
+    ) {
+		String accountId = authState.getUserId();
+		String[] groupIds = authState.getGroupIds();
+		String[] keywords = filter.split(" ");
+		
+		if (pageSize < 1) pageSize = 1 ;
+ 		
+ 		Direction direction; 
+ 		
+ 		if (isAscending){
+ 			direction = Direction.ASC;
+ 		}
+ 		else {
+ 			direction = Direction.DESC;
+ 		}
+ 		
+ 		Pageable pageable = new PageRequest(pageIndex, pageSize, 
+ 									new Sort(direction, sorter.getType())) ;
+		
+		List<Map<String, Object>> data;
+		
+		switch (searchMode) {
+		case ALL_MAPS:
+			data = archiveRepository.apiGetPublicConceptMaps(keywords, accountId, groupIds, pageIndex, pageSize);
+			break;
+		case AUTHORED_MAPS:
+			data = archiveRepository.apiGetPersonalConceptMaps(keywords, accountId, groupIds, pageIndex, pageSize);
+			break;
+		case SHARED_MAPS:
+			data = archiveRepository.apiGetSharedConceptMaps(keywords, accountId, groupIds, pageIndex, pageSize);
+			break;
+		default:
+			throw new RuntimeException("SearchMode option " + searchMode.toString() + " is not implemented");
+		}
+		
+		List<ConceptMapArchive> conceptMapArchives = new ArrayList<ConceptMapArchive>();
+		
+		for (Map<String, Object> d : data) {
+			ConceptMapArchive archive = (ConceptMapArchive) d.get("conceptMap");
+			Library parent = (Library) d.get("parents");
+			archive.setParents(parent);
+			
+			conceptMapArchives.add(archive);
+		}
+		
+		return conceptMapArchives;
 	}
 	
 	@Autowired

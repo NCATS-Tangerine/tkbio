@@ -30,8 +30,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -84,6 +88,7 @@ import com.vaadin.ui.Window;
 
 import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.database.repository.ConceptMapArchiveRepository;
+import bio.knowledge.datasource.DataService;
 import bio.knowledge.graph.ConceptMapDisplay;
 import bio.knowledge.graph.jsonmodels.Edge;
 import bio.knowledge.graph.jsonmodels.EdgeData;
@@ -106,6 +111,7 @@ import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
+import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.service.core.MessageService;
 import bio.knowledge.service.user.UserService;
 import bio.knowledge.web.KBUploader;
@@ -115,6 +121,7 @@ import bio.knowledge.web.view.ConceptSearchResults;
 import bio.knowledge.web.view.ContactView;
 import bio.knowledge.web.view.DesktopView;
 import bio.knowledge.web.view.FaqView;
+import bio.knowledge.web.view.LandingPageView;
 import bio.knowledge.web.view.LibrarySearchResults;
 import bio.knowledge.web.view.ListView;
 import bio.knowledge.web.view.LoginView;
@@ -156,6 +163,9 @@ public class DesktopUI extends UI implements MessageService {
 	private static final long serialVersionUID = -7147784018127550717L;
 
 	private Logger _logger = LoggerFactory.getLogger(DesktopUI.class);
+	
+	@Autowired
+	KnowledgeBeaconService knowledgeBeaconService;
 
 	@Autowired
 	Registry registry;
@@ -211,6 +221,10 @@ public class DesktopUI extends UI implements MessageService {
 
 	@Autowired
 	private ConceptService conceptService;
+	
+	public static DesktopUI getCurrent() {
+		return (DesktopUI) UI.getCurrent();
+	}
 
 	@Override
 	/*
@@ -1259,22 +1273,25 @@ public class DesktopUI extends UI implements MessageService {
 			cm.importConceptMap(content);
 
 			String id = cst_matcher.group(1);
-			String accessionId = id.replaceAll(",", "");
+			String conceptId = id.replaceAll(",", "");
 
 			// Setting manual layout while loading
 			desktopView.getCmLayoutSelect().setValue(MANUAL_CM_LAYOUT);
-
-			// set current concept
-			Optional<Concept> conceptOpt = conceptService.getDetailsById(accessionId);
-
-			if (conceptOpt.isPresent()) {
-				Concept cst = conceptOpt.get();
-				query.setCurrentQueryConceptById(cst.getId().toString());
-
-				if (query.getCurrentQueryConcept().isPresent()) {
-					setCurrentConceptTitle(query.getCurrentQueryConcept().get().getName());
-				}
+			
+			CompletableFuture<List<Concept>> future = knowledgeBeaconService.getConceptDetails(conceptId);
+			
+			try {
+				List<Concept> concepts = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+				Concept concept = concepts.get(0);
+				query.setCurrentQueryConceptById(concept.getId());
+				setCurrentConceptTitle(concept.getName());
+				
+			} catch (InterruptedException | ExecutionException | TimeoutException | IndexOutOfBoundsException e) {
+//				e.printStackTrace();
 			}
+			
+			DesktopUI.getCurrent().getConceptMap().alignToCenter();
+			
 			gotoStatementsTable();
 
 		} else {
@@ -1359,8 +1376,15 @@ public class DesktopUI extends UI implements MessageService {
 	 * @return
 	 */
 	private boolean saveMap(boolean isClearMap) {
-		SaveWindow saveWindow = new SaveWindow(getCurrentConceptMapName(), query,
-				registry.getMapping(ViewName.LIBRARY_VIEW), cm, applicationNavigator, cache);
+		SaveWindow saveWindow = new SaveWindow(
+				getCurrentConceptMapName(),
+				query,
+				registry.getMapping(ViewName.LIBRARY_VIEW),
+				cm,
+				applicationNavigator,
+				cache
+		);
+//		SaveWindow.raiseExportWindow("", DesktopUI.getCurrent().getConceptMap(), query, cache);
 
 		this.addWindow(saveWindow);
 
@@ -1494,6 +1518,8 @@ public class DesktopUI extends UI implements MessageService {
 		// Here we manage redirecting the application to other views upon the
 		// loading of a new page, according to particular URI's.
 		String uri = Page.getCurrent().getUriFragment();
+		String passwordResetFragment = "!passwordReset?token=";
+		
 		if (uri != null) {
 			// This allows for maps to be looked up with a URL.
 			// In the future we could also create person lookups by URL, like
@@ -1530,21 +1556,13 @@ public class DesktopUI extends UI implements MessageService {
 							+ "\" was found. You may need to login to view this map.", Type.WARNING_MESSAGE);
 				}
 
-			} else if (uri.equals("!passwordReset")) {
-				// TODO: make sure the password reset link is setup with your
-				// Stormpath account.
-
-				// I had trouble getting the Stormpath password reset link
-				// (which contains the password reset token) to direct
-				// to the PasswordResetView by default. This is how I am getting
-				// around the problem. I made the password reset link have
-				// "!passwordReset" as its URI fragment, and now any time
-				// "!passwordReset" is in the URI fragment upon the
-				// instantiation of this class (i.e., whenever a new page is
-				// loaded), it immediately redirects to the password reset view
-				// with the password reset token portion of the URL
-				// automatically passed along.
-				applicationNavigator.navigateTo(PasswordResetView.NAME);
+			} else if (uri.startsWith(passwordResetFragment)) {
+				
+				String token = uri.replace(passwordResetFragment, "");
+				
+				if (authenticationManager.isValidPasswordToken(token)) {
+					applicationNavigator.navigateTo(PasswordResetView.NAME + "/" + token);
+				}
 			}
 		}
 	}

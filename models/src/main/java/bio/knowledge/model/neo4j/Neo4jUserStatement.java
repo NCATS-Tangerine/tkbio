@@ -64,4 +64,16 @@ public class Neo4jUserStatement extends Neo4jAbstractStatement {
 		this.userId = userId;
 	}
 
+	@Override
+	public void setBeaconUrl(String url) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getBeaconUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

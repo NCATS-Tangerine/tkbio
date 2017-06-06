@@ -1,4 +1,4 @@
-#The NCAT "Translator" Knowledge.Bio Release 4.0 Java Implementation#
+# The NCAT "Translator" Knowledge.Bio Release 4.0 Java Implementation #
 
 This is the Knowledge.Bio Java-based web application for discovering, navigating, harvesting and organizing conceptual maps of (biomedical) research knowledge.
 
@@ -31,7 +31,7 @@ of the Lawrence Berkeley Laboratory, San Francisco, CA, USA, with direct funding
 	
 and others at the INSTITUTE for CLINICAL & TRANSLATIONAL RESEARCH (ICTR), Johns Hopkins University � School of Medicine, Baltimore, MD, USA. 
 
-##Pre-Requisites##
+## Pre-Requisites ##
 
 The Knowledge.Bio Version 4.0 is a multi-project Gradle build of Java components, as defined in several subdirectories, and based on the Spring Framework, especially, Spring Boot, the Neo4j graph database, connected to Spring via the Spring Data Neo4j using a Neo4j Object Graph Mapping (OGM), plus a Vaadin web graphical user interface front end. The current release dependencies for this technology stack is recorded in the tkbio master build.gradle file.
 
@@ -42,7 +42,7 @@ The application has been developed within the Eclipse J2EE IDE platform. Your mi
 
 Most other dependencies are imported by the Gradle build process.  However, before attempting to run the software, you should generally install a local copy of Neo4j community edition on your development machine (again, see the build.gradle file for the preferred current release of Neo4j being used).
 
-##How to Install and Run Locally##
+## How to Install and Run Locally ##
 
 1) Before starting, you should ensure that the Gradle Buildship tool for Eclipse is installed into your Eclipse IDE (find it on the Eclipse Marketplace). You should also likely install the latest Gradle version from gradle.org and configure the Buildship tool, in the Eclipse "Window..Preferences" to point to the Gradle distribution folder.
 
@@ -52,7 +52,7 @@ Most other dependencies are imported by the Gradle build process.  However, befo
 
 Note that Eclipse may or may not show a few "Problems" tab errors. These do not usually affect the Gradle build process and execution of the application.
 
-##Spring and Neo4j Configuration##
+## Spring and Neo4j Configuration ##
 
 In order to properly run various components of the Knowledge.Bio application (e.g. on a developer's local machine), some basic configuration variables need to be set.  The Spring Framework has many technical options for achieving this  - consult the reference documentation for full details.  These are typically found under the **".../main/resources"** folders as a set of Java properties (or equivalent) files.
 
@@ -104,7 +104,7 @@ where neo4j is the default for both user and password.
 
 Note: the Neo4j server generally prompts you for a new password the first time you directly visit the http://localhost:7474 web link.
 
-##Running Project JUnit Tests#
+## Running Project JUnit Tests #
 
 JUnit and related (e.g. Selenium?) tests are available for some of the code base (e.g. the database subproject). Although the test dependencies are covered, somewhat, by the Gradle build dependencies, to run the tests properly within Eclipse, you may need to do a bit more local configuration, as follows:
 
@@ -114,7 +114,7 @@ JUnit and related (e.g. Selenium?) tests are available for some of the code base
 * Select JUnit 4
 * Click Next.
 
-##Loading Data##
+## Loading Data ##
 
 Obviously, to work completely, you need to either point to an existing Knowledge.Bio database somewhere, or load some data into your local copy of the Neo4j database. 
 
@@ -126,7 +126,7 @@ gives additional information about how to load a full production database.
 
 For this dataset, type "diabetes" in the search box to start your search.
 
-##How to Run the Knowledge.Bio Web Application Locally##
+## How to Run the Knowledge.Bio Web Application Locally ##
 
 1) Make sure that you have installed, or have access to, a running installation of Neo4j release 2.3.* or better (i.e. can install locally or point to a remote version). Open neo4j community edition GUI and select the folder where the database has been saved. The first time you run it, open the the link provided (usually localhost:7474/) and change default password to a suitable password, which you will record in the application configuration files (next step).
 
@@ -139,7 +139,7 @@ tkbio/web/build/libs folder. This 'war' file is deployable to a web application 
 
 5) Pointing to the URL "http://localhost:8080" should display your (locally) running copy of TKBio. If you want to access the database from a non-localhost IP, you need to go into the neo4j-server.properties or (in Linux environments, the /etc/neo4j/neo4j.conf file) to uncomment out the org.neo4j.server.webserver.address=0.0.0.0 (or dbms.connector.http.address=0.0.0.0 in the Linux file).
 
-##Running in Eclipse-WTP and on Amazon Web Services##
+## Running in Eclipse-WTP and on Amazon Web Services ##
 
 The application may be run as a WAR file in an external web application container run from the Eclipse-WTP framework. Locally, this could be a Tomcat 8 (with Java 8 JRE). Remotely, it may be run inside an AWS ElasticBeanstalk environment.
 
@@ -163,7 +163,7 @@ If the Tomcat server doesn't start up, you can select it in the "Servers" tab an
 
 Whenever several significant application changes are made to the code, including changed dependencies, and you encounter difficulties running it, you can try to "Remove" the "web" subproject by selecting it under the given Tomcat server entry in the "Servers", then performing the "Run on Server" again to add it back into the web server.
 
-##Running in Amazon Web Services Elastic Beanstalk##
+## Running in Amazon Web Services Elastic Beanstalk ##
 
 If you have successfully
 
@@ -189,7 +189,7 @@ Next, you can directly create the environment on the AWS Dashboard then upload t
 
 After the EB environment is running, you can "Run As..Run on Server" using the existing Application and Environment as the source of the configuration. You might first want to restart Eclipse so that the AWS Explorer view gets properly reinitialized and discovers the new EB application and environment.  From that point onwards, you can republish your application periodically as you make coding progress.
 
-##Troubleshooting##
+## Troubleshooting ##
 
 Gradle and the Eclipse IDE live a mildly uneasy truce. Sometimes, when you are experiencing strange "NoSuchClassFound" errors, that suggests inconsistent library releases clashing with one another. In such circumstances, it is helpful to carefully review the whole hierarchy of Gradle dependencies by running:
 

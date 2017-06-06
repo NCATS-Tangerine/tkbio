@@ -107,6 +107,11 @@ public class UserAccountView extends AboutUserDesign implements View, Authentica
 				"Email is invalid"
 		);
 		validationHandler.addNonEmptyValidator(usernameField, "Username");
+		validationHandler.addProhibitedMatchValidator(
+				usernameField,
+				"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
+				"Username cannot be an email address."
+		);
 		validationHandler.addRequiredMatchValidator(
 				facebookField,
 				"((https?:\\/\\/)?(www\\.)?facebook\\.com\\/.+)?",

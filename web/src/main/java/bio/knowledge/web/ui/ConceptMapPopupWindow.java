@@ -133,6 +133,7 @@ public class ConceptMapPopupWindow {
 	private HorizontalLayout buttonsLayout;
 	private Window conceptDetailsWindowOnGraph;
 	private Button showRelations;
+	private Button showEvidence;
 	private Button okay;
 	private Button addAnno;
 	private Button delete;
@@ -232,7 +233,7 @@ public class ConceptMapPopupWindow {
 			basicSkeleton(name, selectedConcept.getSemanticGroup().getDescription(), x, y);
 		}
 	}
-
+	
 	public void conceptMapEdgePopUp(String sourceId, String targetId, String label, int x, int y, String description,
 			String uri) {
 
@@ -252,6 +253,8 @@ public class ConceptMapPopupWindow {
 		// TODO: How to handle the User's Annotation case here?
 		Statement selectedStatement = 
 				statementService.findbySourceAndTargetId(sourceId, targetId, label);
+		
+		if (selectedStatement == null) { return; }
 
 		// Create buttons related to node popup
 		// Okay -> no
@@ -269,12 +272,12 @@ public class ConceptMapPopupWindow {
 		if (selectedStatement != null) {
 			query.setCurrentStatement(selectedStatement);
 
-			showRelations = new Button("Show Evidence", e -> {
+			showEvidence = new Button("Show Evidence", e -> {
 				conceptDetailsWindowOnGraph.close();
 				parentUi.displayEvidence();
 			});
 
-			buttonsLayout.addComponent(showRelations);
+			buttonsLayout.addComponent(showEvidence);
 		}
 
 		delete = new Button("Delete", e -> {

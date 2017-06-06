@@ -16,16 +16,20 @@ public class KnowledgeBeacon {
 	private final ApiClient apiClient;
 	
 	public KnowledgeBeacon(String url, String name, String description) {
+		this(url, name, description, true);
+	}
+	
+	public KnowledgeBeacon(String url, String name, String description, boolean isEnabled) {
 		this.name = name;
 		this.description = description;
-		this.isEnabled = true;
+		this.isEnabled = isEnabled;
 		
 		this.apiClient = new ApiClient();
 		this.apiClient.setBasePath(url);
 	}
 	
 	public KnowledgeBeacon(String url) {
-		this(null, url, null);
+		this(url, null, null);
 	}
 	
 	public String getName() {

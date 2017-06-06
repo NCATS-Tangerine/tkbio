@@ -458,4 +458,15 @@ public class KBQueryImpl implements KBQuery {
 		this.userId = userId;
 	}
 
+	private String relationsTextFilter;
+	@Override
+	public void setRelationsTextFilter(String filterText) {
+		this.relationsTextFilter = filterText;
+	}
+
+	@Override
+	public String getRelationsTextFilter() {
+		return this.relationsTextFilter;
+	}
+
 }

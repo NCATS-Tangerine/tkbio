@@ -1,8 +1,7 @@
 /*-------------------------------------------------------------------------------
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-16 Scripps Institute (USA) - Dr. Benjamin Good
- *                       STAR Informatics / Delphinai Corporation (Canada) - Dr. Richard Bruskiewich
+ * Copyright (c) 2015 Delphinai Corporation (Canada) - Dr. Richard Bruskiewich
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,30 +22,25 @@
  * THE SOFTWARE.
  *-------------------------------------------------------------------------------
  */
-package bio.knowledge.service;
+package bio.knowledge.model.user;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.stereotype.Service;
+public enum Role {
 
-import bio.knowledge.model.Evidence;
-import bio.knowledge.model.neo4j.Neo4jEvidence;
-
-@Service
-public class EvidenceService {
-	
-	@Deprecated
-	public Evidence findByEvidenceId(String evidenceId) {
-		throw new NotImplementedException("Removed all reference to neo4j");
-	}
-	
-	@Deprecated
-	public Evidence createByEvidenceId(String evidenceId) {
-		throw new NotImplementedException("Removed all reference to neo4j");
-	}
-
-	@Deprecated
-	public Evidence save(Neo4jEvidence evidence) {
-		throw new NotImplementedException("Removed all reference to neo4j");
-	}
+    SYSADMIN("Systems Administrator"), 
+    ADMIN("Administrator"), 
+    LABORATORY("Certified Laboratory"), 
+    CURATOR("Data Curator"), 
+    CLIENT("General Client")
+    ;
+    
+    private final String name;
+    
+    Role(String name) {
+    	this.name = name;
+    }
+    
+    public String toString() {
+    	return this.name;
+    }
 
 }

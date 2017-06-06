@@ -27,7 +27,6 @@ package bio.knowledge.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -36,7 +35,6 @@ import java.util.concurrent.TimeoutException;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -77,10 +75,9 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
     	Optional<Statement> statementOpt = query.getCurrentStatement();
 		if( !statementOpt.isPresent() ) return new ArrayList<Annotation>() ;
 		Statement statement = statementOpt.get();
-		String statementId = statement.getId();
 		
     	CompletableFuture<List<Annotation>> future =
-    			kbService.getEvidences(statementId, "", pageIndex, pageSize);
+    			kbService.getEvidences(statement, filter, pageIndex, pageSize);
     	
     	try {
 			List<Annotation> annotations =

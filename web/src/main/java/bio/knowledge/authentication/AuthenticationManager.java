@@ -326,10 +326,13 @@ public class AuthenticationManager {
 		}
 		
 		String name = token.getUser().getFullName();
-		String href = getBaseURL() + "/#!passwordReset";
+		String href = getBaseURL() + "/#!passwordReset?token=" + token.getString();
 		
 		Properties props = new Properties();
 		props.putAll(mailProps.getProperties());
+		props.put("mail.smtp.host", mailProps.getHost());
+		props.put("mail.smtp.port", mailProps.getPort());
+
 		Session session = Session.getInstance(props);
 	
 		String username = mailProps.getUsername();
@@ -344,9 +347,8 @@ public class AuthenticationManager {
 			helper.setText(
 					"Hello " + name + "," + "<br><br>" +
 					"Forgot your password? We've received a request to reset the password for this email address." + "<br><br>" + 
-					"To reset your password please click on this link and enter the password reset token (token expires in 24 hours):" + "<br><br>" +
+					"To reset your password please click on this link or cut and paste this URL into your browser (link expires in 24 hours):" + "<br><br>" +
 					"Link:  " + "<a href=\"" + href + "\">" + href + "</a>" + "<br><br>" +
-					"Token: " + token.getString() + "<br><br>" +
 					"This link takes you to a secure page where you can change your password." + "<br>" +
 					"If you don't want to reset your password, please ignore this message. Your password will not be reset.",
 				true);
@@ -357,6 +359,14 @@ public class AuthenticationManager {
 			throw new InvalidEmailFormatException("Problem sending an email to this address");
 		}
 		
+	}
+	
+	public boolean isValidPasswordToken(String tokenString) {
+		if (tokenString == null || tokenString.isEmpty()|| tokenService.findByTokenString(tokenString) == null) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 	public void resetPassword(String tokenString, String newPassword) throws InvalidPasswordResetToken, PasswordTooShortException {//, PasswordLacksCapitalLetterOrNumberException {
