@@ -19,6 +19,8 @@ import com.vaadin.ui.Window;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeacon;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
+import bio.knowledge.service.beacon.KnowledgeBeaconService;
+import bio.knowledge.web.ui.DesktopUI;
 
 public class KnowledgeBeaconWindow extends Window {
 	
@@ -28,11 +30,13 @@ public class KnowledgeBeaconWindow extends Window {
 	private static final long serialVersionUID = -3216657180755749441L;
 	
 	private final KnowledgeBeaconRegistry kbRegistry;
+	private final KnowledgeBeaconService kbService;
 
 	private OptionGroup optionGroup = new OptionGroup();
 
-	public KnowledgeBeaconWindow(KnowledgeBeaconRegistry kbRegistry, KBQuery query) {
+	public KnowledgeBeaconWindow(KnowledgeBeaconRegistry kbRegistry, KBQuery query, KnowledgeBeaconService kbService) {
 		this.kbRegistry = kbRegistry;
+		this.kbService = kbService;
 		
 		setCaption("Knowledge Beacon Tools");
 		this.center();
@@ -52,7 +56,14 @@ public class KnowledgeBeaconWindow extends Window {
 		closeButton.setCaption("Done");
 		closeButton.addClickListener(event -> { close(); });
 		
-		mainLayout.addComponents( chooseKbPanel, addKbPanel, closeButton );
+		Button consoleButton = new Button();
+		consoleButton.setCaption("Open Console");
+		consoleButton.addClickListener(event -> { 
+			ConsoleWindow window = new ConsoleWindow(kbService);
+			DesktopUI.getCurrent().addWindow(window);
+		});
+		
+		mainLayout.addComponents( chooseKbPanel, addKbPanel, closeButton, consoleButton );
 		mainLayout.setComponentAlignment(closeButton, Alignment.BOTTOM_RIGHT);
 	}
 

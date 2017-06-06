@@ -311,7 +311,7 @@ public class DesktopUI extends UI implements MessageService {
 	KnowledgeBeaconRegistry kbRegistry;
 	
 	public void openKnowledgeBeaconWindow() {
-		KnowledgeBeaconWindow kbWindow = new KnowledgeBeaconWindow(kbRegistry, query);
+		KnowledgeBeaconWindow kbWindow = new KnowledgeBeaconWindow(kbRegistry, query, knowledgeBeaconService);
 		this.addWindow(kbWindow);
 	}
 	
