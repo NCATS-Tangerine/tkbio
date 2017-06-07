@@ -117,15 +117,6 @@ public class LoginView extends LoginDesign implements View {
 			} catch (AccountDoesNotExistException exp2) {
 				System.out.println(exp2);
 				displayErrorMessage("Account does not exist");
-			} catch (AccountIsLockedException exp3) {
-				System.out.println(exp3);
-				displayErrorMessage("Account has been locked");
-			} catch (AccountNotVerifiedException exp4) {
-				System.out.println(exp4);
-				displayErrorMessage("Account has not been verified");
-			} catch (AccountDisabledException exp5) {
-				System.out.println(exp5);
-				displayErrorMessage("Account has been disabled");
 			}
 
 			DesktopUI ui = (DesktopUI)UI.getCurrent();

@@ -5,6 +5,7 @@ import com.vaadin.annotations.DesignRoot;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
 
@@ -23,7 +24,7 @@ public class ResetPasswordDesign extends VerticalLayout {
 	protected NativeButton continueButton;
 	protected PasswordField firstPassword;
 	protected PasswordField secondPassword;
-	protected Label errLabel;
+	protected Label errorLabel;
 	public ResetPasswordDesign() {
 		Design.read(this);
 	}

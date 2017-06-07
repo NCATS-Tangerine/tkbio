@@ -50,8 +50,10 @@ public class RecoverAccountView extends ForgotPasswordDesign implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
+		emailField.clear();
 		clearErrorMessage();
 		nextStepLayout.setVisible(false);
+		continueButton.setEnabled(true);
 	}
 
 	private void setupRecoverBtn() {

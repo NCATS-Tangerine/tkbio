@@ -71,12 +71,18 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 		return string;
 	}
 	
-	private void printError(ApiClient apiClient, Exception e) {
+	private void clearError(ApiClient apiClient) {
+		apiClient.setLastError(null);
+	}
+	
+	private void setError(ApiClient apiClient, Exception e) {
 		System.err.println("Error Querying:   " + apiClient.getBasePath());
 		System.err.println("Error message:    " + e.getMessage());
 		if (e instanceof JsonSyntaxException) {
 			System.err.println("PROBLEM WITH DESERIALIZING SERVER RESPONSE");
 		}
+		apiClient.setLastResponseCount(0);
+		apiClient.setLastError(e.getMessage());
 	}
 
 	/**
@@ -133,10 +139,12 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 								concept.setBeaconUrl(apiClient.getBasePath());
 								concepts.add(concept);
 							}
+							clearError(apiClient);
+							apiClient.setLastResponseCount(concepts.size());
 							return concepts;
 							
 						} catch (Exception e) {
-							printError(apiClient, e);
+							setError(apiClient, e);
 							return new ArrayList<Concept>();
 						}
 					}
@@ -185,11 +193,12 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 								concept.setBeaconUrl(apiClient.getBasePath());
 								concepts.add(concept);
 							}
-							
+							clearError(apiClient);
+							apiClient.setLastResponseCount(concepts.size());
 							return concepts;
 							
 						} catch (Exception e) {
-							printError(apiClient, e);
+							setError(apiClient, e);
 							return new ArrayList<Concept>();
 						}
 					}
@@ -275,11 +284,12 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 								statement.setBeaconUrl(apiClient.getBasePath());
 								statements.add(statement);
 							}
-
+							clearError(apiClient);
+							apiClient.setLastResponseCount(statements.size());
 							return statements;
 
 						} catch (Exception e) {
-							printError(apiClient, e);
+							setError(apiClient, e);
 							return new ArrayList<Statement>();
 						}
 					}
@@ -339,11 +349,12 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 								annotation.setBeaconUrl(apiClient.getBasePath());
 								annotations.add(annotation);
 							}
-							
+							clearError(apiClient);
+							apiClient.setLastResponseCount(annotations.size());
 							return annotations;
 							
 						} catch (Exception e) {
-							printError(apiClient, e);
+							setError(apiClient, e);
 							return new ArrayList<Annotation>();
 						}
 					}
@@ -389,8 +400,11 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 								annotation.setBeaconUrl(apiClient.getBasePath());
 								annotations.add(annotation);
 							}
+							clearError(apiClient);
+							apiClient.setLastResponseCount(annotations.size());
 							return annotations;
 						} catch (ApiException e) {
+							setError(apiClient, e);
 							return new ArrayList<Annotation>();
 						}
 					}

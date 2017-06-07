@@ -97,7 +97,7 @@ public class StatementService
 		/**
 		 * We are not using the {@code filter} field, since here it refers to the main keywords search text
 		 */
-		String extraFilter = query.getRelationsTextFilter();
+		String extraFilter = query.getSimpleTextFilter();
 		String emci = query.getCurrentQueryConceptId();
 		
 		Optional<Set<SemanticGroup>> optionalSemanticGroupSet = query.getConceptTypes();

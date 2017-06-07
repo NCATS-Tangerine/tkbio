@@ -86,9 +86,8 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.authentication.UserProfile;
+import bio.knowledge.database.repository.ConceptMapArchiveRepository;
 import bio.knowledge.datasource.DataService;
 import bio.knowledge.graph.ConceptMapDisplay;
 import bio.knowledge.graph.jsonmodels.Edge;
@@ -101,6 +100,9 @@ import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
+import bio.knowledge.model.datasource.ResultSet;
+import bio.knowledge.model.umls.SemanticType;
+import bio.knowledge.model.user.User;
 import bio.knowledge.service.AuthenticationState;
 import bio.knowledge.service.Cache;
 import bio.knowledge.service.ConceptMapArchiveService;
@@ -111,6 +113,7 @@ import bio.knowledge.service.KBQuery.RelationSearchMode;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.service.core.MessageService;
+import bio.knowledge.service.user.UserService;
 import bio.knowledge.web.KBUploader;
 import bio.knowledge.web.view.AboutView;
 import bio.knowledge.web.view.ApplicationLayout;
@@ -118,6 +121,7 @@ import bio.knowledge.web.view.ConceptSearchResults;
 import bio.knowledge.web.view.ContactView;
 import bio.knowledge.web.view.DesktopView;
 import bio.knowledge.web.view.FaqView;
+import bio.knowledge.web.view.LandingPageView;
 import bio.knowledge.web.view.LibrarySearchResults;
 import bio.knowledge.web.view.ListView;
 import bio.knowledge.web.view.LoginView;
@@ -165,6 +169,12 @@ public class DesktopUI extends UI implements MessageService {
 
 	@Autowired
 	Registry registry;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	private ConceptMapArchiveRepository conceptMapArchiveRepository;
 
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -175,17 +185,6 @@ public class DesktopUI extends UI implements MessageService {
 	 */
 	public AuthenticationManager getAuthenticationManager() {
 		return authenticationManager;
-	}
-
-	@Autowired
-	private AuthenticationContext context;
-
-	/**
-	 * 
-	 * @return
-	 */
-	public AuthenticationContext getAuthenticationContext() {
-		return context;
 	}
 
 	@Autowired
@@ -312,7 +311,7 @@ public class DesktopUI extends UI implements MessageService {
 	KnowledgeBeaconRegistry kbRegistry;
 	
 	public void openKnowledgeBeaconWindow() {
-		KnowledgeBeaconWindow kbWindow = new KnowledgeBeaconWindow(kbRegistry, query);
+		KnowledgeBeaconWindow kbWindow = new KnowledgeBeaconWindow(kbRegistry, query, knowledgeBeaconService);
 		this.addWindow(kbWindow);
 	}
 	
@@ -1377,11 +1376,17 @@ public class DesktopUI extends UI implements MessageService {
 	 * @return
 	 */
 	private boolean saveMap(boolean isClearMap) {
-//		SaveWindow saveWindow = new SaveWindow(getCurrentConceptMapName(), query, context,
-//				registry.getMapping(ViewName.LIBRARY_VIEW), cm, applicationNavigator, cache);
-		SaveWindow.raiseExportWindow("", DesktopUI.getCurrent().getConceptMap(), query, cache);
+		SaveWindow saveWindow = new SaveWindow(
+				getCurrentConceptMapName(),
+				query,
+				registry.getMapping(ViewName.LIBRARY_VIEW),
+				cm,
+				applicationNavigator,
+				cache
+		);
+//		SaveWindow.raiseExportWindow("", DesktopUI.getCurrent().getConceptMap(), query, cache);
 
-//		this.addWindow(saveWindow);
+		this.addWindow(saveWindow);
 
 		return true;
 	}
@@ -1399,7 +1404,7 @@ public class DesktopUI extends UI implements MessageService {
 			conceptMapLibraryWindow.setCaption(caption);
 		};
 
-		LibraryDetails libraryDetails = new LibraryDetails(map, query, context, goBack);
+		LibraryDetails libraryDetails = new LibraryDetails(map, query, userService, goBack);
 
 		conceptMapLibraryWindow.setCaption("Concept Map Details");
 		conceptMapLibraryWindow.setContent(libraryDetails);
@@ -1491,7 +1496,7 @@ public class DesktopUI extends UI implements MessageService {
 
 		initializeDesktopView();
 
-		ApplicationLayout applicationLayout = new ApplicationLayout(authenticationManager, context);
+		ApplicationLayout applicationLayout = new ApplicationLayout(authenticationManager);
 
 		this.loginView = applicationLayout.getLoginView();
 
@@ -1513,6 +1518,8 @@ public class DesktopUI extends UI implements MessageService {
 		// Here we manage redirecting the application to other views upon the
 		// loading of a new page, according to particular URI's.
 		String uri = Page.getCurrent().getUriFragment();
+		String passwordResetFragment = "!passwordReset?token=";
+		
 		if (uri != null) {
 			// This allows for maps to be looked up with a URL.
 			// In the future we could also create person lookups by URL, like
@@ -1521,17 +1528,17 @@ public class DesktopUI extends UI implements MessageService {
 			if (uri.startsWith("map=")) {
 				applicationNavigator.navigateTo(ListView.NAME);
 
-				UserProfile user = authenticationManager.getCurrentUser();
+				User user = authenticationManager.getCurrentUser();
 
 				String conceptMapName = uri.replaceFirst("map=", "");
 				ConceptMapArchive map = conceptMapArchiveService.getConceptMapArchiveByName(conceptMapName,
-						user != null ? user.getId() : null,
+						user != null ? user.getUserId() : null,
 						user != null ? user.getIdsOfGroupsBelongedTo() : new String[0]);
 				if (map != null) {
 					conceptMapLibraryWindow = new Window();
 					//UserProfile userProfile = getAuthenticationManager().getCurrentUser();
 					//String userId = userProfile != null ? userProfile.getId() : null;
-					LibraryDetails libraryDetails = new LibraryDetails(map, query, context,
+					LibraryDetails libraryDetails = new LibraryDetails(map, query, userService,
 							event -> {
 								conceptMapLibraryWindow.close();
 							});
@@ -1549,21 +1556,13 @@ public class DesktopUI extends UI implements MessageService {
 							+ "\" was found. You may need to login to view this map.", Type.WARNING_MESSAGE);
 				}
 
-			} else if (uri.equals("!passwordReset")) {
-				// TODO: make sure the password reset link is setup with your
-				// Stormpath account.
-
-				// I had trouble getting the Stormpath password reset link
-				// (which contains the password reset token) to direct
-				// to the PasswordResetView by default. This is how I am getting
-				// around the problem. I made the password reset link have
-				// "!passwordReset" as its URI fragment, and now any time
-				// "!passwordReset" is in the URI fragment upon the
-				// instantiation of this class (i.e., whenever a new page is
-				// loaded), it immediately redirects to the password reset view
-				// with the password reset token portion of the URL
-				// automatically passed along.
-				applicationNavigator.navigateTo(PasswordResetView.NAME);
+			} else if (uri.startsWith(passwordResetFragment)) {
+				
+				String token = uri.replace(passwordResetFragment, "");
+				
+				if (authenticationManager.isValidPasswordToken(token)) {
+					applicationNavigator.navigateTo(PasswordResetView.NAME + "/" + token);
+				}
 			}
 		}
 	}

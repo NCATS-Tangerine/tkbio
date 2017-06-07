@@ -460,12 +460,12 @@ public class KBQueryImpl implements KBQuery {
 
 	private String relationsTextFilter;
 	@Override
-	public void setRelationsTextFilter(String filterText) {
+	public void setSimpleTextFilter(String filterText) {
 		this.relationsTextFilter = filterText;
 	}
 
 	@Override
-	public String getRelationsTextFilter() {
+	public String getSimpleTextFilter() {
 		return this.relationsTextFilter;
 	}
 

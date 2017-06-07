@@ -41,12 +41,12 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
-import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.model.ConceptMapArchive;
+import bio.knowledge.model.user.User;
 import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.service.KBQuery;
+import bio.knowledge.service.user.UserService;
 import bio.knowledge.web.ui.DesktopUI;
 
 
@@ -54,7 +54,7 @@ public class LibraryDetails extends VerticalLayout {
 	
 	private static final long serialVersionUID = 6011165323751217447L;
 	
-	private AuthenticationContext context;
+	private UserService userService;
 
 	// these aren't autowired because this is not a spring @component.
 	// TODO: Refactor into Spring Component?
@@ -69,11 +69,11 @@ public class LibraryDetails extends VerticalLayout {
 	public LibraryDetails(
 			ConceptMapArchive map,
 			KBQuery query,
-			AuthenticationContext context,
+			UserService userService,
 			ClickListener onGoBackClickListener
 	) {
 		this.onGoBackClickListener = onGoBackClickListener;
-		this.context = context;
+		this.userService = userService;
 		this.query = query;
 		this.conceptMapArchiveService = ((DesktopUI) UI.getCurrent()).getConceptMapArchiveService();
 		this.userId = map.getAuthorsAccountId();
@@ -142,13 +142,13 @@ public class LibraryDetails extends VerticalLayout {
 		String userId = map.getAuthorsAccountId();
 		String name;
 		
-		if (userId != null) {
-			name = context.getUserProfile(userId).getUsername();
+		if (userId != null && !userId.isEmpty()) {
+			name = userService.findByUserId(userId).getUsername();
 		} else {
 			name = "an anonymous user";
 		}
 		
-		String rootUrl = ((DesktopUI)UI.getCurrent()).getAuthenticationContext().getRootURL();
+		String rootUrl = ((DesktopUI)UI.getCurrent()).getAuthenticationManager().getRootURL();
 		if (!rootUrl.endsWith("/")) rootUrl = rootUrl + "/";
 		TextField linkField = new TextField();
 		linkField.setValue(rootUrl + "#map=" + map.getName());
@@ -240,10 +240,10 @@ public class LibraryDetails extends VerticalLayout {
 	
 	private boolean mapCreatedByCurrntUser(ConceptMapArchive map) {
 		AuthenticationManager auth = ((DesktopUI) UI.getCurrent()).getAuthenticationManager();
-		UserProfile userProfile = auth.getCurrentUser();
+		User user = auth.getCurrentUser();
 		
-		if (userProfile != null) {
-			return userProfile.getId().equals(map.getAuthorsAccountId());
+		if (user != null) {
+			return user.getId().equals(map.getAuthorsAccountId());
 		} else {
 			return false;
 		}

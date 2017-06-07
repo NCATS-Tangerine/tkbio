@@ -25,6 +25,9 @@
  */
 package bio.knowledge.web.view;
 
+
+import java.util.regex.Pattern;
+
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -72,6 +75,11 @@ public class CreateAccountView extends NewAccountDesign implements View {
 				"Email is invalid."
 		);
 		validationHandler.addNonEmptyValidator(usernameField, "Username");
+		validationHandler.addProhibitedMatchValidator(
+				usernameField,
+				"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
+				"Username cannot be an email address."
+		);
 		validationHandler.addValidator(firstPassword, makeFirstPasswordValidator());
 		validationHandler.addValidator(secondPassword, makeSecondPasswordValidator());
 		
@@ -128,29 +136,23 @@ public class CreateAccountView extends NewAccountDesign implements View {
 			String password) {
 		try {
 			DesktopUI ui = (DesktopUI)UI.getCurrent();
+
 			ui.getAuthenticationManager().createAccount(username, firstName, lastName, email, password);
 
 			Notification.show("We have created an account for you. You may now login.");
 			navigator.navigateTo(LoginView.NAME);
 
 		} catch (EmailAlreadyInUseException e) {
-			validationHandler.addProhibitedMatchValidator(emailfield, email, "That email is already in use.");
+			validationHandler.addProhibitedMatchValidator(emailfield, Pattern.quote(email), "That email is already in use.");
 			validationHandler.validateAll();
-		} catch (PasswordTooShortException e) {
-//			Already have a validator for this
-		} catch (PasswordLacksCapitalLetterOrNumberException e) {
-//			Already have a validator for this			
+		
 		} catch (MissingNameException e) {
-//			Already have a validator for this
-		} catch (MissingEmailException e) {
-//			Already have a validator for this
-		} catch (InvalidEmailFormatException e) {
 //			Already have a validator for this
 		} catch (AccountDoesNotExistException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (UsernameAlreadyInUseException e) {
-			validationHandler.addProhibitedMatchValidator(usernameField, username, "That username is already in use.");
+			validationHandler.addProhibitedMatchValidator(usernameField, Pattern.quote(username), "That username is already in use.");
 			validationHandler.validateAll();
 		}
 	}

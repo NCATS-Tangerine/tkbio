@@ -1,7 +1,11 @@
 package bio.knowledge.service.beacon;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -13,14 +17,24 @@ public class GenericKnowledgeService {
 
 	// This works because {@code GenericKnowledgeService} is extended by {@code
 	// KnowledgeBeaconService}, which is a Spring service.
-	@Autowired
-	KnowledgeBeaconRegistry registry;
+	@Autowired KnowledgeBeaconRegistry registry;
 
+	public interface QueryListener {
+		public void getQuery(CompletableFuture<List<Map<String, String>>> future);
+	}
+	
+	public void setQueryListener(QueryListener listener) {
+		this.queryListener = listener;
+	}
+	
+	private QueryListener queryListener;
+	
 	protected <T> CompletableFuture<List<T>> query(SupplierBuilder<T> builder) {
 		
 		List<CompletableFuture<List<T>>> futures = new ArrayList<CompletableFuture<List<T>>>();
+		List<KnowledgeBeacon> beacons = registry.getKnowledgeBeacons();
 		
-		for (KnowledgeBeacon beacon : registry.getKnowledgeBeacons()) {
+		for (KnowledgeBeacon beacon : beacons) {
 			if (beacon.isEnabled()) {
 				ListSupplier<T> supplier = builder.build(beacon.getApiClient());
 				CompletableFuture<List<T>> future = CompletableFuture.supplyAsync(supplier);
@@ -32,6 +46,31 @@ public class GenericKnowledgeService {
 		CompletableFuture<List<T>>[] futureArray = futures.toArray(new CompletableFuture[futures.size()]);
 
 		CompletableFuture<List<T>> combinedFuture = combineFutures(futureArray);
+		
+		if (queryListener != null) {
+			queryListener.getQuery(combinedFuture.thenApply(x -> {
+				List<Map<String, String>> messages = new ArrayList<Map<String, String>>();
+				
+				for (KnowledgeBeacon beacon : beacons) {
+					if (beacon.isEnabled()) {
+						String timestamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
+						String count = String.valueOf(beacon.getApiClient().getLastResponseCount());
+						String error = beacon.getApiClient().getLastError();
+						String query = beacon.getApiClient().getLastQuery();
+						
+						Map<String, String> message = new HashMap<String, String>();
+						
+						message.put("timeStamp", timestamp);
+						message.put("responseCount", count);
+						message.put("errorMessage", error);
+						message.put("query", query);
+						
+						messages.add(message);
+					}
+				}
+				return messages;
+			}));
+		}
 
 		return combinedFuture;
 	}

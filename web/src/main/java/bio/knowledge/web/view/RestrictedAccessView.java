@@ -25,7 +25,7 @@
  */
 package bio.knowledge.web.view;
 
-import bio.knowledge.authentication.Role;
+import bio.knowledge.model.user.Role;
 
 /**
  * Use this interface to mark views which should be restricted to everyone but authenticated users who have particular roles

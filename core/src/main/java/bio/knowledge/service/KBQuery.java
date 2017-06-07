@@ -295,7 +295,7 @@ public interface KBQuery {
 
 	public String getCurrentQueryConceptId();
 
-	public void setRelationsTextFilter(String filterText);
-	public String getRelationsTextFilter();
+	public void setSimpleTextFilter(String filterText);
+	public String getSimpleTextFilter();
 	
 }

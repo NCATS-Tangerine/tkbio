@@ -33,29 +33,27 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
-import bio.knowledge.authentication.AuthenticationContext;
-import bio.knowledge.authentication.UserProfile;
+import bio.knowledge.model.user.Permission;
+import bio.knowledge.model.user.User;
 import bio.knowledge.web.ui.DesktopUI;
 import bio.knowledge.web.view.LibrarySearchResults;
 
 public class UserDetails extends VerticalLayout {
 
 	private static final long serialVersionUID = -2963574283905392754L;
-	
-	private AuthenticationContext context;
-	
+		
 	private LibrarySearchResults librarySearchResults;
 	
 	private Button goBackBtn = new Button("Go back");
 
-	public UserDetails(UserProfile user, ClickListener goBack) {
+	public UserDetails(User user, ClickListener goBack) {
 		goBackBtn.addClickListener(goBack);
 		setupLayout(user);
 	}
 	
 	public UserDetails(String userId, ClickListener goBack) {
 		this(
-				((DesktopUI)UI.getCurrent()).getAuthenticationContext().getUserProfile(userId),
+				((DesktopUI)UI.getCurrent()).getAuthenticationManager().getUser(userId),
 				goBack
 		);
 	}
@@ -68,10 +66,10 @@ public class UserDetails extends VerticalLayout {
 		this.goBackBtn.setCaption(caption);
 	}
 
-	private void setupLayout(UserProfile userProfile) {
+	private void setupLayout(User user) {
 		goBackBtn.setSizeFull();
 		
-		Label title = this.formatDataTableLabel("Viewing ", userProfile.getUsername(), " details");
+		Label title = this.formatDataTableLabel("Viewing ", user.getUsername(), " details");
 		title.addStyleName("predication-label");
 
 		int numberOfProperties = 5;
@@ -79,24 +77,24 @@ public class UserDetails extends VerticalLayout {
 		infoGrid.setSpacing(true);
 
 		infoGrid.addComponent(new Label("Date joined:"));
-		infoGrid.addComponent(new Label(userProfile.getDateJoined()));
+		infoGrid.addComponent(new Label(user.getDateJoined()));
 		
-		boolean showName  = userProfile.getPermission(UserProfile.NAME_PUBLICIZED_PERMISSION);
-		boolean showEmail = userProfile.getPermission(UserProfile.EMAIL_PUBLICIZED_PERMISSION);
+		boolean showName  = user.getPermission(Permission.NAME_PUBLICIZED);
+		boolean showEmail = user.getPermission(Permission.EMAIL_PUBLICIZED);
 		
 		if (showName) {
 			infoGrid.addComponent(new Label("Name:"));
-			infoGrid.addComponent(new Label(userProfile.getFullName()));
+			infoGrid.addComponent(new Label(user.getFullName()));
 		}
 		
 		if (showEmail) {
 			infoGrid.addComponent(new Label("Email:"));
-			infoGrid.addComponent(new Label(userProfile.getEmail()));
+			infoGrid.addComponent(new Label(user.getEmail()));
 		}
 		
-		String facebookUrl = userProfile.getFacebookUrl();
-		String linkedinUrl = userProfile.getLinkedInUrl();
-		String twitterUrl  = userProfile.getTwitterUrl();
+		String facebookUrl = user.getFacebookUrl();
+		String linkedinUrl = user.getLinkedInUrl();
+		String twitterUrl  = user.getTwitterUrl();
 		
 		if (facebookUrl != "") {
 			infoGrid.addComponent(new Label("Facebook URL"));

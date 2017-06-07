@@ -56,16 +56,15 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.renderers.ClickableRenderer.RendererClickListener;
 
-import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.authentication.UserGroup;
-import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.authentication.exceptions.AuthenticationException;
 import bio.knowledge.graph.ConceptMapDisplay;
 import bio.knowledge.graph.ContentRequester;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Library;
+import bio.knowledge.model.user.Group;
+import bio.knowledge.model.user.User;
 import bio.knowledge.service.Cache;
 import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
@@ -96,16 +95,6 @@ public class SaveWindow extends Window {
 
 	private Book book;
 	
-	private AuthenticationContext context;
-
-	public AuthenticationContext getContext() {
-		return context;
-	}
-
-	public void setContext(AuthenticationContext context) {
-		this.context = context;
-	}
-	
 	private final String defaultName;
 
 	// public abstract void save();
@@ -113,7 +102,6 @@ public class SaveWindow extends Window {
 	public SaveWindow(
 			String defaultName,
 			KBQuery query, 
-			AuthenticationContext context, 
 			Mapping mapping,
 			ConceptMapDisplay conceptMapDisplay, 
 			Navigator navigator, 
@@ -126,7 +114,6 @@ public class SaveWindow extends Window {
 		this.query = query;
 		this.mapping = mapping;
 		this.navigator = navigator;
-		this.setContext(context);
 
 		setupLayout();
 		setConceptMapName(defaultName);
@@ -139,15 +126,15 @@ public class SaveWindow extends Window {
 	private void saveToLibrary(String jsonContent, String pngContent) {
 		String conceptMapName = nameField.getValue();
 		String authorsComments = commentsArea.getValue();
-
-		UserProfile user = ((DesktopUI)UI.getCurrent()).getAuthenticationManager().getCurrentUser();
+		
+		User user = ((DesktopUI)UI.getCurrent()).getAuthenticationManager().getCurrentUser();		
 
 		String accountId;
 		
 		AuthenticationManager auth = ((DesktopUI) UI.getCurrent()).getAuthenticationManager();
 		
 		if (auth.isUserAuthenticated()) {
-			accountId = auth.getCurrentUser().getId();
+			accountId = auth.getCurrentUser().getUserId();
 		} else {
 			accountId = null;
 		}
@@ -226,7 +213,7 @@ public class SaveWindow extends Window {
 		 
 		try {
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
-			UserProfile userProfile = ui.getAuthenticationManager().getCurrentUser();
+			User userProfile = ui.getAuthenticationManager().getCurrentUser();
 			String userId = userProfile != null ? userProfile.getId() : null;
 			if (conceptMapArchiveService.save(archive, userId, isPublicOption.isChecked())) {
 				if (this.isPublicOption.isChecked()) {
@@ -243,8 +230,13 @@ public class SaveWindow extends Window {
 	}
 	
 	private void generateArchive(String jsonContent, String pngContent, ConceptMapArchive archive) {
-		Concept concept = query.getCurrentQueryConcept().get();
-		jsonContent = MessageFormat.format(skeleton, concept.getName(), concept.getId(), jsonContent);
+		Optional<Concept> conceptOpt = query.getCurrentQueryConcept();
+		if (conceptOpt.isPresent()) {
+			Concept concept = conceptOpt.get();
+			jsonContent = MessageFormat.format(skeleton, concept.getName(), concept.getId(), jsonContent);
+		} else {
+			jsonContent = MessageFormat.format(skeleton, "", "", jsonContent);
+		}
 		
 		// first clear node ids
 		query.clearNodeIdsFromConceptMap();
@@ -267,18 +259,20 @@ public class SaveWindow extends Window {
 		archive.setConceptMapSif(conceptMapDisplay.convertToSIF());
 		archive.setConceptMapTsv(conceptMapDisplay.converterToTSV());
 
-		archive.setId(concept.getId());
+		if (conceptOpt.isPresent()) {
+			archive.setId(conceptOpt.get().getId());
+		}
 		archive.setVersion(1);
 		archive.setVersionDate(new Date().getTime());
 		
-		UserGroup group = (UserGroup) groupChooser.getValue();
-		archive.setGroupId(group != null ? group.getId() : null);
+		Group group = (Group) groupChooser.getValue();
+		archive.setGroupId(group != null ? group.getGroupId() : null);
 
 		Optional<Library> parentMapOpt = query.getCurrentImportedMaps();
 		if (parentMapOpt.isPresent()) {
 			Library parentMaps = parentMapOpt.get();
 			archive.setParents(parentMaps);
-		}	
+		}
 	}
 
 	private ValueChangeListener makeNameFieldValueChangeListener() {
@@ -338,7 +332,7 @@ public class SaveWindow extends Window {
 		});
 		
 		AuthenticationManager auth = ((DesktopUI) UI.getCurrent()).getAuthenticationManager();
-		UserProfile userProfile = auth.getCurrentUser();
+		User userProfile = auth.getCurrentUser();
 		book = new Book(columnNames, clickListenerMapping, userProfile, mapping);
 
 		HorizontalLayout saveBar = new HorizontalLayout();
@@ -346,14 +340,14 @@ public class SaveWindow extends Window {
 		mainLayout.setMargin(true);
 
 		saveBar.addComponent(nameField);
-//		saveBar.addComponent(saveButton);
+		saveBar.addComponent(saveButton);
 		saveBar.addComponent(exportButton);
 		saveBar.addComponent(cancelButton);
 //		saveBar.addComponent(cancelButton);
-//
-//		saveBar.setExpandRatio(nameField, 3);
-//		saveBar.setExpandRatio(saveButton, 1);
-//		saveBar.setExpandRatio(cancelButton, 1);
+
+		saveBar.setExpandRatio(nameField, 3);
+		saveBar.setExpandRatio(saveButton, 1);
+		saveBar.setExpandRatio(cancelButton, 1);
 
 		saveBar.setSizeFull();
 		nameField.setSizeFull();
@@ -384,9 +378,9 @@ public class SaveWindow extends Window {
 			groupChooser.setNewItemsAllowed(true);
 			groupChooser.setImmediate(true);
 			groupChooser.setNewItemHandler(newItemCaption -> {
-				UserProfile user = auth.getCurrentUser();
+				User user = auth.getCurrentUser();
 				try {
-					UserGroup group = auth.createGroup(user, newItemCaption);
+					Group group = auth.createGroup(user, newItemCaption);
 					refreshGroupChooser(group);
 				} catch (AuthenticationException e) {
 					Notification.show(e.getMessage(), Type.WARNING_MESSAGE);
@@ -496,11 +490,11 @@ public class SaveWindow extends Window {
 	 */
 	private void refreshGroupChooser() {
 		DesktopUI ui = (DesktopUI) UI.getCurrent();
-		UserProfile currentUser = ui.getAuthenticationManager().getCurrentUser();
+		User currentUser = ui.getAuthenticationManager().getCurrentUser();
 		
 		if (currentUser != null) {
 			if (groupChooser.removeAllItems()) {
-				for (UserGroup userGroup : currentUser.getGroupsOwned()) {
+				for (Group userGroup : currentUser.getGroupsOwned()) {
 					groupChooser.addItem(userGroup);
 				}
 			}
@@ -521,7 +515,7 @@ public class SaveWindow extends Window {
 	 *            The group that should be displayed after the content of the
 	 *            ComboBox is refreshed.
 	 */
-	private void refreshGroupChooser(UserGroup group) {
+	private void refreshGroupChooser(Group group) {
 		refreshGroupChooser();
 		groupChooser.select(group);
 		this.nameField.focus();
@@ -608,11 +602,11 @@ public class SaveWindow extends Window {
 	 * @param conceptMapName
 	 */
 	public void setConceptMapName(String conceptMapName) {
-		UserProfile user = ((DesktopUI)UI.getCurrent()).getAuthenticationManager().getCurrentUser();
+		User user = ((DesktopUI)UI.getCurrent()).getAuthenticationManager().getCurrentUser();
 
 		archive = conceptMapArchiveService.getConceptMapArchiveByName(
 				conceptMapName,
-				user != null ? user.getId() : null,
+				user != null ? user.getUserId() : null,
 				user != null ? user.getIdsOfGroupsBelongedTo() : new String[0]
 		);
 		
@@ -621,15 +615,13 @@ public class SaveWindow extends Window {
 			isPublicOption.setChecked(archive.isPublic());
 			
 			for (Object group : groupChooser.getItemIds()) {
-				group = (UserGroup) group;
+				group = (Group) group;
 			}
-			
-			//UserProfile userProfile = ((DesktopUI)UI.getCurrent()).getAuthenticationManager().getCurrentUser();
 			
 			groupChooser.setValue(null);
 			for (Object object : groupChooser.getItemIds()) {
-				UserGroup group = (UserGroup) object;
-				if (group.getId().equals(archive.getGroupId())) {
+				Group group = (Group) object;
+				if (group.getGroupId().equals(archive.getGroupId())) {
 					groupChooser.setValue(group);
 					break;
 				}

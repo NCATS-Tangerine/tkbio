@@ -128,6 +128,68 @@ public interface ConceptMapArchiveRepository extends GraphRepository<ConceptMapA
 			@Param("filter") String[] filter, Pageable pageable, @Param("accountId") String accountId, @Param("groupIds") String[] groupIds);
 	
 	@Query(
+	" MATCH (cm:ConceptMap) " +
+	" WHERE " +
+	" 	({filter} IS NULL OR ALL (x IN {filter} WHERE LOWER(cm.name) CONTAINS LOWER(x))) " +
+	" AND " +
+	"	( cm.authorsAccountId = {accountId} OR cm.isPublic = true OR (cm.authorsAccountId IS NULL) OR (cm.isPublic IS NULL) " +
+	" OR " +
+	" 	(cm.groupId IN {groupIds}) ) "+
+	" OPTIONAL MATCH (cm:ConceptMap)-[:PARENTS]->(parents:Library) " +
+	" RETURN DISTINCT cm as conceptMap, parents as parents " +
+	" ORDER BY cm.versionDate DESC " +
+	" SKIP  ({pageNumber} - 1) * {pageSize} " +
+	" LIMIT {pageSize} "
+	)
+	public List<Map<String, Object>> apiGetPublicConceptMaps(
+			@Param("filter") String[] filter,
+			@Param("accountId") String accountId,
+			@Param("groupIds") String[] groupIds,
+			@Param("pageNumber") Integer pageNumber,
+			@Param("pageSize") Integer pageSize
+	);
+	
+	@Query(
+	" MATCH (cm:ConceptMap) " +
+	" WHERE " +
+	" 	({filter} IS NULL OR ALL (x IN {filter} WHERE LOWER(cm.name) CONTAINS LOWER(x))) " +
+	" AND " +
+	"	cm.authorsAccountId = {accountId} " +
+	" OPTIONAL MATCH (cm:ConceptMap)-[:PARENTS]->(parents:Library) " +
+	" RETURN DISTINCT cm as conceptMap, parents as parents " +
+	" ORDER BY cm.versionDate DESC " +
+	" SKIP  ({pageNumber} - 1) * {pageSize} " +
+	" LIMIT {pageSize} "
+	)
+	public List<Map<String, Object>> apiGetPersonalConceptMaps(
+			@Param("filter") String[] filter,
+			@Param("accountId") String accountId,
+			@Param("groupIds") String[] groupIds,
+			@Param("pageNumber") Integer pageNumber,
+			@Param("pageSize") Integer pageSize
+	);
+	
+	@Query(
+	" MATCH (cm:ConceptMap) " +
+	" WHERE " +
+	" 	({filter} IS NULL OR ALL (x IN {filter} WHERE LOWER(cm.name) CONTAINS LOWER(x))) " +
+	" AND " +
+	"	cm.groupId IN {groupIds} "+
+	" OPTIONAL MATCH (cm:ConceptMap)-[:PARENTS]->(parents:Library) " +
+	" RETURN DISTINCT cm as conceptMap, parents as parents " +
+	" ORDER BY cm.versionDate DESC " +
+	" SKIP  ({pageNumber} - 1) * {pageSize} " +
+	" LIMIT {pageSize} "
+	)
+	public List<Map<String, Object>> apiGetSharedConceptMaps(
+		@Param("filter") String[] filter,
+		@Param("accountId") String accountId,
+		@Param("groupIds") String[] groupIds,
+		@Param("pageNumber") Integer pageNumber,
+		@Param("pageSize") Integer pageSize
+	);
+	
+	@Query(
 			" MATCH (concept:Concept)-[:LIBRARY]->(library:Library)-[:ASSOCIATED_MAP]->(cm:ConceptMap) "+
 			" WHERE ALL (x IN {filter} WHERE LOWER(concept.name) CONTAINS LOWER(x) OR LOWER(cm.name) CONTAINS LOWER(x) ) "+
 			" AND cm.authorsAccountId = {accountId} "+

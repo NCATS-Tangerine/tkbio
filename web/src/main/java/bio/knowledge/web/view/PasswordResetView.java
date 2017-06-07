@@ -25,19 +25,27 @@
  */
 package bio.knowledge.web.view;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
-import com.vaadin.data.Validator;
+import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Page;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.UI;
 
+import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.authentication.exceptions.InvalidPasswordResetToken;
-import bio.knowledge.authentication.exceptions.PasswordLacksCapitalLetterOrNumberException;
 import bio.knowledge.authentication.exceptions.PasswordTooShortException;
+import bio.knowledge.validation.InvalidValueException;
+import bio.knowledge.validation.ValidationHandler;
+import bio.knowledge.validation.Validator;
 import bio.knowledge.web.design.ResetPasswordDesign;
 import bio.knowledge.web.ui.DesktopUI;
 
@@ -46,120 +54,75 @@ public class PasswordResetView extends ResetPasswordDesign implements View {
 
 	private static final long serialVersionUID = 8181376937595758934L;
 
-	public static final String NAME = "passwordReset?sptoken";
+	public static final String NAME = "passwordReset";
 	
-	private ClickListener clickListener;
-
-	public PasswordResetView() { }
-
+	private String tokenString;
 	
-	@Override
-	public void enter(ViewChangeEvent event) {
+	private Navigator navigator;
+	
+	private ValidationHandler validationHandler;
 		
-//		Here we are obtaining the encrypted password reset token from the password reset link (URL)
-		String urlQuery = Page.getCurrent().getLocation().getQuery();
+	public PasswordResetView(Navigator navigator) {
 		
-		urlQuery = urlQuery == null ? "" : urlQuery;
+		this.navigator = navigator;
 		
-		String passwordResetToken = urlQuery.replaceFirst(Pattern.quote("sptoken="), "");
+		validationHandler = new ValidationHandler(errorLabel, continueButton);
+		validationHandler.addValidator(firstPassword, makeFirstPasswordValidator());
+		validationHandler.addValidator(secondPassword, makeSecondPasswordValidator());
 		
-//		We don't want continueButton to have multiple ClickListeners, if we enter this view multiple times!
-		if (clickListener != null) {
-			continueButton.removeClickListener(clickListener);
-		}
-		
-		clickListener = makeContinueBtnClickListener(passwordResetToken);
-		continueButton.addClickListener(clickListener);
-		
-		setupPasswordFields();
-		
-		clearErrorMessage();
+		continueButton.addClickListener(makeClickListener());
+	
 	}
 	
-	private void setupPasswordFields() {
-		firstPassword.setValidationVisible(false);
-		secondPassword.setValidationVisible(false);
-		
-		firstPassword.addValidator(value -> {
-			if (value.toString().isEmpty()) {
-				return;
-			}
-			
-			if (value instanceof String) {
-				String password = (String)value;
-				boolean hasUppercase = !password.equals(password.toLowerCase());
-				boolean hasLowercase = !password.equals(password.toUpperCase());
-				
-				boolean isValid = hasUppercase &&
-								hasLowercase &&
-								password.length() >= 8 &&
-								password.matches(".*[0-9].*");
-				
-								
-				if (!isValid) {
-					displayErrorMessage("The password provided is not valid!\nMust contain a capital letter and a number.");
-					throw new Validator.InvalidValueException(
-							"The password provided is not valid! Must contain a capital letter and a number.");
-				}
-		    }
-		});
-		
-		secondPassword.addValidator(value -> {
-			if ( ! value.toString().equals(firstPassword.getValue())) {
-				displayErrorMessage("Password entries do not match");
-				throw new Validator.InvalidValueException("Password entries do not match");
-			}
-		});
-		
-		firstPassword.addValueChangeListener(event -> {
-			if (!firstPassword.isValid() && !firstPassword.isEmpty()) {
-				firstPassword.setValidationVisible(true);
-			} else {
-				firstPassword.setValidationVisible(false);
-				clearErrorMessage();
-			}
-		});
-		
-		secondPassword.addValueChangeListener(event -> {
-			if (!secondPassword.isValid() && !secondPassword.isEmpty()) {
-				secondPassword.setValidationVisible(true);
-			} else {
-				secondPassword.setValidationVisible(false);
-				clearErrorMessage();
-			}
-		});
-	}
-
-	private ClickListener makeContinueBtnClickListener(String passwordResetToken) {
+	private ClickListener makeClickListener() {
 		return event -> {
-			try {
-
+			if (doPasswordsMatch(firstPassword, secondPassword)) {
+				
 				DesktopUI ui = (DesktopUI)UI.getCurrent();
-				ui.getAuthenticationManager().resetPassword(passwordResetToken, secondPassword.getValue());
+				String password = firstPassword.getValue();
 				
-//					We want to refresh the page and not merely navigate to the login view because
-//					otherwise the password reset token will stick around in the URL. This wouldn't
-//					necessarily be a bad thing, since the token cannot be reused and so for the sake
-//					of security it's harmless. But, it's ugly and might confuse the user.
-				Page.getCurrent().setLocation("/#!login");
-				
-			} catch (InvalidPasswordResetToken e1) {
-				displayErrorMessage("The password reset link you followed is invalid, possibly because it has timed out.\n Please restart the recovery process");
-			} catch (PasswordTooShortException e2) {
-				displayErrorMessage("Your password is too short");
-			} catch (PasswordLacksCapitalLetterOrNumberException e3) {
-				displayErrorMessage("Your password must contain at least one capital letter and at least one number");
+				try {
+					ui.getAuthenticationManager().resetPassword(tokenString, password);
+					Notification.show("We have changed your password for you. You may now login.");
+					navigator.navigateTo(LoginView.NAME);
+					
+				} catch (InvalidPasswordResetToken e1) {
+					Notification.show("Reset link has expired.");
+				} catch (PasswordTooShortException e2) {
+					//Already handled by validation
+				}
 			}
 		};
 	}
-	
-	private void displayErrorMessage(String message) {
-		errLabel.setVisible(true);
-		errLabel.setValue(message);
+
+	private Validator makeFirstPasswordValidator() {
+		return value -> {
+			boolean hasUppercase = !value.equals(value.toLowerCase());
+			boolean hasLowercase = !value.equals(value.toUpperCase());
+			boolean containsNumber = value.matches(".*[0-9].*");
+			
+			if (!hasUppercase) throw new InvalidValueException("Password must contain an uppercase letter");
+			if (!hasLowercase) throw new InvalidValueException("Password must contain a lowercase letter");
+			if (!containsNumber) throw new InvalidValueException("Password must contain a number");
+			if (value.length() < 8) throw new InvalidValueException("Password must be eight characters long");
+		};
 	}
 	
-	private void clearErrorMessage() {
-		errLabel.setVisible(false);
-		errLabel.setValue("");
+	private Validator makeSecondPasswordValidator() {
+		return value -> {
+			if (!value.equals(firstPassword.getValue())) {
+				throw new InvalidValueException("Second password entry must match the first");
+			}
+		};
+	}
+
+	@Override
+	public void enter(ViewChangeEvent event) {
+		tokenString = event.getParameters();
+		validationHandler.resetState();		
+	}
+	
+	private boolean doPasswordsMatch(PasswordField p1, PasswordField p2) {
+		return p1.getValue().equals(p2.getValue());
 	}
 }

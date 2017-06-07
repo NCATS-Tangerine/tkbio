@@ -39,9 +39,9 @@ dependencies {
 
 	compile 'javax.servlet:jsp-api:2.0'
     compile 'javax.validation:validation-api:1.1.0.Final'
-
-//	From the tutorial: http://docs.stormpath.com/java/servlet-plugin/quickstart.html#try-it
-    compile 'com.stormpath.sdk:stormpath-servlet-plugin:1.0.4'
+ 
+ 	compile 'org.springframework.boot:spring-boot-starter-security'
+	compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
     
     // Vaadin-specific, including widgetset compiler, dependencies
     compile "com.vaadin:vaadin-shared:$vaadinSharedVersion"

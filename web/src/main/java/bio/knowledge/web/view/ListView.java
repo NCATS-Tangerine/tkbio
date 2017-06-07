@@ -92,7 +92,6 @@ import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.authentication.UserProfile;
 import bio.knowledge.datasource.DataService;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.model.Annotation;
@@ -109,6 +108,7 @@ import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.OntologyTerm;
 import bio.knowledge.model.organization.ContactForm;
 import bio.knowledge.model.umls.SemanticType;
+import bio.knowledge.model.user.User;
 import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
 import bio.knowledge.service.DataServiceException;
@@ -340,9 +340,10 @@ public class ListView extends BaseView {
 					AuthenticationManager authenticationManager = ((DesktopUI) UI.getCurrent()).getAuthenticationManager();
 					
 					if (authenticationManager.isUserAuthenticated()) {
-						UserProfile userProfile = authenticationManager.getCurrentUser();
-						
-						authenticationState.setState(userProfile.getId(), userProfile.getIdsOfGroupsBelongedTo());
+
+						User user = authenticationManager.getCurrentUser();
+						authenticationState.setState(user.getId(), user.getIdsOfGroupsBelongedTo());
+
 					} else {
 						authenticationState.setState(null, null);
 					}
@@ -822,12 +823,16 @@ public class ListView extends BaseView {
 						
 						String userId = map.getAuthorsAccountId();
 						if (userId != null) {
-							UserProfile userProfile = context.getUserProfile(userId);
-							return (String) userProfile.getUsername();
+							User userProfile = DesktopUI.getCurrent().getAuthenticationManager().getUser(userId);
+							
+							if (userProfile != null) {
+								return (String) userProfile.getUsername();
+							} else {
+								return null;
+							}
 						} else {
 							return null;
 						}
-						
 					}
 		
 					@Override
@@ -874,8 +879,6 @@ public class ListView extends BaseView {
 
 		tabsheet.addSelectedTabChangeListener(event -> {
 			Label selectedLabel = (Label) tabsheet.getSelectedTab();
-			
-			//UserProfile userProfile = ((DesktopUI)UI.getCurrent()).getAuthenticationManager().getCurrentUser();
 			
 			if (selectedLabel == publicHiddenLabel) {
 				listContainer.setFirstPage();
@@ -1405,7 +1408,7 @@ public class ListView extends BaseView {
 			simpleTextFilter.addValueChangeListener(event -> {
 				String filterText = (String) event.getProperty().getValue();
 				filterText = filterText.trim();
-				query.setRelationsTextFilter(filterText);
+				query.setSimpleTextFilter(filterText);
 				listContainer.setSimpleTextFilter(filterText);
 				gotoPageIndex(0); // refreshes the view
 			});

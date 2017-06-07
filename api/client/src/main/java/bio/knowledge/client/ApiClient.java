@@ -76,6 +76,29 @@ public class ApiClient {
     public static final double JAVA_VERSION;
     public static final boolean IS_ANDROID;
     public static final int ANDROID_SDK_VERSION;
+    
+    private String lastQuery;
+    private String lastError;
+    private int lastResponseCount;
+    
+    public String getLastQuery() {
+    	return this.lastQuery;
+    }
+    private void setLastQuery(String lastQuery) {
+    	this.lastQuery = lastQuery;
+    }
+    public String getLastError() {
+    	return this.lastError;
+    }
+    public void setLastError(String lastError) {
+    	this.lastError = lastError;
+    }
+    public void setLastResponseCount(int numberOfresponses) {
+    	this.lastResponseCount = numberOfresponses;
+    }
+    public int getLastResponseCount() {
+    	return lastResponseCount;
+    }
 
     static {
         JAVA_VERSION = Double.parseDouble(System.getProperty("java.specification.version"));
@@ -1126,6 +1149,7 @@ public class ApiClient {
             }
         }
         System.out.println("QUERYING: " + url.toString());
+        setLastQuery(url.toString());
         return url.toString();
     }
 

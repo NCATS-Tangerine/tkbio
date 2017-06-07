@@ -22,36 +22,25 @@
  * THE SOFTWARE.
  *-------------------------------------------------------------------------------
  */
-package bio.knowledge.web;
+package bio.knowledge.model.user;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+public enum Role {
 
-import com.stormpath.sdk.servlet.account.event.RegisteredAccountRequestEvent;
-import com.stormpath.sdk.servlet.event.RequestEventListener;
-import com.stormpath.sdk.servlet.event.RequestEventListenerAdapter;
+    SYSADMIN("Systems Administrator"), 
+    ADMIN("Administrator"), 
+    LABORATORY("Certified Laboratory"), 
+    CURATOR("Data Curator"), 
+    CLIENT("General Client")
+    ;
+    
+    private final String name;
+    
+    Role(String name) {
+    	this.name = name;
+    }
+    
+    public String toString() {
+    	return this.name;
+    }
 
-/**
- * @author Richard
- *
- */
-@Configuration
-public class StormpathConfig {
-	
-	@Bean
-	public RequestEventListener stormpathRequestEventListener() {
-	    return new StarRequestEventListenerAdapter();
-	}
-}
-
-class StarRequestEventListenerAdapter extends RequestEventListenerAdapter {
-
-	/* (non-Javadoc)
-	 * @see com.stormpath.sdk.servlet.event.RequestEventListenerAdapter#on(com.stormpath.sdk.servlet.account.event.RegisteredAccountRequestEvent)
-	 */
-	@Override
-	public void on(RegisteredAccountRequestEvent e) {
-		super.on(e);
-	}
-	
 }

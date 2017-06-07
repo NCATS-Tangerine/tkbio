@@ -42,7 +42,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.service.AnnotationService;
 import bio.knowledge.service.AuthenticationState;
@@ -71,9 +70,6 @@ public abstract class BaseView extends VerticalLayout implements View, MessageSe
 
 	@Autowired
 	Registry registry;
-	
-	@Autowired
-	protected AuthenticationContext context;
 
 	@Autowired
 	protected OntologyTermService ontologyTermService;

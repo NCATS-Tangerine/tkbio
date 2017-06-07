@@ -28,7 +28,6 @@ package bio.knowledge.web.view;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.stormpath.sdk.account.Account;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -43,10 +42,12 @@ import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
-import bio.knowledge.authentication.AuthenticationContext;
 import bio.knowledge.authentication.AuthenticationListener;
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.authentication.UserProfile;
+import bio.knowledge.model.user.User;
+import bio.knowledge.service.user.GroupService;
+import bio.knowledge.service.user.PasswordTokenService;
+import bio.knowledge.service.user.UserService;
 import bio.knowledge.web.design.ApplicationViewDesign;
 import bio.knowledge.web.ui.DesktopUI;
 
@@ -66,16 +67,6 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 	
 	private Navigator navigator;
 	private LoginView loginView;
-
-	private AuthenticationContext context;
-
-	public AuthenticationContext getContext() {
-		return context;
-	}
-
-	public void setContext(AuthenticationContext context) {
-		this.context = context;
-	}
 	
 	public LoginView getLoginView() {
 		return this.loginView;
@@ -90,12 +81,8 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
      * as it is initialized in the DesktopUI.
 	 * @param authenticationManager 
      */
-	public ApplicationLayout(
-			AuthenticationManager authenticationManager, 
-			AuthenticationContext context
-		) {
+	public ApplicationLayout(AuthenticationManager authenticationManager) {
 		
-		this.setContext(context);
 		navigator = new Navigator(UI.getCurrent(), (ViewDisplay)this);
 		navigator.setErrorView(new ErrorView());
 		
@@ -115,7 +102,7 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 		navigator.addView(UserAccountView.NAME, userAccountView);
 		navigator.addView(CreateAccountView.NAME, new CreateAccountView(navigator));
 		navigator.addView(RecoverAccountView.NAME, new RecoverAccountView());
-		navigator.addView(PasswordResetView.NAME, new PasswordResetView());
+		navigator.addView(PasswordResetView.NAME, new PasswordResetView(navigator));
 		
 		setCommonNavigationViews();
 		
@@ -134,7 +121,7 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 		
 		AuthenticationListener authListener = new AuthenticationListener() {
 			@Override
-			public void onLogin(Account account) {
+			public void onLogin(User user) {
 				loginBtn.setVisible(false);
 				logoutBtn.setVisible(true);
 				userAccountBtn.setVisible(true);
@@ -179,9 +166,9 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 					if (ui.getAuthenticationManager().isUserAuthenticated()) {
 						RestrictedAccessView restrictedView = (RestrictedAccessView) view;
 						
-						UserProfile userProfile = ui.getAuthenticationManager().getCurrentUser();
+						User user = ui.getAuthenticationManager().getCurrentUser();
 						
-						boolean accessDenied = ! userProfile.userHasOneOfAccessRoles(restrictedView.permittedRoles());
+						boolean accessDenied = ! user.hasOneOfRoles(restrictedView.permittedRoles());
 						
 						if (accessDenied) {
 							Notification.show("Your account does not have permission to access this view" , Type.WARNING_MESSAGE);

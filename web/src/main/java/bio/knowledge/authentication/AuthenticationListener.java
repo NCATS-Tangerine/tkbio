@@ -25,9 +25,9 @@
  */
 package bio.knowledge.authentication;
 
-import com.stormpath.sdk.account.Account;
+import bio.knowledge.model.user.User;
 
 public interface AuthenticationListener {
-	public void onLogin(Account account);
+	public void onLogin(User user);
 	public void onLogout();
 }
