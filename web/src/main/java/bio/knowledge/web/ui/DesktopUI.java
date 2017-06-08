@@ -443,6 +443,21 @@ public class DesktopUI extends UI implements MessageService {
 		TabSheet tabsheet = desktopView.getDataTabSheet();
 		tabsheet.setSelectedTab(relationsTab);
 	}
+	
+	public void displayStatements(String conceptId) {
+		VerticalLayout relationsTab = desktopView.getRelationsTab();
+
+		if (relationsTabNavigator == null) {
+			relationsTabNavigator = new Navigator(UI.getCurrent(), relationsTab);
+			relationsTabNavigator.addProvider(viewProvider);
+
+		}
+
+		relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW + "/" + conceptId);
+
+		TabSheet tabsheet = desktopView.getDataTabSheet();
+		tabsheet.setSelectedTab(relationsTab);
+	}
 
 	/**
 	 * 
@@ -593,16 +608,17 @@ public class DesktopUI extends UI implements MessageService {
 	 * @param annotation
 	 */
 	public void displayReference(Annotation annotation) {
-
 		query.setCurrentAnnotation(annotation);
-
-		VerticalLayout referenceTab = desktopView.getReferenceTab();
-
+		displayReference(annotation.getId());
+	}
+	
+	public void displayReference(String annotationId) {
 		Navigator navigator = new Navigator(this, desktopView.getReferenceLayout());
 
 		navigator.addProvider(viewProvider);
-		navigator.navigateTo(ReferenceView.NAME);
-
+		navigator.navigateTo(ReferenceView.NAME + "/" + annotationId);
+		
+		VerticalLayout referenceTab = desktopView.getReferenceTab();
 		TabSheet tabsheet = desktopView.getDataTabSheet();
 		tabsheet.setSelectedTab(referenceTab);
 	}
@@ -860,7 +876,12 @@ public class DesktopUI extends UI implements MessageService {
 
 			// Note: PubMed view is not a ListView...
 			if (caption.equals(ViewName.REFERENCE_TAB)) {
-				pubmedTabNavigator.navigateTo(ReferenceView.NAME);
+				String state = pubmedTabNavigator.getState();
+				if (!state.startsWith(ReferenceView.NAME)) {
+					pubmedTabNavigator.navigateTo(ReferenceView.NAME);
+				} else {
+					pubmedTabNavigator.navigateTo(state);
+				}
 			} else if (caption.equals(ViewName.EVIDENCE_TAB)) {
 				evidenceTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.EVIDENCE_VIEW);
 			} else if (caption.equals(ViewName.RELATIONS_TAB)) {

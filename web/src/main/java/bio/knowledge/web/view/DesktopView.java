@@ -288,6 +288,26 @@ public class DesktopView extends DesktopDesign implements View {
 					(state.equals(ListView.NAME + "/" + ViewName.RELATIONS_VIEW))) {				
 				ui.gotoStatementsTable();
 			}
+			
+			// TODO: Rework the above code to fit into the below code.
+			// This should allow the user navigate to a view simply by
+			// using the URL (maybe they send a URL to a friend).
+			if (state.startsWith(ListView.NAME + "/" + ViewName.RELATIONS_VIEW)) {
+				String conceptId = getStateSegment(state, 2);
+				ui.displayStatements(conceptId);
+			} else if (state.startsWith(ReferenceView.NAME)) {
+				String annotationId = getStateSegment(state, 1);
+				ui.displayReference(annotationId);
+			}
+		}
+	}
+	
+	private String getStateSegment(String state, int i) {
+		String[] parameters = state.split("/");
+		if (parameters.length > i) {
+			return parameters[i];
+		} else {
+			return "";
 		}
 	}
 	

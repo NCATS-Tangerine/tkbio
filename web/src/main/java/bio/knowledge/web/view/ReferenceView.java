@@ -107,24 +107,25 @@ public class ReferenceView extends ReferenceDesign implements View {
 	
 	@Override
 	public void enter(ViewChangeEvent event) {
-
 		removeAllComponents();
-		
-		Optional<Annotation> annotationOpt = query.getCurrentAnnotation();
-		
+		String annotationId = null;
 		String[] uri = new String[1];
-		
-		if (annotationOpt.isPresent()) {
-			String id = annotationOpt.get().getId();
-			try {
-				// TODO: At the moment, evidence id's are URL's
-				URL url = new URL(id);
-				uri[0] = url.toString();
-			} catch (MalformedURLException e) {
-				uri[0] = getUrl(id);
-			}
+		Optional<Annotation> annotationOpt = query.getCurrentAnnotation();
+		String parameters = event.getParameters();
+		if (parameters != null && !parameters.isEmpty()) {
+			annotationId = parameters.split("/")[0];
+		} else if (annotationOpt.isPresent()) {
+			annotationId = annotationOpt.get().getId();
 		} else {
 			return;
+		}
+		
+		try {
+			// TODO: At the moment, evidence id's are URL's
+			URL url = new URL(annotationId);
+			uri[0] = url.toString();
+		} catch (MalformedURLException e) {
+			uri[0] = getUrl(annotationId);
 		}
 		
 		VerticalLayout localAbstractLayout = new VerticalLayout() ;	
@@ -170,6 +171,12 @@ public class ReferenceView extends ReferenceDesign implements View {
 		});
 		
 		showInNewWindowBtn.addClickListener(e -> {
+			String accId    = refIdSearchField.getValue().trim();
+			baseUri         = RdfUtil.resolveBaseUri(accId);
+			String objectId = RdfUtil.getQualifiedObjectId(accId);
+			if (accId != null && baseUri != null && objectId != null) {
+				uri[0] = baseUri+objectId;
+			}
 			getUI().getPage().open( uri[0], "_blank", false );
 		});
 
