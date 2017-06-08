@@ -23,61 +23,50 @@
  * THE SOFTWARE.
  *-------------------------------------------------------------------------------
  */
-package bio.knowledge.service;
+package bio.knowledge.database.repository;
 
 import java.util.List;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.data.neo4j.annotation.Query;
+import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.repository.query.Param;
 
-import bio.knowledge.database.repository.PredicateRepository;
-import bio.knowledge.datasource.DataSourceRegistry;
-import bio.knowledge.model.Predicate;
+import bio.knowledge.model.neo4j.Neo4jPredicate;
 
 /**
  * @author Richard
  *
  */
-@Service
-public class PredicateService {
-	
-	private Logger _logger = LoggerFactory.getLogger(PredicateService.class);
-	
-	@Autowired
-	PredicateRepository predicateRepository;
+public interface PredicateRepository extends GraphRepository<Neo4jPredicate> {
 
-	@Autowired
-	private Cache cache;
+	/**
+	 * 
+	 */
+	@Query( "DROP CONSTRAINT ON (predicate:Predicate)"
+	      + " ASSERT predicate.name IS UNIQUE")
+	public void dropUniqueConstraintOnName() ;
 	
-	@Autowired
-	private DataSourceRegistry dataSourceRegistry ;
+	/**
+	 * @param accId
+	 * @return
+	 */
+	@Query("MATCH (predicate:Predicate) WHERE predicate.accessionId = {accessionId} RETURN predicate")
+	public Neo4jPredicate findPredicateById(@Param("accessionId")String accessionId );
+
+	/**
+	 * 
+	 */
+	@Query( "DROP INDEX ON :Predication(name)")
+	public void dropIndexOnName() ;
 	
-    /**
-     * 
-     * @param name
-     * @return
-     */
-    public Predicate findPredicateByName(String name) {
-    	throw new NotImplementedException("Removed all reference to neo4j");
-    }
-    
-    /**
-     * 
-     * @return
-     */
-	public List<Predicate> findAllPredicates() {
-    	return (List<Predicate>) (List) predicateRepository.findAllPredicates() ;
-    }
-    
-    /**
-     * 
-     * @param predicate
-     * @return
-     */
-    public Predicate annotate(Predicate predicate) {
-    	throw new NotImplementedException("Removed all reference to neo4j");
-    }
+	/**
+	 * @param name
+	 * @return
+	 */
+	@Query("MATCH (predicate:Predicate) WHERE predicate.name = {name} RETURN predicate")
+	Neo4jPredicate findPredicateByName(@Param("name")String name);
+	
+	@Query("MATCH (predicate:Predicate) RETURN predicate")
+	List<Neo4jPredicate> findAllPredicates();
+
 }

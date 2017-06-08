@@ -733,6 +733,25 @@ public class ListView extends BaseView {
 
 		gpcontainer = new GeneratedPropertyContainer(container);
 		
+		gpcontainer.addGeneratedProperty("type", new PropertyValueGenerator<String>() {
+
+			@Override
+			public String getValue(Item item, Object itemId, Object propertyId) {
+				if (itemId instanceof Concept) {
+					Concept concept = (Concept) itemId;
+					return concept.getSemanticGroup().name();
+				} else {
+					return "";
+				}
+			}
+
+			@Override
+			public Class<String> getType() {
+				return String.class;
+			}
+			
+		});
+		
 		gpcontainer.addGeneratedProperty("beaconSource", new PropertyValueGenerator<String>() {
 
 			@Override

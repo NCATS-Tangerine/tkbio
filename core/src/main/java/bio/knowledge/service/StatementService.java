@@ -283,21 +283,10 @@ public class StatementService
 				throw new DataServiceException("SentenceService.countHitsByNameLike(): Invalid RelationSearchMode()?");
 		} 
 	}
-
-	public Statement findbySourceAndTargetId(String sourceAccessionId, String targetId, String relationName){
-		CompletableFuture<List<Statement>> future = 
-				kbService.getStatements(sourceAccessionId, null, null, 0, 1);
-		try {
-			List<Statement> statements = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
-			if (statements.size() >= 1) {
-				return statements.get(0);
-			} else {
-				return null;
-			}
-		} catch (InterruptedException | ExecutionException | TimeoutException e) {
-			e.printStackTrace();
-			return null;
-		}
+	
+	@Deprecated 
+	public Statement findbySourceAndTargetId(String sourceId, String targetId, String relationName){
+		throw new NotImplementedException("This method no longer makes sense within the context of distributed knowledge sources");
 	}
 
 	/**
