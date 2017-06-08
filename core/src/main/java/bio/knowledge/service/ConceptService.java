@@ -52,6 +52,7 @@ import bio.knowledge.datasource.DataSourceRegistry;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
 import bio.knowledge.model.Concept;
+import bio.knowledge.model.RdfUtil;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.core.Feature;
 import bio.knowledge.model.datasource.Result;
@@ -857,9 +858,136 @@ public class ConceptService
      * @param predicate
      * @return
      */
-	@Deprecated
     public Concept annotate(String id) {
-    	throw new NotImplementedException("Removed all reference to neo4j");
+
+    	if(id.isEmpty()) {
+    		_logger.warn(
+    				"ConceptService.annotate() warning: cannot return "
+    				+ "an annotated Concept without an Accession Id!?"
+    		);
+    		return null; 
+    	}    
+	    
+    	// check first for a cached (presumed annotated) version of the Predicate
+		String[] idPart  = id.split("\\:") ;
+		String nameSpace = idPart[0];
+		String objectId  = idPart[1];
+		
+		Concept concept = null;
+		
+		CacheLocation cacheLocation = 
+				cache.searchForEntity( "Concept", nameSpace, new String[] {objectId} );
+		
+		Concept cachedConcept = (Concept) cacheLocation.getEntity();
+		
+		if (cachedConcept == null) {
+			
+			// Not cached... then first, attempt to retrieve it from the local database
+			Optional<Concept> databaseConceptOpt = 
+						getDetailsByConceptId(id);
+			
+			if(databaseConceptOpt.isPresent()) {
+				concept = databaseConceptOpt.get();
+			}
+			
+			/* 
+			 * If the database concept is not found or 
+			 * if the concept lacks a semantic group... 
+			 * then consult wikidata?
+			 */
+			if(	
+					concept==null ||
+					concept.getSemanticGroup()==null ||
+					concept.getSemanticGroup().equals(SemanticGroup.ANY)
+			){
+			
+				// Assume that you need to retrieve the Concept description from WikiData
+		    	DataService ds = dataSourceRegistry.getDataService( 
+								WikiDataDataSource.WIKIDATA_DATASOURCE_ID,  
+								WikiDataDataSource.WD_SDS_8_ID 
+						) ;
+		    	
+				if( !ds.isSimple() ) 
+					throw new DataSourceException( "ConceptService.annotate() error: SimpleDataSource expected?" );
+		
+				@SuppressWarnings("unchecked")
+				SimpleDataService<String> sds = (SimpleDataService<String>)ds ;
+				
+				CompletableFuture<ResultSet> futureMyGeneResultSet = sds.query(id);
+				try {
+					ResultSet resultSet = 
+							futureMyGeneResultSet.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+		
+					if ( resultSet != null && !resultSet.isEmpty() ) {
+						
+						if(concept==null) {
+							/* 
+							 * If concept is not yet in the database, 
+							 * we are better to create one now, albeit, 
+							 * with a default SemanticGroup "Concepts & Ideas"
+							 * and an empty name field 
+							 */
+							concept = createInstance( id, SemanticGroup.CONC, "" );
+						}
+						
+						for(Result result:resultSet) {
+		
+							String nameLiteral = (String)result.get("name");
+							String[] nameLiteralPart = nameLiteral.split("\\@");
+							
+							String valueUri = (String)result.get("value");
+							String valueObjectId = RdfUtil.getObjectId(valueUri);
+							
+							String valueLabelLiteral = (String)result.get("valueLabel");
+							String[] valueLabelPart = valueLabelLiteral.split("\\@");
+							
+							_logger.info(""+valueObjectId+":"+valueLabelPart[0]);
+							
+							// Set the name if empty...
+							if(concept.getName().isEmpty()) concept.setName(nameLiteralPart[0]);
+							
+							// ...then attempt to discover the actual SemanticGroup
+							SemanticGroup group = SemanticGroup.lookUpByWikiClass(valueObjectId);
+							if(group!=null) {
+								concept.setSemanticGroup(group);
+								/* 
+								 * mission accomplished? 
+								 * Heuristic is to take first recognized 
+								 * SemanticGroup... don't to look any further?
+								 */
+								break; 
+							}
+						}
+						
+						/*
+						 * Save whatever concept with a newly 
+						 * discovered name and semantic group 
+						 */
+						
+						//TODO: June 8 2017
+						//		We no longer have a ConceptRepository, we may want to
+						//  	bring it back if we wish to save concepts like this.
+//						concept = conceptRepository.save((Neo4jConcept) concept) ; 
+					}
+					
+				} catch (InterruptedException | ExecutionException | TimeoutException e) {
+					futureMyGeneResultSet.completeExceptionally(e);
+					return null ; // Concept unknown in WikiData?
+				}
+			}
+			
+			/* ... then, cache the available non-null  
+			 * databased Concept into the user's session, 
+			 * annotated as best as it may be at this point(?)
+			 */
+			if(concept!=null) cacheLocation.setEntity(concept);
+			
+		} else {
+			// Found a cached, presumed completely annotated version of the Predicate... reuse!
+			concept = cachedConcept;
+		}
+		
+    	return concept ;
     }
 
 }

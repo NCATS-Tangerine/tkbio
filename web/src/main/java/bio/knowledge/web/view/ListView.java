@@ -1584,7 +1584,7 @@ public class ListView extends BaseView {
 		// TODO: Pageable page_spec = new Pageable() ;
 		// Page<Identifier> page = service.getIdentifiers(page_spec) ;
 		listContainer.setContainer(
-				new BeanItemContainer<IdentifiedEntity>(IdentifiedEntity.class, identifierService.getIdentifiers()));
+				new BeanItemContainer<IdentifiedEntity>(IdentifiedEntity.class));
 	}
 
 	protected void renderDisplay() {
@@ -1606,11 +1606,13 @@ public class ListView extends BaseView {
 			addComponent(label);
 
 		} else {
-
-			VerticalLayout dataTableLayout = formatGenericTableComponents(viewName);
-
+			
+			String viewNameWithoutUrlParameters = viewName.split("/")[0];
+			
+			VerticalLayout dataTableLayout = formatGenericTableComponents(viewNameWithoutUrlParameters);
+			
 			// Format Table View
-			Registry.Mapping mapping = registry.getMapping(viewName);
+			Registry.Mapping mapping = registry.getMapping(viewNameWithoutUrlParameters);
 			if (mapping != null)
 				formatDefinedDataTypeTable(mapping);
 			else
