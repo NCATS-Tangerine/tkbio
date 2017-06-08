@@ -389,6 +389,84 @@
       </vaadin-horizontal-layout> 
       <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
        <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
+		MANAGING NODES AND EDGES
+       </vaadin-label> 
+       <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
+       <vaadin-vertical-layout spacing :expand="4"> 
+       
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+		How do I remove an element from the graph?
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>When you click on a node in the graph, a popup menu appears. Here there are actions that you can take with respect to the node. Click on <b>Delete</b> to remove the node and all its connected relations from the graph. You can still put them back by searching for the concept again and using the <b>Add to Map</b> button.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+		Where can I find the properties of a particular concept I have on the graph?
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Click on the node to produce a popup menu for the concept. Press <b>Show Relationships</b>. The Relationship tab will open. Clicking on the name of a concept in this tab will cause a pop-up to appear showing the properties for that concept.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout>
+        
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+         I have loaded/created a map and I want to see the evidence for a relation without having to look up the concept directly. How can I do this?
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Every edge displayed on the map is clickable, producing a popup menu. For edges there will be a <b>Show Evidence</b> button. Clicking on it will bring you to the "Evidence" table, showing the sentences giving evidence to the relationship.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <!--
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+         Can I put my own relationships on the graph?/Can I add my own evidence that a knowledge relationship statement is true?
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Yes, through the <em>User Annotation feature</em> you can not only add new pieces of evidence for existing relationship statements, 
+			but also add new relationship statements to the database.
+			You must create a user account and be logged in to access this feature.
+			First click on a node to bring up the popup menu. Then click on the "Annotate" button.
+			A new menu should appear with several fields, allowing you to select which relationship on the graph you wish to add evidence to.
+			The "Source" field and "Target" fields refer to the end of the edge and tip of the edge, respectively. "Relation" refers to the type of relation and its name.
+			The "Source" and "Target" fields derive from the nodes that area already on the graph. If you wish to use a concept that you have not yet 
+			put on the graph, select <b>More nodes...</b> from one of their menus and search for the concept, in a similar process to finding a concept for the application at large.
+			Every new annotation must have evidence given for it. Use the "Description" field to give justification for the relationship, 
+			and the "URI" field for a link (like a URL or a PMID) to the source of your justification.
+			You may establish whether or not other users can see your annotation, using the "Public" checkbox.
+			After all of these fields are filled out, you may click <b>Submit</b>. If the annotation was created by you, it should be loaded up to the database and put onto your graph.
+          </p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        -->
+        <!--
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+		My map looks like a hairball. Is there any way that I can organize it?
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Yes! Knowledge.Bio allows for the clustering of nodes together in the graph with shared properties or with a certain type of relationship. These clusters may be added and reversed as you wish.
+          
+          First click on the node and bring up the popup menu. Then click on <b>Cluster</b>.
+          
+          Another menu should appear allowing you to create constraints to be matched against in the current map. You can add properties and their keywords to the list, as well as select a Relation predicate from a drop-down menu.
+          
+          Altogether, they form a way of sorting the graph into a "cluster", i.e., a collection of related nodes abstracted into a single one. The nodes that match the cluster will be hidden and their edges reconnected to the central node.
+          
+          If a node is acting as the central concept of a cluster, then to uncluster what is remapped to that concept, click on it, and press the <b>Uncluster</b> button.
+          
+          Note that as you add more concepts to the concept map, they may not appear yet a new edge connects to the central node of an existing cluster.
+          </p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        -->
+       </vaadin-vertical-layout> 
+      </vaadin-horizontal-layout> 
+      <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+       <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
          GENERAL 
        </vaadin-label> 
        <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
@@ -500,8 +578,8 @@
       <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
        <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
          USER ACCOUNTS
-       </vaadin-label> 
-       <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
+       </vaadin-label>        <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
+
        <vaadin-vertical-layout spacing :expand="4"> 
         <vaadin-vertical-layout spacing> 
          <vaadin-label style-name="faq-question-label" plain-text>
@@ -545,87 +623,6 @@
         </vaadin-vertical-layout> 
        </vaadin-vertical-layout> 
       </vaadin-horizontal-layout>
-      
-            <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
-       <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
-		MANAGING NODES AND EDGES
-       </vaadin-label> 
-       <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
-       <vaadin-vertical-layout spacing :expand="4"> 
-       
-        <vaadin-vertical-layout spacing> 
-         <vaadin-label style-name="faq-question-label" plain-text>
-		How do I remove an element from the graph?
-         </vaadin-label> 
-         <vaadin-label style-name="faq-answer-label"> 
-          <p>When you click on a node in the graph, a popup menu appears. Here there are actions that you can take with respect to the node. Click on <b>Delete</b> to remove the node and all its connected relations from the graph. You can still put them back by searching for the concept again and using the <b>Add to Map</b> button.</p> 
-         </vaadin-label> 
-        </vaadin-vertical-layout> 
-        
-        <vaadin-vertical-layout spacing> 
-         <vaadin-label style-name="faq-question-label" plain-text>
-		Where can I find the properties of a particular concept I have on the graph?
-         </vaadin-label> 
-         <vaadin-label style-name="faq-answer-label"> 
-          <p>Click on the node to produce a popup menu for the concept. Press <b>Show Relationships</b>. The Relationship tab will open. Clicking on the name of a concept in this tab will cause a pop-up to appear showing the properties for that concept.</p> 
-         </vaadin-label> 
-        </vaadin-vertical-layout>
-        
-        <vaadin-vertical-layout spacing> 
-         <vaadin-label style-name="faq-question-label" plain-text>
-         I have loaded/created a map and I want to see the evidence for a relation without having to look up the concept directly. How can I do this?
-         </vaadin-label> 
-         <vaadin-label style-name="faq-answer-label"> 
-          <p>Every edge displayed on the map is clickable, producing a popup menu. For edges there will be a <b>Show Evidence</b> button. Clicking on it will bring you to the "Evidence" table, showing the sentences giving evidence to the relationship.</p> 
-         </vaadin-label> 
-        </vaadin-vertical-layout> 
-        <!--
-        <vaadin-vertical-layout spacing> 
-         <vaadin-label style-name="faq-question-label" plain-text>
-         Can I put my own relationships on the graph?/Can I add my own evidence that a knowledge relationship statement is true?
-         </vaadin-label> 
-         <vaadin-label style-name="faq-answer-label"> 
-          <p>Yes, through the <em>User Annotation feature</em> you can not only add new pieces of evidence for existing relationship statements, 
-			but also add new relationship statements to the database.
-			You must create a user account and be logged in to access this feature.
-			First click on a node to bring up the popup menu. Then click on the "Annotate" button.
-			A new menu should appear with several fields, allowing you to select which relationship on the graph you wish to add evidence to.
-			The "Source" field and "Target" fields refer to the end of the edge and tip of the edge, respectively. "Relation" refers to the type of relation and its name.
-			The "Source" and "Target" fields derive from the nodes that area already on the graph. If you wish to use a concept that you have not yet 
-			put on the graph, select <b>More nodes...</b> from one of their menus and search for the concept, in a similar process to finding a concept for the application at large.
-			Every new annotation must have evidence given for it. Use the "Description" field to give justification for the relationship, 
-			and the "URI" field for a link (like a URL or a PMID) to the source of your justification.
-			You may establish whether or not other users can see your annotation, using the "Public" checkbox.
-			After all of these fields are filled out, you may click <b>Submit</b>. If the annotation was created by you, it should be loaded up to the database and put onto your graph.
-          </p> 
-         </vaadin-label> 
-        </vaadin-vertical-layout> 
-        -->
-        <!--
-        <vaadin-vertical-layout spacing> 
-         <vaadin-label style-name="faq-question-label" plain-text>
-		My map looks like a hairball. Is there any way that I can organize it?
-         </vaadin-label> 
-         <vaadin-label style-name="faq-answer-label"> 
-          <p>Yes! Knowledge.Bio allows for the clustering of nodes together in the graph with shared properties or with a certain type of relationship. These clusters may be added and reversed as you wish.
-          
-          First click on the node and bring up the popup menu. Then click on <b>Cluster</b>.
-          
-          Another menu should appear allowing you to create constraints to be matched against in the current map. You can add properties and their keywords to the list, as well as select a Relation predicate from a drop-down menu.
-          
-          Altogether, they form a way of sorting the graph into a "cluster", i.e., a collection of related nodes abstracted into a single one. The nodes that match the cluster will be hidden and their edges reconnected to the central node.
-          
-          If a node is acting as the central concept of a cluster, then to uncluster what is remapped to that concept, click on it, and press the <b>Uncluster</b> button.
-          
-          Note that as you add more concepts to the concept map, they may not appear yet a new edge connects to the central node of an existing cluster.
-          </p> 
-         </vaadin-label> 
-        </vaadin-vertical-layout> 
-        -->
-       </vaadin-vertical-layout> 
-      </vaadin-horizontal-layout> 
-      
-      
      </vaadin-vertical-layout> 
     </tab> 
    </vaadin-tab-sheet> 
