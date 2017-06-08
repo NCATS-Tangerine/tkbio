@@ -1766,7 +1766,7 @@ public class ListView extends BaseView {
 			} else
 				throw new RuntimeException("Unsupported Relationship Concept Role?");
 			
-			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(subject.getId());
+			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId);
 			Concept selectedConcept;
 			try {
 				List<Concept> concepts = 
