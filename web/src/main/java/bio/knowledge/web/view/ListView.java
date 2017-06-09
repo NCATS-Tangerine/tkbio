@@ -47,11 +47,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Indexed;
+import com.vaadin.data.Container.Sortable;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.util.ItemSorter;
 import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ExternalResource;
@@ -69,6 +72,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.CellReference;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Grid.SelectionModel;
 import com.vaadin.ui.GridLayout;
@@ -359,10 +363,17 @@ public class ListView extends BaseView {
 					container.addAll(data);
 					loadedAllData = false;
 					nextPageNumber = 2;
+					
+					sortDataTable();
 				}
 			}
-
-//			createPageControls(listContainer);
+		}
+		
+		public void sortDataTable() {
+			
+			for (SortOrder order : dataTable.getSortOrder()) {
+				dataTable.sort(order.getPropertyId(), order.getDirection());
+			}
 		}
 		
 		private boolean loadedAllData = false;
@@ -388,7 +399,10 @@ public class ListView extends BaseView {
 					loadedAllData = true;
 				}
 			}
+			
+			sortDataTable();
 		}
+		
 		public boolean isLoading() {
 			return loadingDataPage;
 		}
@@ -517,219 +531,9 @@ public class ListView extends BaseView {
 
 	private Label currentStatusLabel = new Label();
 
-	/**
-	 * TODO: this method does not yet take 'filtered' hit numbers into account
-	 * 
-	 * @param listContainer
-	 */
-	private void createPageControls(ListContainer listContainer) {
-
-		pageBar.removeAllComponents();
-		enPageBar.removeAllComponents();
-
-		enPageBar.setWidth("100%");
-
-		// entries per page label and buttons
-		createPageEntriesBar(listContainer);
-
-		// buttons for selecting pages
-		createPageButtons(listContainer);
-
-		pageBar.addStyleName("max-width-full");
-		pageBar.setResponsive(true);
-	}
-
-	private void createPageButtons(ListContainer listContainer) {
-		int totalPages = listContainer.getPageCount();
-
-		if (totalPages == 0) {
-			return;
-		}
-
-		int offset = ListContainer.PAGE_WINDOW_OFFSET;
-
-		int currentPageIndex = listContainer.getCurrentPageIndex();
-		int finalPageIndex = totalPages - 1;
-
-		int windowStartIndex = currentPageIndex - offset;
-		int windowEndIndex = currentPageIndex + offset;
-
-		// clip the window
-		if (windowStartIndex < 0) {
-			windowStartIndex = 0;
-			windowEndIndex = ListContainer.PAGE_WINDOW_SIZE - 1;
-		} else if (windowEndIndex >= totalPages) {
-			windowStartIndex = totalPages - ListContainer.PAGE_WINDOW_SIZE;
-			windowEndIndex = totalPages - 1;
-		}
-
-		// display one more button if the window is at one of the end
-		if (windowStartIndex == 0) {
-			windowEndIndex++;
-		} else if (windowEndIndex == finalPageIndex) {
-			windowStartIndex--;
-		}
-
-		// update window end index if there are few pages
-		if (totalPages <= ListContainer.PAGE_WINDOW_SIZE) {
-			windowStartIndex = 0;
-			windowEndIndex = finalPageIndex;
-		}
-
-		// set up the Previous button
-		Button previousBtn = new Button(getMessage("button_previous"));
-
-		previousBtn.setEnabled(false);
-		previousBtn.addStyleName(PAGE_CONTROL_BUTTON_STYLE);
-
-		previousBtn.addClickListener(e -> {
-			int pageIndex = listContainer.getCurrentPageIndex() - 1;
-			gotoPageIndex(pageIndex);
-		});
-
-		// set up the Next button
-		Button nextBtn = new Button(getMessage("button_next"));
-
-		nextBtn.setEnabled(false);
-		nextBtn.addStyleName(PAGE_CONTROL_BUTTON_STYLE);
-
-		nextBtn.addClickListener(e -> {
-			int pageIndex = listContainer.getCurrentPageIndex() + 1;
-			gotoPageIndex(pageIndex);
-		});
-
-		if (currentPageIndex > 0) {
-			previousBtn.setEnabled(true);
-		}
-
-		if (currentPageIndex < (totalPages - 1)) {
-			nextBtn.setEnabled(true);
-		}
-
-		pageBar.addComponent(previousBtn);
-
-		// create the first page button, and ellipsis if applicable (before the
-		// window)
-		if (windowStartIndex >= 1) {
-			Button firstPageBtn = new Button("1");
-			firstPageBtn.addStyleName(PAGE_BUTTON_STYLE);
-			firstPageBtn.addClickListener(e -> {
-				gotoPageIndex(0);
-			});
-
-			pageBar.addComponent(firstPageBtn);
-
-			if (windowStartIndex >= ELLIPSIS_INDEX_OFFSET) {
-				Label ellipsisLabel = new Label("...");
-				ellipsisLabel.addStyleName("page-ellipsis-label");
-
-				pageBar.addComponent(ellipsisLabel);
-				pageBar.setComponentAlignment(ellipsisLabel, Alignment.MIDDLE_CENTER);
-			}
-		}
-
-		// create the buttons within the window's range
-		for (int i = windowStartIndex; i <= windowEndIndex; i++) {
-			Button pageBtn = new Button(Integer.toString(i + 1));
-			pageBtn.addStyleName(PAGE_BUTTON_STYLE);
-			pageBtn.addClickListener(e -> {
-				int pageIndex = Integer.parseInt(e.getButton().getCaption()) - 1;
-				gotoPageIndex(pageIndex);
-			});
-
-			pageBar.addComponent(pageBtn);
-		}
-
-		// create the last page button, and ellipsis if applicable (after the
-		// window)
-
-		if (windowEndIndex <= (finalPageIndex - 1)) {
-			Button finalPageBtn = new Button(Integer.toString(finalPageIndex + 1));
-			finalPageBtn.addStyleName(PAGE_BUTTON_STYLE);
-			finalPageBtn.addClickListener(e -> {
-				gotoPageIndex(finalPageIndex);
-			});
-
-			if (windowEndIndex <= (finalPageIndex - ELLIPSIS_INDEX_OFFSET)) {
-				Label ellipsisLabel = new Label("...");
-				ellipsisLabel.addStyleName("page-ellipsis-label");
-
-				pageBar.addComponent(ellipsisLabel);
-				pageBar.setComponentAlignment(ellipsisLabel, Alignment.MIDDLE_CENTER);
-			}
-
-			pageBar.addComponent(finalPageBtn);
-		}
-
-		// set current button style
-		Iterator<Component> iterator = pageBar.iterator();
-
-		while (iterator.hasNext()) {
-			Component component = iterator.next();
-			if (component.getClass().equals(Button.class)) {
-				Button button = (Button) component;
-				String caption = button.getCaption();
-
-				if (caption.equals(Integer.toString(currentPageIndex + 1))) {
-					button.addStyleName(CURRENT_PAGE_BUTTON_STYLE);
-				}
-			}
-		}
-
-		pageBar.addComponent(nextBtn);
-	}
-
-	private void createPageEntriesBar(ListContainer listContainer) {
-		long totalHits = listContainer.getTotalHits();
-
-		HorizontalLayout entriesLayout = new HorizontalLayout();
-		entriesLayout.addStyleName("max-width-full");
-
-		Label entriesLabel = new Label(getMessage("entries_per_page") + ":");
-		entriesLabel.addStyleName("page-entries-label");
-
-		entriesLayout.addComponent(entriesLabel);
-		entriesLayout.setComponentAlignment(entriesLabel, Alignment.MIDDLE_LEFT);
-
-		int[] pageSizes = { 5, 10, 25, 50, 100 };
-		for (int ps : pageSizes) {
-			Button pageButton = new Button(new Integer(ps).toString().trim());
-			pageButton.addClickListener(e -> pageSizeSelector(e));
-
-			if (listContainer.getPageSize() == ps) {
-				pageButton.addStyleName(CURRENT_PAGE_SIZE_STYLE);
-			} else {
-				pageButton.addStyleName(PAGE_BUTTON_STYLE);
-			}
-
-			entriesLayout.addComponent(pageButton);
-			entriesLayout.setComponentAlignment(pageButton, Alignment.MIDDLE_LEFT);
-
-			// Only give a page size range that is sensible
-			// relative to the total number of pages
-			if (totalHits < ps)
-				break;
-		}
-
-		// the page/entry status label
-		String[] range = listContainer.getEntryRange();
-		String labelContent = "Showing " + range[0] + " to " + range[1] + " of " + totalHits + " entries";
-
-		currentStatusLabel.setValue(labelContent);
-		currentStatusLabel.addStyleName(PAGE_STATUS_LABEL_STYLE);
-
-		enPageBar.addComponents(currentStatusLabel, entriesLayout);
-
-		enPageBar.setComponentAlignment(currentStatusLabel, Alignment.MIDDLE_LEFT);
-		enPageBar.setComponentAlignment(entriesLayout, Alignment.MIDDLE_RIGHT);
-
-		enPageBar.setExpandRatio(currentStatusLabel, 4);
-		enPageBar.setExpandRatio(entriesLayout, 7);
-	}
-
 	private void loadDataTable(VerticalLayout dataTableLayout) {
 
-		Container.Indexed container = listContainer.getContainer();
+		BeanItemContainer container = (BeanItemContainer) listContainer.getContainer();
 
 		gpcontainer = new GeneratedPropertyContainer(container);
 		
@@ -864,6 +668,52 @@ public class ListView extends BaseView {
 		addChildColumns(dataTable, gpcontainer);
 
 		dataTable.setContainerDataSource(gpcontainer);
+		
+		for (Column column : dataTable.getColumns()) {
+			String columnID = (String) column.getPropertyId();
+			column.setSortable(
+					columnID.equals(COL_ID_SUBJECT) ||
+					columnID.equals(COL_ID_OBJECT)  ||
+					columnID.equals(COL_ID_RELATION)
+			);
+		}
+		
+		container.setItemSorter(new ItemSorter() {
+
+			@Override
+			public void setSortProperties(Sortable container, Object[] propertyId, boolean[] ascending) {
+				
+			}
+
+			@Override
+			public int compare(Object a, Object b) {
+				List<SortOrder> sortOrders = dataTable.getSortOrder();
+				if (sortOrders.isEmpty()) {
+					return 0;
+				} else {
+					SortOrder sortOrder = sortOrders.get(0);
+					String columnID = ((String) sortOrder.getPropertyId()).trim();
+					
+					if (viewName.startsWith(ViewName.RELATIONS_VIEW)) {
+						Statement A = (Statement) a;
+						Statement B = (Statement) b;
+						
+						if (columnID.equals(COL_ID_SUBJECT)) {
+							return A.getSubject().getName().compareToIgnoreCase(B.getSubject().getName());
+						} else if (columnID.equals(COL_ID_OBJECT)) {
+							return A.getObject().getName().compareToIgnoreCase(B.getObject().getName());
+						} else if (columnID.equals(COL_ID_RELATION)) {
+							return A.getRelation().getName().compareToIgnoreCase(B.getRelation().getName());
+						} else {
+							return 0;
+						}
+					} else {
+						return 0;
+					}
+				}
+			}
+			
+		});
 
 		listContainer.setFirstPage();
 
@@ -1540,38 +1390,7 @@ public class ListView extends BaseView {
 
 		dataTable.addSortListener(e -> {
 			if (e.isUserOriginated()) {
-				List<SortOrder> orders = e.getSortOrder();
-				SortOrder order = orders.get(0);
-
-				String columnID = ((String) order.getPropertyId()).trim();
-				TableSorter sorter = TableSorter.DEFAULT;
-
-				// determine sorting column
-				if (columnID.equals(COL_ID_SUBJECT)) {
-					sorter = TableSorter.SUBJECT;
-				} else if (columnID.equals(COL_ID_OBJECT)) {
-					sorter = TableSorter.OBJECT;
-					// } else if (columnID.equals(COL_ID_RELATION)) {
-				} else if (columnID.equals(COL_ID_RELATION)) {
-					sorter = TableSorter.RELATION;
-				} else if (columnID.equals(COL_ID_EVIDENCE)) {
-					sorter = TableSorter.EVIDENCE;
-				} else if (columnID.equals(COL_ID_NAME)) {
-					sorter = TableSorter.ANNOTATION;
-				}
-
-				// determine sorting direction
-				if (order.getDirection().equals(SortDirection.ASCENDING)) {
-					listContainer.setDirection(true);
-				} else {
-					listContainer.setDirection(false);
-				}
-
-				// update page
-				listContainer.setSorter(sorter);
-				listContainer.setFirstPage();
-				listContainer.refresh();
-				createPageControls(listContainer);
+				listContainer.sortDataTable();
 			}
 		});
 
@@ -1922,7 +1741,7 @@ public class ListView extends BaseView {
 				ViewName.CONCEPTS_VIEW,
 				new BeanItemContainer<Concept>(Concept.class), 
 				conceptService,
-				new String[] { "beaconSource", "name|*", "semanticGroup", "description|*", "synonyms|*", "library|*" },
+				new String[] { "beaconSource", "name|*", "semanticGroup", "description|*", "synonyms|*"},
 				null, 
 				null);
 
