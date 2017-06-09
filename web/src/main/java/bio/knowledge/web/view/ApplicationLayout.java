@@ -111,8 +111,7 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 			navigator.navigateTo(LandingPageView.NAME);
 		}
 		
-		logoutBtn.setVisible(false);
-		userAccountBtn.setVisible(false);
+		showButtonsForLoggedIn(authenticationManager.isUserAuthenticated());
 		
 		logoutBtn.addClickListener(event -> {
 			authenticationManager.logout();
@@ -122,15 +121,11 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 		AuthenticationListener authListener = new AuthenticationListener() {
 			@Override
 			public void onLogin(User user) {
-				loginBtn.setVisible(false);
-				logoutBtn.setVisible(true);
-				userAccountBtn.setVisible(true);
+				showButtonsForLoggedIn(true);
 			}
 			@Override
 			public void onLogout() {
-				loginBtn.setVisible(true);
-				logoutBtn.setVisible(false);
-				userAccountBtn.setVisible(false);
+				showButtonsForLoggedIn(false);
 			}
 		};
 		
@@ -150,6 +145,12 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 				navigator.navigateTo(PasswordResetView.NAME);
 			}
 		}
+	}
+	
+	private void showButtonsForLoggedIn(boolean loggedIn) {
+		loginBtn.setVisible(!loggedIn);
+		logoutBtn.setVisible(loggedIn);
+		userAccountBtn.setVisible(loggedIn);		
 	}
 	
 	private void setupRestrictedAccess(AuthenticationManager authenticationManager) {
