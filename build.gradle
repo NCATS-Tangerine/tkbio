@@ -30,11 +30,7 @@ allprojects {
 
 	// Version 4.0 now uses the new Translator Knowledge Beacon API
 	
-	// May 2017 - operating baseline implementation of the Translator Knowledge.Bio
-	// including a Knowledge Beacon server wrapping KB 3.0 data
-	// Removed REST and API server components
-	// "Manage Beacons" elaborated
-	version = '4.0.16' // Spring-Security substituted in application (Stormpath removed...)
+	version = '4.0.17' // Beacon traffic console
 	
     apply plugin: 'maven'
     apply plugin: 'java'
