@@ -88,7 +88,11 @@ public class Nodes extends HashSet<HashMap<String, HashMap<String, Serializable>
 	 * 
 	 * @param node
 	 */
-	public void addNode(Node node) {
+	public void addNode(Node node, Edges edges) {
+		
+		String id = node.getData().getId();
+		edges.restoreEdges(id);
+		
 		if (this.nodes.contains(node)) {
 			// if it exists then just update state
 			updateNode(node);

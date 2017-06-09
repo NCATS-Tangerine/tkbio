@@ -485,7 +485,7 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 					;
 				}
 				;
-				elements.getNodes().addNode(mine);
+				getNodes().addNode(mine, getEdges());
 			}
 			;
 		}
@@ -542,13 +542,13 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 	
 			// adding compound node != moving compound node. that occurs in the connector iff a groupId in the tracker contains more than one node
 			if(currentNodeTracker.get(groupId).size() > 1) {
-				getElements().getNodes().addNode(new Node(groupId, groupName));
+				getNodes().addNode(new Node(groupId, groupName), getEdges());
 			}
 			// to avoid a lengthy constructor I just manually set the parent property here once it's calculated
 			newNode.getData().setParent(groupId);
 		}
 		// add node to graph
-		getElements().getNodes().addNode(newNode);
+		getNodes().addNode(newNode, getEdges());
 		
 	};
 	
