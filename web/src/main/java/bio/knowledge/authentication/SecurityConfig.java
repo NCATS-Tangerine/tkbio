@@ -1,5 +1,7 @@
 package bio.knowledge.authentication;
 
+import java.util.concurrent.Callable;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+			.headers()
+				.xssProtection().disable()
 			.authorizeRequests()
 				.anyRequest().permitAll()
 				.and()
