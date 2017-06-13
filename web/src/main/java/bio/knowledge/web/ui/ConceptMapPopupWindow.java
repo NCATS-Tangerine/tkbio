@@ -193,6 +193,7 @@ public class ConceptMapPopupWindow {
 		addAnno = new Button("Add Annotation", e -> {
 			parentUi.getPredicatePopupWindow().conceptMapUserAnnotation(selectedConcept, x, y);
 		});
+		addAnno.setEnabled(false);
 		if (addAnno != null && ((DesktopUI) UI.getCurrent()).getAuthenticationManager().isUserAuthenticated() )
 			buttonsLayout.addComponent(addAnno);
 		
@@ -259,6 +260,7 @@ public class ConceptMapPopupWindow {
 		addAnno = new Button("Add Annotation", e -> {
 			parentUi.getPredicatePopupWindow().conceptMapUserAnnotation(sourceOpt.get(), x, y);
 		});
+		addAnno.setEnabled(false);
 		if (addAnno != null && ((DesktopUI) UI.getCurrent()).getAuthenticationManager().isUserAuthenticated() )
 			buttonsLayout.addComponent(addAnno);
 		
