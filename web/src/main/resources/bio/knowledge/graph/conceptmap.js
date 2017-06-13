@@ -485,6 +485,10 @@ cscape.ConceptMap = function(element) {
 			}
 		});
 		
+		newConceptMap.on('zoom', function(event) {
+			me.onZoom(newConceptMap.zoom() * 100);
+		});
+		
 		// hack to force resize of canvas
 		// see
 		// http://stackoverflow.com/questions/1818474/how-to-trigger-the-window-resize-event-in-javascript/18693617#comment49783195_18693617
