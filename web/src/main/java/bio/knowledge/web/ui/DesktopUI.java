@@ -1559,7 +1559,15 @@ public class DesktopUI extends UI implements MessageService {
 					conceptMapLibraryWindow.center();
 					conceptMapLibraryWindow.setWidth(45.0f, Unit.EM);
 					conceptMapLibraryWindow.setHeight(56.0f, Unit.EM);
-
+					conceptMapLibraryWindow.addCloseListener(event -> {
+						DesktopUI ui = (DesktopUI) UI.getCurrent();
+						Button searchBtn = ui.getDesktop().getSearchBtn();
+						searchBtn.setEnabled(true);
+						ui.closeLibraryWindow();
+						ui.closeConceptSearchWindow();
+						gotoStatementsTable();
+					});
+					
 				} else {
 					Notification.show("No concept map with the name \"" + conceptMapName
 							+ "\" was found. You may need to login to view this map.", Type.WARNING_MESSAGE);
