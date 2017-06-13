@@ -142,6 +142,10 @@ window.bio_knowledge_graph_ConceptMapDisplay = function() {
     	connector.updatePosition(id, x, y);
     } 
     
+	conceptMap.onZoom = function(value) {
+		connector.onZoom(value);
+	}
+    
     var updateEles = function(group_name, eles, updater) {
         //console.log(group_name, eles);
         for (var i = 0; i< eles.length; i++) {

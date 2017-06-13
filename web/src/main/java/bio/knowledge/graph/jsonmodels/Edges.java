@@ -129,11 +129,19 @@ public class Edges extends HashSet<HashMap<String, HashMap<String, Serializable>
 
 	}
 	
+	public void restoreEdges(String nodeId) {
+		setEdgeStates(nodeId, "add");
+	}
+	
 	/**
 	 * 
 	 * @param id
 	 */
 	public void deleteEdge(String id) {
+		setEdgeStates(id, "delete");
+	}
+	
+	private void setEdgeStates(String id, String state) {
 		Iterator<HashMap<String, HashMap<String, Serializable>>> itr = this.edges.iterator();
 		while (itr.hasNext()) {
 			HashMap<String, HashMap<String, Serializable>> item = itr.next();
@@ -142,7 +150,7 @@ public class Edges extends HashSet<HashMap<String, HashMap<String, Serializable>
 
 			if ((sourceId.equals(id) || targetId.equals(id))) {
 				// changing state from "add" to "delete", there can be more than one edge so don't break loop
-				item.get("data").put("state", "delete");
+				item.get("data").put("state", state);
 			}
 		}
 	}

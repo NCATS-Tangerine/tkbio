@@ -44,6 +44,7 @@ import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.Page;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Slider;
 
 import bio.knowledge.graph.jsonmodels.Edge;
 import bio.knowledge.graph.jsonmodels.Edges;
@@ -129,7 +130,18 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 		addFunction("onDrag", arguments -> {
 			((DesktopUI) getUI()).getDesktop().getCmLayoutSelect().setValue(DesktopUI.MANUAL_CM_LAYOUT);
 		});
-
+		
+		addFunction("onZoom", args -> {
+			
+			double value = args.get(0).asNumber();
+			DesktopUI ui = DesktopUI.getCurrent();
+			Slider slider = ui.getDesktop().getZoomSlider();
+			
+			DesktopUI.getCurrent().setZoomEnabled(false);
+			// set slider to value, or set it to min/max possible value
+			slider.setValue(Math.max(slider.getMin(), Math.min(value, slider.getMax())));
+			DesktopUI.getCurrent().setZoomEnabled(true);
+		});
 
 		// node deletion on client-side requires server-side data, so the client
 		// needs to tell the server that it is done with deletion and ask it to
@@ -490,7 +502,7 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 					;
 				}
 				;
-				elements.getNodes().addNode(mine);
+				getNodes().addNode(mine, getEdges());
 			}
 			;
 		}
@@ -547,13 +559,13 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 	
 			// adding compound node != moving compound node. that occurs in the connector iff a groupId in the tracker contains more than one node
 			if(currentNodeTracker.get(groupId).size() > 1) {
-				getElements().getNodes().addNode(new Node(groupId, groupName));
+				getNodes().addNode(new Node(groupId, groupName), getEdges());
 			}
 			// to avoid a lengthy constructor I just manually set the parent property here once it's calculated
 			newNode.getData().setParent(groupId);
 		}
 		// add node to graph
-		getElements().getNodes().addNode(newNode);
+		getNodes().addNode(newNode, getEdges());
 		
 	};
 	

@@ -223,6 +223,8 @@ public class DesktopUI extends UI implements MessageService {
 	@Autowired
 	private ConceptService conceptService;
 	
+	private boolean zoomEnabled;
+	
 	public static DesktopUI getCurrent() {
 		return (DesktopUI) UI.getCurrent();
 	}
@@ -930,6 +932,7 @@ public class DesktopUI extends UI implements MessageService {
 
 		// set zoom for map using a slider
 		Slider zoomSlider = desktopView.getZoomSlider();
+		zoomSlider.setValue(80.0);
 		zoomSlider.addValueChangeListener(new ValueChangeListener() {
 			/**
 			 *
@@ -939,8 +942,10 @@ public class DesktopUI extends UI implements MessageService {
 			// when the value on the slider changes, the zoom is set to the new
 			// value
 			public void valueChange(ValueChangeEvent event) {
-				double value = (Double) zoomSlider.getValue();
-				cm.setZoom(value);
+				if (zoomEnabled) {
+					double value = (Double) zoomSlider.getValue();
+					cm.setZoom(value);
+				}
 			}
 		});
 
@@ -1005,6 +1010,10 @@ public class DesktopUI extends UI implements MessageService {
 		// initIntroTooltip();
 
 		initConceptMap();
+	}
+	
+	public void setZoomEnabled(boolean zoomEnabled) {
+		this.zoomEnabled = zoomEnabled;
 	}
 
 	/**
@@ -1568,7 +1577,7 @@ public class DesktopUI extends UI implements MessageService {
 
 			} else if (uri.startsWith(passwordResetFragment)) {
 				
-				String token = uri.replace(passwordResetFragment, "");
+				String token = uri.replaceFirst(passwordResetFragment, "");
 				
 				if (authenticationManager.isValidPasswordToken(token)) {
 					applicationNavigator.navigateTo(PasswordResetView.NAME + "/" + token);

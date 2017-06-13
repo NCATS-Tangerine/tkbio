@@ -27,6 +27,8 @@ package bio.knowledge.authentication;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +62,8 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Component;
-
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -104,22 +107,11 @@ import bio.knowledge.web.view.LandingPageView;
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class AuthenticationManager {
 
-	// I need a spring component for this.
-	@Value("${application.rooturl:}")
-	private String ROOT_URL;
-		
-	public String getRootURL() {
-		return this.ROOT_URL;
-	}
-
 	@Autowired
 	private MailProperties mailProps;
 	
 	@Autowired
 	private org.springframework.security.authentication.AuthenticationManager manager;
-	
-	@Autowired
-	private HttpServletRequest request;
 	
 	@Autowired
 	private UserService userService;
@@ -171,7 +163,6 @@ public class AuthenticationManager {
 			listener.onLogout();
 		}
 	}
-
 	
 	public void logout() {
 		//TODO: Delete any cookies that have been put on the users computer for persistent authentication
@@ -181,6 +172,8 @@ public class AuthenticationManager {
 		
 		DesktopUI ui = (DesktopUI) UI.getCurrent();
 		ui.clearSession();
+		
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null){    
@@ -300,19 +293,36 @@ public class AuthenticationManager {
 		userService.save(user);
 	}
 	
-	private String getBaseURL() {
+	private HttpServletRequest getRequest() {
+		return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+	}
+	
+	public String getRootURL() {
 		
+		HttpServletRequest request = getRequest();
+		String scheme = request.getScheme();
+		String server = request.getServerName();
 		int port = request.getServerPort();
-		if (request.getScheme().equals("http") && port == 80) {
-		    port = -1;
-		} else if (request.getScheme().equals("https") && port == 443) {
+		
+		if (scheme.equals("http") && port == 80 || scheme.equals("https") && port == 443) {
 		    port = -1;
 		}
 		
 		try {
-			URL baseURL = new URL(request.getScheme(), request.getServerName(), port, "");
-			return baseURL.toString();
+			return new URL(scheme, server, port, "").toString();
+		
 		} catch (MalformedURLException e) {
+			return "";
+		}
+	}
+	
+	/**
+	 * Make a properly encoded URL using RootURL and the (unencoded) fragment.
+	 */
+	public String makeURL(String fragment) {
+		try {
+			return (new URI(getRootURL() + "/")).resolve(new URI(null, null, fragment)).toString();
+		} catch (URISyntaxException e) {
 			return "";
 		}
 	}
@@ -326,7 +336,7 @@ public class AuthenticationManager {
 		}
 		
 		String name = token.getUser().getFullName();
-		String href = getBaseURL() + "/#!passwordReset?token=" + token.getString();
+		String href = getRootURL() + "/#!passwordReset?token=" + token.getString();
 		
 		Properties props = new Properties();
 		props.putAll(mailProps.getProperties());
