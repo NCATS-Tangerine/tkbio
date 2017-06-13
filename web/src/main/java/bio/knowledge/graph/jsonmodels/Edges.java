@@ -80,6 +80,18 @@ public class Edges extends HashSet<HashMap<String, HashMap<String, Serializable>
 		return null;
 	}
 	
+	public Edge getEdgeByStatementId(String statementId) {
+		Iterator<HashMap<String, HashMap<String, Serializable>>> itr = this.edges.iterator();
+		while (itr.hasNext()) {
+			Edge edge = (Edge) itr.next();
+			String id = (String) edge.get("data").get("statementId");
+			if (id.equals(statementId)) {
+				return (Edge) edge;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * 
 	 * @param edge

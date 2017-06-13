@@ -781,16 +781,15 @@ public class ListView extends BaseView {
 				
 				Statement statement = (Statement) item;
 				
-				Concept subject       = statement.getSubject() ;
-				String predicateLabel = statement.getRelation().getName();
-				Concept object        = statement.getObject() ;
+				Concept subject = statement.getSubject() ;
+				Concept object = statement.getObject() ;
 				
 				// Unusual case of missing data (mostly in sample data?)
 				if( subject == null || object == null ) continue ;
 				
 				ui.addNodeToConceptMap(subject);
 				ui.addNodeToConceptMap(object);
-				ui.addEdgeToConceptMap(subject, object, predicateLabel);
+				ui.addEdgeToConceptMap(statement);
 				
 				// just in case, reset the currently active highlighted node(?)
 				Optional<Concept> selectedConceptOpt = query.getCurrentSelectedConcept();
@@ -1606,7 +1605,7 @@ public class ListView extends BaseView {
 			} else
 				throw new RuntimeException("Unsupported Relationship Concept Role?");
 			
-			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(subject.getId());
+			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId);
 			Concept selectedConcept;
 			try {
 				List<Concept> concepts = 
@@ -1643,7 +1642,7 @@ public class ListView extends BaseView {
 
 				ui.addNodeToConceptMap(subject);
 				ui.addNodeToConceptMap(object);
-				ui.addEdgeToConceptMap(subject, object, predicateLabel);
+				ui.addEdgeToConceptMap(statement);
 
 				conceptDetailsWindow.close();
 			});
@@ -1824,7 +1823,7 @@ public class ListView extends BaseView {
 
 			_logger.trace("Display Evidence for " + selectedStatement.getName());
 
-			ui.displayEvidence();
+			ui.displayEvidence(selectedStatement.getId());
 		});
 
 		registry.setMapping(ViewName.EVIDENCE_VIEW, 

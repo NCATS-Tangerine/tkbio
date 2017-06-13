@@ -53,6 +53,7 @@ import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.Nodes;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
+import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.Statement;
 import bio.knowledge.web.ui.DesktopUI;
 
@@ -116,10 +117,13 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 			double y = arguments.get(4).asNumber();
 			String description = arguments.get(5).asString();
 			String uri = arguments.get(6).asString();
+			String statementId = arguments.get(7).asString();
 			
 			((DesktopUI) getUI()).getPredicatePopupWindow().conceptMapEdgePopUp(source, target, label, (int) x,
-					(int) y, description, uri);
+					(int) y, description, uri, statementId);
 		});
+		
+		
 
 		// on dragging node or edge, change layout to manual
 		addFunction("onDrag", arguments -> {
@@ -384,8 +388,9 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 					String edgeLabel  = data.getString("label");
 					String edgeDescription  = data.getString("description");
 					String edgeUri  = data.getString("uri");
+					String statementId = data.getString("statementId");
 					
-					Edge newEdge = new Edge(edgeSource, edgeTarget, edgeLabel, edgeDescription, edgeUri);
+					Edge newEdge = new Edge(edgeSource, edgeTarget, edgeLabel, edgeDescription, edgeUri, statementId);
 					this.addEdgeToConceptMap(newEdge);
 				}
 			}
@@ -628,11 +633,11 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 			description = "";
 			uri = "";
 		}
-		this.addEdgeToConceptMap(statement.getSubject(), statement.getObject(), statement.getRelation().getName(), description, uri);
+		this.addEdgeToConceptMap(statement.getSubject(), statement.getObject(), statement.getRelation().getName(), description, uri, statement.getId());
 	}
 	
-	public void addEdgeToConceptMap(Concept subject, Concept object, String relationLabel, String description, String uri) {
-		Edge newEdge = new Edge( subject.getId(), object.getId(), relationLabel );
+	public void addEdgeToConceptMap(Concept subject, Concept object, String relationLabel, String description, String uri, String statementId) {
+		Edge newEdge = new Edge( subject.getId(), object.getId(), relationLabel, description, uri, statementId);
 		// any edge pre-processing would go here.
 		newEdge.getData().setDescription(description);
 		newEdge.getData().setUri(uri);

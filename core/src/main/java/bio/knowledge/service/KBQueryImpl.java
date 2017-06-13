@@ -210,8 +210,8 @@ public class KBQueryImpl implements KBQuery {
 	@Override
 	public void setCurrentStatement(Statement statement) {
 		Evidence evidence = statement.getEvidence();
-		this.currentEvidence  = Optional.of(evidence) ;
-		this.currentStatement = Optional.of(statement);
+		this.currentEvidence  = Optional.ofNullable(evidence) ;
+		this.currentStatement = Optional.ofNullable(statement);
 	}
 
 	/* (non-Javadoc)

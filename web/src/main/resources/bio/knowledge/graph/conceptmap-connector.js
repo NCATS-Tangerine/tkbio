@@ -122,8 +122,8 @@ window.bio_knowledge_graph_ConceptMapDisplay = function() {
 	    connector.makeNodePopup(id, name, x, y);
 	};
     
-	conceptMap.onEdgeClick = function(source, target, label, x, y, description, uri) {
-	    connector.makeEdgePopup(source, target, label, x, y, description, uri);
+	conceptMap.onEdgeClick = function(source, target, label, x, y, description, uri, statementId) {
+	    connector.makeEdgePopup(source, target, label, x, y, description, uri, statementId);
 	};
 	
 	conceptMap.onDragElement = function() {
@@ -173,7 +173,8 @@ window.bio_knowledge_graph_ConceptMapDisplay = function() {
     			ele["data"]["state"],
     			ele["data"]["description"],
     			ele["data"]["uri"],
-    			ele["data"]["active_edge"]
+    			ele["data"]["active_edge"],
+			ele["data"]["statementId"]
     	);
     }
 

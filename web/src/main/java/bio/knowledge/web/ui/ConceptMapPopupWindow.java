@@ -58,7 +58,9 @@ import bio.knowledge.model.Annotation.Type;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.EvidenceCode;
+import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.Predicate;
+import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.Reference;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
@@ -75,6 +77,7 @@ import bio.knowledge.service.KBQuery.RelationSearchMode;
 import bio.knowledge.service.PredicateService;
 import bio.knowledge.service.ReferenceService;
 import bio.knowledge.service.StatementService;
+import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.web.view.ConceptSearchResults;
 import bio.knowledge.web.view.ViewName;
 
@@ -87,6 +90,9 @@ import bio.knowledge.web.view.ViewName;
 public class ConceptMapPopupWindow {
 
 	private DesktopUI parentUi;
+	
+	@Autowired
+	KnowledgeBeaconService kbService;
 
 	@Autowired
 	public ConceptMapPopupWindow(DesktopUI ui) {
@@ -235,7 +241,7 @@ public class ConceptMapPopupWindow {
 	}
 	
 	public void conceptMapEdgePopUp(String sourceId, String targetId, String label, int x, int y, String description,
-			String uri) {
+			String uri, String statementId) {
 
 		// Generate popup content from passed data
 		Optional<Concept> sourceOpt = conceptService.getDetailsById(sourceId);
@@ -249,32 +255,19 @@ public class ConceptMapPopupWindow {
 			return;
 		Concept targetConcept = targetOpt.get();
 		String targetName = targetConcept.getName();
-
-		// TODO: How to handle the User's Annotation case here?
-		Statement selectedStatement = 
-				statementService.findbySourceAndTargetId(sourceId, targetId, label);
 		
-		if (selectedStatement == null) { return; }
-
-		// Create buttons related to node popup
-		// Okay -> no
-		// ShowRelations -> yes
-		// Cancel -> yes
-		// Delete -> yes
-		// addAnno -> no
-
 		addAnno = new Button("Add Annotation", e -> {
 			parentUi.getPredicatePopupWindow().conceptMapUserAnnotation(sourceOpt.get(), x, y);
 		});
 		if (addAnno != null && ((DesktopUI) UI.getCurrent()).getAuthenticationManager().isUserAuthenticated() )
 			buttonsLayout.addComponent(addAnno);
 		
-		if (selectedStatement != null) {
-			query.setCurrentStatement(selectedStatement);
-
+		if (statementId != null) {
 			showEvidence = new Button("Show Evidence", e -> {
+				Predicate predicate = new PredicateImpl(label);
+				GeneralStatement statement = new GeneralStatement(statementId, targetConcept, predicate, sourceConcept);
 				conceptDetailsWindowOnGraph.close();
-				parentUi.displayEvidence();
+				parentUi.displayEvidence(statement);
 			});
 
 			buttonsLayout.addComponent(showEvidence);

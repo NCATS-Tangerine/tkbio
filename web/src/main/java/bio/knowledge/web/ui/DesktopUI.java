@@ -98,6 +98,7 @@ import bio.knowledge.graph.jsonmodels.NodeData;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
+import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.datasource.ResultSet;
@@ -348,19 +349,9 @@ public class DesktopUI extends UI implements MessageService {
 	 * @param sourceNode
 	 * @param targetNode
 	 */
-	public void addEdgeToConceptMap(Concept sourceNode, Concept targetNode) {
+	public void addEdgeToConceptMap(Statement statement) {
 		getConceptMap().getElements().getEdges()
-				.addEdge(new Edge(sourceNode.getId(), targetNode.getId()));
-	}
-
-	/**
-	 * 
-	 * @param sourceNode
-	 * @param targetNode
-	 * @param label
-	 */
-	public void addEdgeToConceptMap(Concept sourceNode, Concept targetNode, String label) {
-		getConceptMap().addEdgeToConceptMap(sourceNode, targetNode, label, "", "");
+				.addEdge(new Edge(statement));
 	}
 
 	@Autowired
@@ -535,16 +526,16 @@ public class DesktopUI extends UI implements MessageService {
 	// initConceptLabel();
 	// }
 
-	private int lastHighlightEdgeId = 0;
+	private String lastHighlightEdgeId;
 
 	/**
 	 * 
 	 * updating the data of the edge
 	 * 
 	 * @param yesOrNo
-	 */
-	private void highlightEdge(HighlightStatus yesOrNo) {
-		Edge edge = getConceptMap().getElements().getEdges().getEdgeById(lastHighlightEdgeId);
+	 */	
+	private void highlightEdge(String statementId, HighlightStatus yesOrNo) {
+		Edge edge = getConceptMap().getElements().getEdges().getEdgeByStatementId(statementId);
 		if (edge != null) {
 			EdgeData data = edge.getData();
 			if (data != null) {
@@ -563,44 +554,42 @@ public class DesktopUI extends UI implements MessageService {
 	 * @param target
 	 * @param label
 	 */
-	public void setHighlightedEdge(Concept source, Concept target, String label) {
+	public void setHighlightedEdge(String statementId) {
 
 		// Removing highlights from previous concept edge
-		if (lastHighlightEdgeId != 0) {
-			highlightEdge(HighlightStatus.NO);
+		if (lastHighlightEdgeId != null) {
+			highlightEdge(lastHighlightEdgeId, HighlightStatus.NO);
 		}
 
 		// Highlighting new current concept edge
-		lastHighlightEdgeId = (source.getId() + target.getId() + label).hashCode();
-		highlightEdge(HighlightStatus.YES);
+		highlightEdge(statementId, HighlightStatus.YES);
+		
+		lastHighlightEdgeId = statementId;
 	}
 
 	/**
 	 * 
 	 */
-	public void displayEvidence() {
+	public void displayEvidence(String statementId) {
 
 		query.setRelationSearchMode(RelationSearchMode.RELATIONS);
 
-		Optional<Statement> stmtOpt = query.getCurrentStatement();
+		// highlight the edge according to the predication
+		setHighlightedEdge(statementId);
 
-		if (stmtOpt.isPresent()) {
+		VerticalLayout referenceTab = desktopView.getEvidenceTab();
 
-			Statement statement = stmtOpt.get();
-			// query.setCurrentStatement(statement);
+		Navigator navigator = new Navigator(this, referenceTab);
+		navigator.addProvider(viewProvider);
+		navigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.EVIDENCE_VIEW);
 
-			// highlight the edge according to the predication
-			setHighlightedEdge(statement.getSubject(), statement.getObject(), statement.getRelation().getName());
-
-			VerticalLayout referenceTab = desktopView.getEvidenceTab();
-
-			Navigator navigator = new Navigator(this, referenceTab);
-			navigator.addProvider(viewProvider);
-			navigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.EVIDENCE_VIEW);
-
-			TabSheet tabsheet = desktopView.getDataTabSheet();
-			tabsheet.setSelectedTab(referenceTab);
-		}
+		TabSheet tabsheet = desktopView.getDataTabSheet();
+		tabsheet.setSelectedTab(referenceTab);
+	}
+	
+	public void displayEvidence(Statement statement) {
+		query.setCurrentStatement(statement);
+		displayEvidence(statement.getId());
 	}
 
 	/**

@@ -29,6 +29,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
+import bio.knowledge.model.Concept;
+import bio.knowledge.model.Predicate;
+import bio.knowledge.model.Statement;
+
 /**
  * 
  * @author Kenneth Bruskiewicz
@@ -79,46 +83,15 @@ public class Edge extends AbstractElement implements ParameterizedType {
 		setData(data);
 	}
 	
-	/**
-	 * 
-	 * @param startNode
-	 * @param endNode
-	 */
-	public Edge(String startNode, String endNode) {
-		this(startNode, endNode, "");
-	}
-	
-	/**
-	 * 
-	 * @param startNode
-	 * @param endNode
-	 * @param label
-	 */
-	public Edge(String startNode, String endNode, String label) {
-		this(startNode, endNode, label, "add");
-	}
-	
-	/**
-	 * 
-	 * @param startNode
-	 * @param endNode
-	 * @param label
-	 * @param status
-	 */
-	public Edge(String startNode, String endNode, String label, String status) {
-		this(startNode, endNode, label, status, "", "");
-	}
-	
-	/**
-	 * 
-	 * @param startNode
-	 * @param endNode
-	 * @param label
-	 * @param description
-	 * @param uri
-	 */
-	public Edge(String startNode, String endNode, String label, String description, String uri) {
-		this(startNode, endNode, label, "add", description, uri);
+	public Edge(Statement statement) {
+		this(
+				statement.getObject().getId(),
+				statement.getSubject().getId(),
+				statement.getRelation().getName(),
+				statement.getDescription(),
+				statement.getUri(),
+				statement.getId()
+		);
 	}
 	
 	/**
@@ -130,8 +103,12 @@ public class Edge extends AbstractElement implements ParameterizedType {
 	 * @param description
 	 * @param uri
 	 */
-	public Edge(String startNode, String endNode, String label, String status, String description, String uri) {
-		setData(new EdgeData(startNode, endNode, label, status, description, uri));
+	public Edge(String startNode, String endNode, String label, String status, String description, String uri, String statementId) {
+		setData(new EdgeData(startNode, endNode, label, status, description, uri, statementId));
+	}
+	
+	public Edge(String startNode, String endNode, String label, String description, String uri, String statementId) {
+		this(startNode, endNode, label, "add", description, uri, statementId);
 	}
 
 	@Override

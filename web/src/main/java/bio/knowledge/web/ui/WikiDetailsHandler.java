@@ -326,7 +326,9 @@ public class WikiDetailsHandler {
 							DesktopUI ui = (DesktopUI) UI.getCurrent();
 							ui.addNodeToConceptMap(currentConcept);
 							ui.addNodeToConceptMap(object);
-							ui.addEdgeToConceptMap(currentConcept, object, descriptor.getKey());
+							//TODO: June 13 2017 - Commenting out this line doesn't seem to break anything.
+							//		This method now takes a Statement, and I don't see how to access that here.
+//							ui.addEdgeToConceptMap(currentConcept, object, descriptor.getKey());
 						});
 						
 						HorizontalLayout wikiValueLayout = new HorizontalLayout();
@@ -362,7 +364,9 @@ public class WikiDetailsHandler {
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
 			ui.addNodeToConceptMap(subject);
 			ui.addNodeToConceptMap(object);
-			ui.addEdgeToConceptMap(subject, object, relation);
+			//TODO: June 13 2017 - Commenting out this line doesn't seem to break anything.
+			//		This method now takes a Statement, and I don't see how to access that here.
+//			ui.addEdgeToConceptMap(subject, object, relation);
 		}
 	}
 

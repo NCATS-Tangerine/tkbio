@@ -272,7 +272,7 @@ cscape.ConceptMap = function(element) {
 				newConceptMap.add(newNode);
 			},
 			edge : function(source, target, label, state, description, uri,
-					activeEdge) {
+					activeEdge, statementId) {
 				var existingEdge = newConceptMap.edges('[id="' + source + target + label + '"]');
 				var newEdge = {
 					data : {
@@ -283,7 +283,8 @@ cscape.ConceptMap = function(element) {
 						label : label,
 						description : description,
 						uri : uri,
-						active_edge : activeEdge
+						active_edge : activeEdge,
+						statementId : statementId
 					},
 					group : "edges",
 					classes : 'autorotate'
@@ -462,7 +463,7 @@ cscape.ConceptMap = function(element) {
 					.data("target"), event.cyTarget.data("label"),
 					absoluteEdgePosition.x, absoluteEdgePosition.y,
 					event.cyTarget.data("description"), event.cyTarget
-							.data("uri"));
+							.data("uri"), event.cyTarget.data("statementId"));
 		});
 
 		newConceptMap.on('drag', function(event) {

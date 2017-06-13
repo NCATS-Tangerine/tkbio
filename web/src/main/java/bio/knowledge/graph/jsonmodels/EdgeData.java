@@ -40,6 +40,7 @@ public class EdgeData extends AbstractElementData {
 	private String source;
 	private String target;
 	private String activeEdge = "no";
+	private String statementId;
 	
 	// label of edge
 	private String label;
@@ -50,6 +51,14 @@ public class EdgeData extends AbstractElementData {
 	// user annotation if available
 	private String description = "";
 	private String uri = "";
+	
+	public String getStatementId() {
+		return this.statementId;
+	}
+	
+	public void setStatementId(String statementId) {
+		this.statementId = statementId;
+	}
 	
 	/**
 	 * 
@@ -161,6 +170,7 @@ public class EdgeData extends AbstractElementData {
 		put("description", this.description);
 		put("uri", this.uri);
 		put("active_edge", this.activeEdge);
+		put("statementId", this.statementId);
 		updateId();
 	}
 	
@@ -183,14 +193,14 @@ public class EdgeData extends AbstractElementData {
 	 * @param description
 	 * @param uri
 	 */
-	public EdgeData( String source, String target, String label, String state, String description, String uri ) {
+	public EdgeData( String source, String target, String label, String state, String description, String uri, String statementId ) {
 		setSource(source);
 		setTarget(target);
 		setLabel(label);
 		setState(state);
 		setDescription(description);
 		setUri(uri);
-		setActiveEdge("no");
+		setStatementId(statementId);
 		update();
 	}
 	
@@ -208,77 +218,6 @@ public class EdgeData extends AbstractElementData {
 	 */
 	public void setUri(String uri) {
 		this.uri = uri;
-	}
-	
-	/**
-	 * 
-	 * @param source
-	 * @param target
-	 * @param label
-	 */
-	public EdgeData( String source, String target, String label ) {
-		this(source, target, label, "add", "", "");
-		setActiveEdge("no");
-		update();
-	}
-	
-	/**
-	 * 
-	 * @param source
-	 * @param target
-	 */
-	public EdgeData( String source, String target ) {
-		this(source, target, "", "add", "", "");
-		setLabel("");
-		setActiveEdge("no");
-		update();
-	}
-	
-	/**
-	 * 
-	 * @param source
-	 * @param target
-	 * @param label
-	 * @param state
-	 */
-	public EdgeData( String source, String target, String label, String state ) {
-		this(source, target, label, state, "", "");
-		setSource(source);
-		setTarget(target);
-		setLabel(label);
-		setState(state);
-		setActiveEdge("no");
-		update();
-	}
-	
-	/**
-	 * 
-	 * @param source
-	 * @param target
-	 * @param label
-	 * @param state
-	 * @param activeEdge
-	 */
-	public EdgeData( String source, String target, String label, String state, String activeEdge ) {
-		setSource(source);
-		setTarget(target);
-		setLabel(label);
-		setState(state);
-		setActiveEdge(activeEdge);
-		update();
-	}
-	
-	/**
-	 * 
-	 */
-	public EdgeData() {
-		this("","","","add","","");
-		setSource("");
-		setTarget("");
-		setLabel("");
-		setState("");
-		setActiveEdge("no");
-		update();
 	}
 	
 	@Override
