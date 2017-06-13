@@ -1130,7 +1130,7 @@ public class ListView extends BaseView {
 		MenuItem types = filterMenu.addItem("Any", null, null);
 
 		MenuItem any = types.addItem("Any", null, null);
-		MenuItem diseases = types.addItem("Diseases", null, null);
+		MenuItem disorders = types.addItem("Disorders", null, null);
 		MenuItem genes = types.addItem("Genes", null, null);
 		MenuItem drugs = types.addItem("Drugs", null, null);
 		MenuItem others = types.addItem("Others...", null, null);
@@ -1161,7 +1161,7 @@ public class ListView extends BaseView {
 				Set<SemanticGroup> typeSet = new HashSet<SemanticGroup>();
 				SemanticGroup type = null;
 
-				if (selectedItem == diseases) {
+				if (selectedItem == disorders) {
 					type = SemanticGroup.DISO;
 				} else if (selectedItem == genes) {
 					type = SemanticGroup.GENE;

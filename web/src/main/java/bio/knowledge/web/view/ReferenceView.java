@@ -136,6 +136,8 @@ public class ReferenceView extends ReferenceDesign implements View {
 		abstractMenu.setSpacing(true);
 		
 		refIdSearchField.setInputPrompt("Search Reference ID");
+		String pubmedId = annotationId.substring(annotationId.indexOf(".") + 1);
+		refIdSearchField.setValue(pubmedId);
 		
 		Button referenceSearchBtn = new Button("GO");
 		referenceSearchBtn.setClickShortcut(KeyCode.ENTER);
