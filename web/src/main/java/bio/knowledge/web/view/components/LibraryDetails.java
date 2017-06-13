@@ -25,6 +25,9 @@
  */
 package bio.knowledge.web.view.components;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.ExternalResource;
@@ -147,11 +150,10 @@ public class LibraryDetails extends VerticalLayout {
 		} else {
 			name = "an anonymous user";
 		}
-		
-		String rootUrl = ((DesktopUI)UI.getCurrent()).getAuthenticationManager().getRootURL();
-		if (!rootUrl.endsWith("/")) rootUrl = rootUrl + "/";
+			
+		String link = ((DesktopUI)UI.getCurrent()).getAuthenticationManager().makeURL("map=" + map.getName());
 		TextField linkField = new TextField();
-		linkField.setValue(rootUrl + "#map=" + map.getName());
+		linkField.setValue(link);
 		linkField.setWidth("100%");
 		linkField.setReadOnly(true);
 		

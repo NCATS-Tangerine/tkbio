@@ -1567,7 +1567,7 @@ public class DesktopUI extends UI implements MessageService {
 
 			} else if (uri.startsWith(passwordResetFragment)) {
 				
-				String token = uri.replace(passwordResetFragment, "");
+				String token = uri.replaceFirst(passwordResetFragment, "");
 				
 				if (authenticationManager.isValidPasswordToken(token)) {
 					applicationNavigator.navigateTo(PasswordResetView.NAME + "/" + token);
