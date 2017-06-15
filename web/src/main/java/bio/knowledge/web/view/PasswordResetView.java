@@ -25,22 +25,16 @@
  */
 package bio.knowledge.web.view;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.regex.Pattern;
-
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.Page;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.UI;
 
-import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.authentication.exceptions.InvalidPasswordResetToken;
 import bio.knowledge.authentication.exceptions.PasswordTooShortException;
 import bio.knowledge.validation.InvalidValueException;
@@ -57,14 +51,10 @@ public class PasswordResetView extends ResetPasswordDesign implements View {
 	public static final String NAME = "passwordReset";
 	
 	private String tokenString;
-	
-	private Navigator navigator;
-	
+		
 	private ValidationHandler validationHandler;
 		
-	public PasswordResetView(Navigator navigator) {
-		
-		this.navigator = navigator;
+	public PasswordResetView() {
 		
 		validationHandler = new ValidationHandler(errorLabel, continueButton);
 		validationHandler.addValidator(firstPassword, makeFirstPasswordValidator());
@@ -84,10 +74,10 @@ public class PasswordResetView extends ResetPasswordDesign implements View {
 				try {
 					ui.getAuthenticationManager().resetPassword(tokenString, password);
 					Notification.show("We have changed your password for you. You may now login.");
-					navigator.navigateTo(LoginView.NAME);
+					ui.getApplicationNavigator().navigateTo(LoginView.NAME);
 					
 				} catch (InvalidPasswordResetToken e1) {
-					Notification.show("Reset link has expired.");
+					Notification.show("Reset link has expired.", Type.WARNING_MESSAGE);
 				} catch (PasswordTooShortException e2) {
 					//Already handled by validation
 				}
@@ -118,8 +108,13 @@ public class PasswordResetView extends ResetPasswordDesign implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
+		
 		tokenString = event.getParameters();
 		validationHandler.resetState();		
+		
+		if (! DesktopUI.getCurrent().getAuthenticationManager().isValidPasswordToken(tokenString)) {
+			Notification.show("Reset link has expired.", Type.WARNING_MESSAGE);
+		}
 	}
 	
 	private boolean doPasswordsMatch(PasswordField p1, PasswordField p2) {

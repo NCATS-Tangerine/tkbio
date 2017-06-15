@@ -67,6 +67,7 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 	
 	private Navigator navigator;
 	private LoginView loginView;
+	private ErrorView errorView;
 	
 	public LoginView getLoginView() {
 		return this.loginView;
@@ -102,7 +103,7 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 		navigator.addView(UserAccountView.NAME, userAccountView);
 		navigator.addView(CreateAccountView.NAME, new CreateAccountView(navigator));
 		navigator.addView(RecoverAccountView.NAME, new RecoverAccountView());
-		navigator.addView(PasswordResetView.NAME, new PasswordResetView(navigator));
+		navigator.addView(PasswordResetView.NAME, new PasswordResetView());
 		
 		setCommonNavigationViews();
 		

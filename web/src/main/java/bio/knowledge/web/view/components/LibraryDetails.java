@@ -151,7 +151,7 @@ public class LibraryDetails extends VerticalLayout {
 			name = "an anonymous user";
 		}
 			
-		String link = ((DesktopUI)UI.getCurrent()).getAuthenticationManager().makeURL("map=" + map.getName());
+		String link = ((DesktopUI)UI.getCurrent()).getAuthenticationManager().makeSafeURL("map=" + map.getName());
 		TextField linkField = new TextField();
 		linkField.setValue(link);
 		linkField.setWidth("100%");

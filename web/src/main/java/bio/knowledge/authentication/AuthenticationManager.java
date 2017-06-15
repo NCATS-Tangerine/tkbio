@@ -25,54 +25,34 @@
  */
 package bio.knowledge.authentication;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
-import javax.mail.Authenticator;
-import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import javax.mail.Store;
 import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.codec.language.bm.Rule.RPattern;
 import org.neo4j.ogm.exception.CypherException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
-import com.google.gwt.dev.shell.Messages;
 import com.vaadin.ui.UI;
 
 import bio.knowledge.authentication.exceptions.AccountDisabledException;
@@ -89,12 +69,10 @@ import bio.knowledge.authentication.exceptions.MissingNameException;
 import bio.knowledge.authentication.exceptions.PasswordLacksCapitalLetterOrNumberException;
 import bio.knowledge.authentication.exceptions.PasswordTooShortException;
 import bio.knowledge.authentication.exceptions.UsernameAlreadyInUseException;
-import bio.knowledge.database.repository.user.UserRepository;
 import bio.knowledge.model.user.Group;
 import bio.knowledge.model.user.PasswordResetToken;
 import bio.knowledge.model.user.Role;
 import bio.knowledge.model.user.User;
-import bio.knowledge.service.EmailConfiguration;
 import bio.knowledge.service.user.GroupService;
 import bio.knowledge.service.user.PasswordTokenService;
 import bio.knowledge.service.user.UserService;
@@ -317,11 +295,15 @@ public class AuthenticationManager {
 	}
 	
 	/**
-	 * Make a properly encoded URL using RootURL and the (unencoded) fragment.
+	 * Creates a full URL using the given (unencoded) fragment.
+	 * The plus sign is percent-encoded for compatibility with Vaadin.
 	 */
-	public String makeURL(String fragment) {
+	public String makeSafeURL(String fragment) {
 		try {
-			return (new URI(getRootURL() + "/")).resolve(new URI(null, null, fragment)).toString();
+			String rawFragment = new URI(null, null, fragment).getRawFragment();
+			String safeFragment = rawFragment.replace("+", "%2B");
+			return getRootURL() + "/#" + safeFragment;
+			
 		} catch (URISyntaxException e) {
 			return "";
 		}
@@ -336,7 +318,7 @@ public class AuthenticationManager {
 		}
 		
 		String name = token.getUser().getFullName();
-		String href = getRootURL() + "/#!passwordReset?token=" + token.getString();
+		String href = makeSafeURL("passwordReset?token=" + token.getString());
 		
 		Properties props = new Properties();
 		props.putAll(mailProps.getProperties());

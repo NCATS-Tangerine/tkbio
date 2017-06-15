@@ -63,6 +63,8 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
+import com.vaadin.server.Page.UriFragmentChangedEvent;
+import com.vaadin.server.Page.UriFragmentChangedListener;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringViewProvider;
@@ -122,7 +124,6 @@ import bio.knowledge.web.view.ConceptSearchResults;
 import bio.knowledge.web.view.ContactView;
 import bio.knowledge.web.view.DesktopView;
 import bio.knowledge.web.view.FaqView;
-import bio.knowledge.web.view.LandingPageView;
 import bio.knowledge.web.view.LibrarySearchResults;
 import bio.knowledge.web.view.ListView;
 import bio.knowledge.web.view.LoginView;
@@ -1531,66 +1532,71 @@ public class DesktopUI extends UI implements MessageService {
 		 * tracker.trackPageview(pageId) separately when tracking is needed.
 		 */
 		applicationNavigator.addViewChangeListener(ga_tracker);
+		
+		getPage().addUriFragmentChangedListener(new UriFragmentChangedListener() {
+			@Override
+			public void uriFragmentChanged(UriFragmentChangedEvent event) {
+				handleURL(event.getUriFragment());
+			}
+		});
+		
+		String fragment = getPage().getUriFragment();
+		handleURL(fragment);
 
 		setContent(applicationLayout);
-
-		// Here we manage redirecting the application to other views upon the
-		// loading of a new page, according to particular URI's.
-		String uri = Page.getCurrent().getUriFragment();
-		String passwordResetFragment = "!passwordReset?token=";
+	}
+	
+	private void handleURL(String fragment) {
+		if (fragment == null) return;
 		
-		if (uri != null) {
-			// This allows for maps to be looked up with a URL.
-			// In the future we could also create person lookups by URL, like
-			// "knowledge.bio/#user=emailOrUsername", or even group lookups like
-			// "knowledge.bio/#group=emailOrUsername:groupName"
-			if (uri.startsWith("map=")) {
-				applicationNavigator.navigateTo(ListView.NAME);
+		final String mapPrefix = "map=";
+		final String passwordPrefix = "passwordReset?token=";
 
-				User user = authenticationManager.getCurrentUser();
+		if (fragment.startsWith(mapPrefix)) {
+			
+			applicationNavigator.navigateTo(ListView.NAME);
 
-				String conceptMapName = uri.replaceFirst("map=", "");
-				ConceptMapArchive map = conceptMapArchiveService.getConceptMapArchiveByName(conceptMapName,
-						user != null ? user.getUserId() : null,
-						user != null ? user.getIdsOfGroupsBelongedTo() : new String[0]);
-				if (map != null) {
-					conceptMapLibraryWindow = new Window();
-					//UserProfile userProfile = getAuthenticationManager().getCurrentUser();
-					//String userId = userProfile != null ? userProfile.getId() : null;
-					LibraryDetails libraryDetails = new LibraryDetails(map, query, userService,
-							event -> {
-								conceptMapLibraryWindow.close();
-							});
-					UI.getCurrent().addWindow(conceptMapLibraryWindow);
-					conceptMapLibraryWindow.setContent(libraryDetails);
-					conceptMapLibraryWindow.setModal(true);
-					conceptMapLibraryWindow.setCaption("Viewing Concept Map");
-					conceptMapLibraryWindow.addStyleName("concept-search-window");
-					conceptMapLibraryWindow.center();
-					conceptMapLibraryWindow.setWidth(45.0f, Unit.EM);
-					conceptMapLibraryWindow.setHeight(56.0f, Unit.EM);
-					conceptMapLibraryWindow.addCloseListener(event -> {
-						DesktopUI ui = (DesktopUI) UI.getCurrent();
-						Button searchBtn = ui.getDesktop().getSearchBtn();
-						searchBtn.setEnabled(true);
-						ui.closeLibraryWindow();
-						ui.closeConceptSearchWindow();
-						gotoStatementsTable();
-					});
-					
-				} else {
-					Notification.show("No concept map with the name \"" + conceptMapName
-							+ "\" was found. You may need to login to view this map.", Type.WARNING_MESSAGE);
-				}
-
-			} else if (uri.startsWith(passwordResetFragment)) {
+			User user = authenticationManager.getCurrentUser();
+			String conceptMapName = fragment.replaceFirst(mapPrefix, "");
+			
+			ConceptMapArchive map = conceptMapArchiveService.getConceptMapArchiveByName(conceptMapName,
+					user != null ? user.getUserId() : null,
+					user != null ? user.getIdsOfGroupsBelongedTo() : new String[0]);
+			
+			if (map != null) {
 				
-				String token = uri.replaceFirst(passwordResetFragment, "");
+				LibraryDetails libraryDetails = new LibraryDetails(map, query, userService,
+						e -> {
+							conceptMapLibraryWindow.close();
+						});
+
+				conceptMapLibraryWindow = new Window();
+				conceptMapLibraryWindow.setContent(libraryDetails);
+				conceptMapLibraryWindow.setModal(true);
+				conceptMapLibraryWindow.setCaption("Viewing Concept Map");
+				conceptMapLibraryWindow.addStyleName("concept-search-window");
+				conceptMapLibraryWindow.center();
+				conceptMapLibraryWindow.setWidth(45.0f, Unit.EM);
+				conceptMapLibraryWindow.setHeight(56.0f, Unit.EM);
+				conceptMapLibraryWindow.addCloseListener(e -> {
+					Button searchBtn = getDesktop().getSearchBtn();
+					searchBtn.setEnabled(true);
+					closeLibraryWindow();
+					closeConceptSearchWindow();
+					gotoStatementsTable();
+				});
 				
-				if (authenticationManager.isValidPasswordToken(token)) {
-					applicationNavigator.navigateTo(PasswordResetView.NAME + "/" + token);
-				}
+				UI.getCurrent().addWindow(conceptMapLibraryWindow);
+				
+			} else {
+				Notification.show("No concept map with the name \"" + conceptMapName
+						+ "\" was found. You may need to login to view this map.", Type.WARNING_MESSAGE);
 			}
+
+		} else if (fragment.startsWith(passwordPrefix)) {
+			
+			String token = fragment.replace(passwordPrefix, "");
+			applicationNavigator.navigateTo(PasswordResetView.NAME + "/" + token);
 		}
 	}
 
