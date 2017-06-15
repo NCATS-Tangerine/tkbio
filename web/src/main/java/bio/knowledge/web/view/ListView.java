@@ -1806,7 +1806,7 @@ public class ListView extends BaseView {
 		});
 
 		registry.setMapping(ViewName.RELATIONS_VIEW, new BeanItemContainer<Statement>(Statement.class),
-				statementService, new String[] { "subject|*", COL_ID_RELATION, "object|*", "evidence|*" }, null);
+				statementService, new String[] { "beaconSource", "subject|*", COL_ID_RELATION, "object|*", "evidence|*" }, null);
 
 		
 		registry.addSelectionHandler(ViewName.RELATIONS_VIEW, COL_ID_SUBJECT,
