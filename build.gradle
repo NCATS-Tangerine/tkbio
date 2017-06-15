@@ -30,7 +30,8 @@ allprojects {
 
 	// Version 4.0 now uses the new Translator Knowledge Beacon API
 	
-	version = '4.0.17' // Beacon traffic console
+	version = '4.0.18' // Various bug fixes
+
 	
     apply plugin: 'maven'
     apply plugin: 'java'
