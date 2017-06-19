@@ -30,8 +30,7 @@ allprojects {
 
 	// Version 4.0 now uses the new Translator Knowledge Beacon API
 	
-	version = '4.0.19' // Reference knowledge beacon changed to rkb.ncats.io
-
+	version = '4.0.20' // Added SpringBoot directive
 	
     apply plugin: 'maven'
     apply plugin: 'java'
@@ -167,6 +166,11 @@ eclipse {
     }
 }
 
+springBoot {
+    mainClass = "bio.knowledge.server.Swagger2SpringBoot"
+}
+
+
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.12'
+    gradleVersion = '3.5'
 }
