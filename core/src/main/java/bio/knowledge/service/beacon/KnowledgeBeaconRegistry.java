@@ -92,9 +92,9 @@ public class KnowledgeBeaconRegistry {
 	private void neo4jInit() {
 		// Reference Knowledge Beacon
 		createBeacon(
-				"Knowledge.Bio Beacon", 
+				"Reference Knowledge.Bio Beacon", 
 				"KB 3.0 reference implementation", 
-				"beacon.medgeninformatics.net" 
+				"rkb.ncats.io" 
 		);
 		
 		List<Neo4jKnowledgeBeacon> beacons = findAllBeacons();

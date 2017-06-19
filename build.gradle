@@ -30,7 +30,7 @@ allprojects {
 
 	// Version 4.0 now uses the new Translator Knowledge Beacon API
 	
-	version = '4.0.18' // Various bug fixes
+	version = '4.0.19' // Reference knowledge beacon changed to rkb.ncats.io
 
 	
     apply plugin: 'maven'
