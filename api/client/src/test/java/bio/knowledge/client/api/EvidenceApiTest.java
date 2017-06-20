@@ -12,6 +12,7 @@
 
 package bio.knowledge.client.api;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import bio.knowledge.client.ApiException;
@@ -19,7 +20,7 @@ import bio.knowledge.client.ApiException;
 /**
  * API tests for EvidenceApi
  */
-// @Ignore
+@Ignore
 public class EvidenceApiTest  extends RootTest {
 	private final static EvidenceApi api = new EvidenceApi();
 	static {

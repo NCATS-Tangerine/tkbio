@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import bio.knowledge.client.ApiException;
@@ -27,7 +28,7 @@ import bio.knowledge.client.model.InlineResponse2001;
 /**
  * API tests for ConceptsApi
  */
-//@Ignore
+@Ignore
 public class ConceptsApiTest extends RootTest {
         
 	private final static ConceptsApi api = new ConceptsApi();

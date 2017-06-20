@@ -13,6 +13,7 @@
 
 package bio.knowledge.client.api;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import bio.knowledge.client.ApiException;
@@ -20,7 +21,7 @@ import bio.knowledge.client.ApiException;
 /**
  * API tests for StatementsApi
  */
-//@Ignore
+@Ignore
 public class StatementsApiTest  extends RootTest {
 	
     private static final StatementsApi api = new StatementsApi();
