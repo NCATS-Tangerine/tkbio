@@ -13,33 +13,19 @@
 
 package bio.knowledge.client.api;
 
-import bio.knowledge.client.ApiClient;
-import bio.knowledge.client.ApiException;
-import bio.knowledge.client.model.InlineResponse2003;
 import org.junit.Test;
-import org.junit.Ignore;
 
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import bio.knowledge.client.ApiException;
 
 /**
  * API tests for StatementsApi
  */
 //@Ignore
-public class StatementsApiTest {
-	private static final boolean RUNNING_CLIENT_LOCALLY = true;
-
+public class StatementsApiTest  extends RootTest {
+	
     private static final StatementsApi api = new StatementsApi();
     static {
-    	if (RUNNING_CLIENT_LOCALLY) {
-	    	ApiClient apiClient = new ApiClient();
-	    	apiClient.setBasePath("http://localhost:8080/api/");
-	    	api.setApiClient(apiClient);
-    	}
+    	api.setApiClient(apiClient);
     }
     
     /**
@@ -54,7 +40,6 @@ public class StatementsApiTest {
     public void getStatementsTest() throws ApiException {
     	// Just testing to see if it reaches the server
 //    	api.getStatements("", null, null, null, null);
-    	fail();
     }
     
 }
