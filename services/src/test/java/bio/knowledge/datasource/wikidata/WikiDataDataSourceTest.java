@@ -112,7 +112,7 @@ public class WikiDataDataSourceTest  implements DataSourceTestUtil {
 	
 	static {
 		dstypes.add(SemanticGroup.GENE) ;
-		dstypes.add(SemanticGroup.PHEN) ;
+		dstypes.add(SemanticGroup.ANY) ;
 	}
 
 	@Test 
@@ -138,9 +138,9 @@ public class WikiDataDataSourceTest  implements DataSourceTestUtil {
 	
 	// the colon in front of the property id, 
 	// signals a straight resource string substitute without quotes?
-	private static final String TEST_WIKIDATA_QUALIFIED_PROPERTY_ID = "wde:P353"; 
+	private static final String TEST_WIKIDATA_QUALIFIED_PROPERTY_ID = "wd:P353"; 
 	private static final String TEST_WIKIDATA_PROPERTY_URI = "http://www.wikidata.org/entity/P353"; 
-	private static final String TEST2_WIKIDATA_ID = "wde:Q13561329";
+	private static final String TEST2_WIKIDATA_ID = "wd:Q13561329";
 	
 	private Void dumpResults( ResultSet rs ) {
 		rs.stream().forEach(r->{

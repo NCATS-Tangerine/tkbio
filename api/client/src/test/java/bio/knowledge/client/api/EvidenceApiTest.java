@@ -12,25 +12,19 @@
 
 package bio.knowledge.client.api;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
-import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
 
 /**
  * API tests for EvidenceApi
  */
-// @Ignore
-public class EvidenceApiTest {
-	private static final boolean RUNNING_CLIENT_LOCALLY = true;
-
+@Ignore
+public class EvidenceApiTest  extends RootTest {
 	private final static EvidenceApi api = new EvidenceApi();
 	static {
-		if (RUNNING_CLIENT_LOCALLY) {
-			ApiClient apiClient = new ApiClient();
-			apiClient.setBasePath("http://localhost:8080/api/");
-			api.setApiClient(apiClient);
-		}
+		api.setApiClient(apiClient);
 	}
 
 	/**

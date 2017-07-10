@@ -13,13 +13,14 @@
 
 package bio.knowledge.client.api;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
-import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.InlineResponse200;
 import bio.knowledge.client.model.InlineResponse2001;
@@ -27,17 +28,12 @@ import bio.knowledge.client.model.InlineResponse2001;
 /**
  * API tests for ConceptsApi
  */
-//@Ignore
-public class ConceptsApiTest {
-    private static final boolean RUNNING_CLIENT_LOCALLY = true;
-    
+@Ignore
+public class ConceptsApiTest extends RootTest {
+        
 	private final static ConceptsApi api = new ConceptsApi();
     static {
-    	if (RUNNING_CLIENT_LOCALLY) {
-	    	ApiClient apiClient = new ApiClient();
-	    	apiClient.setBasePath("http://localhost:8080/api/");
-	    	api.setApiClient(apiClient);
-    	}
+	    api.setApiClient(apiClient);
     }
 
     
@@ -77,17 +73,17 @@ public class ConceptsApiTest {
         Integer pageSize = 20;
         List<InlineResponse2001> responses = api.getConcepts(q, sg, pageNumber, pageSize);
 
-        boolean milkChocolateFound = false;
+        boolean coconutMilkFound = false;
         int count = 0;
         for (InlineResponse2001 response : responses) {
         	count += 1;
-        	if (response.getName().equals("Milk chocolate")) {
-        		milkChocolateFound = true;
+        	if (response.getName().equals("Coconut milk")) {
+        		coconutMilkFound = true;
         	}
         }
         
-        assertTrue(count == 18);
-        assertTrue(milkChocolateFound);
+        assertEquals(count,13);
+        assertTrue(coconutMilkFound);
     }
     
 }
