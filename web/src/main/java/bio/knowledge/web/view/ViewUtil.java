@@ -80,7 +80,8 @@ public class ViewUtil {
 		// Vaadin's ButtonRenderer for these other columns.
 		if (!columnId.equals("library") && !columnId.equals("parents") && !columnId.equals("evidence")) {
 			renderer = new ButtonRenderer(listener);
-			if (searchPhrase != null && viewname.equals(ViewName.CONCEPTS_VIEW)) {
+			boolean concepts_or_statements_view = viewname.equals(ViewName.CONCEPTS_VIEW) || viewname.equals(ViewName.RELATIONS_VIEW);
+			if (searchPhrase != null && concepts_or_statements_view) {
 				// #FF0000 is bright red
 				((ButtonRenderer) renderer).setHighlightProperties(searchPhrase.split(" "), "#FF0000");
 			}
