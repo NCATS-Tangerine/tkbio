@@ -451,14 +451,11 @@ public class ConceptService
 	 * @return
 	 */
 	public Concept findById(String conceptId) {
-		//return conceptRepository.findById(id);
-    	CompletableFuture<List<Concept>> future =
-    			kbService.getConceptDetails(conceptId);
+    	CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId);
    
-    	List<Concept> result = null ;
     	try {
-			result = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
-			return !result.isEmpty() ? result.get(0) : null ;
+			List<Concept> concepts = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+			return concepts.isEmpty() ? null : concepts.get(0);
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			return null;
 		}
