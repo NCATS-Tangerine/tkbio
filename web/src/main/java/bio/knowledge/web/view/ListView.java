@@ -395,7 +395,7 @@ public class ListView extends BaseView {
 				nextPageNumber++;
 				loadingDataPage = false;
 				
-				if (data.size() < DATA_PAGE_SIZE) {
+				if (data.size() == 0) {
 					loadedAllData = true;
 				}
 			}

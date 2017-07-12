@@ -184,11 +184,12 @@ public class ConceptMapPopupWindow {
 
 		// Generate popup content from passed data
 		Optional<Concept> conceptOpt = conceptService.getDetailsById(accessionId);
-
-		if (!conceptOpt.isPresent())
-			return;
-
-		Concept selectedConcept = conceptOpt.get();
+		Concept selectedConcept;
+		if (conceptOpt.isPresent()){
+			selectedConcept = conceptOpt.get();
+		} else {
+			selectedConcept = null;
+		}
 		
 		addAnno = new Button("Add Annotation", e -> {
 			parentUi.getPredicatePopupWindow().conceptMapUserAnnotation(selectedConcept, x, y);
@@ -204,6 +205,11 @@ public class ConceptMapPopupWindow {
 		});
 		if (showRelations != null)
 			buttonsLayout.addComponent(showRelations);
+		
+		if (selectedConcept == null) {
+			addAnno.setEnabled(false);
+			showRelations.setEnabled(false);
+		}
 		
 		// Create buttons related to node popup
 		// Okay -> no

@@ -595,7 +595,11 @@ public class ConceptService
 			 * which must be resolved elsewhere (i.e. in WikiData?)
 			 * Note that the system treats WikiData the same way as 'getDetails()'
 			 */
-			concept = getQualifiedDataItem(id) ;
+			try {
+				concept = getQualifiedDataItem(id) ;
+			} catch (DataSourceException e) {
+				
+			}
 		}
 		
 		if(concept==null) {
