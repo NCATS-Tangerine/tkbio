@@ -120,14 +120,19 @@ public class WikiDetailsHandler {
 		labelsLayout.setSpacing(false);
 		labelsLayout.setWidth("100%");
 		
-		VerticalLayout article_uri_layout = new VerticalLayout();
-		article_uri_layout.setCaption("Wikipedia Url:");
-		Button articleDisplayButton = new Button(selectedConcept.getName());
-		articleDisplayButton.setStyleName("concept-detail-button");
-		articleDisplayButton.addClickListener(e -> displayUrl(descriptionBuilder.getArticleUrl()));
-		article_uri_layout.addComponent(articleDisplayButton);
+		labelsLayout.addComponents(accessionLabel, nameLabel, typeLabel);
 		
-		labelsLayout.addComponents(accessionLabel, nameLabel, typeLabel, article_uri_layout);
+		boolean wiki_article_available = ! descriptionBuilder.getArticleUrl().equals("");
+		
+		if (wiki_article_available) {
+			VerticalLayout article_uri_layout = new VerticalLayout();
+			article_uri_layout.setCaption("Wikipedia Url:");
+			Button articleDisplayButton = new Button(selectedConcept.getName());
+			articleDisplayButton.setStyleName("concept-detail-button");
+			articleDisplayButton.addClickListener(e -> displayUrl(descriptionBuilder.getArticleUrl()));
+			article_uri_layout.addComponent(articleDisplayButton);
+			labelsLayout.addComponent(article_uri_layout);
+		}
 
 		Map<Integer, Component> sordidDetails = new TreeMap<Integer, Component>();
 		if (descriptionBuilder != null) {
