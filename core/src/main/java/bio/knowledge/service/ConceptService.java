@@ -513,7 +513,7 @@ public class ConceptService
 	 * Method to retrieve remote data about a 
 	 * node in a Qualified external namespace
 	 */
-	private Concept getQualifiedDataItem(String qualifiedId) {
+	public Concept getQualifiedDataItem(String qualifiedId) {
 		
 		Concept dataItem = null ;
 		

@@ -122,7 +122,7 @@ public class WikiDetailsHandler {
 		
 		labelsLayout.addComponents(accessionLabel, nameLabel, typeLabel);
 		
-		boolean wiki_article_available = ! descriptionBuilder.getArticleUrl().equals("");
+		boolean wiki_article_available = descriptionBuilder != null && !descriptionBuilder.getArticleUrl().equals("");
 		
 		if (wiki_article_available) {
 			VerticalLayout article_uri_layout = new VerticalLayout();

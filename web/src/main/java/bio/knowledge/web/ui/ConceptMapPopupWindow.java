@@ -51,6 +51,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.NodeData;
 import bio.knowledge.model.Annotation;
@@ -194,16 +195,25 @@ public class ConceptMapPopupWindow {
 	}
 
 	public void conceptMapNodePopUp(String accessionId, String name, int x, int y) {
-
-		// Generate popup content from passed data
-		Optional<Concept> conceptOpt = conceptService.getDetailsById(accessionId);
-		Concept selectedConcept;
-		if (conceptOpt.isPresent()){
-			selectedConcept = conceptOpt.get();
-		} else {
-			selectedConcept = null;
+		
+		Concept concept = conceptService.findById(accessionId);
+		
+		boolean conceptIsOffline = false;
+		
+		if (concept == null) {
+			try {
+				concept = conceptService.getQualifiedDataItem(accessionId);
+				conceptIsOffline = true;
+			} catch (DataSourceException e) {
+				
+			}
 		}
 		
+		if (conceptIsOffline) {
+			details.addComponent(new Label("Cannot find concept — datasource may be offline."));
+		}
+		
+		final Concept selectedConcept = concept;
 		addAnno = new Button("Add Annotation", e -> {
 			parentUi.getPredicatePopupWindow().conceptMapUserAnnotation(selectedConcept, x, y);
 		});
@@ -219,7 +229,7 @@ public class ConceptMapPopupWindow {
 		if (showRelations != null)
 			buttonsLayout.addComponent(showRelations);
 		
-		if (selectedConcept == null) {
+		if (selectedConcept == null || conceptIsOffline) {
 			addAnno.setEnabled(false);
 			showRelations.setEnabled(false);
 		}
