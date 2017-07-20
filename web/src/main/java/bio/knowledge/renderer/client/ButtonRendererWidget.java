@@ -28,8 +28,12 @@ package bio.knowledge.renderer.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.regexp.*;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.Button;
+import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.widget.grid.RendererCellReference;
 
 /**
@@ -60,6 +64,8 @@ public class ButtonRendererWidget extends com.vaadin.client.renderers.ButtonRend
 	// Default colour is bright red
 	private String highlightColour = "#FF0000";
 	
+	private String regexFlags = "gi";
+	
 	@Override
 	/*
 	 * (non-Javadoc)
@@ -79,9 +85,13 @@ public class ButtonRendererWidget extends com.vaadin.client.renderers.ButtonRend
 	 */
 	public void render(RendererCellReference cell, String text, Button button) {
 		if (text != null) {
+			
+			text = WidgetUtil.escapeHTML(text);
+			
 			if (highlightWords != null) {
 				for (String word : highlightWords) {
-					text = insertHtmlTags(text, word, "<span style=\"color:" + highlightColour + ";\">", "</span>");
+					RegExp regExp = RegExp.compile(word, regexFlags);
+					text = regExp.replace(text, "<span style=\"color:" + highlightColour + ";\">$&</span>");
 				}
 			}
 			
@@ -91,76 +101,6 @@ public class ButtonRendererWidget extends com.vaadin.client.renderers.ButtonRend
 		} else {
 			button.setVisible(false);
 		}
-	}
-	
-	/**
-	 * Inserts HTML tags (or, in fact, any sort of tag) around all substrings of
-	 * {@code text} which match {@code taggedText} with case insensitivity. Will
-	 * also not match substrings that are between {@code leftTag} and
-	 * {@code rightTag}. <br>
-	 * <br>
-	 * For example, insertHtmlTags("HELLO friend", "e", "(", ")") will return
-	 * "H(E)LLO fri(e)nd"
-	 * 
-	 * @param text
-	 *            The text to insert HTML tags into
-	 * @param taggedText
-	 *            The substring of {@code text} to place HTML tags around
-	 * @param leftTag
-	 *            The HTML tag to place to the left of {@code taggedText}
-	 * @param rightTag
-	 *            The HTML tag to place to the left of {@code taggedText}
-	 * @return A string with HTML tags wrapping each occurrence of
-	 *         {@code taggedText}
-	 */
-	private String insertHtmlTags(String text, String taggedText, String leftTag, String rightTag) {
-		List<Integer> l = getIndices(text, taggedText, leftTag, rightTag);
-		int taglength = leftTag.length() + rightTag.length();
-		int k = 0;
-		for (Integer i : l) {
-			i = i + (taglength * k);
-			k++;
-			int e = i + taggedText.length();
-			text = text.substring(0, i) + leftTag + text.substring(i, e) + rightTag + text.substring(e);
-		}
-		return text;
-	}
-
-	/**
-	 * Gets a list of indices of occurrences of substring within text. Ignores
-	 * substrings that occur between occurrences of {@code leftTag} and
-	 * {@code rightTag}.
-	 * 
-	 * @param text
-	 * @param substring
-	 * @param leftTag
-	 * @param rightTag
-	 * @return
-	 */
-	private List<Integer> getIndices(String text, String substring, String leftTag, String rightTag) {
-		List<Integer> l = new ArrayList<Integer>();
-
-		text = text.toLowerCase();
-		substring = substring.toLowerCase();
-		for (int i = 0; i < text.length(); ) {
-			int index = text.indexOf(substring, i);
-			int tagIndex = text.indexOf(leftTag.toLowerCase(), i);
-			
-			boolean tagNotInterfering = tagIndex == -1 || tagIndex > index + substring.length();
-			
-			if (tagNotInterfering) {
-				if (index == -1) {
-					break;
-				} else {
-					l.add(index);
-					i = index + substring.length();
-				}
-			} else {
-				i = text.indexOf(rightTag, i) + rightTag.length();
-			}
-		}
-
-		return l;
 	}
 	
 	/**
