@@ -13,23 +13,20 @@
 
 package bio.knowledge.client.api;
 
-import bio.knowledge.client.ApiException;
-import bio.knowledge.client.model.InlineResponse2002;
-import org.junit.Test;
-import org.junit.Ignore;
+import static org.junit.Assert.fail;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+import bio.knowledge.client.ApiException;
 
 /**
  * API tests for ExactmatchesApi
  */
 @Ignore
-public class ExactmatchesApiTest {
+public class ExactmatchesApiTest  extends RootTest {
 
     private final ExactmatchesApi api = new ExactmatchesApi();
 

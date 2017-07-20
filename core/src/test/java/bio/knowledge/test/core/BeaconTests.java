@@ -54,8 +54,8 @@ public class BeaconTests {
 	@Transactional
 	public void testAddAndRetrieveBeacons() {
 		
-		beaconRegistry.addKnowledgeBeacon( "Knowledge.Bio Beacon", "KB 3.0 reference implementation", "beacon.medgeninformatics.net" );
-		beaconRegistry.addKnowledgeBeacon( "WikiData Beacon", "Garbanzo", "http://garbanzo.sulab.org/translator" );
+		beaconRegistry.addKnowledgeBeacon( "Knowledge.Bio Beacon", "KB 3.0 reference implementation", "https://rkb.ncats.io" );
+		beaconRegistry.addKnowledgeBeacon( "WikiData Beacon", "Garbanzo", "garbanzo.sulab.org/translator" );
 		
 		List<Neo4jKnowledgeBeacon> beacons = beaconRegistry.findAllBeacons();
 		

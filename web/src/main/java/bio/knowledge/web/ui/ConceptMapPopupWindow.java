@@ -51,6 +51,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.NodeData;
 import bio.knowledge.model.Annotation;
@@ -129,6 +130,9 @@ public class ConceptMapPopupWindow {
 
 	@Autowired
 	private KBQuery query;
+	
+	@Autowired
+	WikiDetailsHandler wd_handler;
 
 	// position
 	int myX;
@@ -150,21 +154,28 @@ public class ConceptMapPopupWindow {
 	private final NodeData moreNodesStub = new NodeData("-1", "More nodes...");
 	ComboBox comboBoxSource = new ComboBox("Source", graphNodeContainer);
 	ComboBox comboBoxTarget = new ComboBox("Target", graphNodeContainer);
-
+	
 	private void basicSkeleton(String name, String type, int x, int y) {
+		basicSkeleton(name, type, x, y, null);
+	}
+
+	private void basicSkeleton(String name, String type, int x, int y, VerticalLayout detailsLayout) {
 		
 		// initialize our new-fangled conceptDetailsWindowOnGraph
 		conceptDetailsWindowOnGraph = new Window();
 		conceptDetailsWindowOnGraph.setCaption(name);
 		conceptDetailsWindowOnGraph.addStyleName("node-popup-window");
 		conceptDetailsWindowOnGraph.setResizable(false);
-		conceptDetailsWindowOnGraph.setPosition((int) x, (int) y);
 
 		if(!name.equals("Annotate Graph")) {
 			Label nameLabel = new Label(
 				"<span style=\"font-weight: bold;\"> Name: " + "</span>" + "<span>" + name + "</span>");
 			nameLabel.setContentMode(ContentMode.HTML);
 			details.addComponent(nameLabel);
+		}
+		
+		if (detailsLayout != null) {
+			details.addComponent(detailsLayout);
 		}
 
 		// bind components together
@@ -176,20 +187,33 @@ public class ConceptMapPopupWindow {
 		// click outside popup will close this window
 		parentUi.addClickListener(e -> {
 			conceptDetailsWindowOnGraph.close();
-		});
-
+		}); 
+		
+		// We were positioning the window where the mouse click occurred,
+		// but this often resulted in windows appearing half way off screen.
+		conceptDetailsWindowOnGraph.center();
 	}
 
 	public void conceptMapNodePopUp(String accessionId, String name, int x, int y) {
-
-		// Generate popup content from passed data
-		Optional<Concept> conceptOpt = conceptService.getDetailsById(accessionId);
-
-		if (!conceptOpt.isPresent())
-			return;
-
-		Concept selectedConcept = conceptOpt.get();
 		
+		Concept concept = conceptService.findById(accessionId);
+		
+		boolean conceptIsOffline = false;
+		
+		if (concept == null) {
+			try {
+				concept = conceptService.getQualifiedDataItem(accessionId);
+				conceptIsOffline = true;
+			} catch (DataSourceException e) {
+				
+			}
+		}
+		
+		if (conceptIsOffline) {
+			details.addComponent(new Label("Cannot find concept — datasource may be offline."));
+		}
+		
+		final Concept selectedConcept = concept;
 		addAnno = new Button("Add Annotation", e -> {
 			parentUi.getPredicatePopupWindow().conceptMapUserAnnotation(selectedConcept, x, y);
 		});
@@ -204,6 +228,11 @@ public class ConceptMapPopupWindow {
 		});
 		if (showRelations != null)
 			buttonsLayout.addComponent(showRelations);
+		
+		if (selectedConcept == null || conceptIsOffline) {
+			addAnno.setEnabled(false);
+			showRelations.setEnabled(false);
+		}
 		
 		// Create buttons related to node popup
 		// Okay -> no
@@ -237,7 +266,9 @@ public class ConceptMapPopupWindow {
 		if (selectedConcept == null) {
 			basicSkeleton(name, null, x, y);
 		} else {
-			basicSkeleton(name, selectedConcept.getSemanticGroup().getDescription(), x, y);
+			VerticalLayout wd_details = wd_handler.getDetails(selectedConcept);
+			wd_details.setWidthUndefined();
+			basicSkeleton(name, selectedConcept.getSemanticGroup().getDescription(), x, y, wd_details);
 		}
 	}
 	

@@ -1,5 +1,8 @@
 package bio.knowledge.service.beacon;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import bio.knowledge.client.ApiClient;
 
 /**
@@ -20,6 +23,16 @@ public class KnowledgeBeacon {
 	}
 	
 	public KnowledgeBeacon(String url, String name, String description, boolean isEnabled) {
+		try {
+			if(!(url.startsWith("http://") || url.startsWith("https://"))) url = "http://"+url;
+			if (url.endsWith("/")) {
+				url = url.substring(0, url.length() - 1);
+			}
+			URI uri = new URI(url);
+		} catch (URISyntaxException e) {
+			throw new RuntimeException("URL: " + url + " is not valid.");
+		}
+		
 		this.name = name;
 		this.description = description;
 		this.isEnabled = isEnabled;

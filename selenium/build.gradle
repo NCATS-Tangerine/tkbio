@@ -16,4 +16,8 @@ dependencies {
 
 	// http://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-chrome-driver
 	testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
+	
+	// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-firefox-driver
+	compile group: 'org.seleniumhq.selenium', name: 'selenium-firefox-driver', version: '2.25.0'
+	
 }

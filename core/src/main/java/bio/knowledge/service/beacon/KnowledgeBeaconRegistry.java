@@ -25,7 +25,7 @@ import bio.knowledge.model.beacon.neo4j.Neo4jKnowledgeBeacon;
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class KnowledgeBeaconRegistry {
 	
-	private static String yamlUrl = "https://raw.githubusercontent.com/"
+	private static String masterKnowledgeBeaconList = "https://raw.githubusercontent.com/"
 			+ "NCATS-Tangerine/translator-knowledge-beacon/"
 			+ "develop/api/knowledge-beacon-list.yaml";
 	
@@ -50,7 +50,7 @@ public class KnowledgeBeaconRegistry {
 	
 	@PostConstruct
 	public void init() {
-		yamlInit();
+		initKnowledgeBeacons();
 //		neo4jInit();
 
 	}
@@ -59,9 +59,9 @@ public class KnowledgeBeaconRegistry {
 	 * Initiates the registry by grabbing beacons from the official yaml file:
 	 * https://raw.githubusercontent.com/NCATS-Tangerine/translator-knowledge-beacon/develop/api/knowledge-beacon-list.yaml
 	 */
-	private void yamlInit() {
+	private void initKnowledgeBeacons() {
 		try {
-			URL site = new URL(yamlUrl);
+			URL site = new URL(masterKnowledgeBeaconList);
 			InputStream inputStream = site.openStream();
 			Yaml yaml = new Yaml();
 			Map<String, Object> yamlObject = (Map<String, Object>) yaml.load(inputStream);
@@ -92,9 +92,9 @@ public class KnowledgeBeaconRegistry {
 	private void neo4jInit() {
 		// Reference Knowledge Beacon
 		createBeacon(
-				"Knowledge.Bio Beacon", 
+				"Reference Knowledge.Bio Beacon", 
 				"KB 3.0 reference implementation", 
-				"beacon.medgeninformatics.net" 
+				"rkb.ncats.io" 
 		);
 		
 		List<Neo4jKnowledgeBeacon> beacons = findAllBeacons();

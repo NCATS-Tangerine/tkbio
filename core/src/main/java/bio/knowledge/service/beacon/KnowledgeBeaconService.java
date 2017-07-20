@@ -29,8 +29,6 @@ import bio.knowledge.model.Annotation;
 import bio.knowledge.model.AnnotationImpl;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptImpl;
-import bio.knowledge.model.Evidence;
-import bio.knowledge.model.EvidenceImpl;
 import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.SemanticGroup;
