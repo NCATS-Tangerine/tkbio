@@ -1,5 +1,9 @@
-FROM tomcat:8.0
-ADD tomcat/conf/web.xml                     /usr/local/tomcat/conf/web.xml
-ADD tomcat/conf/tomcat-users.xml            /usr/local/tomcat/conf/tomcat-users.xml
-ADD tomcat/webapps/manager/WEB-INF/web.xml  /usr/local/tomcat/webapps/manager/WEB-INF/web.xml
+FROM ubuntu:latest
+MAINTAINER Richard Bruskiewich <richard@starinformatics.com>
+LABEL "NCATS Translator Knowledge.Bio Web Client (TKBio)"
+USER root
+RUN apt-get -y update
+RUN apt-get -y install default-jre
+ADD web/build/libs/tkbio*.war ./tkbio.jar
+CMD ["java","-jar","tkbio.jar"]
 
