@@ -25,7 +25,11 @@ public class UserService implements UserDetailsService {
 	@Autowired
 	private PasswordEncoder encoder;
 	
-	private User lastUser;
+	private User lastLoggedIn;
+	
+	private boolean isLastLoggedIn(String login) {
+		return lastLoggedIn != null && (lastLoggedIn.getEmail().equals(login) || lastLoggedIn.getUsername().equals(login));
+	}
 	
 	public User createUser(String email, String username, String password) {
 		User user = new User(email, username);
@@ -48,17 +52,17 @@ public class UserService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 				
-		lastUser = repo.findByUsernameOrEmail(login);
+		lastLoggedIn = repo.findByUsernameOrEmail(login);
 		
-		if (lastUser != null) {
+		if (lastLoggedIn != null) {
 			
 			Set<GrantedAuthority> roles = new HashSet<>();
-			for (Role role : lastUser.getRoles()) {
+			for (Role role : lastLoggedIn.getRoles()) {
 				String name = role.name();
 				roles.add(new SimpleGrantedAuthority(name));
 			}
 			return new org.springframework.security.core.userdetails.User(
-					lastUser.getUsername(), lastUser.getPassword(), roles);
+					lastLoggedIn.getUsername(), lastLoggedIn.getPassword(), roles);
 			
 		} else {
 			return null;
@@ -70,11 +74,11 @@ public class UserService implements UserDetailsService {
 	}
 	
 	public User findByUsernameOrEmail(String login) {
-		if (lastUser != null && (lastUser.getEmail().equals(login) || lastUser.getUsername().equals(login))) {
-			return lastUser;
+		if (isLastLoggedIn(login)) {
+			return repo.findOne(lastLoggedIn.getDbId(), 1);
 		}
-		lastUser = repo.findByUsernameOrEmail(login);
-		return lastUser;
+		User user = repo.findByUsernameOrEmail(login);
+		return user;
 	}
 
 }

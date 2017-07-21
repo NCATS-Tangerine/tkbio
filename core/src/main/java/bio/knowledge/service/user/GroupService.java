@@ -37,8 +37,10 @@ public class GroupService {
 		groupRepo.save(group);
 	}
 	
-	public Set<Group> findByOwner(User user) {
-		return groupRepo.findByOwner(user.getDbId());
+	public void loadGroupMembers(User user) {
+		for (Group group : user.getGroupsOwned()) {
+			groupRepo.findOne(group.getDbId());
+		};
 	}
 
 }
