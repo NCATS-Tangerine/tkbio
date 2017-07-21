@@ -27,9 +27,9 @@ public interface UserRepository extends GraphRepository<User>{
 		+ " RETURN user")
 	User findByEmail(@Param("email") String email);
 	
-	@Query("MATCH path = (user:User) -[*0..1]- ()"
+	@Query("MATCH (user:User)"
 		+ " WHERE user.username = {login} OR user.email = {login}"
-		+ " RETURN user, nodes(path), relationships(path)")
+		+ " RETURN user")
 	User findByUsernameOrEmail(@Param("login") String login);
 
 }

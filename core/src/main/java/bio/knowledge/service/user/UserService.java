@@ -73,7 +73,6 @@ public class UserService implements UserDetailsService {
 		if (lastUser != null && (lastUser.getEmail().equals(login) || lastUser.getUsername().equals(login))) {
 			return lastUser;
 		}
-		
 		lastUser = repo.findByUsernameOrEmail(login);
 		return lastUser;
 	}

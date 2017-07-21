@@ -32,6 +32,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -179,7 +180,11 @@ public class AuthenticationManager {
 			
 			auth = manager.authenticate(token);
 			SecurityContextHolder.getContext().setAuthentication(auth);
+			
 			currentUser = userService.findByUsernameOrEmail(usernameOrEmail);
+			Set<Group> groupsOwned = groupService.findByOwner(currentUser);
+			currentUser.setGroupsOwned(groupsOwned);
+			
 			notifyOfLogin(currentUser);
 			
 			// because some data are visible or not visible depending on the user, 

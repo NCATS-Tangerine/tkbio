@@ -117,6 +117,10 @@ public class User extends Neo4jAbstractIdentifiedEntity {
 		return permissions.contains(permission);
 	}
 	
+	public void setGroupsOwned(Set<Group> groupsOwned) {
+		this.groupsOwned = groupsOwned;
+	}
+	
 	public void addGroupOwned(Group group) {
 		groupsOwned.add(group);
 	}

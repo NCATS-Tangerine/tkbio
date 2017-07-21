@@ -1,5 +1,7 @@
 package bio.knowledge.service.user;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,10 @@ public class GroupService {
 	public void removeMember(Group group, User member) {
 		group.removeMember(member);
 		groupRepo.save(group);
+	}
+	
+	public Set<Group> findByOwner(User user) {
+		return groupRepo.findByOwner(user.getDbId());
 	}
 
 }
