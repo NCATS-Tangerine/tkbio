@@ -25,13 +25,8 @@
  */
 package bio.knowledge.renderer.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.gwt.regexp.*;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.ui.Button;
 import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.widget.grid.RendererCellReference;
