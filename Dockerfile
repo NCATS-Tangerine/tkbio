@@ -15,4 +15,4 @@ RUN cd home/tkbio && \
 
 WORKDIR /home/tkbio/web
 
-ENTRYPOINT ["java", "-jar", "build/libs/tkbio-web-4.0.20.jar"]
+ENTRYPOINT ["java", "-jar", "build/libs/tkbio-web-*.jar"]
