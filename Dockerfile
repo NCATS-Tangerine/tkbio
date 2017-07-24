@@ -1,19 +1,18 @@
-FROM ubuntu:16.04
+FROM openjdk:8
 
-ENV PATH $PATH:/home/gradle-3.4.1/bin/
+RUN wget -q https://services.gradle.org/distributions/gradle-3.4.1-bin.zip && \
+    unzip gradle-3.4.1-bin.zip -d /opt && \
+    rm gradle-3.4.1-bin.zip && \
+    mkdir /home/tkbio
 
-RUN apt-get update
-RUN apt-get -y install openjdk-8-jdk wget unzip git
+ENV PATH $PATH:/opt/gradle-3.4.1/bin/
 
-RUN wget https://services.gradle.org/distributions/gradle-3.4.1-bin.zip /home/gradle.zip && \
-    unzip /home/gradle-3.4.1-bin.zip -d /home/ && \
-    mkdir /home/ndex
+COPY . /home/tkbio/
 
-COPY . /home/ndex/
-
-RUN cd home/ndex && \
+RUN cd home/tkbio && \
     gradle clean -x test && \
-    gradle build -x test && \
-    cd web
+    gradle build -x test
 
-ENTRYPOINT ["java", "-jar", "home/ndex/server/build/libs/knowledge-beacon-server-1.0.12.jar"]
+WORKDIR /home/tkbio/web
+
+ENTRYPOINT ["java", "-jar", "build/libs/tkbio-web-4.0.20.jar"]
