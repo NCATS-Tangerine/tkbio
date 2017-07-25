@@ -60,7 +60,6 @@ import bio.knowledge.web.ui.DesktopUI;
 
 @JavaScript({
 		"https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js",
-		"http://marvl.infotech.monash.edu/webcola/cola.v3.min.js",
 		"https://cdn.rawgit.com/cpettitt/dagre/v0.7.4/dist/dagre.min.js",
 		"https://cdnjs.cloudflare.com/ajax/libs/cytoscape/2.6.3/cytoscape.js",
 		"https://cdn.rawgit.com/cytoscape/cytoscape.js-cola/1.1.1/cytoscape-cola.js",
