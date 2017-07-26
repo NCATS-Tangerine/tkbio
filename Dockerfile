@@ -1,18 +1,12 @@
-FROM openjdk:8
+FROM ubuntu:latest
+MAINTAINER Richard Bruskiewich <richard@starinformatics.com>
+LABEL "NCATS Translator Knowledge.Bio Web Client (TKBio)"
 
-RUN wget -q https://services.gradle.org/distributions/gradle-3.4.1-bin.zip && \
-    unzip gradle-3.4.1-bin.zip -d /opt && \
-    rm gradle-3.4.1-bin.zip && \
-    mkdir /home/tkbio
+USER root
 
-ENV PATH $PATH:/opt/gradle-3.4.1/bin/
+RUN apt-get -y update
+RUN apt-get -y install default-jre
 
-COPY . /home/tkbio/
+ADD web/build/libs/tkbio*.war ./tkbio.jar
 
-RUN cd home/tkbio && \
-    gradle clean -x test && \
-    gradle build -x test
-
-WORKDIR /home/tkbio/web
-
-ENTRYPOINT ["java", "-jar", "build/libs/tkbio-web-*.jar"]
+CMD ["java","-jar","tkbio.jar"]
