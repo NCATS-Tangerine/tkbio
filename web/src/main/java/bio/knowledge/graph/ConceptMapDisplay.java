@@ -62,9 +62,9 @@ import bio.knowledge.web.ui.DesktopUI;
 		"https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js",
 		"https://cdn.rawgit.com/cpettitt/dagre/v0.7.4/dist/dagre.min.js",
 		"https://cdnjs.cloudflare.com/ajax/libs/cytoscape/2.6.3/cytoscape.js",
-		"https://cdn.rawgit.com/cytoscape/cytoscape.js-cola/1.1.1/cytoscape-cola.js",
 		"https://cdn.rawgit.com/cytoscape/cytoscape.js-dagre/1.1.2/cytoscape-dagre.js",
-		"https://cdn.rawgit.com/cytoscape/cytoscape.js-spread/1.0.9/cytoscape-spread.js", "conceptmap.js",
+		"https://cdn.rawgit.com/cytoscape/cytoscape.js-spread/1.0.9/cytoscape-spread.js",
+		"conceptmap.js",
 		"conceptmap-connector.js" 
 		})
 public class ConceptMapDisplay extends AbstractJavaScriptComponent implements GraphManipulationInterface {
