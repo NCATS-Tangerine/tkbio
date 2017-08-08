@@ -182,8 +182,7 @@ public class AuthenticationManager {
 			SecurityContextHolder.getContext().setAuthentication(auth);
 			
 			currentUser = userService.findByUsernameOrEmail(usernameOrEmail);
-			Set<Group> groupsOwned = groupService.findByOwner(currentUser);
-			currentUser.setGroupsOwned(groupsOwned);
+			groupService.loadGroupMembers(currentUser);
 			
 			notifyOfLogin(currentUser);
 			
