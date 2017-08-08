@@ -45,6 +45,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.datasource.DataService;
 import bio.knowledge.datasource.DataServiceUtility;
 import bio.knowledge.datasource.DataSourceException;

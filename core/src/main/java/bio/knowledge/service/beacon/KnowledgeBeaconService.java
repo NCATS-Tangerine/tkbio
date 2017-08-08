@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonSyntaxException;
@@ -53,36 +55,25 @@ import bio.knowledge.model.Statement;
  */
 @Service
 public class KnowledgeBeaconService extends GenericKnowledgeService {
+	public static String AGGREGATOR_BASE_URL = "https://kba.ncats.io";
 	
-	/**
-	 * Periods sometimes drop out of queries if they are not URL encoded. This
-	 * is <b>not</b> a complete URL encoding. I have only encoded those few
-	 * characters that might be problematic. We may have to revisit this in
-	 * the future, and implement a proper encoder.
-	 */
-	private String urlEncode(String string) {
-//		if (string != null) {
-//			return string.replace(".", "%2E").replace(" ", "%20").replace(":", "%3A");
-//		} else {
-//			return null;
-//		}
-		return string;
+	
+	private ApiClient apiClient;
+	private ConceptsApi conceptsApi;
+	private StatementsApi statementsApi;
+	private EvidenceApi evidenceApi;
+	private ExactmatchesApi exactmatchesApi;
+	
+	@PostConstruct
+	public void init() {
+		apiClient = new ApiClient();
+		apiClient.setBasePath(AGGREGATOR_BASE_URL);
+		conceptsApi = new ConceptsApi(apiClient);
+		statementsApi = new StatementsApi(apiClient);
+		evidenceApi = new EvidenceApi(apiClient);
+		exactmatchesApi = new ExactmatchesApi(apiClient);
 	}
 	
-	private void clearError(ApiClient apiClient) {
-		apiClient.setLastError(null);
-	}
-	
-	private void setError(ApiClient apiClient, Exception e) {
-		System.err.println("Error Querying:   " + apiClient.getBasePath());
-		System.err.println("Error message:    " + e.getMessage());
-		if (e instanceof JsonSyntaxException) {
-			System.err.println("PROBLEM WITH DESERIALIZING SERVER RESPONSE");
-		}
-		apiClient.setLastResponseCount(0);
-		apiClient.setLastError(e.getMessage());
-	}
-
 	/**
 	 * Gets a list of concepts satisfying a query with the given parameters.
 	 * @param keywords
@@ -98,114 +89,59 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			int pageNumber,
 			int pageSize
 	) {
-		final String sg = semanticGroups;
-		
-		SupplierBuilder<Concept> builder = new SupplierBuilder<Concept>() {
+		CompletableFuture<List<Concept>> future = CompletableFuture.supplyAsync(new Supplier<List<Concept>>() {
 
 			@Override
-			public ListSupplier<Concept> build(ApiClient apiClient) {
-				return new ListSupplier<Concept>() {
-
-					@Override
-					public List<Concept> getList() {
-						ConceptsApi conceptsApi = new ConceptsApi(apiClient);
-						
-						try {
-							List<InlineResponse2001> responses = conceptsApi.getConcepts(
-									urlEncode(keywords),
-									urlEncode(sg),
-									pageNumber,
-									pageSize
-							);
-							List<Concept> concepts = new ArrayList<Concept>();
-							for (InlineResponse2001 response : responses) {
-								SemanticGroup semgroup;
-								try {
-									semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
-								} catch (IllegalArgumentException ex) {
-									semgroup = null;
-								}
-								
-								Concept concept = new ConceptImpl(
-										response.getId(),
-										semgroup,
-										response.getName()
-								);
-								
-								concept.setSynonyms(String.join(" ", response.getSynonyms()));
-								concept.setDescription(response.getDefinition());
-								concept.setBeaconUrl(apiClient.getBasePath());
-								concepts.add(concept);
-							}
-							clearError(apiClient);
-							apiClient.setLastResponseCount(concepts.size());
-							return concepts;
-							
-						} catch (Exception e) {
-							setError(apiClient, e);
-							return new ArrayList<Concept>();
+			public List<Concept> get() {
+				List<Concept> concepts = new ArrayList<Concept>();
+				
+				try {
+					List<InlineResponse2001> responses = conceptsApi.getConcepts(keywords, semanticGroups, pageNumber, pageSize);
+					
+					for (InlineResponse2001 response : responses) {		
+						Concept concept = ModelConverter.buildConcept(response);
+						if (concept != null) {
+							concepts.add(concept);
 						}
 					}
 					
-				};
+				} catch (ApiException e) {
+					e.printStackTrace();
+				}
+				
+				return concepts;
 			}
 			
-		};
-		
-		return query(builder);
+		});
+		return future;
 	}
 	
 	public CompletableFuture<List<Concept>> getConceptDetails(String conceptId) {
-		SupplierBuilder<Concept> builder = new SupplierBuilder<Concept>() {
+		CompletableFuture<List<Concept>> future = CompletableFuture.supplyAsync(new Supplier<List<Concept>>() {
 
 			@Override
-			public ListSupplier<Concept> build(ApiClient apiClient) {
-				return new ListSupplier<Concept>() {
-
-					@Override
-					public List<Concept> getList() {
-						ConceptsApi conceptsApi = new ConceptsApi(apiClient);
-						
-						try {
-							List<InlineResponse200> responses = conceptsApi.getConceptDetails(
-									urlEncode(conceptId)
-							);
-							List<Concept> concepts = new ArrayList<Concept>();
-							
-							for (InlineResponse200 response : responses) {
-								SemanticGroup semgroup;
-								try {
-									semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
-								} catch (IllegalArgumentException e) {
-									semgroup = null;
-								}
-								
-								ConceptImpl concept = new ConceptImpl(
-										response.getId(),
-										semgroup,
-										response.getName()
-								);
-								
-								concept.setSynonyms(String.join(" ", response.getSynonyms()));
-								concept.setDescription(response.getDefinition());
-								concept.setBeaconUrl(apiClient.getBasePath());
-								concepts.add(concept);
-							}
-							clearError(apiClient);
-							apiClient.setLastResponseCount(concepts.size());
-							return concepts;
-							
-						} catch (Exception e) {
-							setError(apiClient, e);
-							return new ArrayList<Concept>();
+			public List<Concept> get() {
+				List<Concept> concepts = new ArrayList<Concept>();
+				
+				try {
+					List<InlineResponse200> responses = conceptsApi.getConceptDetails(conceptId);
+					
+					for (InlineResponse200 response : responses) {
+						Concept concept = ModelConverter.buildConcept(response);
+						if (concept != null) {
+							concepts.add(concept);
 						}
 					}
-					
-				};
+				} catch (ApiException e) {
+					e.printStackTrace();
+				}
+				
+				return concepts;
 			}
 			
-		};
-		return query(builder);
+		});
+		
+		return future;
 	}
 	
 	public CompletableFuture<List<Statement>> getStatements(
@@ -215,88 +151,42 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			int pageNumber,
 			int pageSize
 	) {
-		SupplierBuilder<Statement> builder = new SupplierBuilder<Statement>() {
+		CompletableFuture<List<Statement>> future = CompletableFuture.supplyAsync(new Supplier<List<Statement>>() {
 
 			@Override
-			public ListSupplier<Statement> build(ApiClient apiClient) {
-				return new ListSupplier<Statement>() {
-
-					@Override
-					public List<Statement> getList() {
-						
-						StatementsApi statementsApi = new StatementsApi(apiClient);
-						ExactmatchesApi exactMatchesApi = new ExactmatchesApi(apiClient);
-						
-						/* *****************************************************************
-						 *  May 27, 2017 RMB: 
-						 *  First implementation of the resolution of 'exact match' concepts
-						 *  is undertaken here, just before statement retrieval; however, this
-						 *  particular implementation may have some limitations.  The basic
-						 *  assumption made here is that the list of input emcis only need 
-						 *  to be locally resolved with the current Knowledge Beacon 
-						 *  processing the call; however, it may be the case that some
-						 *  other Knowledge Beacon knows about an equivalency that may be
-						 *  useful here, in this Knowledge Beacon. This would not be known
-						 *  without querying the whole series of available Knowledge Beacons
-						 *  perhaps iteratively.
-						 ******************************************************************/
-						String[] emcis = emci.split(" ");
-						
-						Set<String> exactMatches = new HashSet<String>();
-						try {
-
-							for (int i = 0; i < emcis.length; i++) {
-								emcis[i] = urlEncode(emcis[i]);
-
-								List<String> matches = exactMatchesApi.getExactMatchesToConcept(emcis[i]);
-								if (matches != null) {
-									exactMatches.addAll(matches);
-								}
-							}
-
-							exactMatches.addAll(Arrays.asList(emcis));
-							List<String> conceptIds = new ArrayList<String>();
-							conceptIds.addAll(exactMatches);
-							
-							/*-*****************************************************************/
-							
-							List<InlineResponse2002> responses = statementsApi.getStatements(conceptIds, pageNumber,
-									pageSize, keywords, semgroups);
-							List<Statement> statements = new ArrayList<Statement>();
-
-							for (InlineResponse2002 response : responses) {
-								String id = response.getId();
-								StatementsObject statementsObject = response.getObject();
-								StatementsSubject statementsSubject = response.getSubject();
-								StatementsPredicate statementsPredicate = response.getPredicate();
-
-								ConceptImpl subject = new ConceptImpl(statementsSubject.getId(), null,
-										statementsSubject.getName());
-
-								ConceptImpl object = new ConceptImpl(statementsObject.getId(), null,
-										statementsObject.getName());
-
-								PredicateImpl predicate = new PredicateImpl(statementsPredicate.getName());
-								
-								Statement statement = new GeneralStatement(id, subject, predicate, object);
-								statement.setBeaconUrl(apiClient.getBasePath());
-								statements.add(statement);
-							}
-							clearError(apiClient);
-							apiClient.setLastResponseCount(statements.size());
-							return statements;
-
-						} catch (Exception e) {
-							setError(apiClient, e);
-							return new ArrayList<Statement>();
-						}
+			public List<Statement> get() {
+				List<Statement> statements = new ArrayList<Statement>();
+				try {
+					List<String> exactmatches = exactmatchesApi.getExactMatchesToConceptList(Arrays.asList(emci.split(" ")));
+					
+					if (exactmatches.isEmpty()) {
+						exactmatches.addAll(Arrays.asList(emci.split(" ")));
 					}
 					
-				};
+					List<InlineResponse2002> responses = statementsApi.getStatements(
+							exactmatches,
+							pageNumber,
+							pageSize,
+							keywords,
+							semgroups
+					);
+					
+					for (InlineResponse2002 response : responses) {
+						Statement statement = ModelConverter.buildStatement(response);
+						if (statement != null) {
+							statements.add(statement);
+						}
+					}
+				} catch (ApiException e) {
+					e.printStackTrace();
+				}
+				
+				return statements;
 			}
 			
-		};
-		return query(builder);
+		});
+		
+		return future;
 	}
 	
 	/**
@@ -308,60 +198,39 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			int pageNumber,
 			int pageSize
 	) {
-		SupplierBuilder<Annotation> builder = new SupplierBuilder<Annotation>() {
+		CompletableFuture<List<Annotation>> future = CompletableFuture.supplyAsync(new Supplier<List<Annotation>>() {
 
 			@Override
-			public ListSupplier<Annotation> build(ApiClient apiClient) {
-				return new ListSupplier<Annotation>() {
-
-					@Override
-					public List<Annotation> getList() {
-						EvidenceApi evidenceApi = new EvidenceApi(apiClient);
+			public List<Annotation> get() {
+				List<Annotation> annotations = new ArrayList<Annotation>();
+				
+				try {
+					String[] strings = statementId.split("\\|");
+					String id = strings.length >= 2 ? strings[2] : statementId;
+					List<InlineResponse2003> responses = evidenceApi.getEvidence(id, keywords, pageNumber, pageSize);
+					
+					for (InlineResponse2003 response : responses) {
+						Annotation annotation = ModelConverter.buildAnnotation(response);
 						
-						/**
-						 * Wikidata statement id's sometimes contain url's. We want to extract that!
-						 */
-						String[] strings = statementId.split("\\|");
-						String id = strings.length >= 2 ? strings[2] : statementId;
-						
-						try {
-							List<InlineResponse2003> responses = evidenceApi.getEvidence(
-									urlEncode(id),
-									urlEncode(keywords),
-									pageNumber,
-									pageSize
-							);
-							
-							List<Annotation> annotations = new ArrayList<Annotation>();
-							
-							for (InlineResponse2003 response : responses) {
-								Annotation annotation = new AnnotationImpl();
-								annotation.setId(response.getId());
-								annotation.setName(response.getLabel());
-								annotation.setPublicationDate(response.getDate());
-								
-								if (strings.length >= 2) {
-									// There can be an id in here!
-									annotation.setUrl(strings[1]);
-								}
-								annotation.setBeaconUrl(apiClient.getBasePath());
-								annotations.add(annotation);
+						if (annotation != null) {
+							if (strings.length >= 2) {
+								// There can be an id in here!
+								annotation.setUrl(strings[1]);
 							}
-							clearError(apiClient);
-							apiClient.setLastResponseCount(annotations.size());
-							return annotations;
-							
-						} catch (Exception e) {
-							setError(apiClient, e);
-							return new ArrayList<Annotation>();
+							annotations.add(annotation);
 						}
 					}
 					
-				};
+				} catch (ApiException e) {
+					e.printStackTrace();
+				}
+				
+				return annotations;
 			}
 			
-		};
-		return query(builder);
+		});
+		
+		return future;
 	}
 	
 	public CompletableFuture<List<Annotation>> getEvidences(
@@ -370,45 +239,7 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			int pageNumber,
 			int pageSize
 		) {
-		
-		// If the statement does not contain a beacon URL, then default to querying
-		// every active beacon.
-		if (statement.getBeaconUrl() == null) {
-			return getEvidences(statement.getId(), keywords, pageNumber, pageSize);
-		}
-		
-		ApiClient apiClient = new ApiClient();
-		apiClient.setBasePath(statement.getBeaconUrl());
-		EvidenceApi evidenceApi = new EvidenceApi(apiClient);
-		
-		CompletableFuture<List<Annotation>> future =
-				CompletableFuture.supplyAsync(new Supplier<List<Annotation>>() {
-					@Override
-					public List<Annotation> get() {
-						try {
-							List<InlineResponse2003> responses = 
-									evidenceApi.getEvidence(statement.getId(), keywords, pageNumber, pageSize);
-							
-							List<Annotation> annotations = new ArrayList<Annotation>();
-							for (InlineResponse2003 response : responses) {
-								Annotation annotation = new AnnotationImpl();
-								annotation.setId(response.getId());
-								annotation.setPublicationDate(response.getDate());
-								annotation.setName(response.getLabel());
-								annotation.setBeaconUrl(apiClient.getBasePath());
-								annotations.add(annotation);
-							}
-							clearError(apiClient);
-							apiClient.setLastResponseCount(annotations.size());
-							return annotations;
-						} catch (ApiException e) {
-							setError(apiClient, e);
-							return new ArrayList<Annotation>();
-						}
-					}
-		});
-		
-		return future;
+		return getEvidences(statement.getId(), keywords, pageNumber, pageSize);
 	}
 
 	/**
@@ -418,6 +249,11 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 	 */
 	public String discoverExactMatchClique(String emci) {
 		return emci;
+	}
+	
+	public int getKnowledgeBeaconCount() {
+		throw new RuntimeException("NOT IMPLEMENTED YET");
+//		return 7;
 	}
 	
 }

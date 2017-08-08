@@ -136,6 +136,20 @@ public enum SemanticGroup {
 	}
 	
 	/**
+	 * Looks up the value of str, and if not found returns defaultValue
+	 * @param str
+	 * @param defaultValue
+	 * @return
+	 */
+	public static SemanticGroup valueOf(String str, SemanticGroup defaultValue) {
+		try {
+			return SemanticGroup.valueOf(str);
+		} catch (IllegalArgumentException e) {
+			return defaultValue;
+		}
+	}
+	
+	/**
 	 * 
 	 */
 	@Override
