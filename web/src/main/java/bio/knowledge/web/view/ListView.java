@@ -169,7 +169,7 @@ public class ListView extends BaseView {
 	
 	@Autowired
 	KnowledgeBeaconRegistry kbRegistry;
-
+	
 	// Wrapper for datasource container,
 	// to add extra action columns for 'details', 'data download', etc.
 	private GeneratedPropertyContainer gpcontainer;
@@ -337,6 +337,25 @@ public class ListView extends BaseView {
 			conceptMapArchiveService.setSearchMode(searchMode);
 			refresh();
 		}
+		
+		private boolean loadDataPage(int pageNumber) {
+			String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+			// Simplistic addition of text filtering to tables which can use it
+			// Won't really work so well in StatementService, I suspect...
+			if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
+			// We always want to fill the table with enough rows so that the scroll bar shows.
+			int pageSize = (int) (dataTable.getHeightByRows() * 2 / kbService.getKnowledgeBeaconCount()) + 1;
+			List<? extends IdentifiedEntity> data;
+			int gatheredDataCount = 0;
+			do {
+				data = pager.getDataPage(pageNumber, pageSize, filter, sorter, isAscending);
+				gatheredDataCount += data.size();
+				container.addAll(data);
+			} while(data.size() != 0 && gatheredDataCount < pageSize);
+			
+			boolean loadedAllData = data.size() == 0;
+			return loadedAllData;
+		}
 
 		public void refresh() {
 			if (pager != null) {
@@ -351,17 +370,9 @@ public class ListView extends BaseView {
 					} else {
 						authenticationState.setState(null, null);
 					}
-					String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
 					
-					// Simplistic addition of text filtering to tables which can use it
-					// Won't really work so well in StatementService, I suspect...
-					if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
+					loadedAllData = loadDataPage(1);
 					
-					// We always want to fill the table with enough rows so that the scroll bar shows.
-					int pageSize = (int) dataTable.getHeightByRows() * 2;
-					List<? extends IdentifiedEntity> data = pager.getDataPage(1, pageSize, filter, sorter, isAscending);
-					container.addAll(data);
-					loadedAllData = false;
 					nextPageNumber = 2;
 					
 					sortDataTable();
@@ -381,7 +392,7 @@ public class ListView extends BaseView {
 		private int nextPageNumber;
 		public void loadNextPage() {
 			if (pager != null && !loadedAllData) {
-				int pageSize = (int) dataTable.getHeightByRows() * 2;
+				int pageSize = (int) (dataTable.getHeightByRows() * 2 / kbService.getKnowledgeBeaconCount());
 				loadingDataPage = true;
 				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
 				
@@ -389,15 +400,9 @@ public class ListView extends BaseView {
 				// Won't really work so well in StatementService, I suspect...
 				if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
 				
-				List<? extends IdentifiedEntity> data = 
-						pager.getDataPage(nextPageNumber, pageSize, filter, sorter, isAscending);
-				container.addAll(data);
+				loadedAllData = loadDataPage(nextPageNumber);
 				nextPageNumber++;
 				loadingDataPage = false;
-				
-				if (data.size() == 0) {
-					loadedAllData = true;
-				}
 			}
 			
 			sortDataTable();
@@ -1740,7 +1745,7 @@ public class ListView extends BaseView {
 				ViewName.CONCEPTS_VIEW,
 				new BeanItemContainer<Concept>(Concept.class), 
 				conceptService,
-				new String[] { "beaconSource", "name|*", "semanticGroup", "description|*", "synonyms|*"},
+				new String[] { "name|*", "semanticGroup", "description|*", "synonyms|*"},
 				null, 
 				null);
 
@@ -1806,7 +1811,7 @@ public class ListView extends BaseView {
 		});
 
 		registry.setMapping(ViewName.RELATIONS_VIEW, new BeanItemContainer<Statement>(Statement.class),
-				statementService, new String[] { "beaconSource", "subject|*", COL_ID_RELATION, "object|*", "evidence|*" }, null);
+				statementService, new String[] { "subject|*", COL_ID_RELATION, "object|*", "evidence|*" }, null);
 
 		
 		registry.addSelectionHandler(ViewName.RELATIONS_VIEW, COL_ID_SUBJECT,
