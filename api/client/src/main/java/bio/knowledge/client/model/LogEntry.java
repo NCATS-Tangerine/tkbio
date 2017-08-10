@@ -24,50 +24,71 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * StatementsPredicate
+ * LogEntry
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-10T11:01:04.693-07:00")
-public class StatementsPredicate {
-  @SerializedName("id")
-  private String id = null;
+public class LogEntry {
+  @SerializedName("timestamp")
+  private String timestamp = null;
 
-  @SerializedName("name")
-  private String name = null;
+  @SerializedName("query")
+  private String query = null;
 
-  public StatementsPredicate id(String id) {
-    this.id = id;
+  @SerializedName("message")
+  private String message = null;
+
+  public LogEntry timestamp(String timestamp) {
+    this.timestamp = timestamp;
     return this;
   }
 
    /**
-   * CURIE-encoded identifier of predicate resource 
-   * @return id
+   * timestamp 
+   * @return timestamp
   **/
-  @ApiModelProperty(value = "CURIE-encoded identifier of predicate resource ")
-  public String getId() {
-    return id;
+  @ApiModelProperty(value = "timestamp ")
+  public String getTimestamp() {
+    return timestamp;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  public void setTimestamp(String timestamp) {
+    this.timestamp = timestamp;
   }
 
-  public StatementsPredicate name(String name) {
-    this.name = name;
+  public LogEntry query(String query) {
+    this.query = query;
     return this;
   }
 
    /**
-   * human readable label of concept
-   * @return name
+   * URL of the API call executed by the aggregator 
+   * @return query
   **/
-  @ApiModelProperty(value = "human readable label of concept")
-  public String getName() {
-    return name;
+  @ApiModelProperty(value = "URL of the API call executed by the aggregator ")
+  public String getQuery() {
+    return query;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setQuery(String query) {
+    this.query = query;
+  }
+
+  public LogEntry message(String message) {
+    this.message = message;
+    return this;
+  }
+
+   /**
+   * error message 
+   * @return message
+  **/
+  @ApiModelProperty(value = "error message ")
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
   }
 
 
@@ -79,24 +100,26 @@ public class StatementsPredicate {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    StatementsPredicate statementsPredicate = (StatementsPredicate) o;
-    return Objects.equals(this.id, statementsPredicate.id) &&
-        Objects.equals(this.name, statementsPredicate.name);
+    LogEntry logEntry = (LogEntry) o;
+    return Objects.equals(this.timestamp, logEntry.timestamp) &&
+        Objects.equals(this.query, logEntry.query) &&
+        Objects.equals(this.message, logEntry.message);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name);
+    return Objects.hash(timestamp, query, message);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class StatementsPredicate {\n");
+    sb.append("class LogEntry {\n");
     
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
+    sb.append("    query: ").append(toIndentedString(query)).append("\n");
+    sb.append("    message: ").append(toIndentedString(message)).append("\n");
     sb.append("}");
     return sb.toString();
   }

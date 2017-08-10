@@ -14,7 +14,8 @@
 package bio.knowledge.client.api;
 
 import bio.knowledge.client.ApiException;
-import bio.knowledge.client.model.Annotation;
+import bio.knowledge.client.model.KnowledgeBeacon;
+import bio.knowledge.client.model.LogEntry;
 import org.junit.Test;
 import org.junit.Ignore;
 
@@ -24,29 +25,42 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * API tests for EvidenceApi
+ * API tests for AggregatorApi
  */
 @Ignore
-public class EvidenceApiTest {
+public class AggregatorApiTest {
 
-    private final EvidenceApi api = new EvidenceApi();
+    private final AggregatorApi api = new AggregatorApi();
 
     
     /**
      * 
      *
-     * Retrieves a (paged) list of annotations cited as evidence for a specified concept-relationship statement 
+     * Get a list of the knowledge beacons that the aggregator can query 
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void getEvidenceTest() throws ApiException {
-        String statementId = null;
-        String keywords = null;
-        Integer pageNumber = null;
-        Integer pageSize = null;
-        List<Annotation> response = api.getEvidence(statementId, keywords, pageNumber, pageSize);
+    public void getBeaconsTest() throws ApiException {
+        String sessionId = null;
+        List<KnowledgeBeacon> response = api.getBeacons(sessionId);
+
+        // TODO: test validations
+    }
+    
+    /**
+     * 
+     *
+     * Get a log of the most recent errors in this session 
+     *
+     * @throws ApiException
+     *          if the Api call fails
+     */
+    @Test
+    public void getErrorsTest() throws ApiException {
+        String sessionId = null;
+        List<LogEntry> response = api.getErrors(sessionId);
 
         // TODO: test validations
     }

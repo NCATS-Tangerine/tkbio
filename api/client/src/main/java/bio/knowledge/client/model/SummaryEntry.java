@@ -24,26 +24,29 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * StatementsPredicate
+ * SummaryEntry
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-10T11:01:04.693-07:00")
-public class StatementsPredicate {
+public class SummaryEntry {
   @SerializedName("id")
   private String id = null;
 
-  @SerializedName("name")
-  private String name = null;
+  @SerializedName("idmap")
+  private String idmap = null;
 
-  public StatementsPredicate id(String id) {
+  @SerializedName("frequency")
+  private Integer frequency = null;
+
+  public SummaryEntry id(String id) {
     this.id = id;
     return this;
   }
 
    /**
-   * CURIE-encoded identifier of predicate resource 
+   * the type  
    * @return id
   **/
-  @ApiModelProperty(value = "CURIE-encoded identifier of predicate resource ")
+  @ApiModelProperty(value = "the type  ")
   public String getId() {
     return id;
   }
@@ -52,22 +55,40 @@ public class StatementsPredicate {
     this.id = id;
   }
 
-  public StatementsPredicate name(String name) {
-    this.name = name;
+  public SummaryEntry idmap(String idmap) {
+    this.idmap = idmap;
     return this;
   }
 
    /**
-   * human readable label of concept
-   * @return name
+   * The URL to execute the exactmatches API call on the id
+   * @return idmap
   **/
-  @ApiModelProperty(value = "human readable label of concept")
-  public String getName() {
-    return name;
+  @ApiModelProperty(value = "The URL to execute the exactmatches API call on the id")
+  public String getIdmap() {
+    return idmap;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setIdmap(String idmap) {
+    this.idmap = idmap;
+  }
+
+  public SummaryEntry frequency(Integer frequency) {
+    this.frequency = frequency;
+    return this;
+  }
+
+   /**
+   * the number of instances of the specified type 
+   * @return frequency
+  **/
+  @ApiModelProperty(value = "the number of instances of the specified type ")
+  public Integer getFrequency() {
+    return frequency;
+  }
+
+  public void setFrequency(Integer frequency) {
+    this.frequency = frequency;
   }
 
 
@@ -79,24 +100,26 @@ public class StatementsPredicate {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    StatementsPredicate statementsPredicate = (StatementsPredicate) o;
-    return Objects.equals(this.id, statementsPredicate.id) &&
-        Objects.equals(this.name, statementsPredicate.name);
+    SummaryEntry summaryEntry = (SummaryEntry) o;
+    return Objects.equals(this.id, summaryEntry.id) &&
+        Objects.equals(this.idmap, summaryEntry.idmap) &&
+        Objects.equals(this.frequency, summaryEntry.frequency);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name);
+    return Objects.hash(id, idmap, frequency);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class StatementsPredicate {\n");
+    sb.append("class SummaryEntry {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    idmap: ").append(toIndentedString(idmap)).append("\n");
+    sb.append("    frequency: ").append(toIndentedString(frequency)).append("\n");
     sb.append("}");
     return sb.toString();
   }

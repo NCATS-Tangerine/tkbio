@@ -14,7 +14,7 @@
 package bio.knowledge.client.api;
 
 import bio.knowledge.client.ApiException;
-import bio.knowledge.client.model.Annotation;
+import bio.knowledge.client.model.SummaryEntry;
 import org.junit.Test;
 import org.junit.Ignore;
 
@@ -24,29 +24,25 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * API tests for EvidenceApi
+ * API tests for SummaryApi
  */
 @Ignore
-public class EvidenceApiTest {
+public class SummaryApiTest {
 
-    private final EvidenceApi api = new EvidenceApi();
+    private final SummaryApi api = new SummaryApi();
 
     
     /**
      * 
      *
-     * Retrieves a (paged) list of annotations cited as evidence for a specified concept-relationship statement 
+     * Get a list of types and # of instances in the knowledge source, and a link to the API call for the list of equivalent terminology 
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void getEvidenceTest() throws ApiException {
-        String statementId = null;
-        String keywords = null;
-        Integer pageNumber = null;
-        Integer pageSize = null;
-        List<Annotation> response = api.getEvidence(statementId, keywords, pageNumber, pageSize);
+    public void linkedTypesTest() throws ApiException {
+        List<SummaryEntry> response = api.linkedTypes();
 
         // TODO: test validations
     }

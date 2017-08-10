@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 <a name="getConceptDetails"></a>
 # **getConceptDetails**
-> List&lt;InlineResponse200&gt; getConceptDetails(conceptId)
+> List&lt;ConceptDetail&gt; getConceptDetails(conceptId)
 
 
 
@@ -26,7 +26,7 @@ Retrieves details for a specified concepts in the system, as specified by a (url
 ConceptsApi apiInstance = new ConceptsApi();
 String conceptId = "conceptId_example"; // String | (url-encoded) CURIE identifier of concept of interest
 try {
-    List<InlineResponse200> result = apiInstance.getConceptDetails(conceptId);
+    List<ConceptDetail> result = apiInstance.getConceptDetails(conceptId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConceptsApi#getConceptDetails");
@@ -42,7 +42,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;InlineResponse200&gt;**](InlineResponse200.md)
+[**List&lt;ConceptDetail&gt;**](ConceptDetail.md)
 
 ### Authorization
 
@@ -55,7 +55,7 @@ No authorization required
 
 <a name="getConcepts"></a>
 # **getConcepts**
-> List&lt;InlineResponse2001&gt; getConcepts(keywords, semgroups, pageNumber, pageSize)
+> List&lt;Concept&gt; getConcepts(keywords, semgroups, pageNumber, pageSize)
 
 
 
@@ -74,7 +74,7 @@ String semgroups = "semgroups_example"; // String | a (url-encoded) space-delimi
 Integer pageNumber = 56; // Integer | (1-based) number of the page to be returned in a paged set of query results 
 Integer pageSize = 56; // Integer | number of concepts per page to be returned in a paged set of query results 
 try {
-    List<InlineResponse2001> result = apiInstance.getConcepts(keywords, semgroups, pageNumber, pageSize);
+    List<Concept> result = apiInstance.getConcepts(keywords, semgroups, pageNumber, pageSize);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConceptsApi#getConcepts");
@@ -93,7 +93,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;InlineResponse2001&gt;**](InlineResponse2001.md)
+[**List&lt;Concept&gt;**](Concept.md)
 
 ### Authorization
 

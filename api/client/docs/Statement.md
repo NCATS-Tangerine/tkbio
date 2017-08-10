@@ -1,5 +1,5 @@
 
-# InlineResponse2002
+# Statement
 
 ## Properties
 Name | Type | Description | Notes
