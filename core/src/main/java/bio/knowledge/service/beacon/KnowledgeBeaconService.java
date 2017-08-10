@@ -2,9 +2,7 @@ package bio.knowledge.service.beacon;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -12,18 +10,11 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Service;
 
-import com.google.gson.JsonSyntaxException;
-
 import bio.knowledge.client.ApiClient;
-import bio.knowledge.client.ApiException;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.api.EvidenceApi;
 import bio.knowledge.client.api.ExactmatchesApi;
 import bio.knowledge.client.api.StatementsApi;
-import bio.knowledge.client.model.InlineResponse200;
-import bio.knowledge.client.model.InlineResponse2001;
-import bio.knowledge.client.model.InlineResponse2002;
-import bio.knowledge.client.model.InlineResponse2003;
 import bio.knowledge.client.model.StatementsObject;
 import bio.knowledge.client.model.StatementsPredicate;
 import bio.knowledge.client.model.StatementsSubject;
@@ -54,7 +45,7 @@ import bio.knowledge.model.Statement;
  *
  */
 @Service
-public class KnowledgeBeaconService extends GenericKnowledgeService {
+public class KnowledgeBeaconService {
 	public static String AGGREGATOR_BASE_URL = "https://kba.ncats.io";
 	
 	
@@ -96,17 +87,33 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 				List<Concept> concepts = new ArrayList<Concept>();
 				
 				try {
-					List<InlineResponse2001> responses = conceptsApi.getConcepts(keywords, semanticGroups, pageNumber, pageSize);
-					
-					for (InlineResponse2001 response : responses) {		
-						Concept concept = ModelConverter.buildConcept(response);
-						if (concept != null) {
-							concepts.add(concept);
+					List<bio.knowledge.client.model.Concept> responses = conceptsApi.getConcepts(
+							keywords,
+							semanticGroups,
+							pageNumber,
+							pageSize
+					);
+					for (bio.knowledge.client.model.Concept response : responses) {
+						SemanticGroup semgroup;
+						try {
+							semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
+						} catch (IllegalArgumentException ex) {
+							semgroup = null;
 						}
+						
+						Concept concept = new ConceptImpl(
+								response.getId(),
+								semgroup,
+								response.getName()
+						);
+						
+						concept.setSynonyms(String.join(" ", response.getSynonyms()));
+						concept.setDescription(response.getDefinition());
+						concepts.add(concept);
 					}
 					
-				} catch (ApiException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					
 				}
 				
 				return concepts;
@@ -124,16 +131,31 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 				List<Concept> concepts = new ArrayList<Concept>();
 				
 				try {
-					List<InlineResponse200> responses = conceptsApi.getConceptDetails(conceptId);
+					List<bio.knowledge.client.model.ConceptDetail> responses = conceptsApi.getConceptDetails(conceptId);
 					
-					for (InlineResponse200 response : responses) {
-						Concept concept = ModelConverter.buildConcept(response);
-						if (concept != null) {
-							concepts.add(concept);
+					for (bio.knowledge.client.model.ConceptDetail response : responses) {
+						SemanticGroup semgroup;
+						try {
+							semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
+						} catch (IllegalArgumentException e) {
+							semgroup = null;
 						}
+						
+						ConceptImpl concept = new ConceptImpl(
+								response.getId(),
+								semgroup,
+								response.getName()
+						);
+						
+						concept.setSynonyms(String.join(" ", response.getSynonyms()));
+						concept.setDescription(response.getDefinition());
+						concepts.add(concept);
 					}
-				} catch (ApiException e) {
-					e.printStackTrace();
+					
+					return concepts;
+					
+				} catch (Exception e) {
+
 				}
 				
 				return concepts;
@@ -156,29 +178,37 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			@Override
 			public List<Statement> get() {
 				List<Statement> statements = new ArrayList<Statement>();
-				try {
-					List<String> exactmatches = exactmatchesApi.getExactMatchesToConceptList(Arrays.asList(emci.split(" ")));
-					
-					if (exactmatches.isEmpty()) {
-						exactmatches.addAll(Arrays.asList(emci.split(" ")));
-					}
-					
-					List<InlineResponse2002> responses = statementsApi.getStatements(
-							exactmatches,
+				try {					
+					List<bio.knowledge.client.model.Statement> responses = statementsApi.getStatements(
+							Arrays.asList(emci.split(" ")),
 							pageNumber,
 							pageSize,
 							keywords,
 							semgroups
 					);
-					
-					for (InlineResponse2002 response : responses) {
-						Statement statement = ModelConverter.buildStatement(response);
-						if (statement != null) {
-							statements.add(statement);
-						}
+
+					for (bio.knowledge.client.model.Statement response : responses) {
+						String id = response.getId();
+						StatementsObject statementsObject = response.getObject();
+						StatementsSubject statementsSubject = response.getSubject();
+						StatementsPredicate statementsPredicate = response.getPredicate();
+
+						ConceptImpl subject = new ConceptImpl(statementsSubject.getId(), null,
+								statementsSubject.getName());
+
+						ConceptImpl object = new ConceptImpl(statementsObject.getId(), null,
+								statementsObject.getName());
+
+						PredicateImpl predicate = new PredicateImpl(statementsPredicate.getName());
+						
+						Statement statement = new GeneralStatement(id, subject, predicate, object);
+						
+						statements.add(statement);
 					}
-				} catch (ApiException e) {
-					e.printStackTrace();
+
+
+				} catch (Exception e) {
+
 				}
 				
 				return statements;
@@ -204,25 +234,33 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 			public List<Annotation> get() {
 				List<Annotation> annotations = new ArrayList<Annotation>();
 				
+				String[] strings = statementId.split("\\|");
+				String id = strings.length >= 2 ? strings[2] : statementId;
+				
 				try {
-					String[] strings = statementId.split("\\|");
-					String id = strings.length >= 2 ? strings[2] : statementId;
-					List<InlineResponse2003> responses = evidenceApi.getEvidence(id, keywords, pageNumber, pageSize);
+					List<bio.knowledge.client.model.Annotation> responses = evidenceApi.getEvidence(
+							id,
+							keywords,
+							pageNumber,
+							pageSize
+					);
 					
-					for (InlineResponse2003 response : responses) {
-						Annotation annotation = ModelConverter.buildAnnotation(response);
+					for (bio.knowledge.client.model.Annotation response : responses) {
+						Annotation annotation = new AnnotationImpl();
+						annotation.setId(response.getId());
+						annotation.setName(response.getLabel());
+						annotation.setPublicationDate(response.getDate());
 						
-						if (annotation != null) {
-							if (strings.length >= 2) {
-								// There can be an id in here!
-								annotation.setUrl(strings[1]);
-							}
-							annotations.add(annotation);
+						if (strings.length >= 2) {
+							// There can be an id in here!
+							annotation.setUrl(strings[1]);
 						}
+						
+						annotations.add(annotation);
 					}
+										
+				} catch (Exception e) {
 					
-				} catch (ApiException e) {
-					e.printStackTrace();
 				}
 				
 				return annotations;
@@ -252,8 +290,8 @@ public class KnowledgeBeaconService extends GenericKnowledgeService {
 	}
 	
 	public int getKnowledgeBeaconCount() {
-		throw new RuntimeException("NOT IMPLEMENTED YET");
-//		return 7;
+//		throw new RuntimeException("NOT IMPLEMENTED YET");
+		return 7;
 	}
 	
 }
