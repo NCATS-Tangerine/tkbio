@@ -351,7 +351,7 @@ public class ListView extends BaseView {
 				data = pager.getDataPage(pageNumber, pageSize, filter, sorter, isAscending);
 				gatheredDataCount += data.size();
 				container.addAll(data);
-			} while(data.size() != 0 && gatheredDataCount < pageSize);
+			} while(data.size() != 0 && gatheredDataCount < dataTable.getHeightByRows() * 2);
 			
 			boolean loadedAllData = data.size() == 0;
 			return loadedAllData;
