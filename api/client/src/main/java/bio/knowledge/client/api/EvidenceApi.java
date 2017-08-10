@@ -1,6 +1,6 @@
 /*
  * Translator Knowledge Beacon API
- * This is the Translator Knowledge Beacon web service application programming interface (API).  See the [tk beacon github repo for more information](https://github.com/NCATS-Tangerine/translator-knowledge-beacon/). 
+ * This is the Translator Knowledge Beacon Aggregator web service application programming interface (API). 
  *
  * OpenAPI spec version: 1.0.12
  * Contact: richard@starinformatics.com
@@ -60,12 +60,14 @@ public class EvidenceApi {
      * @param keywords (url-encoded, space delimited) keyword filter to apply against the label field of the annotation  (optional)
      * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
      * @param pageSize number of cited references per page to be returned in a paged set of query results  (optional)
+     * @param beacons set of IDs of beacons to be used as knowledge sources for the query  (optional)
+     * @param sessionId identifier to be used for tagging session data  (optional)
      * @param progressListener Progress listener
      * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call getEvidenceCall(String statementId, String keywords, Integer pageNumber, Integer pageSize, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call getEvidenceCall(String statementId, String keywords, Integer pageNumber, Integer pageSize, List<String> beacons, String sessionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
@@ -79,6 +81,10 @@ public class EvidenceApi {
         localVarQueryParams.addAll(apiClient.parameterToPairs("", "pageNumber", pageNumber));
         if (pageSize != null)
         localVarQueryParams.addAll(apiClient.parameterToPairs("", "pageSize", pageSize));
+        if (beacons != null)
+        localVarQueryParams.addAll(apiClient.parameterToPairs("csv", "beacons", beacons));
+        if (sessionId != null)
+        localVarQueryParams.addAll(apiClient.parameterToPairs("", "sessionId", sessionId));
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
 
@@ -113,7 +119,7 @@ public class EvidenceApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getEvidenceValidateBeforeCall(String statementId, String keywords, Integer pageNumber, Integer pageSize, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getEvidenceValidateBeforeCall(String statementId, String keywords, Integer pageNumber, Integer pageSize, List<String> beacons, String sessionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'statementId' is set
         if (statementId == null) {
@@ -121,7 +127,7 @@ public class EvidenceApi {
         }
         
         
-        com.squareup.okhttp.Call call = getEvidenceCall(statementId, keywords, pageNumber, pageSize, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getEvidenceCall(statementId, keywords, pageNumber, pageSize, beacons, sessionId, progressListener, progressRequestListener);
         return call;
 
         
@@ -137,11 +143,13 @@ public class EvidenceApi {
      * @param keywords (url-encoded, space delimited) keyword filter to apply against the label field of the annotation  (optional)
      * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
      * @param pageSize number of cited references per page to be returned in a paged set of query results  (optional)
+     * @param beacons set of IDs of beacons to be used as knowledge sources for the query  (optional)
+     * @param sessionId identifier to be used for tagging session data  (optional)
      * @return List&lt;Annotation&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<Annotation> getEvidence(String statementId, String keywords, Integer pageNumber, Integer pageSize) throws ApiException {
-        ApiResponse<List<Annotation>> resp = getEvidenceWithHttpInfo(statementId, keywords, pageNumber, pageSize);
+    public List<Annotation> getEvidence(String statementId, String keywords, Integer pageNumber, Integer pageSize, List<String> beacons, String sessionId) throws ApiException {
+        ApiResponse<List<Annotation>> resp = getEvidenceWithHttpInfo(statementId, keywords, pageNumber, pageSize, beacons, sessionId);
         return resp.getData();
     }
 
@@ -152,11 +160,13 @@ public class EvidenceApi {
      * @param keywords (url-encoded, space delimited) keyword filter to apply against the label field of the annotation  (optional)
      * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
      * @param pageSize number of cited references per page to be returned in a paged set of query results  (optional)
+     * @param beacons set of IDs of beacons to be used as knowledge sources for the query  (optional)
+     * @param sessionId identifier to be used for tagging session data  (optional)
      * @return ApiResponse&lt;List&lt;Annotation&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<Annotation>> getEvidenceWithHttpInfo(String statementId, String keywords, Integer pageNumber, Integer pageSize) throws ApiException {
-        com.squareup.okhttp.Call call = getEvidenceValidateBeforeCall(statementId, keywords, pageNumber, pageSize, null, null);
+    public ApiResponse<List<Annotation>> getEvidenceWithHttpInfo(String statementId, String keywords, Integer pageNumber, Integer pageSize, List<String> beacons, String sessionId) throws ApiException {
+        com.squareup.okhttp.Call call = getEvidenceValidateBeforeCall(statementId, keywords, pageNumber, pageSize, beacons, sessionId, null, null);
         Type localVarReturnType = new TypeToken<List<Annotation>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -168,11 +178,13 @@ public class EvidenceApi {
      * @param keywords (url-encoded, space delimited) keyword filter to apply against the label field of the annotation  (optional)
      * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
      * @param pageSize number of cited references per page to be returned in a paged set of query results  (optional)
+     * @param beacons set of IDs of beacons to be used as knowledge sources for the query  (optional)
+     * @param sessionId identifier to be used for tagging session data  (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getEvidenceAsync(String statementId, String keywords, Integer pageNumber, Integer pageSize, final ApiCallback<List<Annotation>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getEvidenceAsync(String statementId, String keywords, Integer pageNumber, Integer pageSize, List<String> beacons, String sessionId, final ApiCallback<List<Annotation>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -193,7 +205,7 @@ public class EvidenceApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getEvidenceValidateBeforeCall(statementId, keywords, pageNumber, pageSize, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getEvidenceValidateBeforeCall(statementId, keywords, pageNumber, pageSize, beacons, sessionId, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<List<Annotation>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;

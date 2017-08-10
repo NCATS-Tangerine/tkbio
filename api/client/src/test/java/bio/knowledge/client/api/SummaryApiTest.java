@@ -1,6 +1,6 @@
 /*
  * Translator Knowledge Beacon API
- * This is the Translator Knowledge Beacon web service application programming interface (API).  See the [tk beacon github repo for more information](https://github.com/NCATS-Tangerine/translator-knowledge-beacon/). 
+ * This is the Translator Knowledge Beacon Aggregator web service application programming interface (API). 
  *
  * OpenAPI spec version: 1.0.12
  * Contact: richard@starinformatics.com
@@ -14,7 +14,7 @@
 package bio.knowledge.client.api;
 
 import bio.knowledge.client.ApiException;
-import bio.knowledge.client.model.SummaryEntry;
+import bio.knowledge.client.model.Summary;
 import org.junit.Test;
 import org.junit.Ignore;
 
@@ -42,7 +42,8 @@ public class SummaryApiTest {
      */
     @Test
     public void linkedTypesTest() throws ApiException {
-        List<SummaryEntry> response = api.linkedTypes();
+        String sessionId = null;
+        List<Summary> response = api.linkedTypes(sessionId);
 
         // TODO: test validations
     }

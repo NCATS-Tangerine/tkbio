@@ -1,6 +1,6 @@
 # ConceptsApi
 
-All URIs are relative to *http://api.knowledge.bio/api*
+All URIs are relative to *http://kba.ncats.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 <a name="getConceptDetails"></a>
 # **getConceptDetails**
-> List&lt;ConceptDetail&gt; getConceptDetails(conceptId)
+> List&lt;ConceptDetail&gt; getConceptDetails(conceptId, beacons, sessionId)
 
 
 
@@ -25,8 +25,10 @@ Retrieves details for a specified concepts in the system, as specified by a (url
 
 ConceptsApi apiInstance = new ConceptsApi();
 String conceptId = "conceptId_example"; // String | (url-encoded) CURIE identifier of concept of interest
+List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of IDs of beacons to be used as knowledge sources for the query 
+String sessionId = "sessionId_example"; // String | identifier to be used for tagging session data 
 try {
-    List<ConceptDetail> result = apiInstance.getConceptDetails(conceptId);
+    List<ConceptDetail> result = apiInstance.getConceptDetails(conceptId, beacons, sessionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConceptsApi#getConceptDetails");
@@ -39,6 +41,8 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **conceptId** | **String**| (url-encoded) CURIE identifier of concept of interest |
+ **beacons** | [**List&lt;String&gt;**](String.md)| set of IDs of beacons to be used as knowledge sources for the query  | [optional]
+ **sessionId** | **String**| identifier to be used for tagging session data  | [optional]
 
 ### Return type
 
@@ -55,7 +59,7 @@ No authorization required
 
 <a name="getConcepts"></a>
 # **getConcepts**
-> List&lt;Concept&gt; getConcepts(keywords, semgroups, pageNumber, pageSize)
+> List&lt;Concept&gt; getConcepts(keywords, semgroups, pageNumber, pageSize, beacons, sessionId)
 
 
 
@@ -73,8 +77,10 @@ String keywords = "keywords_example"; // String | a (urlencoded) space delimited
 String semgroups = "semgroups_example"; // String | a (url-encoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes) 
 Integer pageNumber = 56; // Integer | (1-based) number of the page to be returned in a paged set of query results 
 Integer pageSize = 56; // Integer | number of concepts per page to be returned in a paged set of query results 
+List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of IDs of beacons to be used as knowledge sources for the query 
+String sessionId = "sessionId_example"; // String | identifier to be used for tagging session data 
 try {
-    List<Concept> result = apiInstance.getConcepts(keywords, semgroups, pageNumber, pageSize);
+    List<Concept> result = apiInstance.getConcepts(keywords, semgroups, pageNumber, pageSize, beacons, sessionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConceptsApi#getConcepts");
@@ -90,6 +96,8 @@ Name | Type | Description  | Notes
  **semgroups** | **String**| a (url-encoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)  | [optional]
  **pageNumber** | **Integer**| (1-based) number of the page to be returned in a paged set of query results  | [optional]
  **pageSize** | **Integer**| number of concepts per page to be returned in a paged set of query results  | [optional]
+ **beacons** | [**List&lt;String&gt;**](String.md)| set of IDs of beacons to be used as knowledge sources for the query  | [optional]
+ **sessionId** | **String**| identifier to be used for tagging session data  | [optional]
 
 ### Return type
 

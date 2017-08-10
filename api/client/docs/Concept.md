@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **semanticGroup** | **String** | concept semantic type  |  [optional]
 **synonyms** | **List&lt;String&gt;** | list of synonyms for concept  |  [optional]
 **definition** | **String** | concept definition  |  [optional]
+**beacon** | **String** | beacon ID  |  [optional]
 
 
 

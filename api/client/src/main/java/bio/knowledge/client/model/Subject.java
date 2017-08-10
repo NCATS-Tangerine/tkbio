@@ -24,50 +24,50 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * Detail
+ * Subject
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-10T12:09:04.325-07:00")
-public class Detail {
-  @SerializedName("tag")
-  private String tag = null;
+public class Subject {
+  @SerializedName("id")
+  private String id = null;
 
-  @SerializedName("value")
-  private String value = null;
+  @SerializedName("name")
+  private String name = null;
 
-  public Detail tag(String tag) {
-    this.tag = tag;
+  public Subject id(String id) {
+    this.id = id;
     return this;
   }
 
    /**
-   * property name 
-   * @return tag
+   * CURIE-encoded identifier of concept 
+   * @return id
   **/
-  @ApiModelProperty(value = "property name ")
-  public String getTag() {
-    return tag;
+  @ApiModelProperty(value = "CURIE-encoded identifier of concept ")
+  public String getId() {
+    return id;
   }
 
-  public void setTag(String tag) {
-    this.tag = tag;
+  public void setId(String id) {
+    this.id = id;
   }
 
-  public Detail value(String value) {
-    this.value = value;
+  public Subject name(String name) {
+    this.name = name;
     return this;
   }
 
    /**
-   * property value 
-   * @return value
+   * human readable label of subject concept
+   * @return name
   **/
-  @ApiModelProperty(value = "property value ")
-  public String getValue() {
-    return value;
+  @ApiModelProperty(value = "human readable label of subject concept")
+  public String getName() {
+    return name;
   }
 
-  public void setValue(String value) {
-    this.value = value;
+  public void setName(String name) {
+    this.name = name;
   }
 
 
@@ -79,24 +79,24 @@ public class Detail {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Detail detail = (Detail) o;
-    return Objects.equals(this.tag, detail.tag) &&
-        Objects.equals(this.value, detail.value);
+    Subject subject = (Subject) o;
+    return Objects.equals(this.id, subject.id) &&
+        Objects.equals(this.name, subject.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tag, value);
+    return Objects.hash(id, name);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Detail {\n");
+    sb.append("class Subject {\n");
     
-    sb.append("    tag: ").append(toIndentedString(tag)).append("\n");
-    sb.append("    value: ").append(toIndentedString(value)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("}");
     return sb.toString();
   }

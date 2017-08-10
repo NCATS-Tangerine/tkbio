@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **synonyms** | **List&lt;String&gt;** | list of synonyms for concept  |  [optional]
 **definition** | **String** | concept definition  |  [optional]
 **details** | [**List&lt;Detail&gt;**](Detail.md) |  |  [optional]
+**beacon** | **String** | beacon ID  |  [optional]
 
 
 

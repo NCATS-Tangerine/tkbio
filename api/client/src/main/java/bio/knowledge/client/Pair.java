@@ -1,6 +1,6 @@
 /*
  * Translator Knowledge Beacon API
- * This is the Translator Knowledge Beacon web service application programming interface (API).  See the [tk beacon github repo for more information](https://github.com/NCATS-Tangerine/translator-knowledge-beacon/). 
+ * This is the Translator Knowledge Beacon Aggregator web service application programming interface (API). 
  *
  * OpenAPI spec version: 1.0.12
  * Contact: richard@starinformatics.com
@@ -13,7 +13,7 @@
 
 package bio.knowledge.client;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-10T11:01:04.693-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-10T12:09:04.325-07:00")
 public class Pair {
     private String name = "";
     private String value = "";

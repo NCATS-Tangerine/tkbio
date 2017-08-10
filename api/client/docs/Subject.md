@@ -1,5 +1,5 @@
 
-# StatementsSubject
+# Subject
 
 ## Properties
 Name | Type | Description | Notes

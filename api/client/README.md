@@ -86,7 +86,7 @@ public class AggregatorApiExample {
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://api.knowledge.bio/api*
+All URIs are relative to *http://kba.ncats.io*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
@@ -95,8 +95,6 @@ Class | Method | HTTP request | Description
 *ConceptsApi* | [**getConceptDetails**](docs/ConceptsApi.md#getConceptDetails) | **GET** /concepts/{conceptId} | 
 *ConceptsApi* | [**getConcepts**](docs/ConceptsApi.md#getConcepts) | **GET** /concepts | 
 *EvidenceApi* | [**getEvidence**](docs/EvidenceApi.md#getEvidence) | **GET** /evidence/{statementId} | 
-*ExactmatchesApi* | [**getExactMatchesToConcept**](docs/ExactmatchesApi.md#getExactMatchesToConcept) | **GET** /exactmatches/{conceptId} | 
-*ExactmatchesApi* | [**getExactMatchesToConceptList**](docs/ExactmatchesApi.md#getExactMatchesToConceptList) | **GET** /exactmatches | 
 *StatementsApi* | [**getStatements**](docs/StatementsApi.md#getStatements) | **GET** /statements | 
 *SummaryApi* | [**linkedTypes**](docs/SummaryApi.md#linkedTypes) | **GET** /types | 
 
@@ -112,8 +110,8 @@ Class | Method | HTTP request | Description
  - [Statement](docs/Statement.md)
  - [StatementsObject](docs/StatementsObject.md)
  - [StatementsPredicate](docs/StatementsPredicate.md)
- - [StatementsSubject](docs/StatementsSubject.md)
- - [SummaryEntry](docs/SummaryEntry.md)
+ - [Subject](docs/Subject.md)
+ - [Summary](docs/Summary.md)
 
 
 ## Documentation for Authorization

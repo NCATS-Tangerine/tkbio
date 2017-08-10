@@ -1,6 +1,6 @@
 /*
  * Translator Knowledge Beacon API
- * This is the Translator Knowledge Beacon web service application programming interface (API).  See the [tk beacon github repo for more information](https://github.com/NCATS-Tangerine/translator-knowledge-beacon/). 
+ * This is the Translator Knowledge Beacon Aggregator web service application programming interface (API). 
  *
  * OpenAPI spec version: 1.0.12
  * Contact: richard@starinformatics.com
@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * ConceptDetail
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-10T11:01:04.693-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-10T12:09:04.325-07:00")
 public class ConceptDetail {
   @SerializedName("id")
   private String id = null;
@@ -48,6 +48,9 @@ public class ConceptDetail {
 
   @SerializedName("details")
   private List<Detail> details = null;
+
+  @SerializedName("beacon")
+  private String beacon = null;
 
   public ConceptDetail id(String id) {
     this.id = id;
@@ -173,6 +176,24 @@ public class ConceptDetail {
     this.details = details;
   }
 
+  public ConceptDetail beacon(String beacon) {
+    this.beacon = beacon;
+    return this;
+  }
+
+   /**
+   * beacon ID 
+   * @return beacon
+  **/
+  @ApiModelProperty(value = "beacon ID ")
+  public String getBeacon() {
+    return beacon;
+  }
+
+  public void setBeacon(String beacon) {
+    this.beacon = beacon;
+  }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -188,12 +209,13 @@ public class ConceptDetail {
         Objects.equals(this.semanticGroup, conceptDetail.semanticGroup) &&
         Objects.equals(this.synonyms, conceptDetail.synonyms) &&
         Objects.equals(this.definition, conceptDetail.definition) &&
-        Objects.equals(this.details, conceptDetail.details);
+        Objects.equals(this.details, conceptDetail.details) &&
+        Objects.equals(this.beacon, conceptDetail.beacon);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, semanticGroup, synonyms, definition, details);
+    return Objects.hash(id, name, semanticGroup, synonyms, definition, details, beacon);
   }
 
 
@@ -208,6 +230,7 @@ public class ConceptDetail {
     sb.append("    synonyms: ").append(toIndentedString(synonyms)).append("\n");
     sb.append("    definition: ").append(toIndentedString(definition)).append("\n");
     sb.append("    details: ").append(toIndentedString(details)).append("\n");
+    sb.append("    beacon: ").append(toIndentedString(beacon)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -1,6 +1,6 @@
 /*
  * Translator Knowledge Beacon API
- * This is the Translator Knowledge Beacon web service application programming interface (API).  See the [tk beacon github repo for more information](https://github.com/NCATS-Tangerine/translator-knowledge-beacon/). 
+ * This is the Translator Knowledge Beacon Aggregator web service application programming interface (API). 
  *
  * OpenAPI spec version: 1.0.12
  * Contact: richard@starinformatics.com
@@ -26,7 +26,7 @@ import java.io.IOException;
 /**
  * Annotation
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-10T11:01:04.693-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-10T12:09:04.325-07:00")
 public class Annotation {
   @SerializedName("id")
   private String id = null;
@@ -39,6 +39,9 @@ public class Annotation {
 
   @SerializedName("date")
   private String date = null;
+
+  @SerializedName("beacon")
+  private String beacon = null;
 
   public Annotation id(String id) {
     this.id = id;
@@ -112,6 +115,24 @@ public class Annotation {
     this.date = date;
   }
 
+  public Annotation beacon(String beacon) {
+    this.beacon = beacon;
+    return this;
+  }
+
+   /**
+   * beacon ID 
+   * @return beacon
+  **/
+  @ApiModelProperty(value = "beacon ID ")
+  public String getBeacon() {
+    return beacon;
+  }
+
+  public void setBeacon(String beacon) {
+    this.beacon = beacon;
+  }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -125,12 +146,13 @@ public class Annotation {
     return Objects.equals(this.id, annotation.id) &&
         Objects.equals(this.label, annotation.label) &&
         Objects.equals(this.type, annotation.type) &&
-        Objects.equals(this.date, annotation.date);
+        Objects.equals(this.date, annotation.date) &&
+        Objects.equals(this.beacon, annotation.beacon);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, label, type, date);
+    return Objects.hash(id, label, type, date, beacon);
   }
 
 
@@ -143,6 +165,7 @@ public class Annotation {
     sb.append("    label: ").append(toIndentedString(label)).append("\n");
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("    date: ").append(toIndentedString(date)).append("\n");
+    sb.append("    beacon: ").append(toIndentedString(beacon)).append("\n");
     sb.append("}");
     return sb.toString();
   }

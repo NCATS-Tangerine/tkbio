@@ -1,6 +1,6 @@
 # SummaryApi
 
-All URIs are relative to *http://api.knowledge.bio/api*
+All URIs are relative to *http://kba.ncats.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 <a name="linkedTypes"></a>
 # **linkedTypes**
-> List&lt;SummaryEntry&gt; linkedTypes()
+> List&lt;Summary&gt; linkedTypes(sessionId)
 
 
 
@@ -23,8 +23,9 @@ Get a list of types and # of instances in the knowledge source, and a link to th
 
 
 SummaryApi apiInstance = new SummaryApi();
+String sessionId = "sessionId_example"; // String | identifier to be used for tagging session data 
 try {
-    List<SummaryEntry> result = apiInstance.linkedTypes();
+    List<Summary> result = apiInstance.linkedTypes(sessionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling SummaryApi#linkedTypes");
@@ -33,11 +34,14 @@ try {
 ```
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **sessionId** | **String**| identifier to be used for tagging session data  | [optional]
 
 ### Return type
 
-[**List&lt;SummaryEntry&gt;**](SummaryEntry.md)
+[**List&lt;Summary&gt;**](Summary.md)
 
 ### Authorization
 

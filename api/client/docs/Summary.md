@@ -1,5 +1,5 @@
 
-# SummaryEntry
+# Summary
 
 ## Properties
 Name | Type | Description | Notes

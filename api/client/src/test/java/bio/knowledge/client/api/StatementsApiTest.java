@@ -1,6 +1,6 @@
 /*
  * Translator Knowledge Beacon API
- * This is the Translator Knowledge Beacon web service application programming interface (API).  See the [tk beacon github repo for more information](https://github.com/NCATS-Tangerine/translator-knowledge-beacon/). 
+ * This is the Translator Knowledge Beacon Aggregator web service application programming interface (API). 
  *
  * OpenAPI spec version: 1.0.12
  * Contact: richard@starinformatics.com
@@ -47,7 +47,9 @@ public class StatementsApiTest {
         Integer pageSize = null;
         String keywords = null;
         String semgroups = null;
-        List<Statement> response = api.getStatements(c, pageNumber, pageSize, keywords, semgroups);
+        List<String> beacons = null;
+        String sessionId = null;
+        List<Statement> response = api.getStatements(c, pageNumber, pageSize, keywords, semgroups, beacons, sessionId);
 
         // TODO: test validations
     }

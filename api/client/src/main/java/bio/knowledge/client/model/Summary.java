@@ -1,6 +1,6 @@
 /*
  * Translator Knowledge Beacon API
- * This is the Translator Knowledge Beacon web service application programming interface (API).  See the [tk beacon github repo for more information](https://github.com/NCATS-Tangerine/translator-knowledge-beacon/). 
+ * This is the Translator Knowledge Beacon Aggregator web service application programming interface (API). 
  *
  * OpenAPI spec version: 1.0.12
  * Contact: richard@starinformatics.com
@@ -24,26 +24,29 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * StatementsSubject
+ * Summary
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-10T11:01:04.693-07:00")
-public class StatementsSubject {
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-10T12:09:04.325-07:00")
+public class Summary {
   @SerializedName("id")
   private String id = null;
 
-  @SerializedName("name")
-  private String name = null;
+  @SerializedName("idmap")
+  private String idmap = null;
 
-  public StatementsSubject id(String id) {
+  @SerializedName("frequency")
+  private Integer frequency = null;
+
+  public Summary id(String id) {
     this.id = id;
     return this;
   }
 
    /**
-   * CURIE-encoded identifier of concept 
+   * the type  
    * @return id
   **/
-  @ApiModelProperty(value = "CURIE-encoded identifier of concept ")
+  @ApiModelProperty(value = "the type  ")
   public String getId() {
     return id;
   }
@@ -52,22 +55,40 @@ public class StatementsSubject {
     this.id = id;
   }
 
-  public StatementsSubject name(String name) {
-    this.name = name;
+  public Summary idmap(String idmap) {
+    this.idmap = idmap;
     return this;
   }
 
    /**
-   * human readable label of subject concept
-   * @return name
+   * The URL to execute the exactmatches API call on the id
+   * @return idmap
   **/
-  @ApiModelProperty(value = "human readable label of subject concept")
-  public String getName() {
-    return name;
+  @ApiModelProperty(value = "The URL to execute the exactmatches API call on the id")
+  public String getIdmap() {
+    return idmap;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setIdmap(String idmap) {
+    this.idmap = idmap;
+  }
+
+  public Summary frequency(Integer frequency) {
+    this.frequency = frequency;
+    return this;
+  }
+
+   /**
+   * the number of instances of the specified type 
+   * @return frequency
+  **/
+  @ApiModelProperty(value = "the number of instances of the specified type ")
+  public Integer getFrequency() {
+    return frequency;
+  }
+
+  public void setFrequency(Integer frequency) {
+    this.frequency = frequency;
   }
 
 
@@ -79,24 +100,26 @@ public class StatementsSubject {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    StatementsSubject statementsSubject = (StatementsSubject) o;
-    return Objects.equals(this.id, statementsSubject.id) &&
-        Objects.equals(this.name, statementsSubject.name);
+    Summary summary = (Summary) o;
+    return Objects.equals(this.id, summary.id) &&
+        Objects.equals(this.idmap, summary.idmap) &&
+        Objects.equals(this.frequency, summary.frequency);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name);
+    return Objects.hash(id, idmap, frequency);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class StatementsSubject {\n");
+    sb.append("class Summary {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    idmap: ").append(toIndentedString(idmap)).append("\n");
+    sb.append("    frequency: ").append(toIndentedString(frequency)).append("\n");
     sb.append("}");
     return sb.toString();
   }

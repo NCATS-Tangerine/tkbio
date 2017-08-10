@@ -1,6 +1,6 @@
 # AggregatorApi
 
-All URIs are relative to *http://api.knowledge.bio/api*
+All URIs are relative to *http://kba.ncats.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
