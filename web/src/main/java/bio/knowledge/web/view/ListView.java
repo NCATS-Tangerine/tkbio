@@ -338,23 +338,28 @@ public class ListView extends BaseView {
 			refresh();
 		}
 		
-		private boolean loadDataPage(int pageNumber) {
-			String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
-			// Simplistic addition of text filtering to tables which can use it
-			// Won't really work so well in StatementService, I suspect...
-			if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
-			// We always want to fill the table with enough rows so that the scroll bar shows.
-			int pageSize = (int) (dataTable.getHeightByRows() * 2 / kbService.getKnowledgeBeaconCount()) + 1;
-			List<? extends IdentifiedEntity> data;
-			int gatheredDataCount = 0;
-			do {
-				data = pager.getDataPage(pageNumber, pageSize, filter, sorter, isAscending);
-				gatheredDataCount += data.size();
-				container.addAll(data);
-			} while(data.size() != 0 && gatheredDataCount < dataTable.getHeightByRows() * 2);
-			
-			boolean loadedAllData = data.size() == 0;
-			return loadedAllData;
+		private int loadDataPage(int pageNumber) {
+			try {
+				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+				// Simplistic addition of text filtering to tables which can use it
+				// Won't really work so well in StatementService, I suspect...
+				if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
+				// We always want to fill the table with enough rows so that the scroll bar shows.
+				int pageSize = (int) (dataTable.getHeightByRows() * 2 / kbService.getKnowledgeBeaconCount()) + 1;
+				List<? extends IdentifiedEntity> data;
+				int gatheredDataCount = 0;
+				do {
+					data = pager.getDataPage(pageNumber, pageSize, filter, sorter, isAscending);
+					pageNumber += 1;
+					gatheredDataCount += data.size();
+					container.addAll(data);
+				} while(data.size() != 0 && gatheredDataCount < dataTable.getHeightByRows() * 2);
+				
+				loadedAllData = data.size() == 0;
+				return pageNumber;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 
 		public void refresh() {
@@ -371,9 +376,7 @@ public class ListView extends BaseView {
 						authenticationState.setState(null, null);
 					}
 					
-					loadedAllData = loadDataPage(1);
-					
-					nextPageNumber = 2;
+					nextPageNumber = loadDataPage(1);
 					
 					sortDataTable();
 				}
@@ -400,8 +403,8 @@ public class ListView extends BaseView {
 				// Won't really work so well in StatementService, I suspect...
 				if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
 				
-				loadedAllData = loadDataPage(nextPageNumber);
-				nextPageNumber++;
+				nextPageNumber = loadDataPage(nextPageNumber);
+				
 				loadingDataPage = false;
 			}
 			
@@ -567,9 +570,7 @@ public class ListView extends BaseView {
 			public String getValue(Item item, Object object, Object propertyId) {
 				if (object instanceof BeaconResponse) {
 					BeaconResponse beaconResponse = (BeaconResponse) object;
-					String url = beaconResponse.getBeaconUrl();
-					KnowledgeBeacon kb = kbRegistry.getKnowledgeBeaconByUrl(url);
-					return kb.getName();
+					return beaconResponse.getBeaconSource();
 				}
 				return "";
 			}
@@ -1702,7 +1703,7 @@ public class ListView extends BaseView {
 				new BeanItemContainer<Concept>(Concept.class),
 				// TODO: use the cache to get the results
 				conceptService, 
-				new String[] { "name|*", "type" }, 
+				new String[] { "beaconSource", "name|*", "type" }, 
 				null, 
 				null);
 
@@ -1745,7 +1746,7 @@ public class ListView extends BaseView {
 				ViewName.CONCEPTS_VIEW,
 				new BeanItemContainer<Concept>(Concept.class), 
 				conceptService,
-				new String[] { "name|*", "semanticGroup", "description|*", "synonyms|*"},
+				new String[] { "beaconSource", "name|*", "semanticGroup", "description|*", "synonyms|*"},
 				null, 
 				null);
 
@@ -1811,7 +1812,7 @@ public class ListView extends BaseView {
 		});
 
 		registry.setMapping(ViewName.RELATIONS_VIEW, new BeanItemContainer<Statement>(Statement.class),
-				statementService, new String[] { "subject|*", COL_ID_RELATION, "object|*", "evidence|*" }, null);
+				statementService, new String[] { "beaconSource", "subject|*", COL_ID_RELATION, "object|*", "evidence|*" }, null);
 
 		
 		registry.addSelectionHandler(ViewName.RELATIONS_VIEW, COL_ID_SUBJECT,
@@ -1834,7 +1835,7 @@ public class ListView extends BaseView {
 		registry.setMapping(ViewName.EVIDENCE_VIEW, 
 				new BeanItemContainer<Annotation>(Annotation.class),
 				annotationService,
-				new String[] { /* "reference|*", */"publicationDate", "supportingText|*" /* ,"evidenceCode" */ }, 
+				new String[] { /* "reference|*", */"beaconSource", "publicationDate", "supportingText|*" /* ,"evidenceCode" */ }, 
 				null, 
 				null);
 

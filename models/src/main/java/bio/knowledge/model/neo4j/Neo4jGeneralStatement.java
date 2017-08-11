@@ -72,13 +72,13 @@ public class Neo4jGeneralStatement extends Neo4jAbstractStatement {
     }
 
 	@Override
-	public void setBeaconUrl(String url) {
+	public void setBeaconSource(String url) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public String getBeaconUrl() {
+	public String getBeaconSource() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -209,16 +209,16 @@ public class ConceptImpl extends AbstractIdentifiedEntity implements Concept {
 		return null;
 	}
 	
-	private String beaconUrl;
+	private String beaconSource;
 
 	@Override
-	public void setBeaconUrl(String url) {
-		this.beaconUrl = url;
+	public void setBeaconSource(String source) {
+		this.beaconSource = source;
 	}
 
 	@Override
-	public String getBeaconUrl() {
-		return beaconUrl;
+	public String getBeaconSource() {
+		return beaconSource;
 	}
 
 }

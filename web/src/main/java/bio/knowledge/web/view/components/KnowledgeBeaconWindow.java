@@ -3,10 +3,15 @@ package bio.knowledge.web.view.components;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.RandomStringUtils;
 
 import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
@@ -16,8 +21,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import bio.knowledge.client.model.KnowledgeBeacon;
 import bio.knowledge.service.KBQuery;
-import bio.knowledge.service.beacon.KnowledgeBeacon;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.web.ui.DesktopUI;
@@ -31,12 +36,21 @@ public class KnowledgeBeaconWindow extends Window {
 	
 	private final KnowledgeBeaconRegistry kbRegistry;
 	private final KnowledgeBeaconService kbService;
+	
+	private List<KnowledgeBeacon> defaultBeacons;
+	private String sessionId = RandomStringUtils.randomAlphanumeric(10);
 
-	private OptionGroup optionGroup = new OptionGroup();
+	private OptionGroup optionGroup;
 
 	public KnowledgeBeaconWindow(KnowledgeBeaconRegistry kbRegistry, KBQuery query, KnowledgeBeaconService kbService) {
 		this.kbRegistry = kbRegistry;
 		this.kbService = kbService;
+		
+		defaultBeacons = kbService.getKnowledgeBeacons();
+		
+		optionGroup = new OptionGroup("Beacons", defaultBeacons);
+		
+		System.out.println(optionGroup);
 		
 		setCaption("Knowledge Beacon Tools");
 		this.center();
@@ -48,9 +62,10 @@ public class KnowledgeBeaconWindow extends Window {
 		mainLayout.setSpacing(true);
 		
 		VerticalLayout chooseKbPanel = buildChooseKbPanel();
+		chooseKbPanel.addComponent(optionGroup);
 		
-		FormLayout addKbPanel = buildAddKbPanel();
-		addKbPanel.setCaption("Add New Knowledge Beacon:");
+//		FormLayout addKbPanel = buildAddKbPanel();
+//		addKbPanel.setCaption("Add New Knowledge Beacon:");
 		
 		Button closeButton = new Button();
 		closeButton.setCaption("Done");
@@ -63,8 +78,32 @@ public class KnowledgeBeaconWindow extends Window {
 			DesktopUI.getCurrent().addWindow(window);
 		});
 		
-		mainLayout.addComponents( chooseKbPanel, addKbPanel, closeButton, consoleButton );
+		mainLayout.addComponents( optionGroup, closeButton );
 		mainLayout.setComponentAlignment(closeButton, Alignment.BOTTOM_RIGHT);
+		
+		SingleRadioButton radioButton = new SingleRadioButton("Record logs", false);
+		Button viewLogs = new Button("View Logs");
+		viewLogs.setEnabled(kbService.hasSessionId());
+		radioButton.setChecked(kbService.hasSessionId());
+		
+		viewLogs.addClickListener(event -> {
+			getUI().getPage().open(kbService.getAggregatorBaseUrl() + "/errorlog?sessionId=" + sessionId, "_blank");
+		});
+		
+		radioButton.addValueChangeListener(event -> {
+			if (radioButton.isChecked()) {
+				viewLogs.setEnabled(true);
+				kbService.setSessionId(sessionId);
+			} else {
+				viewLogs.setEnabled(false);
+				kbService.clearSessionId();
+			}
+		});
+		
+		mainLayout.addComponent(radioButton);
+		mainLayout.addComponent(viewLogs);
+		
+		
 	}
 
 	private VerticalLayout buildChooseKbPanel() {
@@ -79,13 +118,15 @@ public class KnowledgeBeaconWindow extends Window {
 			Collection<KnowledgeBeacon> selected = 
 					(Collection<KnowledgeBeacon>) event.getProperty().getValue();
 			
-			for (KnowledgeBeacon k1 : kbRegistry.getKnowledgeBeacons()) {
-				k1.setEnabled(false);
-			}
+			List<String> beaconIds = new ArrayList<String>();
+			beaconIds.addAll(
+					selected.stream().map(
+							beacon -> beacon.getId()
+						).collect(Collectors.toList())
+			);
 			
-			for (KnowledgeBeacon k2 : selected) {
-				k2.setEnabled(true);
-			}
+			kbService.setCustomBeacons(beaconIds);
+			
 		});
 		
 		panel.addComponent(optionGroup);
@@ -152,14 +193,12 @@ public class KnowledgeBeaconWindow extends Window {
 	}
 	
 	private void refreshOptionGroup() {
-		List<KnowledgeBeacon> kbs = kbRegistry.getKnowledgeBeacons();
 		optionGroup.removeAllItems();
 		optionGroup.setMultiSelect(true);
-		for (KnowledgeBeacon kb : kbs) {
+		for (KnowledgeBeacon kb : defaultBeacons) {
 			optionGroup.addItem(kb);
 			optionGroup.setItemCaption(kb, kb.getName() + " - " + kb.getUrl());
-			if (kb.isEnabled())
-				optionGroup.select(kb);
+			optionGroup.select(kb);
 		}
 	}
 	

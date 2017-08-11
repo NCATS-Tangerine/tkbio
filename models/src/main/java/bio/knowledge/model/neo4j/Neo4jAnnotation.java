@@ -261,13 +261,13 @@ public class Neo4jAnnotation extends Neo4jAbstractIdentifiedEntity implements An
 	}
 
 	@Override
-	public void setBeaconUrl(String url) {
+	public void setBeaconSource(String url) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public String getBeaconUrl() {
+	public String getBeaconSource() {
 		// TODO Auto-generated method stub
 		return null;
 	}

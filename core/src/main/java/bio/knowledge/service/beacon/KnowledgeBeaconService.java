@@ -2,15 +2,20 @@ package bio.knowledge.service.beacon;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import bio.knowledge.client.ApiClient;
+import bio.knowledge.client.ApiException;
+import bio.knowledge.client.api.AggregatorApi;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.api.EvidenceApi;
 import bio.knowledge.client.api.StatementsApi;
@@ -45,16 +50,28 @@ import bio.knowledge.model.Statement;
  */
 @Service
 public class KnowledgeBeaconService {
-	public static String AGGREGATOR_BASE_URL = "https://kba.ncats.io";
+	
+	@Value( "${beaconAggregator.url}" )
+	private String AGGREGATOR_BASE_URL;
+	
+	public String getAggregatorBaseUrl() {
+		if (!AGGREGATOR_BASE_URL.startsWith("http://") && !AGGREGATOR_BASE_URL.startsWith("https://")) {
+			AGGREGATOR_BASE_URL = "http://" + AGGREGATOR_BASE_URL;
+		}
+		
+		return AGGREGATOR_BASE_URL;
+	}
 	
 	
 	private ApiClient apiClient;
 	private ConceptsApi conceptsApi;
 	private StatementsApi statementsApi;
 	private EvidenceApi evidenceApi;
+	private AggregatorApi aggregatorApi;
 	
 	private List<String> customBeacons = null;
 	private String sessionId = null;
+	private Map<String, String> beaconIdMap;
 	
 	@PostConstruct
 	public void init() {
@@ -63,6 +80,48 @@ public class KnowledgeBeaconService {
 		conceptsApi = new ConceptsApi(apiClient);
 		statementsApi = new StatementsApi(apiClient);
 		evidenceApi = new EvidenceApi(apiClient);
+		aggregatorApi = new AggregatorApi(apiClient);		
+	}
+	
+	private String getBeaconNameFromId(String id) {
+		if (beaconIdMap == null) {
+			try {
+				beaconIdMap = new HashMap<String, String>();
+				List<bio.knowledge.client.model.KnowledgeBeacon> beacons = aggregatorApi.getBeacons(null);
+				for (bio.knowledge.client.model.KnowledgeBeacon b : beacons) {
+					beaconIdMap.put(b.getId(), b.getName());
+				}
+			} catch (ApiException e) {
+				beaconIdMap = null;
+				throw new RuntimeException(e);
+			}
+		}
+		
+		return beaconIdMap.get(id);
+	}
+	
+	public void setCustomBeacons(List<String> customBeacons){ 
+		this.customBeacons = customBeacons;
+	}
+	
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
+	
+	public void clearCustomBeacons() {
+		customBeacons = null;
+	}
+	
+	public void clearSessionId() {
+		sessionId = null;
+	}
+	
+	public List<bio.knowledge.client.model.KnowledgeBeacon> getKnowledgeBeacons() {
+		try {
+			return aggregatorApi.getBeacons(null);
+		} catch (ApiException e) {
+			return new ArrayList<bio.knowledge.client.model.KnowledgeBeacon>();
+		}
 	}
 	
 	/**
@@ -111,6 +170,7 @@ public class KnowledgeBeaconService {
 						
 						concept.setSynonyms(String.join(" ", response.getSynonyms()));
 						concept.setDescription(response.getDefinition());
+						concept.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
 						concepts.add(concept);
 					}
 					
@@ -151,6 +211,7 @@ public class KnowledgeBeaconService {
 						
 						concept.setSynonyms(String.join(" ", response.getSynonyms()));
 						concept.setDescription(response.getDefinition());
+						concept.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
 						concepts.add(concept);
 					}
 					
@@ -207,6 +268,8 @@ public class KnowledgeBeaconService {
 						
 						Statement statement = new GeneralStatement(id, subject, predicate, object);
 						
+						statement.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
+						
 						statements.add(statement);
 					}
 
@@ -262,6 +325,8 @@ public class KnowledgeBeaconService {
 							annotation.setUrl(strings[1]);
 						}
 						
+						annotation.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
+						
 						annotations.add(annotation);
 					}
 										
@@ -298,6 +363,10 @@ public class KnowledgeBeaconService {
 	public int getKnowledgeBeaconCount() {
 //		throw new RuntimeException("NOT IMPLEMENTED YET");
 		return 7;
+	}
+
+	public boolean hasSessionId() {
+		return this.sessionId != null;
 	}
 	
 }
