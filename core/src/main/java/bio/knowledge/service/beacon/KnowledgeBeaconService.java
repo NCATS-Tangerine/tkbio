@@ -13,11 +13,10 @@ import org.springframework.stereotype.Service;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.api.EvidenceApi;
-import bio.knowledge.client.api.ExactmatchesApi;
 import bio.knowledge.client.api.StatementsApi;
 import bio.knowledge.client.model.StatementsObject;
 import bio.knowledge.client.model.StatementsPredicate;
-import bio.knowledge.client.model.StatementsSubject;
+import bio.knowledge.client.model.Subject;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.AnnotationImpl;
 import bio.knowledge.model.Concept;
@@ -53,7 +52,9 @@ public class KnowledgeBeaconService {
 	private ConceptsApi conceptsApi;
 	private StatementsApi statementsApi;
 	private EvidenceApi evidenceApi;
-	private ExactmatchesApi exactmatchesApi;
+	
+	private List<String> customBeacons = null;
+	private String sessionId = null;
 	
 	@PostConstruct
 	public void init() {
@@ -62,7 +63,6 @@ public class KnowledgeBeaconService {
 		conceptsApi = new ConceptsApi(apiClient);
 		statementsApi = new StatementsApi(apiClient);
 		evidenceApi = new EvidenceApi(apiClient);
-		exactmatchesApi = new ExactmatchesApi(apiClient);
 	}
 	
 	/**
@@ -91,7 +91,9 @@ public class KnowledgeBeaconService {
 							keywords,
 							semanticGroups,
 							pageNumber,
-							pageSize
+							pageSize,
+							customBeacons,
+							sessionId
 					);
 					for (bio.knowledge.client.model.Concept response : responses) {
 						SemanticGroup semgroup;
@@ -131,7 +133,7 @@ public class KnowledgeBeaconService {
 				List<Concept> concepts = new ArrayList<Concept>();
 				
 				try {
-					List<bio.knowledge.client.model.ConceptDetail> responses = conceptsApi.getConceptDetails(conceptId);
+					List<bio.knowledge.client.model.ConceptDetail> responses = conceptsApi.getConceptDetails(conceptId, customBeacons, sessionId);
 					
 					for (bio.knowledge.client.model.ConceptDetail response : responses) {
 						SemanticGroup semgroup;
@@ -184,13 +186,15 @@ public class KnowledgeBeaconService {
 							pageNumber,
 							pageSize,
 							keywords,
-							semgroups
+							semgroups,
+							customBeacons,
+							sessionId
 					);
 
 					for (bio.knowledge.client.model.Statement response : responses) {
 						String id = response.getId();
 						StatementsObject statementsObject = response.getObject();
-						StatementsSubject statementsSubject = response.getSubject();
+						Subject statementsSubject = response.getSubject();
 						StatementsPredicate statementsPredicate = response.getPredicate();
 
 						ConceptImpl subject = new ConceptImpl(statementsSubject.getId(), null,
@@ -242,7 +246,9 @@ public class KnowledgeBeaconService {
 							id,
 							keywords,
 							pageNumber,
-							pageSize
+							pageSize,
+							customBeacons,
+							sessionId
 					);
 					
 					for (bio.knowledge.client.model.Annotation response : responses) {
