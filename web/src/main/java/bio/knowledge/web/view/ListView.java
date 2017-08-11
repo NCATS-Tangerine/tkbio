@@ -347,9 +347,23 @@ public class ListView extends BaseView {
 				// We always want to fill the table with enough rows so that the scroll bar shows.
 				int pageSize = (int) (dataTable.getHeightByRows() * 2 / kbService.getKnowledgeBeaconCount()) + 1;
 				List<? extends IdentifiedEntity> data;
+				String previousId = null;
 				int gatheredDataCount = 0;
 				do {
 					data = pager.getDataPage(pageNumber, pageSize, filter, sorter, isAscending);
+					
+					if (!data.isEmpty()) {
+						if (previousId != null) {
+							if (previousId.equals(data.get(0).getId())) {
+								// In this case paging is broken, and we want to break out of the loop
+								// without adding anymore data.
+								break;
+							}
+						} else {
+							previousId = data.get(0).getId();
+						}
+					}
+					
 					pageNumber += 1;
 					gatheredDataCount += data.size();
 					container.addAll(data);
