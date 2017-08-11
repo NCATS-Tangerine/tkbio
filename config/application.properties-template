@@ -25,6 +25,9 @@
 ##
 # Knowledge.Bio Application Properties
 #
+# Becaon Aggregator URL - by default set to local machine at port 8080
+beaconAggregator.url=http://localhost:8080
+#
 # Logging
 #
 logging.level.bio.knowledge=DEBUG
