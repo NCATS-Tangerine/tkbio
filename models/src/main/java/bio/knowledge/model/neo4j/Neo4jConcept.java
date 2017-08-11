@@ -238,13 +238,13 @@ public class Neo4jConcept extends Neo4jAbstractAnnotatedEntity implements Concep
     }
 
 	@Override
-	public void setBeaconUrl(String url) {
+	public void setBeaconSource(String url) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public String getBeaconUrl() {
+	public String getBeaconSource() {
 		// TODO Auto-generated method stub
 		return null;
 	}

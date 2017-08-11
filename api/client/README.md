@@ -61,22 +61,22 @@ Please follow the [installation](#installation) instruction and execute the foll
 import bio.knowledge.client.*;
 import bio.knowledge.client.auth.*;
 import bio.knowledge.client.model.*;
-import bio.knowledge.client.api.ConceptsApi;
+import bio.knowledge.client.api.AggregatorApi;
 
 import java.io.File;
 import java.util.*;
 
-public class ConceptsApiExample {
+public class AggregatorApiExample {
 
     public static void main(String[] args) {
         
-        ConceptsApi apiInstance = new ConceptsApi();
-        String conceptId = "conceptId_example"; // String | local object identifier of concept of interest
+        AggregatorApi apiInstance = new AggregatorApi();
+        String sessionId = "sessionId_example"; // String | identifier to be used for tagging session data 
         try {
-            List<InlineResponse200> result = apiInstance.getConceptDetails(conceptId);
+            List<KnowledgeBeacon> result = apiInstance.getBeacons(sessionId);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling ConceptsApi#getConceptDetails");
+            System.err.println("Exception when calling AggregatorApi#getBeacons");
             e.printStackTrace();
         }
     }
@@ -86,31 +86,32 @@ public class ConceptsApiExample {
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://knowledge.bio/api*
+All URIs are relative to *http://kba.ncats.io*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*AggregatorApi* | [**getBeacons**](docs/AggregatorApi.md#getBeacons) | **GET** /beacons | 
+*AggregatorApi* | [**getErrors**](docs/AggregatorApi.md#getErrors) | **GET** /errorlog | 
 *ConceptsApi* | [**getConceptDetails**](docs/ConceptsApi.md#getConceptDetails) | **GET** /concepts/{conceptId} | 
 *ConceptsApi* | [**getConcepts**](docs/ConceptsApi.md#getConcepts) | **GET** /concepts | 
-*EvidenceApi* | [**getEvidence**](docs/EvidenceApi.md#getEvidence) | **GET** /evidence/{evidenceId} | 
+*EvidenceApi* | [**getEvidence**](docs/EvidenceApi.md#getEvidence) | **GET** /evidence/{statementId} | 
 *StatementsApi* | [**getStatements**](docs/StatementsApi.md#getStatements) | **GET** /statements | 
-*XrefsApi* | [**getConceptXRefs**](docs/XrefsApi.md#getConceptXRefs) | **GET** /xrefs/{conceptId} | 
-*XrefsApi* | [**getXRefConcepts**](docs/XrefsApi.md#getXRefConcepts) | **GET** /xrefs | 
+*SummaryApi* | [**linkedTypes**](docs/SummaryApi.md#linkedTypes) | **GET** /types | 
 
 
 ## Documentation for Models
 
- - [ConceptsconceptIdDetails](docs/ConceptsconceptIdDetails.md)
- - [InlineResponse200](docs/InlineResponse200.md)
- - [InlineResponse2001](docs/InlineResponse2001.md)
- - [InlineResponse2001DataPage](docs/InlineResponse2001DataPage.md)
- - [InlineResponse2002](docs/InlineResponse2002.md)
- - [InlineResponse2003](docs/InlineResponse2003.md)
- - [InlineResponse2003DataPage](docs/InlineResponse2003DataPage.md)
- - [InlineResponse2003Evidence](docs/InlineResponse2003Evidence.md)
- - [InlineResponse2003Subject](docs/InlineResponse2003Subject.md)
- - [InlineResponse2004](docs/InlineResponse2004.md)
- - [InlineResponse2004DataPage](docs/InlineResponse2004DataPage.md)
+ - [Annotation](docs/Annotation.md)
+ - [Concept](docs/Concept.md)
+ - [ConceptDetail](docs/ConceptDetail.md)
+ - [Detail](docs/Detail.md)
+ - [KnowledgeBeacon](docs/KnowledgeBeacon.md)
+ - [LogEntry](docs/LogEntry.md)
+ - [Statement](docs/Statement.md)
+ - [StatementsObject](docs/StatementsObject.md)
+ - [StatementsPredicate](docs/StatementsPredicate.md)
+ - [Subject](docs/Subject.md)
+ - [Summary](docs/Summary.md)
 
 
 ## Documentation for Authorization

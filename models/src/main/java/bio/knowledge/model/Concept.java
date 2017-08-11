@@ -105,4 +105,6 @@ public interface Concept extends IdentifiedEntity, AnnotatedEntity, BeaconRespon
 
 	String getName();
 
+	void setBeaconSource(String string);
+
 }

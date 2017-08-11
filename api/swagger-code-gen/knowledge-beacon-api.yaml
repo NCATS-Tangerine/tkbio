@@ -1,21 +1,28 @@
 swagger: '2.0'
 info:
-  title: Scripps Knowledge.Bio Release 3.0 Reference Database Knowledge Beacon
-  version: 1.0.11
+  title: Translator Knowledge Beacon API
+  version: 1.0.12
   contact:
     responsibleDeveloper: Richard Bruskiewich
-    responsibleOrganization: STAR Informatics/Delphinai Corporation
-    url: 'http://starinformatics.com'
+    responsibleOrganization: NCATS
+    url: 'https://ncats.nih.gov/translator'
     email: richard@starinformatics.com
   description: >
-    This a reference implementation the Translator Knowledge Beacon web service which wraps the Knowledge.Bio release 3.0 knowledge base which was constructed using the June 2016 version of the Semantic Medline Database, plus some additional hand curated drug-disease data.
-host: beacon.medgeninformtics.net
+    This is the Translator Knowledge Beacon web service application programming
+    interface (API). 
+    See the [tk beacon github repo for more information](https://github.com/NCATS-Tangerine/translator-knowledge-beacon/).
+  license:
+    name: MIT License
+    url: 'http://opensource.org/licenses/MIT'
+host: api.knowledge.bio
 basePath: /api
 schemes:
   - http
 produces:
   - application/json
 tags:
+  - name: summary
+    description: Summary statistics about the knowledge source
   - name: concepts
     description: Queries for concepts
   - name: exactmatches
@@ -26,7 +33,46 @@ tags:
     description: Queries for concept-relationship statements
   - name: evidence
     description: Queries for references cited as evidence for statements
+
 paths:
+  '/types':
+    get:
+      description: >
+        Get a list of types and # of instances in the knowledge source, and a link to the API call for the list of equivalent terminology
+      tags:
+        - summary
+      operationId: linkedTypes
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              title: SummaryEntry
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: >
+                    the type 
+                idmap:
+                  type: string
+                  description:
+                    The URL to execute the exactmatches API call on the id
+                frequency:
+                  type: integer
+                  description: |
+                    the number of instances of the specified type
+          description: |
+            Successful response with types and frequency returned
+          examples:
+            application/json:
+              - id: CHEM
+                frequency: 12355
+                idmap: http://myservice.net/api/v1/exactmatches/CHEM
+              - id: ANAT
+                frequency: 1234
+                idmap: http://myservice.net/api/v1/exactmatches/ANAT
+      
   '/concepts/{conceptId}':
     get:
       description: >
@@ -46,6 +92,7 @@ paths:
           schema:
             type: array
             items:
+              title: ConceptDetail
               type: object
               properties:
                 id:
@@ -74,6 +121,7 @@ paths:
                 details:
                   type: array
                   items:
+                    title: Detail
                     type: object
                     properties:
                       tag:
@@ -138,6 +186,7 @@ paths:
           schema:
             type: array
             items:
+              title: Concept
               type: object
               properties:
                 id:
@@ -364,6 +413,7 @@ paths:
           schema:
             type: array
             items:
+              title: Statement
               type: object
               properties:
                 id:
@@ -455,6 +505,7 @@ paths:
           schema:
             type: array
             items:
+              title: Annotation
               type: object
               properties:
                 id:
@@ -465,6 +516,10 @@ paths:
                   type: string
                   description: |
                     canonical human readable and searchable label of the annotation (i.e. comment, matched sentence, etc.)
+                type:
+                  type: string
+                  description: |
+                    Gene Ontology Evidence Code (http://www.geneontology.org/page/guide-go-evidence-codes)
                 date:
                   type: string
                   description: |
@@ -472,8 +527,106 @@ paths:
           examples:
             application/json:
               - id:
-                  - 'pmid:22781086'
+                  'pmid:22781086'
                 label: >-
                   Neonatal diabetes mellitus and congenital diaphragmatic hernia
                   coincidence or concurrent etiology?
-                date: 2012-07-10
+                type: >-
+                  TAS
+                date: >-
+                  2012-07-10
+  /beacons:
+    get:
+      description: >
+        Get a list of the knowledge beacons that the aggregator can query
+      tags:
+        - aggregator
+      parameters:
+        - name: sessionId
+          in: query
+          description: >
+            identifier to be used for tagging session data
+          required: false
+          type: string
+      operationId: getBeacons
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              title: KnowledgeBeacon
+              type: object
+              properties:
+                id:
+                  type: string
+                  description : |
+                    beacon ID
+                name:
+                  type: string
+                  description: |
+                    beacon name
+                url:
+                  type: string
+                  description: |
+                    URL used to execute API calls on the beacon
+                description:
+                  type: string
+                  description: |
+                    beacon description
+                contact:
+                  type: string
+                  description: |
+                    name of the person responsible for this beacon
+                wraps:
+                  type: string
+                  description: |
+                    URL of this beacon's data source
+                repo:
+                  type: string
+                  description: |
+                    URL of this beacon's repository
+          description: |
+            Successful response with beacons
+          examples:
+            application/json:
+              - id: "1"
+                name: SemMedDB
+                url: http://rkb.ncats.io
+                description: |
+                  Reference Knowledge Beacon implementation indexed by Wikidata
+  /errorlog:
+    get:
+      description: >
+        Get a log of the most recent errors in this session
+      tags:
+        - aggregator
+      parameters:
+        - name: sessionId
+          in: query
+          description: >
+            session identifier
+          required: true
+          type: string
+      operationId: getErrors
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              title: LogEntry
+              type: object
+              properties:
+                timestamp:
+                  type: string
+                  description: |
+                    timestamp
+                query:
+                  type: string
+                  description: |
+                    URL of the API call executed by the aggregator
+                message:
+                  type: string
+                  description: |
+                    error message
+          description: |
+            Successful response with most recent errors

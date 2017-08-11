@@ -1,5 +1,5 @@
 
-# InlineResponse200
+# ConceptDetail
 
 ## Properties
 Name | Type | Description | Notes
@@ -9,7 +9,8 @@ Name | Type | Description | Notes
 **semanticGroup** | **String** | concept semantic type  |  [optional]
 **synonyms** | **List&lt;String&gt;** | list of synonyms for concept  |  [optional]
 **definition** | **String** | concept definition  |  [optional]
-**details** | [**List&lt;ConceptsconceptIdDetails&gt;**](ConceptsconceptIdDetails.md) |  |  [optional]
+**details** | [**List&lt;Detail&gt;**](Detail.md) |  |  [optional]
+**beacon** | **String** | beacon ID  |  [optional]
 
 
 

@@ -1,6 +1,6 @@
 # EvidenceApi
 
-All URIs are relative to *http://api.knowledge.bio/api*
+All URIs are relative to *http://kba.ncats.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 <a name="getEvidence"></a>
 # **getEvidence**
-> List&lt;InlineResponse2003&gt; getEvidence(statementId, keywords, pageNumber, pageSize)
+> List&lt;Annotation&gt; getEvidence(statementId, keywords, pageNumber, pageSize, beacons, sessionId)
 
 
 
@@ -27,8 +27,10 @@ String statementId = "statementId_example"; // String | (url-encoded) CURIE iden
 String keywords = "keywords_example"; // String | (url-encoded, space delimited) keyword filter to apply against the label field of the annotation 
 Integer pageNumber = 56; // Integer | (1-based) number of the page to be returned in a paged set of query results 
 Integer pageSize = 56; // Integer | number of cited references per page to be returned in a paged set of query results 
+List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of IDs of beacons to be used as knowledge sources for the query 
+String sessionId = "sessionId_example"; // String | identifier to be used for tagging session data 
 try {
-    List<InlineResponse2003> result = apiInstance.getEvidence(statementId, keywords, pageNumber, pageSize);
+    List<Annotation> result = apiInstance.getEvidence(statementId, keywords, pageNumber, pageSize, beacons, sessionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling EvidenceApi#getEvidence");
@@ -44,10 +46,12 @@ Name | Type | Description  | Notes
  **keywords** | **String**| (url-encoded, space delimited) keyword filter to apply against the label field of the annotation  | [optional]
  **pageNumber** | **Integer**| (1-based) number of the page to be returned in a paged set of query results  | [optional]
  **pageSize** | **Integer**| number of cited references per page to be returned in a paged set of query results  | [optional]
+ **beacons** | [**List&lt;String&gt;**](String.md)| set of IDs of beacons to be used as knowledge sources for the query  | [optional]
+ **sessionId** | **String**| identifier to be used for tagging session data  | [optional]
 
 ### Return type
 
-[**List&lt;InlineResponse2003&gt;**](InlineResponse2003.md)
+[**List&lt;Annotation&gt;**](Annotation.md)
 
 ### Authorization
 

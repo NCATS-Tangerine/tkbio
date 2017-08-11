@@ -169,7 +169,7 @@ public class ListView extends BaseView {
 	
 	@Autowired
 	KnowledgeBeaconRegistry kbRegistry;
-
+	
 	// Wrapper for datasource container,
 	// to add extra action columns for 'details', 'data download', etc.
 	private GeneratedPropertyContainer gpcontainer;
@@ -337,6 +337,44 @@ public class ListView extends BaseView {
 			conceptMapArchiveService.setSearchMode(searchMode);
 			refresh();
 		}
+		
+		private int loadDataPage(int pageNumber) {
+			try {
+				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+				// Simplistic addition of text filtering to tables which can use it
+				// Won't really work so well in StatementService, I suspect...
+				if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
+				// We always want to fill the table with enough rows so that the scroll bar shows.
+				int pageSize = (int) (dataTable.getHeightByRows() * 2 / kbService.getKnowledgeBeaconCount()) + 1;
+				List<? extends IdentifiedEntity> data;
+				String previousId = null;
+				int gatheredDataCount = 0;
+				do {
+					data = pager.getDataPage(pageNumber, pageSize, filter, sorter, isAscending);
+					
+					if (!data.isEmpty()) {
+						if (previousId != null) {
+							if (previousId.equals(data.get(0).getId())) {
+								// In this case paging is broken, and we want to break out of the loop
+								// without adding anymore data.
+								break;
+							}
+						} else {
+							previousId = data.get(0).getId();
+						}
+					}
+					
+					pageNumber += 1;
+					gatheredDataCount += data.size();
+					container.addAll(data);
+				} while(data.size() != 0 && gatheredDataCount < dataTable.getHeightByRows() * 2);
+				
+				loadedAllData = data.size() == 0;
+				return pageNumber;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
 
 		public void refresh() {
 			if (pager != null) {
@@ -351,18 +389,8 @@ public class ListView extends BaseView {
 					} else {
 						authenticationState.setState(null, null);
 					}
-					String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
 					
-					// Simplistic addition of text filtering to tables which can use it
-					// Won't really work so well in StatementService, I suspect...
-					if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
-					
-					// We always want to fill the table with enough rows so that the scroll bar shows.
-					int pageSize = (int) dataTable.getHeightByRows() * 2;
-					List<? extends IdentifiedEntity> data = pager.getDataPage(1, pageSize, filter, sorter, isAscending);
-					container.addAll(data);
-					loadedAllData = false;
-					nextPageNumber = 2;
+					nextPageNumber = loadDataPage(1);
 					
 					sortDataTable();
 				}
@@ -381,7 +409,7 @@ public class ListView extends BaseView {
 		private int nextPageNumber;
 		public void loadNextPage() {
 			if (pager != null && !loadedAllData) {
-				int pageSize = (int) dataTable.getHeightByRows() * 2;
+				int pageSize = (int) (dataTable.getHeightByRows() * 2 / kbService.getKnowledgeBeaconCount());
 				loadingDataPage = true;
 				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
 				
@@ -389,15 +417,9 @@ public class ListView extends BaseView {
 				// Won't really work so well in StatementService, I suspect...
 				if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
 				
-				List<? extends IdentifiedEntity> data = 
-						pager.getDataPage(nextPageNumber, pageSize, filter, sorter, isAscending);
-				container.addAll(data);
-				nextPageNumber++;
-				loadingDataPage = false;
+				nextPageNumber = loadDataPage(nextPageNumber);
 				
-				if (data.size() == 0) {
-					loadedAllData = true;
-				}
+				loadingDataPage = false;
 			}
 			
 			sortDataTable();
@@ -562,9 +584,7 @@ public class ListView extends BaseView {
 			public String getValue(Item item, Object object, Object propertyId) {
 				if (object instanceof BeaconResponse) {
 					BeaconResponse beaconResponse = (BeaconResponse) object;
-					String url = beaconResponse.getBeaconUrl();
-					KnowledgeBeacon kb = kbRegistry.getKnowledgeBeaconByUrl(url);
-					return kb.getName();
+					return beaconResponse.getBeaconSource();
 				}
 				return "";
 			}
@@ -1697,7 +1717,7 @@ public class ListView extends BaseView {
 				new BeanItemContainer<Concept>(Concept.class),
 				// TODO: use the cache to get the results
 				conceptService, 
-				new String[] { "name|*", "type" }, 
+				new String[] { "beaconSource", "name|*", "type" }, 
 				null, 
 				null);
 
@@ -1829,7 +1849,7 @@ public class ListView extends BaseView {
 		registry.setMapping(ViewName.EVIDENCE_VIEW, 
 				new BeanItemContainer<Annotation>(Annotation.class),
 				annotationService,
-				new String[] { /* "reference|*", */"publicationDate", "supportingText|*" /* ,"evidenceCode" */ }, 
+				new String[] { /* "reference|*", */"beaconSource", "publicationDate", "supportingText|*" /* ,"evidenceCode" */ }, 
 				null, 
 				null);
 
