@@ -38,7 +38,7 @@ public class KnowledgeBeaconWindow extends Window {
 	private final KnowledgeBeaconService kbService;
 	
 	private List<KnowledgeBeacon> defaultBeacons;
-	private String sessionId = RandomStringUtils.randomAlphanumeric(10);
+	private String sessionId = RandomStringUtils.randomAlphanumeric(20);
 
 	private OptionGroup optionGroup;
 
