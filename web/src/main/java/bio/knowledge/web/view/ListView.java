@@ -340,17 +340,24 @@ public class ListView extends BaseView {
 		
 		private int loadDataPage(int pageNumber) {
 			try {
-				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
-				// Simplistic addition of text filtering to tables which can use it
-				// Won't really work so well in StatementService, I suspect...
-				if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
+				String filter;
+				if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
+					filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+				} else {
+					filter = "";
+				}
+
+				if(!simpleTextFilter.isEmpty()) {
+					filter += " " + simpleTextFilter ;
+				}
+				
 				// We always want to fill the table with enough rows so that the scroll bar shows.
 				int pageSize = (int) (dataTable.getHeightByRows() * 2 / kbService.getKnowledgeBeaconCount()) + 1;
 				List<? extends IdentifiedEntity> data;
 				String previousId = null;
 				int gatheredDataCount = 0;
 				do {
-					data = pager.getDataPage(pageNumber, pageSize, filter, sorter, isAscending);
+					data = pager.getDataPage(pageNumber, pageSize, filter != null ? filter.trim() : null, sorter, isAscending);
 					
 					if (!data.isEmpty()) {
 						if (previousId != null) {
