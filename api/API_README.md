@@ -10,7 +10,7 @@ The [swagger-codegen](https://github.com/swagger-api/swagger-codegen) project is
 
 ## Building a Web Server using the API ##
 
-The 'swagger.sh' script at the root of this subproject wraps a swagger-codegen command to (re-)generate a Java Spring Boot server code tree under 'src' (with Maven dependencies documented in the pom.xml file). The first argument given to the script should be a target KSAPI swagger json file inside the specification subfolder.   
+The 'generate.sh' script at the root of this subproject wraps a swagger-codegen command to (re-)generate a Java client code tree (with Maven dependencies documented in the pom.xml file). The script should be given a target KSAPI swagger json file inside the specification subfolder.   
 
 The resulting code base may be directly built with Maven into an executable Java JAR file:
 
