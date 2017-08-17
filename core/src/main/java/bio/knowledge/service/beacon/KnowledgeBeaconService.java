@@ -361,8 +361,7 @@ public class KnowledgeBeaconService {
 	}
 	
 	public int getKnowledgeBeaconCount() {
-//		throw new RuntimeException("NOT IMPLEMENTED YET");
-		return 7;
+		return customBeacons != null ? customBeacons.size() : beaconIdMap.size();
 	}
 
 	public boolean hasSessionId() {
