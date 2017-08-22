@@ -352,7 +352,9 @@ public class ListView extends BaseView {
 				}
 				
 				// We always want to fill the table with enough rows so that the scroll bar shows.
-				int pageSize = (int) (dataTable.getHeightByRows() * 2 / kbService.getKnowledgeBeaconCount()) + 1;
+				int rows = (int) dataTable.getHeightByRows();
+				int beacons = kbService.getKnowledgeBeaconCount();
+				int pageSize = (int) (rows * 2 / beacons) + 1;
 				List<? extends IdentifiedEntity> data;
 				String previousId = null;
 				int gatheredDataCount = 0;
