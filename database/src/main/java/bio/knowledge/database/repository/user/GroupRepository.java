@@ -7,7 +7,6 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
 import bio.knowledge.model.user.Group;
-import bio.knowledge.model.user.User;
 
 public interface GroupRepository extends GraphRepository<Group> {
 	
