@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -49,55 +50,13 @@ import bio.knowledge.model.Statement;
  *
  */
 @Service
-public class KnowledgeBeaconService {
-	
-	@Value( "${beaconAggregator.url}" )
-	private String AGGREGATOR_BASE_URL;
-	
-	public String getAggregatorBaseUrl() {
-		if (!AGGREGATOR_BASE_URL.startsWith("http://") && !AGGREGATOR_BASE_URL.startsWith("https://")) {
-			AGGREGATOR_BASE_URL = "http://" + AGGREGATOR_BASE_URL;
-		}
-		
-		return AGGREGATOR_BASE_URL;
-	}
-	
-	
-	private ApiClient apiClient;
-	private ConceptsApi conceptsApi;
-	private StatementsApi statementsApi;
-	private EvidenceApi evidenceApi;
-	private AggregatorApi aggregatorApi;
+public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 	
 	private List<String> customBeacons = null;
 	private String sessionId = null;
-	private Map<String, String> beaconIdMap;
-	
-	@PostConstruct
-	public void init() {
-		apiClient = new ApiClient();
-		apiClient.setBasePath(AGGREGATOR_BASE_URL);
-		conceptsApi = new ConceptsApi(apiClient);
-		statementsApi = new StatementsApi(apiClient);
-		evidenceApi = new EvidenceApi(apiClient);
-		aggregatorApi = new AggregatorApi(apiClient);		
-	}
 	
 	private String getBeaconNameFromId(String id) {
-		if (beaconIdMap == null) {
-			try {
-				beaconIdMap = new HashMap<String, String>();
-				List<bio.knowledge.client.model.KnowledgeBeacon> beacons = aggregatorApi.getBeacons(null);
-				for (bio.knowledge.client.model.KnowledgeBeacon b : beacons) {
-					beaconIdMap.put(b.getId(), b.getName());
-				}
-			} catch (ApiException e) {
-				beaconIdMap = null;
-				throw new RuntimeException(e);
-			}
-		}
-		
-		return beaconIdMap.get(id);
+		return getBeaconIdMap().get(id);
 	}
 	
 	public void setCustomBeacons(List<String> customBeacons){ 
@@ -114,14 +73,6 @@ public class KnowledgeBeaconService {
 	
 	public void clearSessionId() {
 		sessionId = null;
-	}
-	
-	public List<bio.knowledge.client.model.KnowledgeBeacon> getKnowledgeBeacons() {
-		try {
-			return aggregatorApi.getBeacons(null);
-		} catch (ApiException e) {
-			return new ArrayList<bio.knowledge.client.model.KnowledgeBeacon>();
-		}
 	}
 	
 	/**
@@ -146,7 +97,7 @@ public class KnowledgeBeaconService {
 				List<Concept> concepts = new ArrayList<Concept>();
 				
 				try {
-					List<bio.knowledge.client.model.Concept> responses = conceptsApi.getConcepts(
+					List<bio.knowledge.client.model.Concept> responses = getConceptsApi().getConcepts(
 							keywords,
 							semanticGroups,
 							pageNumber,
@@ -193,7 +144,7 @@ public class KnowledgeBeaconService {
 				List<Concept> concepts = new ArrayList<Concept>();
 				
 				try {
-					List<bio.knowledge.client.model.ConceptDetail> responses = conceptsApi.getConceptDetails(conceptId, customBeacons, sessionId);
+					List<bio.knowledge.client.model.ConceptDetail> responses = getConceptsApi().getConceptDetails(conceptId, customBeacons, sessionId);
 					
 					for (bio.knowledge.client.model.ConceptDetail response : responses) {
 						SemanticGroup semgroup;
@@ -242,7 +193,7 @@ public class KnowledgeBeaconService {
 			public List<Statement> get() {
 				List<Statement> statements = new ArrayList<Statement>();
 				try {					
-					List<bio.knowledge.client.model.Statement> responses = statementsApi.getStatements(
+					List<bio.knowledge.client.model.Statement> responses = getStatementsApi().getStatements(
 							Arrays.asList(emci.split(" ")),
 							pageNumber,
 							pageSize,
@@ -305,7 +256,7 @@ public class KnowledgeBeaconService {
 				String id = strings.length >= 2 ? strings[2] : statementId;
 				
 				try {
-					List<bio.knowledge.client.model.Annotation> responses = evidenceApi.getEvidence(
+					List<bio.knowledge.client.model.Annotation> responses = getEvidenceApi().getEvidence(
 							id,
 							keywords,
 							pageNumber,
@@ -361,7 +312,7 @@ public class KnowledgeBeaconService {
 	}
 	
 	public int getKnowledgeBeaconCount() {
-		return customBeacons != null ? customBeacons.size() : beaconIdMap.size();
+		return customBeacons != null ? customBeacons.size() : getBeaconIdMap().size();
 	}
 
 	public boolean hasSessionId() {
