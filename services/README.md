@@ -1,4 +1,4 @@
-#License#
+# License
 
 The MIT License (MIT)
 
@@ -28,21 +28,25 @@ built with the Java Vaadin (Designer) User Interface framework.
  
 Authors: Spencer Joel, Ryan Stoppler & Dr. Richard Bruskiewich
 
-##MyGene.info Package Release 0.1##
+## DESCRIPTION
 
-An open source REST API that provides annotated information about genes.
+A “datasource” is an API wrapper for the nicknames, gene annotations, or other relevant information that can tag a Concept in TKBio.
 
-##DESCRIPTION##
-MyGene.info allows Knowledge.bio to gather additional annotated gene information to present to the user when the information is not present locally in the Knowledge.bio database.
+Currently these are accessed inline in the front-end, separate from Knowledge Beacons. It is awaiting deprecation until the Beacons replace them.
 
-##REQUIREMENTS##
-Please refer to the main README.md file in the KB2 Folder
+## EXISTING DATASOURCES
 
-##TESTING##
+* **MyGene.info.** An open source REST API that provides annotated information about genes.
+
+* **Wikidata.** A wiki dedicated to collecting raw datasets from a variety of scientific endeavours, including biomedical science.
+
+There is a partially implemented wrapper for SPARQL queries.
+
+## REQUIREMENTS
+Please refer to the main README.md file in the TKBio root folder.
+
+## TESTING
 Testing was done using JUnit tests, to ensure the correct/expected information was being returned from MyGene.info and handled accordingly
 
-##HOMEPAGE AND SOURCE REPOSITORY##
-https://bitbucket.org/sulab/kb2/branch/kb2-40_mygene.info-3rd-party-data-source
-
-##THANKS##
+## THANKS
 Spencer Joel, Ryan Stoppler and Dr. Richard Bruskiewich.
