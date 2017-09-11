@@ -136,13 +136,9 @@ The tests may be run by selecting the src/test/java source folder and executing 
 
 ## Loading Data
 
-For the application to work, you need to either point to an existing Knowledge.Bio database somewhere, or load some data into your local copy of the Neo4j database. 
+Earlier versions of Knowledge.Bio retrieved data from a "local" Neo4j project database. This database was now spun off as the "Reference" Knowledge Beacon and Knowledge.Bio converted to an application obtaining its data by polling a list of Knowledge Beacons. Note that this polling task is delegated to the **[Beacon Aggregator](https://github.com/NCATS-Tangerine/beacon-aggregator)**" service.
 
-A sample dataset based on "diabetes" disease concepts with some associated gene and drug conceptual relationships is provided under the project **"dataloader/src/test/resources/data/"** subfolder. These files are MySQL TKBio1 data model structured text dump of data.
-
-See the DATALOADING.md under **"dataloader/"** subfolder for details about how to load the sample data sets. The same documentation gives information about how to load a full production database as well as a local one. 
-
-For this dataset, you will need to type "diabetes" in the search box of the application to start your search.
+The list of beacons currently polled is hard coded in a [Translator Knowledge Beacon project list](https://github.com/NCATS-Tangerine/translator-knowledge-beacon/blob/develop/api/knowledge-beacon-list.yaml) but in the future, will likely be managed within the **[Beacon Registry](https://github.com/NCATS-Tangerine/translator-api-registry)**.
 
 # How to Run Knowledge.Bio on a Docker Container
 
@@ -200,7 +196,7 @@ The following are links relevant for developing and maintaining Knowledge.Bio.
 
 These links are for other projects which give Knowledge.Bio its back-end, as was [illustrated above]().
 
-* **[Beacon Registry](https://github.com/NCATS-Tangerine/translator-api-registry)**. The configuration that Knowlege.Bio's Beacon Aggregator remotely calls to find data beacons for its search results.
 * **[Translator Knowledge Beacon](https://github.com/NCATS-Tangerine/translator-knowledge-beacon)**. Template project forming the basis of all Beacons, including potentially your own. **Includes a list of existing Beacons**.
 * **[Beacon Aggregator](https://github.com/NCATS-Tangerine/beacon-aggregator)**. Collects Beacon results.
 * **[Beacon Validator](https://github.com/NCATS-Tangerine/beacon-validator)**. Ensures that a Beacon has fulfilled all the requirements of the API.
+
