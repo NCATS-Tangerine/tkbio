@@ -2,13 +2,13 @@
 
 Spring Boot Server 
 
-## Overview ##
+## Overview
 
 This subproject contains the TKBio REST Knowledge Source Application Programming Interface (KSAPI). The KSAPI is formally specified as an OpenAPI ("Swagger") specification, as archived in the 'specifications' subfolder. 
 
 The [swagger-codegen](https://github.com/swagger-api/swagger-codegen) project is used to generate Java client and server libraries/applications to use the API.  The underlying library integrating swagger to SpringBoot is [springfox](https://github.com/springfox/springfox).
 
-## Building a Web Server using the API ##
+## Building a Web Server using the API
 
 The 'generate.sh' script at the root of this subproject wraps a swagger-codegen command to (re-)generate a Java client code tree (with Maven dependencies documented in the pom.xml file). The script should be given a target KSAPI swagger json file inside the specification subfolder.   
 
@@ -20,7 +20,7 @@ where the resulting JAR is placed into the 'target' subdirectory.
 
 Alternately, the project may be converted to a Gradle project by simply running the 'gradle init' function inside the root 'api' subfolder.
 
-## Running the Web Server ##
+## Running the Web Server
 
 Start your server as an simple java application, something like
 
