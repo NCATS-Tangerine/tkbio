@@ -1,15 +1,16 @@
 # The NCAT "Translator" Knowledge.Bio Release 4.0 Java Implementation
 
-TODO: Edit image?
 ![Knowledge Graph for Sepiapterin Reductase](https://tkbio.ncats.io/VAADIN/themes/kb2/images/usecase.png)
 
-This is Knowledge.Bio, a Java-based web application for discovering, navigating, harvesting and organizing conceptual maps of (biomedical) research knowledge. Try it out: tkbio.ncats.io
+This is Knowledge.Bio, a Java-based web application for discovering, navigating, harvesting and organizing conceptual maps of (biomedical) research knowledge. Try it out at [https://tkbio.ncats.io](https://tkbio.ncats.io).
 
-The software is a US [National Institute of Health](https://www.nih.gov/) funded project initiated in 2015, as a collaboration between...
+The software project is a US [National Institute of Health](https://www.nih.gov/) funded initiative, begun in 2015, within the scope of the Heart BD2K program as a collaboration between...
 
 * The [Scripps Research Institute](http://www.scripps.edu/) (TSRI), San Diego, CA, USA:
 
 	Dr. Benjamin Good, Project Owner
+
+and 
 
 * [STAR Informatics/Delphinai Corporation](https://starinformatics.com), Port Moody, BC, Canada:	
  
@@ -21,12 +22,13 @@ The software is a US [National Institute of Health](https://www.nih.gov/) funded
 	Jarielle Lim (2016)
 	Yinglun "Colin" Qiao (2016)
 	Rudy Kong Tin Lun (2016)
+	Meera Godden (2017)
 
-The current (2017) effort to extend Knowledge.Bio is in collaboration with the [Lawrence Berkeley Laboratory](http://www.lbl.gov/), San Francisco, CA, USA, care of
+The current (2017) effort to advance Knowledge.Bio is a collaboration with the [Lawrence Berkeley Laboratory](http://www.lbl.gov/), San Francisco, CA, USA, care of
 
     Dr. Christopher Mungall
 
-repurposing it as a tool for the [NIH NCATS Translator initiative](https://ncats.nih.gov/translator) with direct funding brokered by NCATS Principal Investigator,
+with the objective of repurposing it as a web client for the [NIH NCATS Translator initiative](https://ncats.nih.gov/translator), with direct funding brokered by NCATS Principal Investigator,
 
 	Dr. Christopher Chute
 
