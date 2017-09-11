@@ -51,9 +51,7 @@ Below is an example of a map created for Sepiapterin Reductase.
 
 ![Knowledge Graph for Sepiapterin Reductase](https://tkbio.ncats.io/VAADIN/themes/kb2/images/usecase.png)
 
-Knowledge.Bio requires three parts to function: "Knowledge Beacons", which broadcast biomedical data according to the NCATS API and typically wrap databases; the "Beacon Aggregator", which puts the data together in one place; and the web client itself, whose purposes are outlined above. This architecture is illustrated in the image below. We provide a link to the Github projects for each of these modules [at the bottom of this document](). 
-
-![How NCATS integrates to Knowledge.Bio](https://tkbio.ncats.io/VAADIN/themes/kb2/images/beacon-architecture-final.png)
+Knowledge.Bio requires three parts to function: "Knowledge Beacons", which broadcast biomedical data according to the NCATS API and typically wrap databases; the "Beacon Aggregator", which puts the data together in one place; and the web client itself, whose purposes are outlined above. This architecture is illustrated in the image below. We provide a link to the Github projects for each of these modules at the bottom of this document. 
 
 All of these systems can be built and run locally, or otherwise point to remote versions. See the "Beacon Aggregator Setup" and "Reference Beacon Setup" guides if you would like to develop or host those components on your machine. If you have a dataset that you would like to use in particular with Knowledge.Bio, see the "Database Setup and Dataloading" guide.
 
