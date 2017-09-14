@@ -32,7 +32,7 @@ with the objective of repurposing it as a web client for the [NIH NCATS Translat
 
 	Dr. Christopher Chute
 
-and others at the [INSTITUTE for CLINICAL & TRANSLATIONAL RESEARCH](https://ictr.johnshopkins.edu/) (ICTR), Johns Hopkins University � School of Medicine, Baltimore, MD, USA. 
+and others at the [INSTITUTE for CLINICAL & TRANSLATIONAL RESEARCH](https://ictr.johnshopkins.edu/) (ICTR), Johns Hopkins University School of Medicine, Baltimore, MD, USA. 
 
 # Table of Contents
 #### [Introduction]()
