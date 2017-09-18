@@ -25,7 +25,8 @@ public class ContactUsDesign extends VerticalLayout {
 	protected VerticalLayout mailImgLayout;
 	protected VerticalLayout labContactImgLayout;
 	protected VerticalLayout affiliationLayout;
-	protected HorizontalLayout affiliationHorizontalLayout;
+	protected HorizontalLayout affiliationHorizontalLayout1;
+	protected HorizontalLayout affiliationHorizontalLayout2;
 
 	public ContactUsDesign() {
 		Design.read(this);

@@ -27,7 +27,7 @@
       <vaadin-image source="theme://images/mail.png" width="30%" :middle :center></vaadin-image> 
      </vaadin-vertical-layout> 
      <vaadin-label style-name="suggestion-label" :middle :center> 
-      <p style="margin-top:0px">EMAIL <a href="mailto:bgood@scripps.edu" target="_blank"><span style="color:#5cb85c;">BEN</span></a> TO SUGGEST YOUR OPINIONS</p> 
+      <p style="margin-top:0px">EMAIL <a href="mailto:richard@starinformatics.com" target="_blank"><span style="color:#5cb85c;">RICHARD</span></a> TO SUGGEST YOUR OPINIONS</p> 
      </vaadin-label> 
     </vaadin-vertical-layout> 
     <vaadin-label style-name="section-header-label" :middle :center :expand="1.5"> 
@@ -38,45 +38,72 @@
       <vaadin-image source="theme://images/labcontact.png" width="30%" :middle :center></vaadin-image> 
      </vaadin-vertical-layout> 
      <vaadin-label style-name="suggestion-label" :middle :center> 
-      <p style="margin-top:0px;">VISIT THE <a href="http://sulab.org/" target="_blank"><span style="color:#5cb85c;">LAB CONTACT PAGE</span></a></p> 
+      <p style="margin-top:0px;">VISIT THE <a href="https://ncats.nih.gov/contact" target="_blank"><span style="color:#5cb85c;">NCATS CONTACT PAGE</span></a></p> 
      </vaadin-label> 
     </vaadin-vertical-layout> 
    </vaadin-horizontal-layout> 
    <vaadin-vertical-layout style-name="affiliation-content-layout"> 
-    <vaadin-label style-name="affiliations-label" plain-text>
-      AFFILIATIONS 
-    </vaadin-label> 
-    <vaadin-vertical-layout style-name="suggestion-layout" _id="affiliationLayout"> 
-     <vaadin-horizontal-layout width-full _id="affiliationHorizontalLayout"> 
-      <vaadin-image source="theme://images/sulab.png" width="50%" :middle :center></vaadin-image> 
-      <vaadin-image source="theme://images/starinformatics.png" width="50%" :middle :center></vaadin-image> 
-     </vaadin-horizontal-layout> 
-     <vaadin-image source="theme://images/scripps.png" width="50%" :middle :center></vaadin-image> 
-    </vaadin-vertical-layout> 
+	    <vaadin-label style-name="affiliations-label" plain-text>
+	      AFFILIATIONS 
+	    </vaadin-label> 
+	    
+	    <vaadin-vertical-layout style-name="suggestion-layout" _id="affiliationLayout"> 
+	
+		     <vaadin-horizontal-layout width-full _id="affiliationHorizontalLayout1"> 
+			      <vaadin-image source="theme://images/starinformatics.png" width="33%" :middle :center></vaadin-image> 
+			      <vaadin-image source="theme://images/berkeley_lab.png" width="33%" :middle :center></vaadin-image> 
+			      <vaadin-image source="theme://images/sulab.png" width="60%" :middle :center></vaadin-image> 
+		     </vaadin-horizontal-layout> 
+		     <vaadin-label><p></p></vaadin-label>
+		     <vaadin-horizontal-layout width-full _id="affiliationHorizontalLayout2"> 
+		     	<vaadin-image source="theme://images/ncats_logo.png" width="50%" :middle :center></vaadin-image> 
+		     	<vaadin-image source="theme://images/jhu_logo.jpg" width="50%" :middle :center></vaadin-image> 
+		     	<vaadin-image source="theme://images/scripps.png" width="100%" :middle :center></vaadin-image> 
+		     </vaadin-horizontal-layout>
+		        
+	    </vaadin-vertical-layout> 
+	    
    </vaadin-vertical-layout> 
    <vaadin-vertical-layout style-name="collabration-content-layout"> 
     <vaadin-label style-name="section-content-label" :middle :center> 
-     <p style="font-size: 1.2em;">Knowledge.bio is an open source collaboration of <span style="color:#7aba7a;">The Su Laboratory</span> at <span style="color:#7aba7a;">The Scripps Research Institute</span></p> 
+    <p style="font-size: 1.2em;">The Translator Knowledge.bio web resource is an 
+    <a href="https://github.com/NCATS-Tangerine/tkbio" target="_blank" style="text-decoration: none; margin-bottom: 0px; font-weight: bold; font-size: 1.2em; color: #2d8653;" target="_blank">open source collaboration</a> of the<br/><span style="color:#7aba7a;">Translator Project</span> at <span style="color:#7aba7a;">The National Center for Advancing Translational Sciences</span></p> 
     </vaadin-label> 
     <vaadin-horizontal-layout width-full margin-left margin-right> 
      <vaadin-label style-name="section-content-label" :middle :center :expand> 
       <p></p> 
-      <h3 style="margin-bottom: 0px; font-weight: bold; font-size: 1.5em; color: #2d8653;">THE SU LAB</h3> 
+      <h3> <a href="http://www.starinformatics.com" target="_blank" style="text-decoration: none; margin-bottom: 0px; font-weight: bold; font-size: 1.25em; color: #2d8653;"> STAR INFORMATICS </a></h3> 
+      <br>2276 French Road North 
+      <br>Sooke, BC, Canada 
+      <br>V9Z 0M3 
+      <p></p> 
+     </vaadin-label>
+     <vaadin-label style-name="section-content-label" :middle :center :expand> 
+      <p></p> 
+        <h3><a href="http://www.lbl.gov/" target="_blank" style="text-decoration: none; margin-bottom: 0px; font-weight: bold; font-size: 1.25em; color: #2d8653;">LBNL</a></h3> 
+		<br>1 Cyclotron Road Mailstop XXX
+		<br>Berkeley, CA
+		<br>94720
+      <p></p> 
+     </vaadin-label> 
+     <vaadin-label style-name="section-content-label" :middle :center :expand> 
+      <p></p> 
+      <h3><a href="https://ictr.johnshopkins.edu/" target="_blank" style="text-decoration: none; margin-bottom: 0px; font-weight: bold; font-size: 1.25em; color: #2d8653;">ICTR</a></h3> 
+      <br>2024 E. Monument Street
+	  <br>Suite 1-202
+	  <br>Baltimore, MD
+	  <br>21205 
+      <p></p> 
+     </vaadin-label> 
+     <vaadin-label style-name="section-content-label" :middle :center :expand> 
+      <p></p> 
+      <h3><a href="http://sulab.org/" target="_blank" style="text-decoration: none; margin-bottom: 0px; font-weight: bold; font-size: 1.25em; color: #2d8653;">THE SU LAB</a></h3>
       <br>10550 
       <br>North Torrey Pines Road 
       <br>La Jolla, CA 
       <br>92037 
       <p></p> 
-     </vaadin-label> 
-     <vaadin-label style-name="section-content-label" :middle :center :expand> 
-      <p></p> 
-      <h3> <a href="http://www.starinformatics.com" target="_blank" style="text-decoration: none; margin-bottom: 0px; font-weight: bold; font-size: 1.25em; color: #2d8653;"> STAR INFORMATICS </a></h3> 
-      <br>104 - 2003 
-      <br>Clarke Street 
-      <br>Port Moody, BC, Canada 
-      <br>V3H 4K2 
-      <p></p> 
-     </vaadin-label> 
+     </vaadin-label>  
     </vaadin-horizontal-layout> 
    </vaadin-vertical-layout> 
    <vaadin-horizontal-layout style-name="disclaimer-content-layout" width-full> 
