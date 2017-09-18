@@ -572,6 +572,59 @@
        </vaadin-vertical-layout> 
       </vaadin-horizontal-layout> 
      </vaadin-vertical-layout> 
+    </tab>
+    <tab caption="Beacons">
+         <vaadin-vertical-layout style-name="faq-layout" _id="beaconTabLayout"> 
+      <vaadin-horizontal-layout style-name="faq-row-layout" width-full> 
+       <vaadin-label style-name="faq-label" plain-text :center :expand="1.5">
+         KNOWLEDGE BEACONS
+       </vaadin-label>
+       <vaadin-vertical-layout :expand="0.5"></vaadin-vertical-layout> 
+       <vaadin-vertical-layout spacing :expand="4"> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           What is a Knowledge Beacon? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>A Knowledge Beacon is a knowledge source published with a <b>RE</b>presentational <b>S</b>tate <b>T</b>ransfer (REST) style web service interface satisfying the
+           <a href="https://github.com/NCATS-Tangerine/translator-knowledge-beacon" target="_blank">Knowledge Beacon Application Programming Interface</a>.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout>
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How does Knowledge.Bio use Knowledge Beacons? 
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Previous versions of Knowledge.Bio accessed concepts and relationships from a local graph database. However, all queries made in this current version of Knowledge.Bio is actually retrieved by web services by polling a pool of registered Knowledge Beacons.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout>
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How do I manage available Knowledge Beacons?
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Click on the <b>Beacons</b> button in the sidebar. There will popup dialog box that has check boxes to select/deselect to turn available beacons on or off.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout>
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           Can I trace my beacon queries?
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>[experimental feature, work-in-progress]There will beacon dialog box also allows you to click a check box to turn log recording on function. After doing some work on the desktop, you can retrieve the query log by clicking the button in the dialog box.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout> 
+        <vaadin-vertical-layout spacing> 
+         <vaadin-label style-name="faq-question-label" plain-text>
+           How can I add a new Knowledge Beacon?
+         </vaadin-label> 
+         <vaadin-label style-name="faq-answer-label"> 
+          <p>Visit the <a href="https://github.com/NCATS-Tangerine/translator-knowledge-beacon" target="_blank">Knowledge Beacon API</a> repositories for instructions on how to create a new beacon and add it to the list of registered beacons.</p> 
+         </vaadin-label> 
+        </vaadin-vertical-layout>  
+       </vaadin-vertical-layout> 
+      </vaadin-horizontal-layout>
+     </vaadin-vertical-layout> 
     </tab> 
     <tab caption="Accounts"> 
      <vaadin-vertical-layout style-name="faq-layout" _id="accountTabLayout"> 
