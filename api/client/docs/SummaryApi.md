@@ -1,6 +1,6 @@
 # SummaryApi
 
-All URIs are relative to *http://kba.ncats.io*
+All URIs are relative to *http://kba.ncats.io/*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 <a name="linkedTypes"></a>
 # **linkedTypes**
-> List&lt;Summary&gt; linkedTypes(sessionId)
+> List&lt;Summary&gt; linkedTypes(beacons, sessionId)
 
 
 
@@ -23,9 +23,10 @@ Get a list of types and # of instances in the knowledge source, and a link to th
 
 
 SummaryApi apiInstance = new SummaryApi();
-String sessionId = "sessionId_example"; // String | identifier to be used for tagging session data 
+List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of IDs of beacons to be used as knowledge sources for the query 
+String sessionId = "sessionId_example"; // String | client-defined session identifier 
 try {
-    List<Summary> result = apiInstance.linkedTypes(sessionId);
+    List<Summary> result = apiInstance.linkedTypes(beacons, sessionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling SummaryApi#linkedTypes");
@@ -37,7 +38,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **sessionId** | **String**| identifier to be used for tagging session data  | [optional]
+ **beacons** | [**List&lt;String&gt;**](String.md)| set of IDs of beacons to be used as knowledge sources for the query  | [optional]
+ **sessionId** | **String**| client-defined session identifier  | [optional]
 
 ### Return type
 

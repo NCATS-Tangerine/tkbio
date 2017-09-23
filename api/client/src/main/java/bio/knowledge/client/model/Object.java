@@ -19,10 +19,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * Subject
+ * Object
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-09-23T02:49:55.452Z")
-public class Subject {
+public class Object {
   @SerializedName("clique")
   private String clique = null;
 
@@ -32,7 +32,7 @@ public class Subject {
   @SerializedName("name")
   private String name = null;
 
-  public Subject clique(String clique) {
+  public Object clique(String clique) {
     this.clique = clique;
     return this;
   }
@@ -50,16 +50,16 @@ public class Subject {
     this.clique = clique;
   }
 
-  public Subject id(String id) {
+  public Object id(String id) {
     this.id = id;
     return this;
   }
 
    /**
-   * CURIE-encoded identifier of concept 
+   * CURIE-encoded identifier of object concept 
    * @return id
   **/
-  @ApiModelProperty(example = "null", value = "CURIE-encoded identifier of concept ")
+  @ApiModelProperty(example = "null", value = "CURIE-encoded identifier of object concept ")
   public String getId() {
     return id;
   }
@@ -68,16 +68,16 @@ public class Subject {
     this.id = id;
   }
 
-  public Subject name(String name) {
+  public Object name(String name) {
     this.name = name;
     return this;
   }
 
    /**
-   * human readable label of subject concept
+   * human readable label of object concept
    * @return name
   **/
-  @ApiModelProperty(example = "null", value = "human readable label of subject concept")
+  @ApiModelProperty(example = "null", value = "human readable label of object concept")
   public String getName() {
     return name;
   }
@@ -95,10 +95,10 @@ public class Subject {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Subject subject = (Subject) o;
-    return Objects.equals(this.clique, subject.clique) &&
-        Objects.equals(this.id, subject.id) &&
-        Objects.equals(this.name, subject.name);
+    Object object = (Object) o;
+    return Objects.equals(this.clique, object.clique) &&
+        Objects.equals(this.id, object.id) &&
+        Objects.equals(this.name, object.name);
   }
 
   @Override
@@ -110,7 +110,7 @@ public class Subject {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Subject {\n");
+    sb.append("class Object {\n");
     
     sb.append("    clique: ").append(toIndentedString(clique)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");

@@ -1,6 +1,6 @@
 # AggregatorApi
 
-All URIs are relative to *http://kba.ncats.io*
+All URIs are relative to *http://kba.ncats.io/*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -24,7 +24,7 @@ Get a list of the knowledge beacons that the aggregator can query
 
 
 AggregatorApi apiInstance = new AggregatorApi();
-String sessionId = "sessionId_example"; // String | identifier to be used for tagging session data 
+String sessionId = "sessionId_example"; // String | client-defined session identifier 
 try {
     List<KnowledgeBeacon> result = apiInstance.getBeacons(sessionId);
     System.out.println(result);
@@ -38,7 +38,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **sessionId** | **String**| identifier to be used for tagging session data  | [optional]
+ **sessionId** | **String**| client-defined session identifier  | [optional]
 
 ### Return type
 
@@ -69,7 +69,7 @@ Get a log of the most recent errors in this session
 
 
 AggregatorApi apiInstance = new AggregatorApi();
-String sessionId = "sessionId_example"; // String | session identifier 
+String sessionId = "sessionId_example"; // String | client-defined session identifier 
 try {
     List<LogEntry> result = apiInstance.getErrors(sessionId);
     System.out.println(result);
@@ -83,7 +83,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **sessionId** | **String**| session identifier  |
+ **sessionId** | **String**| client-defined session identifier  |
 
 ### Return type
 
