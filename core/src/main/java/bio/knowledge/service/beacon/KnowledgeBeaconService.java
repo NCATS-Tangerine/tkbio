@@ -2,26 +2,12 @@ package bio.knowledge.service.beacon;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.client.ApiClient;
-import bio.knowledge.client.ApiException;
-import bio.knowledge.client.api.AggregatorApi;
-import bio.knowledge.client.api.ConceptsApi;
-import bio.knowledge.client.api.EvidenceApi;
-import bio.knowledge.client.api.StatementsApi;
-import bio.knowledge.client.model.StatementsObject;
-import bio.knowledge.client.model.StatementsPredicate;
 import bio.knowledge.client.model.Subject;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.AnnotationImpl;
@@ -38,7 +24,7 @@ import bio.knowledge.model.Statement;
  * 
  *         It may seem wasteful to instantiate a new {@code ConceptApi} (or
  *         other API classes) within each {@code ListSupplier<T>}, but in fact
- *         it is necessary because we're asynchrounously setting their ApiClient
+ *         it is necessary because we're asynchronously setting their ApiClient
  *         objects (which encapsulate the URI to be queried) in
  *         {@code GenericDataService}.
  *         <br><br>
@@ -204,14 +190,15 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 					);
 
 					for (bio.knowledge.client.model.Statement response : responses) {
+						
 						String id = response.getId();
-						StatementsObject statementsObject = response.getObject();
+						bio.knowledge.client.model.Object statementsObject = response.getObject();
 						Subject statementsSubject = response.getSubject();
-						StatementsPredicate statementsPredicate = response.getPredicate();
+						bio.knowledge.client.model.Predicate statementsPredicate = response.getPredicate();
 
-						ConceptImpl subject = new ConceptImpl(statementsSubject.getId(), null, statementsSubject.getName());
+						ConceptImpl subject = new ConceptImpl(statementsSubject.getClique(), statementsSubject.getId(), null, statementsSubject.getName());
 
-						ConceptImpl object = new ConceptImpl(statementsObject.getId(), null, statementsObject.getName());
+						ConceptImpl object = new ConceptImpl(statementsObject.getClique(), statementsObject.getId(), null, statementsObject.getName());
 
 						PredicateImpl predicate = new PredicateImpl(statementsPredicate.getName());
 						

@@ -59,6 +59,12 @@ public class ConceptImpl extends AbstractIdentifiedEntity implements Concept {
     	this.semanticGroup = semgroup ;
     }
     
+    public ConceptImpl( String clique, String accessionId, SemanticGroup semgroup, String name ) {
+    	super(accessionId,name,"") ;
+    	this.clique = clique;
+    	this.semanticGroup = semgroup ;
+    }
+    
 	/*
 	 * (non-Javadoc)
 	 * @see bio.knowledge.model.Concept#setBeaconSource(java.lang.String)

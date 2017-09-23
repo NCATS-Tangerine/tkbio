@@ -13,13 +13,18 @@
 
 package bio.knowledge.client;
 
-import com.squareup.okhttp.*;
+import java.io.IOException;
+
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.GzipSink;
 import okio.Okio;
-
-import java.io.IOException;
 
 /**
  * Encodes request bodies using gzip.
