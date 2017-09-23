@@ -48,6 +48,10 @@ public class Neo4jConcept extends Neo4jAbstractAnnotatedEntity implements Concep
 
 	public static final String SEMGROUP_FIELD_START = "[" ;
 	public static final String SEMGROUP_FIELD_END   = "]" ;
+
+	private String beaconSource = "";
+
+	private String clique = "";
 	
     private SemanticGroup semanticGroup;
 
@@ -93,6 +97,41 @@ public class Neo4jConcept extends Neo4jAbstractAnnotatedEntity implements Concep
     	super(accessionId,name,"") ;
     	this.semanticGroup = semgroup ;
     }
+    
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.Concept#setBeaconSource(java.lang.String)
+	 */
+	@Override
+	public void setBeaconSource(String source) {
+		this.beaconSource = source;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.BeaconResponse#getBeaconSource()
+	 */
+	@Override
+	public String getBeaconSource() {
+		return beaconSource;
+	}
+    
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#setClique(String cliqueId)
+	 */
+    @Override
+	public void setClique(String cliqueId) {
+		this.clique = cliqueId;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#getClique()
+	 */
+	@Override
+	public String getClique() {
+		return clique;
+	}
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.neo4j.Concept#setSemanticGroup(bio.knowledge.model.SemanticGroup)
@@ -236,17 +275,5 @@ public class Neo4jConcept extends Neo4jAbstractAnnotatedEntity implements Concep
     public String toString() {
     	return getName() ;
     }
-
-	@Override
-	public void setBeaconSource(String url) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public String getBeaconSource() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

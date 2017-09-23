@@ -29,7 +29,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -53,7 +52,6 @@ import com.vaadin.data.Property;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.ItemSorter;
 import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -61,14 +59,12 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
-import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.CellReference;
@@ -118,7 +114,6 @@ import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
 import bio.knowledge.service.DataServiceException;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
-import bio.knowledge.service.beacon.KnowledgeBeacon;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.service.core.ListTableEntryCounter;
@@ -145,7 +140,6 @@ public class ListView extends BaseView {
 	private Logger _logger = LoggerFactory.getLogger(ListView.class);
 
 	// column ids (property ids) for data table
-	private static final String COL_ID_NAME      = "name";
 	private static final String COL_ID_SUPPORTING_TEXT = "supportingText";
 	private static final String COL_ID_EVIDENCE  = "evidence";
 	private static final String COL_ID_RELATION  = "relation";
@@ -153,19 +147,8 @@ public class ListView extends BaseView {
 	private static final String COL_ID_SUBJECT   = "subject";
 	private static final String COL_ID_REFERENCE = "reference";
 	private static final String COL_ID_PUBLICATION_DATE = "publicationDate";
-	
-	private static final int ELLIPSIS_INDEX_OFFSET = 2;
 
 	private static final int ROWS_TO_DISPLAY = 11;
-
-	// style names
-	private static final String PAGE_STATUS_LABEL_STYLE = "page-status-label";
-	private static final String CURRENT_PAGE_BUTTON_STYLE = "current-page-button";
-	private static final String CURRENT_PAGE_SIZE_STYLE = "current-page-size";
-	private static final String PAGE_BUTTON_STYLE = "page-button";
-	private static final String PAGE_CONTROL_BUTTON_STYLE = "pagecontrol-button";
-	
-	private static final int DATA_PAGE_SIZE = 15;
 	
 	@Autowired
 	KnowledgeBeaconRegistry kbRegistry;
@@ -220,8 +203,6 @@ public class ListView extends BaseView {
 		private static final long serialVersionUID = -1922666185642169173L;
 
 		public final static int PAGE_WINDOW_SIZE = 5;
-
-		private static final int PAGE_WINDOW_OFFSET = PAGE_WINDOW_SIZE / 2;
 
 		private static final int DEFAULT_PAGE_SIZE = 15;
 		private static final int DEFAULT_CURRENT_PAGE_INDEX = 0;
@@ -418,13 +399,13 @@ public class ListView extends BaseView {
 		private int nextPageNumber;
 		public void loadNextPage() {
 			if (pager != null && !loadedAllData) {
-				int pageSize = (int) (dataTable.getHeightByRows() * 2 / kbService.getKnowledgeBeaconCount());
+				//int pageSize = (int) (dataTable.getHeightByRows() * 2 / kbService.getKnowledgeBeaconCount());
 				loadingDataPage = true;
-				String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+				//String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
 				
 				// Simplistic addition of text filtering to tables which can use it
 				// Won't really work so well in StatementService, I suspect...
-				if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
+				//if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
 				
 				nextPageNumber = loadDataPage(nextPageNumber);
 				
@@ -538,29 +519,8 @@ public class ListView extends BaseView {
 //		createPageControls(listContainer);
 	}
 
-	/**
-	 * @param e
-	 * @return
-	 */
-	private void pageSizeSelector(ClickEvent e) {
-
-		String value = e.getButton().getCaption();
-
-		int pageSize = 10;
-		try {
-			pageSize = Integer.parseInt(value);
-		} catch (NumberFormatException nfe) {
-			pageSize = 10;
-		}
-		listContainer.setPageSize(pageSize);
-
-		gotoPageIndex(0);
-	}
-
 	private HorizontalLayout pageBar = new HorizontalLayout();
 	private HorizontalLayout enPageBar = new HorizontalLayout();
-
-	private Label currentStatusLabel = new Label();
 
 	private void loadDataTable(VerticalLayout dataTableLayout) {
 
@@ -708,6 +668,8 @@ public class ListView extends BaseView {
 		}
 		
 		container.setItemSorter(new ItemSorter() {
+
+			private static final long serialVersionUID = -6433226581531591726L;
 
 			@Override
 			public void setSortProperties(Sortable container, Object[] propertyId, boolean[] ascending) {
@@ -1623,7 +1585,7 @@ public class ListView extends BaseView {
 
 			// int x = 100, y = 400 ;
 
-			String predicateLabel;
+			//String predicateLabel;
 			
 			String conceptId;
 			if (role.equals(ConceptRole.SUBJECT)) {				
@@ -1652,7 +1614,7 @@ public class ListView extends BaseView {
 				conceptName = "Unknown concept";
 			}
 
-			predicateLabel = predicate.getName();
+			//predicateLabel = predicate.getName();
 
 			Button showRelations = new Button("Show Relations");
 			final Concept finallySelectedConcept = selectedConcept;

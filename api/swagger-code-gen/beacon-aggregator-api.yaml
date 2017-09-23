@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
-  title: Translator Knowledge Beacon API
-  version: 1.0.12
+  title: Translator Knowledge Beacon Aggregator API
+  version: 1.0.3
   contact:
     responsibleDeveloper: Richard Bruskiewich
     responsibleOrganization: STAR Informatics/Delphinai Corporation
@@ -40,10 +40,18 @@ paths:
       tags:
         - summary
       parameters:
+        - name: beacons
+          in: query
+          description: >
+            set of IDs of beacons to be used as knowledge sources for the query
+          required: false
+          type: array
+          items:
+            type: string
         - name: sessionId
           in: query
           description: >
-            identifier to be used for tagging session data
+            client-defined session identifier
           required: false
           type: string
       operationId: linkedTypes
@@ -67,6 +75,10 @@ paths:
                   type: integer
                   description: |
                     the number of instances of the specified type
+                beacon:
+                  type: string
+                  description: |
+                    beacon ID
           description: |
             Successful response with types and frequency returned
           examples:
@@ -74,20 +86,22 @@ paths:
               - id: CHEM
                 frequency: 12355
                 idmap: http://myservice.net/api/v1/exactmatches/CHEM
+                beacon: "2"
               - id: ANAT
                 frequency: 1234
-                idmap: http://myservice.net/api/v1/exactmatches/ANAT     
+                idmap: http://myservice.net/api/v1/exactmatches/ANAT   
+                beacon: "2"
   '/concepts/{conceptId}':
     get:
       description: >
         Retrieves details for a specified concepts in the system, as specified
-        by a (url-encoded) CURIE identifier of a concept known the given knowledge source.
+        by a (url-encoded) CURIE identifier of a concept known the given knowledge source
       tags:
         - concepts
       parameters:
         - name: conceptId
           in: path
-          description: (url-encoded) CURIE identifier of concept of interest
+          description: (url-encoded) CURIE identifier of concept of interest, e.g. wd:Q126691
           required: true
           type: string
         - name: beacons
@@ -101,7 +115,7 @@ paths:
         - name: sessionId
           in: query
           description: >
-            identifier to be used for tagging session data
+            client-defined session identifier
           required: false
           type: string
       operationId: getConceptDetails
@@ -164,6 +178,7 @@ paths:
                 synonyms: []
                 definition: Werner Syndrome Gene
                 details: []
+                beacon: "3"
   /concepts:
     get:
       description: |
@@ -175,7 +190,7 @@ paths:
           in: query
           description: >-
             a (urlencoded) space delimited set of keywords or substrings against
-            which to match concept names and synonyms
+            which to match concept names and synonyms, e.g. diabetes.
           required: true
           type: string
         - name: semgroups
@@ -213,7 +228,7 @@ paths:
         - name: sessionId
           in: query
           description: >
-            identifier to be used for tagging session data
+            client-defined session identifier
           required: false
           type: string
       operationId: getConcepts
@@ -274,6 +289,7 @@ paths:
                 - WRN Protein
                 - 'DNA Helicase, RecQ-Like Type 3'
               definition: 'Werner syndrome ATP-dependent helicase (1432 aa, ~162 kDa) is encoded by the human WRN gene. This protein plays a role in both magnesium and ATP-dependent DNA-helicase activity and 3\''->5\'' exonuclease activity towards double-stranded DNA with a 5\''-overhang.'
+              beacon: "3"
             - id: 'wd:Q18042562'
               name: WRNIP1
               semanticGroup: GENE
@@ -283,6 +299,7 @@ paths:
                 - WRNIP1
                 - bA420G6.2
               definition: human gene
+              beacon: "4"
             - id: 'wd:Q14883734'
               name: WRN
               semanticGroup: GENE
@@ -292,6 +309,7 @@ paths:
                 - Werner syndrome RecQ like helicase
                 - RECQL2
               definition: human gene
+              beacon: "4"
             - id: 'wd:Q1154619'
               name: Werner Syndrome
               semanticGroup: DISO
@@ -321,6 +339,7 @@ paths:
                 - syndromes werners
                 - Adult premature ageing syndrome
               definition: 'autosomal recessive disorder that causes premature aging in adults, characterized by sclerodermal skin changes, cataracts, subcutaneous calcifications, muscular atrophy, a tendency to diabetes mellitus, aged appearance of the face, baldness, and a high incidence of neoplastic disease.'
+              beacon: "3"
   /statements:
     get:
       description: >
@@ -336,7 +355,7 @@ paths:
           description: >
             set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly
             matching concepts to be used in a search for associated
-            concept-relation statements
+            concept-relation statements, e.g. wd:Q126691, wd:Q420626
           required: true
           type: array
           items:
@@ -385,7 +404,7 @@ paths:
         - name: sessionId
           in: query
           description: >
-            identifier to be used for tagging session data
+            client-defined session identifier
           required: false
           type: string
       operationId: getStatements
@@ -403,8 +422,13 @@ paths:
                   type: string
                   description: CURIE-encoded identifier for statement (can be used to retrieve associated evidence)
                 subject:
+                  title: Subject
                   type: object
                   properties:
+                    clique:
+                      type: string
+                      description: |
+                        CURIE-encoded cannonical identifier of "equivalent concepts clique"
                     id:
                       type: string
                       description: |
@@ -413,6 +437,7 @@ paths:
                       type: string
                       description: human readable label of subject concept
                 predicate:
+                  title: Predicate
                   type: object
                   properties:
                     id:
@@ -423,8 +448,13 @@ paths:
                       type: string
                       description: human readable label of concept
                 object:
+                  title: Object
                   type: object
                   properties:
+                    clique:
+                      type: string
+                      description: |
+                        CURIE-encoded cannonical identifier of "equivalent concepts clique"
                     id:
                       type: string
                       description: |
@@ -452,6 +482,7 @@ paths:
                   id:
                     - 'wd:Q2898645'
                   name: Neonatal diabetes mellitus
+                beacon: "1"
   '/evidence/{statementId}':
     get:
       description: >
@@ -462,7 +493,7 @@ paths:
         - name: statementId
           in: path
           description: >
-            (url-encoded) CURIE identifier of the concept-relationship statement ("assertion", "claim") for which associated evidence is sought
+            (url-encoded) CURIE identifier of the concept-relationship statement ("assertion", "claim") for which associated evidence is sought, e.g. kbs:Q420626_P2175_Q126691
           required: true
           type: string
         - name: keywords
@@ -495,7 +526,7 @@ paths:
         - name: sessionId
           in: query
           description: >
-            identifier to be used for tagging session data
+            client-defined session identifier
           required: false
           type: string
       operationId: getEvidence
@@ -539,6 +570,7 @@ paths:
                 type: >-
                   TAS
                 date: 2012-07-10
+                beacon: "1"
   /beacons:
     get:
       description: >
@@ -549,7 +581,7 @@ paths:
         - name: sessionId
           in: query
           description: >
-            identifier to be used for tagging session data
+            client-defined session identifier
           required: false
           type: string
       operationId: getBeacons
@@ -608,7 +640,7 @@ paths:
         - name: sessionId
           in: query
           description: >
-            session identifier
+            client-defined session identifier
           required: true
           type: string
       operationId: getErrors
@@ -624,6 +656,10 @@ paths:
                   type: string
                   description: |
                     timestamp
+                beacon:
+                  type: string
+                  description: |
+                    beacon ID
                 query:
                   type: string
                   description: |
@@ -634,3 +670,9 @@ paths:
                     error message
           description: |
             Successful response with most recent errors
+          examples:
+            application/json:
+              - timestamp: "2016-12-31 15:09:24.614"
+                beacon: "1"
+                query: "http://rkb.ncats.io/concepts?keywords=cancer"
+                message: Bad Gateway

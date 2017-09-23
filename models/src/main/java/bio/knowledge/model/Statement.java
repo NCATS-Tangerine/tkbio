@@ -3,8 +3,6 @@ package bio.knowledge.model;
 import java.util.List;
 
 import bio.knowledge.model.core.IdentifiedEntity;
-import bio.knowledge.model.neo4j.Neo4jEvidence;
-import bio.knowledge.model.neo4j.Neo4jPredicate;
 
 public interface Statement extends IdentifiedEntity, BeaconResponse {
 	/**

@@ -3,16 +3,17 @@ package bio.knowledge.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.neo4j.ogm.annotation.Relationship;
-
-import bio.knowledge.model.core.Feature;
-import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.AbstractIdentifiedEntity;
+import bio.knowledge.model.core.Feature;
 
 public class ConceptImpl extends AbstractIdentifiedEntity implements Concept {
 
 	public static final String SEMGROUP_FIELD_START = "[" ;
 	public static final String SEMGROUP_FIELD_END   = "]" ;
+	
+	private String beaconSource = "";
+
+	private String clique = "";
 	
     private SemanticGroup semanticGroup;
 
@@ -57,6 +58,41 @@ public class ConceptImpl extends AbstractIdentifiedEntity implements Concept {
     	super(accessionId,name,"") ;
     	this.semanticGroup = semgroup ;
     }
+    
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.Concept#setBeaconSource(java.lang.String)
+	 */
+	@Override
+	public void setBeaconSource(String source) {
+		this.beaconSource = source;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.BeaconResponse#getBeaconSource()
+	 */
+	@Override
+	public String getBeaconSource() {
+		return beaconSource;
+	}
+
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#setClique(String cliqueId)
+	 */
+    @Override
+	public void setClique(String cliqueId) {
+		this.clique = cliqueId;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.neo4j.Concept#getClique()
+	 */
+	@Override
+	public String getClique() {
+		return clique;
+	}
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.neo4j.Concept#setSemanticGroup(bio.knowledge.model.SemanticGroup)
@@ -197,28 +233,16 @@ public class ConceptImpl extends AbstractIdentifiedEntity implements Concept {
     	return getName() ;
     }
 
+	Set<Feature> features = new HashSet<Feature>();
+	
 	@Override
 	public void setFeatures(Set<Feature> features) {
-		// TODO Auto-generated method stub
-		
+		this.features.addAll(features) ;
 	}
 
 	@Override
 	public Set<Feature> getFeatures() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	private String beaconSource;
-
-	@Override
-	public void setBeaconSource(String source) {
-		this.beaconSource = source;
-	}
-
-	@Override
-	public String getBeaconSource() {
-		return beaconSource;
+		return features;
 	}
 
 }

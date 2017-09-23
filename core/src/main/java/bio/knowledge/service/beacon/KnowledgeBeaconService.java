@@ -209,11 +209,9 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 						Subject statementsSubject = response.getSubject();
 						StatementsPredicate statementsPredicate = response.getPredicate();
 
-						ConceptImpl subject = new ConceptImpl(statementsSubject.getId(), null,
-								statementsSubject.getName());
+						ConceptImpl subject = new ConceptImpl(statementsSubject.getId(), null, statementsSubject.getName());
 
-						ConceptImpl object = new ConceptImpl(statementsObject.getId(), null,
-								statementsObject.getName());
+						ConceptImpl object = new ConceptImpl(statementsObject.getId(), null, statementsObject.getName());
 
 						PredicateImpl predicate = new PredicateImpl(statementsPredicate.getName());
 						

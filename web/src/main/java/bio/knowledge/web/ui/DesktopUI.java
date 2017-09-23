@@ -63,8 +63,6 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
-import com.vaadin.server.Page.UriFragmentChangedEvent;
-import com.vaadin.server.Page.UriFragmentChangedListener;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringViewProvider;
@@ -89,7 +87,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.database.repository.ConceptMapArchiveRepository;
 import bio.knowledge.datasource.DataService;
 import bio.knowledge.graph.ConceptMapDisplay;
 import bio.knowledge.graph.jsonmodels.Edge;
@@ -100,16 +97,12 @@ import bio.knowledge.graph.jsonmodels.NodeData;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
-import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
-import bio.knowledge.model.datasource.ResultSet;
-import bio.knowledge.model.umls.SemanticType;
 import bio.knowledge.model.user.User;
 import bio.knowledge.service.AuthenticationState;
 import bio.knowledge.service.Cache;
 import bio.knowledge.service.ConceptMapArchiveService;
-import bio.knowledge.service.ConceptService;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
@@ -174,9 +167,6 @@ public class DesktopUI extends UI implements MessageService {
 	
 	@Autowired
 	UserService userService;
-	
-	@Autowired
-	private ConceptMapArchiveRepository conceptMapArchiveRepository;
 
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -220,9 +210,6 @@ public class DesktopUI extends UI implements MessageService {
 
 	@Autowired
 	private MessageSource messageSource;
-
-	@Autowired
-	private ConceptService conceptService;
 	
 	private boolean zoomEnabled;
 	
@@ -1533,12 +1520,7 @@ public class DesktopUI extends UI implements MessageService {
 		 */
 		applicationNavigator.addViewChangeListener(ga_tracker);
 		
-		getPage().addUriFragmentChangedListener(new UriFragmentChangedListener() {
-			@Override
-			public void uriFragmentChanged(UriFragmentChangedEvent event) {
-				handleURL(event.getUriFragment());
-			}
-		});
+		getPage().addUriFragmentChangedListener(event -> handleURL(event.getUriFragment()));
 		
 		String fragment = getPage().getUriFragment();
 		handleURL(fragment);

@@ -40,7 +40,6 @@ import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
@@ -302,12 +301,7 @@ public class SaveWindow extends Window {
 		saveButton = new Button("Save");
 		cancelButton = new Button("Cancel");
 		exportButton = new Button("Export");
-		exportButton.addClickListener(new ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				raiseExportWindow(nameField.getValue(), conceptMapDisplay, query, cache);
-			}
-		});
+		exportButton.addClickListener(event -> raiseExportWindow(nameField.getValue(), conceptMapDisplay, query, cache));
 		
 		isPublicOption = new SingleRadioButton("Publicly Available", true);
 		

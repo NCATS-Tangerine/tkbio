@@ -12,6 +12,19 @@ public interface Concept extends IdentifiedEntity, AnnotatedEntity, BeaconRespon
 
 	/**
 	 * 
+	 * @param the Equivalent Concept Clique Identifier for the Concept
+	 * Should generally be set at node creation, but sometimes not?
+	 */
+	void setClique(String cliqueId);
+
+	/**
+	 * 
+	 * @return the Equivalent Concept Clique Identifier for the Concept
+	 */
+	String getClique();
+
+	/**
+	 * 
 	 * @param the Concept Semantic Group 
 	 * Should generally be set at node creation, but sometimes not?
 	 */

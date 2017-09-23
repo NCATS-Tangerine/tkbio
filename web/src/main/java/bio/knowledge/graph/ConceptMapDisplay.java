@@ -54,7 +54,6 @@ import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.Nodes;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
-import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.Statement;
 import bio.knowledge.web.ui.DesktopUI;
 
@@ -539,8 +538,13 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 	 */
 	public void addNodeToConceptMap(Concept concept) {
 	
+		String nodeId = concept.getClique();
+		if( nodeId == null || nodeId.isEmpty() )
+			// fail safe?
+			nodeId = concept.getId();
+		
 		// create the new node from the passed-in data
-		Node newNode = new Node(concept.getId(), concept.getName(), concept.getSemanticGroup().name(), "add");
+		Node newNode = new Node( nodeId, concept.getName(), concept.getSemanticGroup().name(), "add" );
 		
 		this.addNodeToConceptMap(newNode);
 	
