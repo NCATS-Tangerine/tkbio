@@ -1,0 +1,12 @@
+#generate.sh#
+
+The 'generate.sh' script can be used to update or regenerate the tkbio client
+code accessing the beacon-aggregator. 
+
+Type the script name without any arguments to get the usage. Note that for TKBio,
+we only need to generate the client code.
+
+The client API specification is in the spec/knowledge-beacon-api.yaml file. 
+
+After regenerating the client code, you need to fix the functions in the KnowledgeBeaconService
+of the bio.knowledge.service.beacon package in the 'core' subproject.

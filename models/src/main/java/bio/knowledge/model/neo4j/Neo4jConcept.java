@@ -48,6 +48,8 @@ public class Neo4jConcept extends Neo4jAbstractAnnotatedEntity implements Concep
 
 	public static final String SEMGROUP_FIELD_START = "[" ;
 	public static final String SEMGROUP_FIELD_END   = "]" ;
+	
+	private static final Boolean TRAP_EMPTY_CLIQUES = true ;
 
 	private String beaconSource = "";
 
@@ -130,6 +132,11 @@ public class Neo4jConcept extends Neo4jAbstractAnnotatedEntity implements Concep
 	 */
 	@Override
 	public String getClique() {
+		if(clique==null||clique.isEmpty())
+			if(!TRAP_EMPTY_CLIQUES) 
+				return this.getId(); // Always need to have a clique set, even if only the current concept
+			else
+				throw new RuntimeException("TRAPPING Empty concept clique identifier!");
 		return clique;
 	}
 

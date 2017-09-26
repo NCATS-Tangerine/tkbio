@@ -11,6 +11,8 @@ public class ConceptImpl extends AbstractIdentifiedEntity implements Concept {
 	public static final String SEMGROUP_FIELD_START = "[" ;
 	public static final String SEMGROUP_FIELD_END   = "]" ;
 	
+	private static final Boolean TRAP_EMPTY_CLIQUES = true ;
+	
 	private String beaconSource = "";
 
 	private String clique = "";
@@ -97,6 +99,11 @@ public class ConceptImpl extends AbstractIdentifiedEntity implements Concept {
 	 */
 	@Override
 	public String getClique() {
+		if(clique==null||clique.isEmpty())
+			if(!TRAP_EMPTY_CLIQUES) 
+				return this.getId(); // Always need to have a clique set, even if only the current concept
+			else
+				throw new RuntimeException("TRAPPING Empty concept clique identifier!");
 		return clique;
 	}
 

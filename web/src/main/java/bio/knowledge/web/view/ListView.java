@@ -1731,7 +1731,7 @@ public class ListView extends BaseView {
 				ViewName.CONCEPTS_VIEW,
 				new BeanItemContainer<Concept>(Concept.class), 
 				conceptService,
-				new String[] { "beaconSource", "name|*", "semanticGroup", "description|*", "synonyms|*"},
+				new String[] { "beaconSource", "name|*", "clique", "semanticGroup", "description|*", "synonyms|*"},
 				null, 
 				null);
 

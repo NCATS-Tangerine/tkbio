@@ -539,10 +539,7 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 	public void addNodeToConceptMap(Concept concept) {
 	
 		String nodeId = concept.getClique();
-		if( nodeId == null || nodeId.isEmpty() )
-			// fail safe?
-			nodeId = concept.getId();
-		
+	
 		// create the new node from the passed-in data
 		Node newNode = new Node( nodeId, concept.getName(), concept.getSemanticGroup().name(), "add" );
 		
@@ -652,7 +649,7 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 	}
 	
 	public void addEdgeToConceptMap(Concept subject, Concept object, String relationLabel, String description, String uri, String statementId) {
-		Edge newEdge = new Edge( subject.getId(), object.getId(), relationLabel, description, uri, statementId);
+		Edge newEdge = new Edge( subject.getClique(), object.getClique(), relationLabel, description, uri, statementId);
 		// any edge pre-processing would go here.
 		newEdge.getData().setDescription(description);
 		newEdge.getData().setUri(uri);

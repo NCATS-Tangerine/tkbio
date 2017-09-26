@@ -127,11 +127,20 @@ paths:
               title: ConceptDetail
               type: object
               properties:
+                clique:
+                  type: string
+                  description: >
+                    CURIE identifying the inferred equivalent concept clique to which the concept belongs. This is assigned by an identifier precedence heuristic by the beacon-aggregator
                 id:
                   type: string
                   description: >
-                    local object identifier for the concept in the specified
-                    knowledge source database
+                    CURIE for the concept in the specified knowledge beacon
+                aliases:
+                  type: array
+                  description: |
+                    set of alias CURIES in the equivalent concept clique of the concept
+                  items:
+                    type: string
                 name:
                   type: string
                   description: |
@@ -172,7 +181,11 @@ paths:
             Successful response with concept details returned
           examples:
             application/json:
-              - id: 'wd:Q14883734'
+              - clique: 'wd:Q14883734'
+                id: 'wd:Q14883734'
+                aliases:
+                - 'wd:Q14883734'
+                - 'OMIM:277700'
                 name: WRN
                 semanticGroup: GENE
                 synonyms: []
@@ -240,10 +253,20 @@ paths:
               title: Concept
               type: object
               properties:
+                clique:
+                  type: string
+                  description: >
+                    CURIE identifying the inferred equivalent concept clique to which the concept belongs. This is assigned by an identifier precedence heuristic by the beacon-aggregator
                 id:
                   type: string
                   description: >
-                    local object identifier for the concept in the specified knowledge source database
+                    CURIE for the concept in the specified knowledge beacon
+                aliases:
+                  type: array
+                  description: |
+                    set of alias CURIES in the equivalent concept clique of the concept
+                  items:
+                    type: string
                 name:
                   type: string
                   description: |
@@ -270,7 +293,10 @@ paths:
             Successful response with concept list returned
           examples:
             application/json:
-            - id: 'wd:Q6591532'
+            - clique: 'WD:Q6591532'
+              id: 'wd:Q6591532'
+              aliases:
+              - 'wd:Q6591532'
               name: 'WRN protein, human'
               semanticGroup: CHEM
               synonyms:
