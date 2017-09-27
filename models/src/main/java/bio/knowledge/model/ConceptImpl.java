@@ -11,7 +11,7 @@ public class ConceptImpl extends AbstractIdentifiedEntity implements Concept {
 	public static final String SEMGROUP_FIELD_START = "[" ;
 	public static final String SEMGROUP_FIELD_END   = "]" ;
 	
-	private static final Boolean TRAP_EMPTY_CLIQUES = true ;
+	private static final Boolean TRAP_EMPTY_CLIQUES = false ;
 	
 	private String beaconSource = "";
 

@@ -49,7 +49,7 @@ public class Neo4jConcept extends Neo4jAbstractAnnotatedEntity implements Concep
 	public static final String SEMGROUP_FIELD_START = "[" ;
 	public static final String SEMGROUP_FIELD_END   = "]" ;
 	
-	private static final Boolean TRAP_EMPTY_CLIQUES = true ;
+	private static final Boolean TRAP_EMPTY_CLIQUES = false ;
 
 	private String beaconSource = "";
 

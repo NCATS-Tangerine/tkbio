@@ -773,7 +773,7 @@ public class ListView extends BaseView {
 				Statement statement = (Statement) item;
 				
 				Concept subject = statement.getSubject() ;
-				Concept object = statement.getObject() ;
+				Concept object  = statement.getObject() ;
 				
 				// Unusual case of missing data (mostly in sample data?)
 				if( subject == null || object == null ) continue ;
