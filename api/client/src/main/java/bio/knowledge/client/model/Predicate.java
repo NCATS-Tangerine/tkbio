@@ -14,15 +14,14 @@
 package bio.knowledge.client.model;
 
 import java.util.Objects;
-
 import com.google.gson.annotations.SerializedName;
-
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Predicate
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-09-23T02:49:55.452Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-09-26T16:17:42.515-07:00")
 public class Predicate {
   @SerializedName("id")
   private String id = null;

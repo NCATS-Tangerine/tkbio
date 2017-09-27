@@ -13,10 +13,10 @@
 
 package bio.knowledge.client.auth;
 
-import java.util.List;
-import java.util.Map;
-
 import bio.knowledge.client.Pair;
+
+import java.util.Map;
+import java.util.List;
 
 public interface Authentication {
     /**

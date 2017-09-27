@@ -3,6 +3,7 @@ package bio.knowledge.service.beacon;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -100,10 +101,14 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 						}
 						
 						Concept concept = new ConceptImpl(
+								response.getClique(),
 								response.getId(),
 								semgroup,
 								response.getName()
 						);
+						
+						Set<String> xrefs = concept.getCrossReferences() ;
+						xrefs.addAll(response.getAliases());
 						
 						concept.setSynonyms(String.join(" ", response.getSynonyms()));
 						concept.setDescription(response.getDefinition());
@@ -140,11 +145,15 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 							semgroup = null;
 						}
 						
-						ConceptImpl concept = new ConceptImpl(
+						Concept concept = new ConceptImpl(
+								response.getClique(),
 								response.getId(),
 								semgroup,
 								response.getName()
 						);
+
+						Set<String> xrefs = concept.getCrossReferences() ;
+						xrefs.addAll(response.getAliases());
 						
 						concept.setSynonyms(String.join(" ", response.getSynonyms()));
 						concept.setDescription(response.getDefinition());

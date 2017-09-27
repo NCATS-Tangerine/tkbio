@@ -13,12 +13,14 @@
 
 package bio.knowledge.client.auth;
 
-import java.util.List;
-import java.util.Map;
+import bio.knowledge.client.Pair;
 
 import com.squareup.okhttp.Credentials;
 
-import bio.knowledge.client.Pair;
+import java.util.Map;
+import java.util.List;
+
+import java.io.UnsupportedEncodingException;
 
 public class HttpBasicAuth implements Authentication {
     private String username;

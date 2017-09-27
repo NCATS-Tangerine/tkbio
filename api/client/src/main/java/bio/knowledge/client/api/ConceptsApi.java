@@ -13,15 +13,6 @@
 
 package bio.knowledge.client.api;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.google.gson.reflect.TypeToken;
-
 import bio.knowledge.client.ApiCallback;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
@@ -30,8 +21,20 @@ import bio.knowledge.client.Configuration;
 import bio.knowledge.client.Pair;
 import bio.knowledge.client.ProgressRequestBody;
 import bio.knowledge.client.ProgressResponseBody;
+
+import com.google.gson.reflect.TypeToken;
+
+import java.io.IOException;
+
+
 import bio.knowledge.client.model.Concept;
 import bio.knowledge.client.model.ConceptDetail;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ConceptsApi {
     private ApiClient apiClient;
