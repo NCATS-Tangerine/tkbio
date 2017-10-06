@@ -524,11 +524,14 @@ public class ListView extends BaseView {
 
 	private void loadDataTable(VerticalLayout dataTableLayout) {
 
+		@SuppressWarnings("rawtypes")
 		BeanItemContainer container = (BeanItemContainer) listContainer.getContainer();
 
 		gpcontainer = new GeneratedPropertyContainer(container);
 		
 		gpcontainer.addGeneratedProperty("type", new PropertyValueGenerator<String>() {
+
+			private static final long serialVersionUID = 2919141699691390192L;
 
 			@Override
 			public String getValue(Item item, Object itemId, Object propertyId) {
@@ -548,6 +551,8 @@ public class ListView extends BaseView {
 		});
 		
 		gpcontainer.addGeneratedProperty("beaconSource", new PropertyValueGenerator<String>() {
+
+			private static final long serialVersionUID = -2448949798858851325L;
 
 			@Override
 			public String getValue(Item item, Object object, Object propertyId) {

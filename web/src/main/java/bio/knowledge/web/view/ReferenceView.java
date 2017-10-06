@@ -49,7 +49,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.RdfUtil;
-import bio.knowledge.service.AnnotationService;
+//import bio.knowledge.service.AnnotationService;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.web.design.ReferenceDesign;
 import bio.knowledge.web.ui.DesktopUI;
@@ -74,29 +74,59 @@ public class ReferenceView extends ReferenceDesign implements View {
 		urlMapping.put("WD",		"http://www.wikidata.org/entity/");
 		urlMapping.put("OBO",		"http://purl.obolibrary.org/obo/");
 		urlMapping.put("PMID",		"https://www.ncbi.nlm.nih.gov/pubmed/");
+		urlMapping.put("NDEX.NETWORK","http://ndexbio.org/#/network/");
+	}
+	
+	private String[] parseCURIE(String curie) {
+		
+		String[] parsedCurie = new String[3];
+		
+		int i = curie.indexOf(":");
+		if (i == -1) { throw new RuntimeException("The statement id " + curie + "is not a curie and could not be parsed"); }
+		String objId = curie.substring(i+1);
+		String namespace = curie.substring(0, i);
+		namespace = namespace.toUpperCase();
+		
+		// Check full namespace first for a match to the registered namespaces
+		if (urlMapping.keySet().contains(namespace)) {
+			parsedCurie[0] = curie;
+			parsedCurie[1] = namespace;
+			parsedCurie[2] = objId;
+		} else {
+			// otherwise, test the suffix of the id...
+			i = namespace.lastIndexOf(".");
+			namespace = namespace.substring(i+1);
+			
+			if (urlMapping.keySet().contains(namespace)) {
+				// Return CURIE with a trimmed namespace
+				parsedCurie[0] = namespace+":"+objId;
+				parsedCurie[1] = namespace;
+				parsedCurie[2] = objId;
+			} else {
+				parsedCurie[0] = curie;
+				parsedCurie[1] = "";
+				parsedCurie[2] = "";
+			}
+		}
+		return parsedCurie;
 	}
 	
 	private String getUrl(String id) {
-		int i = id.indexOf(":");
-		if (i == -1) { throw new RuntimeException("The statement id " + id + "is not a curie and could not be parsed"); }
-		String objId = id.substring(i+1);
-		id = id.substring(0, i);
-		i = id.lastIndexOf(".");
-		id = id.substring(i+1);
-		id = id.toUpperCase();
 		
-		if (urlMapping.keySet().contains(id)) {
-			return urlMapping.get(id) + objId;
+		String[] pc = parseCURIE(id);
+		
+		if (! (pc[1].isEmpty()||pc[2].isEmpty())) {
+			return urlMapping.get(pc[1]) + pc[2];
 		} else {
-			return null;
+			return "";
 		}
 	}
 	
 	@Autowired
 	private KBQuery query ;
 
-	@Autowired
-	private AnnotationService annotationService ;
+	//@Autowired
+	//private AnnotationService annotationService ;
 	
 	public ReferenceView() { }
 	
@@ -105,11 +135,21 @@ public class ReferenceView extends ReferenceDesign implements View {
 	
 	private Boolean IS_PUBMED_ARTICLE = false ;
 	
+	private String uri = "";
+
+	private void setUri(String uri) {
+		this.uri = uri;
+	}
+	
+	private String getUri() {
+		return uri;
+	}
+	
 	@Override
 	public void enter(ViewChangeEvent event) {
 		removeAllComponents();
 		String annotationId = null;
-		String[] uri = new String[1];
+		
 		Optional<Annotation> annotationOpt = query.getCurrentAnnotation();
 		String parameters = event.getParameters();
 		if (parameters != null && !parameters.isEmpty()) {
@@ -123,9 +163,9 @@ public class ReferenceView extends ReferenceDesign implements View {
 		try {
 			// TODO: At the moment, evidence id's are URL's
 			URL url = new URL(annotationId);
-			uri[0] = url.toString();
+			setUri(url.toString());
 		} catch (MalformedURLException e) {
-			uri[0] = getUrl(annotationId);
+			setUri(getUrl(annotationId));
 		}
 		
 		VerticalLayout localAbstractLayout = new VerticalLayout() ;	
@@ -136,15 +176,31 @@ public class ReferenceView extends ReferenceDesign implements View {
 		abstractMenu.setSpacing(true);
 		
 		refIdSearchField.setInputPrompt("Search Reference ID");
-		String pubmedId = annotationId.substring(annotationId.indexOf(".") + 1);
-		refIdSearchField.setValue(pubmedId);
+		String[] pc = parseCURIE(annotationId);
+		refIdSearchField.setValue(pc[0]);
 		
 		Button referenceSearchBtn = new Button("GO");
 		referenceSearchBtn.setClickShortcut(KeyCode.ENTER);
 		
 		Button showInNewWindowBtn        = new Button("Show Abstract in New Window");
 		Button showReferenceRelationsBtn = new Button("Show Associated Concept Relations");
-
+		
+		VerticalLayout articleLayout = new VerticalLayout();
+		articleLayout.setHeight("100%");
+		
+		referenceSearchBtn.addClickListener(e-> {
+			String accId    = refIdSearchField.getValue().trim();
+			baseUri         = RdfUtil.resolveBaseUri(accId);
+			String objectId = RdfUtil.getQualifiedObjectId(accId);
+			setUri(baseUri+objectId);
+			openReferenceLink( articleLayout, getUri() );
+		});
+		
+		showInNewWindowBtn.addClickListener(e -> {
+			// display currently set uri - should be set
+			getUI().getPage().open( getUri(), "_blank", false );
+		});
+		
 		HorizontalLayout searchLayout = new HorizontalLayout();
 		searchLayout.addComponents( refIdSearchField, referenceSearchBtn );
 		
@@ -153,34 +209,14 @@ public class ReferenceView extends ReferenceDesign implements View {
 		// TODO: For now, don't give the user a 'pubmed relations' button unless they have such a beast!
 		if(IS_PUBMED_ARTICLE) abstractMenu.addComponent(showReferenceRelationsBtn);
 		
-		VerticalLayout articleLayout = new VerticalLayout();
-		articleLayout.setHeight("100%");
-		
 		setHeightUndefined();
 
-		openReferenceLink(articleLayout, uri[0]);
+		openReferenceLink(articleLayout, getUri());
 		
 		localAbstractLayout.addComponents(abstractMenu, articleLayout);
 		localAbstractLayout.setHeight("100%");
 		
 		addComponent(localAbstractLayout);
-		
-		referenceSearchBtn.addClickListener(e-> {
-			String accId    = refIdSearchField.getValue().trim();
-			baseUri         = RdfUtil.resolveBaseUri(accId);
-			String objectId = RdfUtil.getQualifiedObjectId(accId);
-			openReferenceLink(articleLayout, baseUri+objectId);
-		});
-		
-		showInNewWindowBtn.addClickListener(e -> {
-			String accId    = refIdSearchField.getValue().trim();
-			baseUri         = RdfUtil.resolveBaseUri(accId);
-			String objectId = RdfUtil.getQualifiedObjectId(accId);
-			if (accId != null && baseUri != null && objectId != null) {
-				uri[0] = baseUri+objectId;
-			}
-			getUI().getPage().open( uri[0], "_blank", false );
-		});
 
 		DesktopUI ui = (DesktopUI) UI.getCurrent() ;
 		

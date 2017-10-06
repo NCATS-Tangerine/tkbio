@@ -224,6 +224,6 @@ public class AbstractIdentifiedEntity implements IdentifiedEntity {
 
 	@Override
 	public void setDbId(Long id) {
-		this.dbid = dbid;
+		this.dbid = id;
 	}
 }
