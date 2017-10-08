@@ -30,7 +30,7 @@ allprojects {
 
 	// Version 4.0 now uses the new Translator Knowledge Beacon API
 	
-	version = '4.0.20' // Added SpringBoot directive
+	version = '4.1.0' // Enhanced equivalent concept clique management; other bug fixes
 	
     apply plugin: 'maven'
     apply plugin: 'java'
