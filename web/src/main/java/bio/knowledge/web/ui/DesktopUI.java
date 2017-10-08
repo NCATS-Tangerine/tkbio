@@ -496,8 +496,8 @@ public class DesktopUI extends UI implements MessageService {
 		// 24 Oct 2016 - RB: don't always want to add new node to map at this
 		// point
 
-		// Highlighting new current concept node
-		lastHighlightNodeId = currentConcept.getId();
+		// Highlighting new current concept node - identified by Clique name
+		lastHighlightNodeId = currentConcept.getClique();
 		highlightNode(HighlightStatus.YES);
 	}
 

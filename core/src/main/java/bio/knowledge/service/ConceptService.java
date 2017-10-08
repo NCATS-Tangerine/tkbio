@@ -454,7 +454,10 @@ public class ConceptService
     	CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId);
    
     	try {
-			List<Concept> concepts = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+			List<Concept> concepts = future.get(
+					KnowledgeBeaconService.BEACON_TIMEOUT_DURATION*kbService.getKnowledgeBeaconCount(), // scale timeout by nunmber of beacons
+					KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
+			);
 			return concepts.isEmpty() ? null : concepts.get(0);
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			return null;

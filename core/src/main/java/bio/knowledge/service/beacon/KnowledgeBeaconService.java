@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import org.springframework.stereotype.Service;
@@ -38,6 +39,9 @@ import bio.knowledge.model.Statement;
  */
 @Service
 public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
+	
+	public static final long     BEACON_TIMEOUT_DURATION = 30;
+	public static final TimeUnit BEACON_TIMEOUT_UNIT = TimeUnit.SECONDS;
 	
 	private List<String> customBeacons = null;
 	private String sessionId = null;
