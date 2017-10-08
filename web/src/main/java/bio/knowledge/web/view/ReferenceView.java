@@ -131,7 +131,6 @@ public class ReferenceView extends ReferenceDesign implements View {
 	public ReferenceView() { }
 	
 	private TextField refIdSearchField = new TextField();
-	private String    baseUri = "";
 	
 	private Boolean IS_PUBMED_ARTICLE = false ;
 	
@@ -189,10 +188,8 @@ public class ReferenceView extends ReferenceDesign implements View {
 		articleLayout.setHeight("100%");
 		
 		referenceSearchBtn.addClickListener(e-> {
-			String accId    = refIdSearchField.getValue().trim();
-			baseUri         = RdfUtil.resolveBaseUri(accId);
-			String objectId = RdfUtil.getQualifiedObjectId(accId);
-			setUri(baseUri+objectId);
+			String accId = refIdSearchField.getValue().trim();
+			setUri(getUrl(accId));
 			openReferenceLink( articleLayout, getUri() );
 		});
 		
