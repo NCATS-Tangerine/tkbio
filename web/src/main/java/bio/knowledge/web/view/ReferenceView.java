@@ -182,7 +182,7 @@ public class ReferenceView extends ReferenceDesign implements View {
 		Button referenceSearchBtn = new Button("GO");
 		referenceSearchBtn.setClickShortcut(KeyCode.ENTER);
 		
-		Button showInNewWindowBtn        = new Button("Show Abstract in New Window");
+		Button showInNewWindowBtn        = new Button("Show Reference in New Window");
 		Button showReferenceRelationsBtn = new Button("Show Associated Concept Relations");
 		
 		VerticalLayout articleLayout = new VerticalLayout();
