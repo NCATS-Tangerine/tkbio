@@ -25,11 +25,6 @@
  */
 package bio.knowledge.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-
-import bio.knowledge.model.Concept;
-import bio.knowledge.model.Predicate;
-
 /**
  * @author Kenneth
  * 

@@ -1061,8 +1061,7 @@ public class DesktopUI extends UI implements MessageService {
 
 		query.setCurrentQueryText(queryText);
 
-		// Semantic type constraint in Concept-by-text results listing should
-		// initial be empty
+		// Semantic type constraint in Concept-by-text results listing should initial be empty
 		query.setInitialConceptTypes(new HashSet<SemanticGroup>());
 
 		ConceptSearchResults currentSearchResults = new ConceptSearchResults(viewProvider, ViewName.CONCEPTS_VIEW);

@@ -51,7 +51,11 @@ import com.vaadin.ui.VerticalLayout;
 import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.datasource.wikidata.ConceptDescriptor;
 import bio.knowledge.model.Concept;
+import bio.knowledge.model.GeneralStatement;
+import bio.knowledge.model.Predicate;
+import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.RdfUtil;
+import bio.knowledge.model.Statement;
 import bio.knowledge.model.datasource.ResultSet;
 import bio.knowledge.service.ConceptService;
 import bio.knowledge.service.KBQuery;
@@ -343,9 +347,10 @@ public class ConceptDetailsHandler {
 							DesktopUI ui = (DesktopUI) UI.getCurrent();
 							ui.addNodeToConceptMap(currentConcept);
 							ui.addNodeToConceptMap(object);
-							//TODO: June 13 2017 - Commenting out this line doesn't seem to break anything.
-							//		This method now takes a Statement, and I don't see how to access that here.
-//							ui.addEdgeToConceptMap(currentConcept, object, descriptor.getKey());
+							Predicate relation  = new PredicateImpl(descriptor.getKey());
+							String accId = "wds:"+currentConcept.getClique()+"_"+descriptor.name()+"_"+object.getClique();
+							Statement statement = new GeneralStatement(accId,currentConcept,relation,object);
+							ui.addEdgeToConceptMap(statement);
 						});
 						
 						HorizontalLayout wikiValueLayout = new HorizontalLayout();

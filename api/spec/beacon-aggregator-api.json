@@ -1,840 +1,894 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "title": "Translator Knowledge Beacon Aggregator API",
-        "version": "1.0.3",
-        "contact": {
-            "responsibleDeveloper": "Richard Bruskiewich",
-            "responsibleOrganization": "STAR Informatics/Delphinai Corporation",
-            "url": "http://starinformatics.com",
-            "email": "richard@starinformatics.com"
-        },
-        "description": "This is the Translator Knowledge Beacon Aggregator web service application programming interface (API).\n",
-        "license": {
-            "name": "MIT License",
-            "url": "http://opensource.org/licenses/MIT"
-        }
+  "swagger": "2.0",
+  "info": {
+    "title": "Translator Knowledge Beacon Aggregator API",
+    "version": "1.0.4",
+    "contact": {
+      "url": "http://starinformatics.com",
+      "email": "richard@starinformatics.com",
+      "responsibleDeveloper": "Richard Bruskiewich",
+      "responsibleOrganization": "STAR Informatics/Delphinai Corporation" 
     },
-    "host": "kba.ncats.io",
-    "basePath": "/",
-    "schemes": [
-        "http"
-    ],
-    "produces": [
-        "application/json"
-    ],
-    "tags": [
-        {
-            "name": "summary",
-            "description": "Summary statistics about the knowledge source"
-        },
-        {
-            "name": "concepts",
-            "description": "Queries for concepts"
-        },
-        {
-            "name": "statements",
-            "description": "Queries for concept-relationship statements"
-        },
-        {
-            "name": "evidence",
-            "description": "Queries for references cited as evidence for statements"
-        },
-        {
-            "name": "aggregator",
-            "description": "Queries for aggregation information"
-        }
-    ],
-    "paths": {
-        "/types": {
-            "get": {
-                "description": "Get a list of types and # of instances in the knowledge source, and a link to the API call for the list of equivalent terminology\n",
-                "tags": [
-                    "summary"
-                ],
-                "parameters": [
-                    {
-                        "name": "beacons",
-                        "in": "query",
-                        "description": "set of IDs of beacons to be used as knowledge sources for the query\n",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "sessionId",
-                        "in": "query",
-                        "description": "client-defined session identifier\n",
-                        "required": false,
-                        "type": "string"
-                    }
-                ],
-                "operationId": "linkedTypes",
-                "responses": {
-                    "200": {
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "title": "Summary",
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "string",
-                                        "description": "the type \n"
-                                    },
-                                    "idmap": {
-                                        "type": "string",
-                                        "description": "The URL to execute the exactmatches API call on the id"
-                                    },
-                                    "frequency": {
-                                        "type": "integer",
-                                        "description": "the number of instances of the specified type\n"
-                                    },
-                                    "beacon": {
-                                        "type": "string",
-                                        "description": "beacon ID\n"
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Successful response with types and frequency returned\n",
-                        "examples": {
-                            "application/json": [
-                                {
-                                    "id": "CHEM",
-                                    "frequency": 12355,
-                                    "idmap": "http://myservice.net/api/v1/exactmatches/CHEM",
-                                    "beacon": "2"
-                                },
-                                {
-                                    "id": "ANAT",
-                                    "frequency": 1234,
-                                    "idmap": "http://myservice.net/api/v1/exactmatches/ANAT",
-                                    "beacon": "2"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/concepts/{conceptId}": {
-            "get": {
-                "description": "Retrieves details for a specified concepts in the system, as specified by a (url-encoded) CURIE identifier of a concept known the given knowledge source\n",
-                "tags": [
-                    "concepts"
-                ],
-                "parameters": [
-                    {
-                        "name": "conceptId",
-                        "in": "path",
-                        "description": "(url-encoded) CURIE identifier of concept of interest, e.g. wd:Q126691",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "beacons",
-                        "in": "query",
-                        "description": "set of IDs of beacons to be used as knowledge sources for the query\n",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "sessionId",
-                        "in": "query",
-                        "description": "client-defined session identifier\n",
-                        "required": false,
-                        "type": "string"
-                    }
-                ],
-                "operationId": "getConceptDetails",
-                "responses": {
-                    "200": {
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "title": "ConceptDetail",
-                                "type": "object",
-                                "properties": {
-                                    "clique": {
-                                        "type": "string",
-                                        "description": "CURIE identifying the inferred equivalent concept clique to which the concept belongs. This is assigned by an identifier precedence heuristic by the beacon-aggregator\n"
-                                    },
-                                    "id": {
-                                        "type": "string",
-                                        "description": "CURIE for the concept in the specified knowledge beacon\n"
-                                    },
-                                    "aliases": {
-                                        "type": "array",
-                                        "description": "set of alias CURIES in the equivalent concept clique of the concept\n",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "name": {
-                                        "type": "string",
-                                        "description": "canonical human readable name of the concept\n"
-                                    },
-                                    "semanticGroup": {
-                                        "type": "string",
-                                        "description": "concept semantic type\n"
-                                    },
-                                    "synonyms": {
-                                        "type": "array",
-                                        "description": "list of synonyms for concept\n",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "definition": {
-                                        "type": "string",
-                                        "description": "concept definition\n"
-                                    },
-                                    "details": {
-                                        "type": "array",
-                                        "items": {
-                                            "title": "Detail",
-                                            "type": "object",
-                                            "properties": {
-                                                "tag": {
-                                                    "type": "string",
-                                                    "description": "property name\n"
-                                                },
-                                                "value": {
-                                                    "type": "string",
-                                                    "description": "property value\n"
-                                                }
-                                            }
-                                        }
-                                    },
-                                    "beacon": {
-                                        "type": "string",
-                                        "description": "beacon ID\n"
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Successful response with concept details returned\n",
-                        "examples": {
-                            "application/json": [
-                                {
-                                    "clique": "wd:Q14883734",
-                                    "id": "wd:Q14883734",
-                                    "aliases": [
-                                        "wd:Q14883734",
-                                        "OMIM:277700"
-                                    ],
-                                    "name": "WRN",
-                                    "semanticGroup": "GENE",
-                                    "synonyms": [],
-                                    "definition": "Werner Syndrome Gene",
-                                    "details": [],
-                                    "beacon": "3"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/concepts": {
-            "get": {
-                "description": "Retrieves a (paged) list of concepts in the system\n",
-                "tags": [
-                    "concepts"
-                ],
-                "parameters": [
-                    {
-                        "name": "keywords",
-                        "in": "query",
-                        "description": "a (urlencoded) space delimited set of keywords or substrings against which to match concept names and synonyms, e.g. diabetes.",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "semgroups",
-                        "in": "query",
-                        "description": "a (url-encoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "pageNumber",
-                        "in": "query",
-                        "description": "(1-based) number of the page to be returned in a paged set of query\nresults\n",
-                        "required": false,
-                        "type": "integer"
-                    },
-                    {
-                        "name": "pageSize",
-                        "in": "query",
-                        "description": "number of concepts per page to be returned in a paged set of query\nresults\n",
-                        "required": false,
-                        "type": "integer"
-                    },
-                    {
-                        "name": "beacons",
-                        "in": "query",
-                        "description": "set of IDs of beacons to be used as knowledge sources for the query\n",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "sessionId",
-                        "in": "query",
-                        "description": "client-defined session identifier\n",
-                        "required": false,
-                        "type": "string"
-                    }
-                ],
-                "operationId": "getConcepts",
-                "responses": {
-                    "200": {
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "title": "Concept",
-                                "type": "object",
-                                "properties": {
-                                    "clique": {
-                                        "type": "string",
-                                        "description": "CURIE identifying the inferred equivalent concept clique to which the concept belongs. This is assigned by an identifier precedence heuristic by the beacon-aggregator\n"
-                                    },
-                                    "id": {
-                                        "type": "string",
-                                        "description": "CURIE for the concept in the specified knowledge beacon\n"
-                                    },
-                                    "aliases": {
-                                        "type": "array",
-                                        "description": "set of alias CURIES in the equivalent concept clique of the concept\n",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "name": {
-                                        "type": "string",
-                                        "description": "canonical human readable name of the concept\n"
-                                    },
-                                    "semanticGroup": {
-                                        "type": "string",
-                                        "description": "concept semantic type\n"
-                                    },
-                                    "synonyms": {
-                                        "type": "array",
-                                        "description": "list of synonyms for concept\n",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "definition": {
-                                        "type": "string",
-                                        "description": "concept definition\n"
-                                    },
-                                    "beacon": {
-                                        "type": "string",
-                                        "description": "beacon ID\n"
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Successful response with concept list returned\n",
-                        "examples": {
-                            "application/json": [
-                                {
-                                    "clique": "WD:Q6591532",
-                                    "id": "wd:Q6591532",
-                                    "aliases": [
-                                        "wd:Q6591532"
-                                    ],
-                                    "name": "WRN protein, human",
-                                    "semanticGroup": "CHEM",
-                                    "synonyms": [
-                                        "RecQ3",
-                                        "Werner Syndrome ATP-Dependent Helicase",
-                                        "RECQL2 protein, human",
-                                        "EC 3.1.-.-",
-                                        "WRN protein, human",
-                                        "WRN",
-                                        "Exonuclease WRN",
-                                        "Werner Syndrome Protein",
-                                        "RecQ Protein-Like 2",
-                                        "EC 3.6.4.12",
-                                        "RECQ3 protein, human",
-                                        "Werner syndrome helicase, human",
-                                        "WRN Protein",
-                                        "DNA Helicase, RecQ-Like Type 3"
-                                    ],
-                                    "definition": "Werner syndrome ATP-dependent helicase (1432 aa, ~162 kDa) is encoded by the human WRN gene. This protein plays a role in both magnesium and ATP-dependent DNA-helicase activity and 3\\'->5\\' exonuclease activity towards double-stranded DNA with a 5\\'-overhang.",
-                                    "beacon": "3"
-                                },
-                                {
-                                    "id": "wd:Q18042562",
-                                    "name": "WRNIP1",
-                                    "semanticGroup": "GENE",
-                                    "synonyms": [
-                                        "WHIP",
-                                        "Werner helicase interacting protein 1",
-                                        "WRNIP1",
-                                        "bA420G6.2"
-                                    ],
-                                    "definition": "human gene",
-                                    "beacon": "4"
-                                },
-                                {
-                                    "id": "wd:Q14883734",
-                                    "name": "WRN",
-                                    "semanticGroup": "GENE",
-                                    "synonyms": [
-                                        "RECQ3",
-                                        "RECQL3",
-                                        "Werner syndrome RecQ like helicase",
-                                        "RECQL2"
-                                    ],
-                                    "definition": "human gene",
-                                    "beacon": "4"
-                                },
-                                {
-                                    "id": "wd:Q1154619",
-                                    "name": "Werner Syndrome",
-                                    "semanticGroup": "DISO",
-                                    "synonyms": [
-                                        "Werner Syndrome",
-                                        "Pangeria",
-                                        "Syndrome, Werner",
-                                        "Progeria, Adult",
-                                        "Werner Syndrome [Disease/Finding]",
-                                        "Werner syndrome (disorder)",
-                                        "adult progeria",
-                                        "Werner",
-                                        "syndromes werner",
-                                        "Syndrome, Werner\\'s",
-                                        "WRN",
-                                        "Werner\\'s syndrome",
-                                        "adults progeria",
-                                        "Werner syndrome (adult progeria) (diagnosis)",
-                                        "Werner syndrome (adult progeria)",
-                                        "Syndrome, Werners",
-                                        "Adult premature aging syndrome",
-                                        "syndromes werner\\'s",
-                                        "Werners Syndrome",
-                                        "syndrome werner",
-                                        "Progeria of the adult",
-                                        "WS",
-                                        "syndromes werners",
-                                        "Adult premature ageing syndrome"
-                                    ],
-                                    "definition": "autosomal recessive disorder that causes premature aging in adults, characterized by sclerodermal skin changes, cataracts, subcutaneous calcifications, muscular atrophy, a tendency to diabetes mellitus, aged appearance of the face, baldness, and a high incidence of neoplastic disease.",
-                                    "beacon": "3"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/statements": {
-            "get": {
-                "description": "Given a list of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, retrieves a paged list of concept-relations where either the subject or object concept matches at least one concept in the input list\n",
-                "tags": [
-                    "statements"
-                ],
-                "parameters": [
-                    {
-                        "name": "c",
-                        "in": "query",
-                        "description": "set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts to be used in a search for associated concept-relation statements, e.g. wd:Q126691, wd:Q420626\n",
-                        "required": true,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "pageNumber",
-                        "in": "query",
-                        "description": "(1-based) number of the page to be returned in a paged set of query\nresults\n",
-                        "required": false,
-                        "type": "integer"
-                    },
-                    {
-                        "name": "pageSize",
-                        "in": "query",
-                        "description": "number of concepts per page to be returned in a paged set of query\nresults\n",
-                        "required": false,
-                        "type": "integer"
-                    },
-                    {
-                        "name": "keywords",
-                        "in": "query",
-                        "description": "a (url-encoded, space-delimited) string of keywords or substrings against which to match the subject, predicate or object names of the set of concept-relations matched by any of the input exact matching concepts\n",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "semgroups",
-                        "in": "query",
-                        "description": "a (url-encoded, space-delimited) string of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "beacons",
-                        "in": "query",
-                        "description": "set of IDs of beacons to be used as knowledge sources for the query\n",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "sessionId",
-                        "in": "query",
-                        "description": "client-defined session identifier\n",
-                        "required": false,
-                        "type": "string"
-                    }
-                ],
-                "operationId": "getStatements",
-                "responses": {
-                    "200": {
-                        "description": "Successful response returns a list of concept-relations where there is an exact match of an input concept identifier either to the subject or object concepts of the statement\n",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "title": "Statement",
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "string",
-                                        "description": "CURIE-encoded identifier for statement (can be used to retrieve associated evidence)"
-                                    },
-                                    "subject": {
-                                        "title": "Subject",
-                                        "type": "object",
-                                        "properties": {
-                                            "clique": {
-                                                "type": "string",
-                                                "description": "CURIE-encoded cannonical identifier of \"equivalent concepts clique\"\n"
-                                            },
-                                            "id": {
-                                                "type": "string",
-                                                "description": "CURIE-encoded identifier of concept\n"
-                                            },
-                                            "name": {
-                                                "type": "string",
-                                                "description": "human readable label of subject concept"
-                                            }
-                                        }
-                                    },
-                                    "predicate": {
-                                        "title": "Predicate",
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "string",
-                                                "description": "CURIE-encoded identifier of predicate resource\n"
-                                            },
-                                            "name": {
-                                                "type": "string",
-                                                "description": "human readable label of concept"
-                                            }
-                                        }
-                                    },
-                                    "object": {
-                                        "title": "Object",
-                                        "type": "object",
-                                        "properties": {
-                                            "clique": {
-                                                "type": "string",
-                                                "description": "CURIE-encoded cannonical identifier of \"equivalent concepts clique\"\n"
-                                            },
-                                            "id": {
-                                                "type": "string",
-                                                "description": "CURIE-encoded identifier of object concept\n"
-                                            },
-                                            "name": {
-                                                "type": "string",
-                                                "description": "human readable label of object concept"
-                                            }
-                                        }
-                                    },
-                                    "beacon": {
-                                        "type": "string",
-                                        "description": "beacon ID\n"
-                                    }
-                                }
-                            }
-                        },
-                        "examples": {
-                            "application/json": [
-                                {
-                                    "source": "semmeddb",
-                                    "id": "kb:12345",
-                                    "subject": {
-                                        "id": [
-                                            "wd:Q14912054"
-                                        ],
-                                        "name": "KCNJ11"
-                                    },
-                                    "predicate": {
-                                        "id": [
-                                            "kbp:10"
-                                        ],
-                                        "name": "Causes"
-                                    },
-                                    "object": {
-                                        "id": [
-                                            "wd:Q2898645"
-                                        ],
-                                        "name": "Neonatal diabetes mellitus"
-                                    },
-                                    "beacon": "1"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/evidence/{statementId}": {
-            "get": {
-                "description": "Retrieves a (paged) list of annotations cited as evidence for a specified concept-relationship statement\n",
-                "tags": [
-                    "evidence"
-                ],
-                "parameters": [
-                    {
-                        "name": "statementId",
-                        "in": "path",
-                        "description": "(url-encoded) CURIE identifier of the concept-relationship statement (\"assertion\", \"claim\") for which associated evidence is sought, e.g. kbs:Q420626_P2175_Q126691\n",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "keywords",
-                        "in": "query",
-                        "description": "(url-encoded, space delimited) keyword filter to apply against the label field of the annotation\n",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "pageNumber",
-                        "in": "query",
-                        "description": "(1-based) number of the page to be returned in a paged set of query\nresults\n",
-                        "required": false,
-                        "type": "integer"
-                    },
-                    {
-                        "name": "pageSize",
-                        "in": "query",
-                        "description": "number of cited references per page to be returned in a paged set of query results\n",
-                        "required": false,
-                        "type": "integer"
-                    },
-                    {
-                        "name": "beacons",
-                        "in": "query",
-                        "description": "set of IDs of beacons to be used as knowledge sources for the query\n",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "sessionId",
-                        "in": "query",
-                        "description": "client-defined session identifier\n",
-                        "required": false,
-                        "type": "string"
-                    }
-                ],
-                "operationId": "getEvidence",
-                "responses": {
-                    "200": {
-                        "description": "successful call returns a list of annotation with metadata\n",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "title": "Annotation",
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "string",
-                                        "description": "CURIE-encoded identifier to an associated external resources (e.g. PMID of a pubmed citation)\n"
-                                    },
-                                    "label": {
-                                        "type": "string",
-                                        "description": "canonical human readable and searchable label of the annotation (i.e. comment, matched sentence, etc.)\n"
-                                    },
-                                    "type": {
-                                        "type": "string",
-                                        "description": "Gene Ontology Evidence Code (http://www.geneontology.org/page/guide-go-evidence-codes)\n"
-                                    },
-                                    "date": {
-                                        "type": "string",
-                                        "description": "publication date of annotation (generally of format 'yyyy-mm-dd')\n"
-                                    },
-                                    "beacon": {
-                                        "type": "string",
-                                        "description": "beacon ID\n"
-                                    }
-                                }
-                            }
-                        },
-                        "examples": {
-                            "application/json": [
-                                {
-                                    "id": [
-                                        "pmid:22781086"
-                                    ],
-                                    "label": "Neonatal diabetes mellitus and congenital diaphragmatic hernia coincidence or concurrent etiology?",
-                                    "type": "TAS",
-                                    "date": "2012-07-10T00:00:00.000Z",
-                                    "beacon": "1"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/beacons": {
-            "get": {
-                "description": "Get a list of the knowledge beacons that the aggregator can query\n",
-                "tags": [
-                    "aggregator"
-                ],
-                "parameters": [
-                    {
-                        "name": "sessionId",
-                        "in": "query",
-                        "description": "client-defined session identifier\n",
-                        "required": false,
-                        "type": "string"
-                    }
-                ],
-                "operationId": "getBeacons",
-                "responses": {
-                    "200": {
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "title": "KnowledgeBeacon",
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "string",
-                                        "description": "beacon ID\n"
-                                    },
-                                    "name": {
-                                        "type": "string",
-                                        "description": "beacon name\n"
-                                    },
-                                    "url": {
-                                        "type": "string",
-                                        "description": "URL used to execute API calls on the beacon\n"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "description": "beacon description\n"
-                                    },
-                                    "contact": {
-                                        "type": "string",
-                                        "description": "name of the person responsible for this beacon\n"
-                                    },
-                                    "wraps": {
-                                        "type": "string",
-                                        "description": "URL of this beacon's data source\n"
-                                    },
-                                    "repo": {
-                                        "type": "string",
-                                        "description": "URL of this beacon's repository\n"
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Successful response with beacons\n",
-                        "examples": {
-                            "application/json": [
-                                {
-                                    "id": "1",
-                                    "name": "SemMedDB",
-                                    "url": "http://rkb.ncats.io",
-                                    "description": "Reference Knowledge Beacon implementation indexed by Wikidata\n"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/errorlog": {
-            "get": {
-                "description": "Get a log of the most recent errors in this session\n",
-                "tags": [
-                    "aggregator"
-                ],
-                "parameters": [
-                    {
-                        "name": "sessionId",
-                        "in": "query",
-                        "description": "client-defined session identifier\n",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "operationId": "getErrors",
-                "responses": {
-                    "200": {
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "title": "LogEntry",
-                                "type": "object",
-                                "properties": {
-                                    "timestamp": {
-                                        "type": "string",
-                                        "description": "timestamp\n"
-                                    },
-                                    "beacon": {
-                                        "type": "string",
-                                        "description": "beacon ID\n"
-                                    },
-                                    "query": {
-                                        "type": "string",
-                                        "description": "URL of the API call executed by the aggregator\n"
-                                    },
-                                    "message": {
-                                        "type": "string",
-                                        "description": "error message\n"
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Successful response with most recent errors\n",
-                        "examples": {
-                            "application/json": [
-                                {
-                                    "timestamp": "2016-12-31 15:09:24.614",
-                                    "beacon": "1",
-                                    "query": "http://rkb.ncats.io/concepts?keywords=cancer",
-                                    "message": "Bad Gateway"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        }
+    "description": "This is the Translator Knowledge Beacon Aggregator web service application programming interface (API).\n",
+    "license": {
+      "name": "MIT License",
+      "url": "http://opensource.org/licenses/MIT"
     }
+  },
+  "host": "kba.ncats.io",
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "tags": [
+    {
+      "name": "summary",
+      "description": "Summary statistics about the knowledge source"
+    },
+    {
+      "name": "concepts",
+      "description": "Queries for concepts"
+    },
+    {
+      "name": "predicates",
+      "description": "Queries for concepts"
+    },
+    {
+      "name": "statements",
+      "description": "Queries for concept-relationship statements"
+    },
+    {
+      "name": "evidence",
+      "description": "Queries for references cited as evidence for statements"
+    },
+    {
+      "name": "aggregator",
+      "description": "Queries for aggregation information"
+    }
+  ],
+  "paths": {
+    "/types": {
+      "get": {
+        "description": "Get a list of types and # of instances in the knowledge source, and a link to the API call for the list of equivalent terminology\n",
+        "tags": [
+          "summary"
+        ],
+        "parameters": [
+          {
+            "name": "beacons",
+            "in": "query",
+            "description": "set of IDs of beacons to be used as knowledge sources for the query\n",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sessionId",
+            "in": "query",
+            "description": "client-defined session identifier\n",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "operationId": "linkedTypes",
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "title": "Summary",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "the type \n"
+                  },
+                  "idmap": {
+                    "type": "string",
+                    "description": "The URL to execute the exactmatches API call on the id"
+                  },
+                  "frequency": {
+                    "type": "integer",
+                    "description": "the number of instances of the specified type\n"
+                  },
+                  "beacon": {
+                    "type": "string",
+                    "description": "beacon ID\n"
+                  }
+                }
+              }
+            },
+            "description": "Successful response with types and frequency returned\n",
+            "examples": {
+              "application/json": [
+                {
+                  "id": "CHEM",
+                  "frequency": 12355,
+                  "idmap": "http://myservice.net/api/v1/exactmatches/CHEM",
+                  "beacon": "2"
+                },
+                {
+                  "id": "ANAT",
+                  "frequency": 1234,
+                  "idmap": "http://myservice.net/api/v1/exactmatches/ANAT",
+                  "beacon": "2"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/concepts/{conceptId}": {
+      "get": {
+        "description": "Retrieves details for a specified concepts in the system, as specified by a (url-encoded) CURIE identifier of a concept known the given knowledge source\n",
+        "tags": [
+          "concepts"
+        ],
+        "parameters": [
+          {
+            "name": "conceptId",
+            "in": "path",
+            "description": "(url-encoded) CURIE identifier of concept of interest, e.g. wd:Q126691",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "beacons",
+            "in": "query",
+            "description": "set of IDs of beacons to be used as knowledge sources for the query\n",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sessionId",
+            "in": "query",
+            "description": "client-defined session identifier\n",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "operationId": "getConceptDetails",
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "title": "ConceptDetail",
+                "type": "object",
+                "properties": {
+                  "clique": {
+                    "type": "string",
+                    "description": "CURIE identifying the inferred equivalent concept clique to which the concept belongs. This is assigned by an identifier precedence heuristic by the beacon-aggregator\n"
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "CURIE for the concept in the specified knowledge beacon\n"
+                  },
+                  "aliases": {
+                    "type": "array",
+                    "description": "set of alias CURIES in the equivalent concept clique of the concept\n",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "canonical human readable name of the concept\n"
+                  },
+                  "semanticGroup": {
+                    "type": "string",
+                    "description": "concept semantic type\n"
+                  },
+                  "synonyms": {
+                    "type": "array",
+                    "description": "list of synonyms for concept\n",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "definition": {
+                    "type": "string",
+                    "description": "concept definition\n"
+                  },
+                  "details": {
+                    "type": "array",
+                    "items": {
+                      "title": "Detail",
+                      "type": "object",
+                      "properties": {
+                        "tag": {
+                          "type": "string",
+                          "description": "property name\n"
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "property value\n"
+                        }
+                      }
+                    }
+                  },
+                  "beacon": {
+                    "type": "string",
+                    "description": "beacon ID\n"
+                  }
+                }
+              }
+            },
+            "description": "Successful response with concept details returned\n",
+            "examples": {
+              "application/json": [
+                {
+                  "clique": "wd:Q14883734",
+                  "id": "wd:Q14883734",
+                  "aliases": [
+                    "wd:Q14883734",
+                    "OMIM:277700"
+                  ],
+                  "name": "WRN",
+                  "semanticGroup": "GENE",
+                  "synonyms": [],
+                  "definition": "Werner Syndrome Gene",
+                  "details": [],
+                  "beacon": "3"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/concepts": {
+      "get": {
+        "description": "Retrieves a (paged) list of concepts in the system\n",
+        "tags": [
+          "concepts"
+        ],
+        "parameters": [
+          {
+            "name": "keywords",
+            "in": "query",
+            "description": "a (urlencoded) space delimited set of keywords or substrings against which to match concept names and synonyms, e.g. diabetes.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "semgroups",
+            "in": "query",
+            "description": "a (url-encoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "(1-based) number of the page to be returned in a paged set of query\nresults\n",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "number of concepts per page to be returned in a paged set of query\nresults\n",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "beacons",
+            "in": "query",
+            "description": "set of IDs of beacons to be used as knowledge sources for the query\n",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sessionId",
+            "in": "query",
+            "description": "client-defined session identifier\n",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "operationId": "getConcepts",
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "title": "Concept",
+                "type": "object",
+                "properties": {
+                  "clique": {
+                    "type": "string",
+                    "description": "CURIE identifying the inferred equivalent concept clique to which the concept belongs. This is assigned by an identifier precedence heuristic by the beacon-aggregator\n"
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "CURIE for the concept in the specified knowledge beacon\n"
+                  },
+                  "aliases": {
+                    "type": "array",
+                    "description": "set of alias CURIES in the equivalent concept clique of the concept\n",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "canonical human readable name of the concept\n"
+                  },
+                  "semanticGroup": {
+                    "type": "string",
+                    "description": "concept semantic type\n"
+                  },
+                  "synonyms": {
+                    "type": "array",
+                    "description": "list of synonyms for concept\n",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "definition": {
+                    "type": "string",
+                    "description": "concept definition\n"
+                  },
+                  "beacon": {
+                    "type": "string",
+                    "description": "beacon ID\n"
+                  }
+                }
+              }
+            },
+            "description": "Successful response with concept list returned\n",
+            "examples": {
+              "application/json": [
+                {
+                  "clique": "WD:Q6591532",
+                  "id": "wd:Q6591532",
+                  "aliases": [
+                    "wd:Q6591532"
+                  ],
+                  "name": "WRN protein, human",
+                  "semanticGroup": "CHEM",
+                  "synonyms": [
+                    "RecQ3",
+                    "Werner Syndrome ATP-Dependent Helicase",
+                    "RECQL2 protein, human",
+                    "EC 3.1.-.-",
+                    "WRN protein, human",
+                    "WRN",
+                    "Exonuclease WRN",
+                    "Werner Syndrome Protein",
+                    "RecQ Protein-Like 2",
+                    "EC 3.6.4.12",
+                    "RECQ3 protein, human",
+                    "Werner syndrome helicase, human",
+                    "WRN Protein",
+                    "DNA Helicase, RecQ-Like Type 3"
+                  ],
+                  "definition": "Werner syndrome ATP-dependent helicase (1432 aa, ~162 kDa) is encoded by the human WRN gene. This protein plays a role in both magnesium and ATP-dependent DNA-helicase activity and 3\\'->5\\' exonuclease activity towards double-stranded DNA with a 5\\'-overhang.",
+                  "beacon": "3"
+                },
+                {
+                  "id": "wd:Q18042562",
+                  "name": "WRNIP1",
+                  "semanticGroup": "GENE",
+                  "synonyms": [
+                    "WHIP",
+                    "Werner helicase interacting protein 1",
+                    "WRNIP1",
+                    "bA420G6.2"
+                  ],
+                  "definition": "human gene",
+                  "beacon": "4"
+                },
+                {
+                  "id": "wd:Q14883734",
+                  "name": "WRN",
+                  "semanticGroup": "GENE",
+                  "synonyms": [
+                    "RECQ3",
+                    "RECQL3",
+                    "Werner syndrome RecQ like helicase",
+                    "RECQL2"
+                  ],
+                  "definition": "human gene",
+                  "beacon": "4"
+                },
+                {
+                  "id": "wd:Q1154619",
+                  "name": "Werner Syndrome",
+                  "semanticGroup": "DISO",
+                  "synonyms": [
+                    "Werner Syndrome",
+                    "Pangeria",
+                    "Syndrome, Werner",
+                    "Progeria, Adult",
+                    "Werner Syndrome [Disease/Finding]",
+                    "Werner syndrome (disorder)",
+                    "adult progeria",
+                    "Werner",
+                    "syndromes werner",
+                    "Syndrome, Werner\\'s",
+                    "WRN",
+                    "Werner\\'s syndrome",
+                    "adults progeria",
+                    "Werner syndrome (adult progeria) (diagnosis)",
+                    "Werner syndrome (adult progeria)",
+                    "Syndrome, Werners",
+                    "Adult premature aging syndrome",
+                    "syndromes werner\\'s",
+                    "Werners Syndrome",
+                    "syndrome werner",
+                    "Progeria of the adult",
+                    "WS",
+                    "syndromes werners",
+                    "Adult premature ageing syndrome"
+                  ],
+                  "definition": "autosomal recessive disorder that causes premature aging in adults, characterized by sclerodermal skin changes, cataracts, subcutaneous calcifications, muscular atrophy, a tendency to diabetes mellitus, aged appearance of the face, baldness, and a high incidence of neoplastic disease.",
+                  "beacon": "3"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/predicates": {
+      "get": {
+        "description": "Get a list of predicates used in statements issued by the knowledge source\n",
+        "tags": [
+          "predicates"
+        ],
+        "operationId": "getPredicates",
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "the predicate \n"
+                  },
+                  "idmap": {
+                    "type": "string",
+                    "description": "The global URI of the predicate definition on the web"
+                  }
+                }
+              }
+            },
+            "description": "Successful response with types and frequency returned\n",
+            "examples": {
+              "application/json": [
+                {
+                  "id": "interacts with",
+                  "idmap": "http://myservice.net/api/v1/P123"
+                },
+                {
+                  "id": "has phenotype",
+                  "idmap": "http://myservice.net/api/v1/P456"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/statements": {
+      "get": {
+        "description": "Given a list of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, retrieves a paged list of concept-relations where either the subject or object concept matches at least one concept in the input list\n",
+        "tags": [
+          "statements"
+        ],
+        "parameters": [
+          {
+            "name": "c",
+            "in": "query",
+            "description": "set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts to be used in a search for associated concept-relation statements, e.g. wd:Q126691, wd:Q420626\n",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "(1-based) number of the page to be returned in a paged set of query\nresults\n",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "number of concepts per page to be returned in a paged set of query\nresults\n",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "keywords",
+            "in": "query",
+            "description": "a (url-encoded, space-delimited) string of keywords or substrings against which to match the subject, predicate or object names of the set of concept-relations matched by any of the input exact matching concepts\n",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "semgroups",
+            "in": "query",
+            "description": "a (url-encoded, space-delimited) string of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "beacons",
+            "in": "query",
+            "description": "set of IDs of beacons to be used as knowledge sources for the query\n",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sessionId",
+            "in": "query",
+            "description": "client-defined session identifier\n",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "operationId": "getStatements",
+        "responses": {
+          "200": {
+            "description": "Successful response returns a list of concept-relations where there is an exact match of an input concept identifier either to the subject or object concepts of the statement\n",
+            "schema": {
+              "type": "array",
+              "items": {
+                "title": "Statement",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "CURIE-encoded identifier for statement (can be used to retrieve associated evidence)"
+                  },
+                  "subject": {
+                    "title": "Subject",
+                    "type": "object",
+                    "properties": {
+                      "clique": {
+                        "type": "string",
+                        "description": "CURIE-encoded cannonical identifier of \"equivalent concepts clique\"\n"
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "CURIE-encoded identifier of concept\n"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "human readable label of subject concept"
+                      },
+                      "semgroup": {
+                        "type": "string",
+                        "description": "a semantic group for the subject concept (specified as a code CHEM, GENE, etc. - see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n"
+                      }
+                    }
+                  },
+                  "predicate": {
+                    "title": "Predicate",
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "CURIE-encoded identifier of predicate resource\n"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "human readable label of concept"
+                      }
+                    }
+                  },
+                  "object": {
+                    "title": "Object",
+                    "type": "object",
+                    "properties": {
+                      "clique": {
+                        "type": "string",
+                        "description": "CURIE-encoded cannonical identifier of \"equivalent concepts clique\"\n"
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "CURIE-encoded identifier of object concept\n"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "human readable label of object concept"
+                      },
+                      "semgroup": {
+                        "type": "string",
+                        "description": "a semantic group for the subject concept (specified as a code CHEM, GENE, etc. - see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n"
+                      }
+                    }
+                  },
+                  "beacon": {
+                    "type": "string",
+                    "description": "beacon ID\n"
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/json": [
+                {
+                  "source": "semmeddb",
+                  "id": "kb:12345",
+                  "subject": {
+                    "id": [
+                      "wd:Q14912054"
+                    ],
+                    "name": "KCNJ11"
+                  },
+                  "predicate": {
+                    "id": [
+                      "kbp:10"
+                    ],
+                    "name": "Causes"
+                  },
+                  "object": {
+                    "id": [
+                      "wd:Q2898645"
+                    ],
+                    "name": "Neonatal diabetes mellitus"
+                  },
+                  "beacon": "1"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/evidence/{statementId}": {
+      "get": {
+        "description": "Retrieves a (paged) list of annotations cited as evidence for a specified concept-relationship statement\n",
+        "tags": [
+          "evidence"
+        ],
+        "parameters": [
+          {
+            "name": "statementId",
+            "in": "path",
+            "description": "(url-encoded) CURIE identifier of the concept-relationship statement (\"assertion\", \"claim\") for which associated evidence is sought, e.g. kbs:Q420626_P2175_Q126691\n",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "keywords",
+            "in": "query",
+            "description": "(url-encoded, space delimited) keyword filter to apply against the label field of the annotation\n",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "(1-based) number of the page to be returned in a paged set of query\nresults\n",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "number of cited references per page to be returned in a paged set of query results\n",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "beacons",
+            "in": "query",
+            "description": "set of IDs of beacons to be used as knowledge sources for the query\n",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sessionId",
+            "in": "query",
+            "description": "client-defined session identifier\n",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "operationId": "getEvidence",
+        "responses": {
+          "200": {
+            "description": "successful call returns a list of annotation with metadata\n",
+            "schema": {
+              "type": "array",
+              "items": {
+                "title": "Annotation",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "CURIE-encoded identifier to an associated external resources (e.g. PMID of a pubmed citation)\n"
+                  },
+                  "label": {
+                    "type": "string",
+                    "description": "canonical human readable and searchable label of the annotation (i.e. comment, matched sentence, etc.)\n"
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Gene Ontology Evidence Code (http://www.geneontology.org/page/guide-go-evidence-codes)\n"
+                  },
+                  "date": {
+                    "type": "string",
+                    "description": "publication date of annotation (generally of format 'yyyy-mm-dd')\n"
+                  },
+                  "beacon": {
+                    "type": "string",
+                    "description": "beacon ID\n"
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/json": [
+                {
+                  "id": [
+                    "pmid:22781086"
+                  ],
+                  "label": "Neonatal diabetes mellitus and congenital diaphragmatic hernia coincidence or concurrent etiology?",
+                  "type": "TAS",
+                  "date": "2012-07-10T00:00:00.000Z",
+                  "beacon": "1"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/beacons": {
+      "get": {
+        "description": "Get a list of the knowledge beacons that the aggregator can query\n",
+        "tags": [
+          "aggregator"
+        ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "query",
+            "description": "client-defined session identifier\n",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "operationId": "getBeacons",
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "title": "KnowledgeBeacon",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "beacon ID\n"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "beacon name\n"
+                  },
+                  "url": {
+                    "type": "string",
+                    "description": "URL used to execute API calls on the beacon\n"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "beacon description\n"
+                  },
+                  "contact": {
+                    "type": "string",
+                    "description": "name of the person responsible for this beacon\n"
+                  },
+                  "wraps": {
+                    "type": "string",
+                    "description": "URL of this beacon's data source\n"
+                  },
+                  "repo": {
+                    "type": "string",
+                    "description": "URL of this beacon's repository\n"
+                  }
+                }
+              }
+            },
+            "description": "Successful response with beacons\n",
+            "examples": {
+              "application/json": [
+                {
+                  "id": "1",
+                  "name": "SemMedDB",
+                  "url": "http://rkb.ncats.io",
+                  "description": "Reference Knowledge Beacon implementation indexed by Wikidata\n"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/errorlog": {
+      "get": {
+        "description": "Get a log of the most recent errors in this session\n",
+        "tags": [
+          "aggregator"
+        ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "query",
+            "description": "client-defined session identifier\n",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "operationId": "getErrors",
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "title": "LogEntry",
+                "type": "object",
+                "properties": {
+                  "timestamp": {
+                    "type": "string",
+                    "description": "timestamp\n"
+                  },
+                  "beacon": {
+                    "type": "string",
+                    "description": "beacon ID\n"
+                  },
+                  "query": {
+                    "type": "string",
+                    "description": "URL of the API call executed by the aggregator\n"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "error message\n"
+                  }
+                }
+              }
+            },
+            "description": "Successful response with most recent errors\n",
+            "examples": {
+              "application/json": [
+                {
+                  "timestamp": "2016-12-31 15:09:24.614",
+                  "beacon": "1",
+                  "query": "http://rkb.ncats.io/concepts?keywords=cancer",
+                  "message": "Bad Gateway"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
 }
