@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -59,14 +60,14 @@ import bio.knowledge.web.view.DescriptionBuilder;
 
 @org.springframework.stereotype.Component
 @Scope(value = "prototype", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class WikiDetailsHandler {
+public class ConceptDetailsHandler {
 
-	private Logger _logger = LoggerFactory.getLogger(WikiDetailsHandler.class);
+	private Logger _logger = LoggerFactory.getLogger(ConceptDetailsHandler.class);
 
 	private DesktopUI parentUi;
 
 	@Autowired
-	public WikiDetailsHandler(DesktopUI ui) {
+	public ConceptDetailsHandler(DesktopUI ui) {
 		this.parentUi = ui;
 	}
 
@@ -82,7 +83,9 @@ public class WikiDetailsHandler {
 	private WikiDataService wikiDataService;
 
 	public VerticalLayout getDetails(Concept selectedConcept) {
+		
 		query.setCurrentSelectedConcept(selectedConcept);
+		
 		try {
 			descriptionBuilder = null; // resetting descriptionBuilder
 			conceptService.getDescription(this::updateDescription);
@@ -96,23 +99,32 @@ public class WikiDetailsHandler {
 
 		// set up the common labels
 		Label accessionLabel = new Label();
-		Label nameLabel = new Label();
-		Label typeLabel = new Label();
+		Label nameLabel      = new Label();
+		Label typeLabel      = new Label();
+		Label cliqueLabel    = new Label();
+		Label aliasesLabel   = new Label();
 
 		accessionLabel.setCaption("Accession Id:");
 		nameLabel.setCaption("Name:");
 		typeLabel.setCaption("Semantic Group:");
+		cliqueLabel.setCaption("Clique Id:");
+		aliasesLabel.setCaption("Aliases:");
 
 		if (selectedConcept != null) {
 			accessionLabel.setValue(selectedConcept.getId());
 			nameLabel.setValue(selectedConcept.getName());
 			typeLabel.setValue(selectedConcept.getSemanticGroup().getDescription());
+			cliqueLabel.setValue(selectedConcept.getClique());
+			aliasesLabel.setContentMode(ContentMode.HTML);
+			aliasesLabel.setValue(String.join("<br/>", selectedConcept.getCrossReferences()));
 		} else {
 			// For some reason, for some concepts, selectedConcept may be
 			// null?
 			accessionLabel.setValue("Not Available?");
 			nameLabel.setValue("Not Available?");
 			typeLabel.setValue("Not Available?");
+			cliqueLabel.setValue("Not Available?");
+			aliasesLabel.setValue("Not Available?");
 		}
 		
 		FormLayout labelsLayout = new FormLayout();
@@ -120,7 +132,7 @@ public class WikiDetailsHandler {
 		labelsLayout.setSpacing(false);
 		labelsLayout.setWidth("100%");
 		
-		labelsLayout.addComponents(accessionLabel, nameLabel, typeLabel);
+		labelsLayout.addComponents(accessionLabel, nameLabel, typeLabel, cliqueLabel, aliasesLabel);
 		
 		boolean wiki_article_available = descriptionBuilder != null && !descriptionBuilder.getArticleUrl().equals("");
 		

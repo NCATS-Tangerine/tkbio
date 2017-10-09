@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import bio.knowledge.client.model.Subject;
@@ -40,8 +41,47 @@ import bio.knowledge.model.Statement;
 @Service
 public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 	
-	public static final long     BEACON_TIMEOUT_DURATION = 30;
-	public static final TimeUnit BEACON_TIMEOUT_UNIT = TimeUnit.SECONDS;
+	@Autowired
+	private KnowledgeBeaconRegistry registry;
+	
+	public static final long     BEACON_TIMEOUT_DURATION = 1;
+	public static final TimeUnit BEACON_TIMEOUT_UNIT = TimeUnit.MINUTES;
+
+	/**
+	 * Dynamically compute adjustment to query timeouts proportionately to 
+	 * the number of beacons and pageSize
+
+	 * @param beacons
+	 * @param pageSize
+	 * @return
+	 */
+	public long weightedTimeout( List<String> beacons, Integer pageSize) {
+		long timescale;
+		if(!(beacons==null || beacons.isEmpty())) 
+			timescale = beacons.size();
+		else
+			timescale = registry.countAllBeacons();
+		
+		timescale *= Math.max(1,pageSize/10) ;
+		
+		return timescale*BEACON_TIMEOUT_DURATION;
+	}
+	
+	/**
+	 * Timeout simply weighted by total number of beacons and pagesize
+	 * @return
+	 */
+	public long weightedTimeout(Integer pageSize) {
+		return weightedTimeout(null, pageSize); // 
+	}
+	
+	/**
+	 * Timeout simply weighted by number of beacons
+	 * @return
+	 */
+	public long weightedTimeout() {
+		return weightedTimeout(null, 0); // 
+	}
 	
 	private List<String> customBeacons = null;
 	private String sessionId = null;

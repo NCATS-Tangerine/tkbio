@@ -115,9 +115,11 @@ public class StatementService
 		CompletableFuture<List<Statement>> future = kbService.getStatements(emci, extraFilter, semgroups, pageIndex, pageSize);
 		
 		try {
-			List<Statement> statements = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
-			
-			
+			List<Statement> statements = 
+					future.get(
+							kbService.weightedTimeout(pageSize), 
+							KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
+			);
 			
 			return statements;
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {

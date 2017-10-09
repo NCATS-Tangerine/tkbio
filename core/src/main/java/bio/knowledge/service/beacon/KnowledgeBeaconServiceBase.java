@@ -23,6 +23,7 @@ import bio.knowledge.client.api.StatementsApi;
  *
  */
 public class KnowledgeBeaconServiceBase {
+	
 	@Value( "${beaconAggregator.url}" )
 	private String AGGREGATOR_BASE_URL;
 	
@@ -58,8 +59,6 @@ public class KnowledgeBeaconServiceBase {
 	public AggregatorApi getAggregatorApi() {
 		return this.aggregatorApi;
 	}
-	
-	
 	
 	@PostConstruct
 	private void initBeacons() {

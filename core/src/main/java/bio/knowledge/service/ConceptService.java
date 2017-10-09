@@ -120,7 +120,10 @@ public class ConceptService
     			kbService.getConcepts(filter, semgroups, pageIndex, pageSize);
     	
     	try {
-			return future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+			return future.get(
+					kbService.weightedTimeout(pageSize*10), // initial concept retrieval may be heavy... add an extra weighting
+					KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
+			);
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			return new ArrayList<Concept>();
 		}

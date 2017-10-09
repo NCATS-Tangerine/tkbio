@@ -92,7 +92,6 @@ import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.datasource.DataService;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.BeaconResponse;
@@ -123,7 +122,8 @@ import bio.knowledge.service.core.ListTablePager;
 import bio.knowledge.service.core.TableSorter;
 import bio.knowledge.web.ui.DesktopUI;
 import bio.knowledge.web.ui.PopupWindow;
-import bio.knowledge.web.ui.WikiDetailsHandler;
+import bio.knowledge.web.view.ViewUtil.ToolTipGenerator;
+import bio.knowledge.web.ui.ConceptDetailsHandler;
 
 /**
  * @author Richard
@@ -1335,6 +1335,15 @@ public class ListView extends BaseView {
 		List<String> columns = new ArrayList<String>();
 		Map<String, RendererClickListener> selectionHandlers = mapping.getSelectionHandlers();
 
+		/*
+		 *  Customized tool tip generator will allow
+		 *  compression of table data by merging 
+		 *  related data fields, such as 'clique' and 'crossReferences'
+		 *  where the latter is displayed as a tooltip
+		 */
+		ToolTipGenerator generator = new ToolTipGenerator();
+		dataTable.setCellDescriptionGenerator(generator);
+		
 		for (String column : mapping.getColumns()) {
 			String[] colspec = column.split("\\|");
 			if (colspec.length == 1) {
@@ -1351,13 +1360,26 @@ public class ListView extends BaseView {
 					dataTable.getColumn(column).setMaximumWidth(150);
 				}
 
-			} else {
+			} else if (colspec.length > 1) {
 
 				// Add a button with callback to this column
 				String columnName = colspec[0].trim();
 				columns.add(columnName);
 				RendererClickListener handler = selectionHandlers.get(columnName);
 				dataTable.addColumn(columnName);
+				
+				// Optionally - specialized toolTip Value
+				String toolTipColumn = colspec[1].trim();
+				if (!(toolTipColumn.equals("*") ||
+					  toolTipColumn.toLowerCase().startsWith("http://") || 
+					  toolTipColumn.toLowerCase().startsWith("https://")
+					)) {
+					// add the column, but as a hidden one?
+					dataTable.addColumn(toolTipColumn).setHidden(true);
+					ToolTipGenerator toolTipGenerator = 
+							(ToolTipGenerator)dataTable.getCellDescriptionGenerator();
+					toolTipGenerator.setToolTipSource(columnName,toolTipColumn);
+				}
 				
 				// Different views will have the dataTable be different sizes,
 				// requiring slightly different maximum widths for each column.
@@ -1512,16 +1534,27 @@ public class ListView extends BaseView {
 						String url = fieldParts[1];
 						if (url.equals("*")) {
 							url = fieldValue.toString();
-						} else {
+						} else if( 
+									url.toLowerCase().startsWith("http://") || 
+									url.toLowerCase().startsWith("https://")
+								) {
 							// dissect url template
 							Locale locale = this.getCurrentUI().getLocale();
 							String language = locale.getLanguage().substring(0, 2);
 							url = url.replace("$L", language);
 							url = url.replace("$V", fieldValue.toString());
+							Link link = new Link(fieldValue.toString(), new ExternalResource(url));
+							link.setTargetName("_blank");
+							detailsPane.addComponent(link);
+						} else {
+							// maybe just another field name to render as a tool tip?
+							itemProperty = item.getItemProperty(url);
+							String toolTipString = itemProperty.getValue().toString();
+							Label theField = new Label(fieldValue.toString());
+							theField.setDescription(toolTipString);
+							detailsPane.addComponent(theField);
 						}
-						Link link = new Link(fieldValue.toString(), new ExternalResource(url));
-						link.setTargetName("_blank");
-						detailsPane.addComponent(link);
+
 					} else
 						detailsPane.addComponent(new Label(fieldValue.toString()));
 				} else
@@ -1558,7 +1591,7 @@ public class ListView extends BaseView {
 	}
 	
 	@Autowired
-	WikiDetailsHandler wd_handler;
+	ConceptDetailsHandler cdhandler;
 	
 	@Autowired
 	KnowledgeBeaconService kbService;
@@ -1567,6 +1600,7 @@ public class ListView extends BaseView {
 	
 	// Handler for Concept details in various data tables
 	private void onConceptDetailsSelection(RendererClickEvent event, ConceptRole role) {
+		
 		Statement statement = (Statement) event.getItemId();
 		Concept subject = statement.getSubject();
 		Predicate predicate = statement.getRelation();
@@ -1576,7 +1610,7 @@ public class ListView extends BaseView {
 		if (searchMode.equals(RelationSearchMode.WIKIDATA) && role.equals(ConceptRole.OBJECT)) {
 
 			// This is a WikiData item property value...
-			wd_handler.displayDataPage(predicate.getId(), object.getName());
+			cdhandler.displayDataPage(predicate.getId(), object.getName());
 
 		} else {
 
@@ -1605,7 +1639,10 @@ public class ListView extends BaseView {
 			Concept selectedConcept;
 			try {
 				List<Concept> concepts = 
-						future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+						future.get(
+								kbService.weightedTimeout(), 
+								KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
+						);
 				selectedConcept = concepts.get(0);
 			} catch (InterruptedException | ExecutionException | TimeoutException | IndexOutOfBoundsException e1) {
 				selectedConcept = role.equals(ConceptRole.SUBJECT) ? subject : object;
@@ -1668,7 +1705,7 @@ public class ListView extends BaseView {
 			buttonsLayout.setComponentAlignment(operationsLayout, Alignment.MIDDLE_LEFT);
 			buttonsLayout.setComponentAlignment(closeButton, Alignment.MIDDLE_RIGHT);
 
-			VerticalLayout wd_details = wd_handler.getDetails(selectedConcept);
+			VerticalLayout wd_details = cdhandler.getDetails(selectedConcept);
 			wd_details.addComponent(buttonsLayout);
 
 			conceptDetailsWindow.setCaption(conceptName);
@@ -1736,10 +1773,12 @@ public class ListView extends BaseView {
 				ViewName.CONCEPTS_VIEW,
 				new BeanItemContainer<Concept>(Concept.class), 
 				conceptService,
-				new String[] { "beaconSource", "name|*", "clique", "semanticGroup", "description|*", "synonyms|*"},
+				new String[] { "beaconSource", "clique|crossReferences", "name|*", "semanticGroup", "description|*", "synonyms|*"},
 				null, 
 				null);
 
+		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "clique",e->{/*NOP*/});
+		
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "name", event -> {
 			Concept concept = (Concept) event.getItemId();
 

@@ -132,7 +132,7 @@ public class ConceptMapPopupWindow {
 	private KBQuery query;
 	
 	@Autowired
-	WikiDetailsHandler wd_handler;
+	ConceptDetailsHandler wd_handler;
 
 	// position
 	int myX;
