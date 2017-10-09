@@ -777,6 +777,7 @@ public class ListView extends BaseView {
 				
 				Statement statement = (Statement) item;
 				
+				++ TODO: FIX MISSING SEMGROUPS IN RELATIONS TABLE SUBJECT & OBJECT
 				Concept subject = statement.getSubject() ;
 				Concept object  = statement.getObject() ;
 				
@@ -1784,9 +1785,7 @@ public class ListView extends BaseView {
 
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
 
-			// 25-Oct-2016: Here, we *do* want to add the new node to concept
-			// map
-			// graph!
+			// 25-Oct-2016: Here, we *do* want to add the new node to concept map graph!
 			ui.addNodeToConceptMap(concept);
 
 			ui.queryUpdate(concept, RelationSearchMode.RELATIONS);
