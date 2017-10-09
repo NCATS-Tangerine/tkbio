@@ -4,8 +4,8 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **String** | the predicate   |  [optional]
-**idmap** | **String** | The global URI of the predicate definition on the web |  [optional]
+**id** | **String** | CURIE-encoded identifier of predicate resource  |  [optional]
+**name** | **String** | human readable name of predicate  |  [optional]
 
 
 

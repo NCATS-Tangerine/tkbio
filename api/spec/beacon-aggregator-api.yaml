@@ -403,10 +403,11 @@ paths:
                 id:
                   type: string
                   description: |
-                    the predicate 
-                idmap:
+                    CURIE-encoded identifier of predicate resource
+                name:
                   type: string
-                  description: The global URI of the predicate definition on the web
+                  description: |
+                    human readable name of predicate
           description: |
             Successful response with types and frequency returned
           examples:

@@ -21,13 +21,13 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * InlineResponse200
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-09T12:46:17.725-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-09T14:15:32.358-07:00")
 public class InlineResponse200 {
   @SerializedName("id")
   private String id = null;
 
-  @SerializedName("idmap")
-  private String idmap = null;
+  @SerializedName("name")
+  private String name = null;
 
   public InlineResponse200 id(String id) {
     this.id = id;
@@ -35,10 +35,10 @@ public class InlineResponse200 {
   }
 
    /**
-   * the predicate  
+   * CURIE-encoded identifier of predicate resource 
    * @return id
   **/
-  @ApiModelProperty(example = "null", value = "the predicate  ")
+  @ApiModelProperty(example = "null", value = "CURIE-encoded identifier of predicate resource ")
   public String getId() {
     return id;
   }
@@ -47,22 +47,22 @@ public class InlineResponse200 {
     this.id = id;
   }
 
-  public InlineResponse200 idmap(String idmap) {
-    this.idmap = idmap;
+  public InlineResponse200 name(String name) {
+    this.name = name;
     return this;
   }
 
    /**
-   * The global URI of the predicate definition on the web
-   * @return idmap
+   * human readable name of predicate 
+   * @return name
   **/
-  @ApiModelProperty(example = "null", value = "The global URI of the predicate definition on the web")
-  public String getIdmap() {
-    return idmap;
+  @ApiModelProperty(example = "null", value = "human readable name of predicate ")
+  public String getName() {
+    return name;
   }
 
-  public void setIdmap(String idmap) {
-    this.idmap = idmap;
+  public void setName(String name) {
+    this.name = name;
   }
 
 
@@ -76,12 +76,12 @@ public class InlineResponse200 {
     }
     InlineResponse200 inlineResponse200 = (InlineResponse200) o;
     return Objects.equals(this.id, inlineResponse200.id) &&
-        Objects.equals(this.idmap, inlineResponse200.idmap);
+        Objects.equals(this.name, inlineResponse200.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, idmap);
+    return Objects.hash(id, name);
   }
 
 
@@ -91,7 +91,7 @@ public class InlineResponse200 {
     sb.append("class InlineResponse200 {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    idmap: ").append(toIndentedString(idmap)).append("\n");
+    sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("}");
     return sb.toString();
   }

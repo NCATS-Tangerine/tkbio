@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Concept
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-09T12:46:17.725-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-09T14:15:32.358-07:00")
 public class Concept {
   @SerializedName("clique")
   private String clique = null;
