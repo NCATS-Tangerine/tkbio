@@ -19,50 +19,50 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * Detail
+ * InlineResponse200
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-09T12:46:17.725-07:00")
-public class Detail {
-  @SerializedName("tag")
-  private String tag = null;
+public class InlineResponse200 {
+  @SerializedName("id")
+  private String id = null;
 
-  @SerializedName("value")
-  private String value = null;
+  @SerializedName("idmap")
+  private String idmap = null;
 
-  public Detail tag(String tag) {
-    this.tag = tag;
+  public InlineResponse200 id(String id) {
+    this.id = id;
     return this;
   }
 
    /**
-   * property name 
-   * @return tag
+   * the predicate  
+   * @return id
   **/
-  @ApiModelProperty(example = "null", value = "property name ")
-  public String getTag() {
-    return tag;
+  @ApiModelProperty(example = "null", value = "the predicate  ")
+  public String getId() {
+    return id;
   }
 
-  public void setTag(String tag) {
-    this.tag = tag;
+  public void setId(String id) {
+    this.id = id;
   }
 
-  public Detail value(String value) {
-    this.value = value;
+  public InlineResponse200 idmap(String idmap) {
+    this.idmap = idmap;
     return this;
   }
 
    /**
-   * property value 
-   * @return value
+   * The global URI of the predicate definition on the web
+   * @return idmap
   **/
-  @ApiModelProperty(example = "null", value = "property value ")
-  public String getValue() {
-    return value;
+  @ApiModelProperty(example = "null", value = "The global URI of the predicate definition on the web")
+  public String getIdmap() {
+    return idmap;
   }
 
-  public void setValue(String value) {
-    this.value = value;
+  public void setIdmap(String idmap) {
+    this.idmap = idmap;
   }
 
 
@@ -74,24 +74,24 @@ public class Detail {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Detail detail = (Detail) o;
-    return Objects.equals(this.tag, detail.tag) &&
-        Objects.equals(this.value, detail.value);
+    InlineResponse200 inlineResponse200 = (InlineResponse200) o;
+    return Objects.equals(this.id, inlineResponse200.id) &&
+        Objects.equals(this.idmap, inlineResponse200.idmap);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tag, value);
+    return Objects.hash(id, idmap);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Detail {\n");
+    sb.append("class InlineResponse200 {\n");
     
-    sb.append("    tag: ").append(toIndentedString(tag)).append("\n");
-    sb.append("    value: ").append(toIndentedString(value)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    idmap: ").append(toIndentedString(idmap)).append("\n");
     sb.append("}");
     return sb.toString();
   }

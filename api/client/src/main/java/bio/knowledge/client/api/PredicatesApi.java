@@ -27,7 +27,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 
 
-import bio.knowledge.client.model.Summary;
+import bio.knowledge.client.model.InlineResponse200;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -35,14 +35,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SummaryApi {
+public class PredicatesApi {
     private ApiClient apiClient;
 
-    public SummaryApi() {
+    public PredicatesApi() {
         this(Configuration.getDefaultApiClient());
     }
 
-    public SummaryApi(ApiClient apiClient) {
+    public PredicatesApi(ApiClient apiClient) {
         this.apiClient = apiClient;
     }
 
@@ -54,18 +54,14 @@ public class SummaryApi {
         this.apiClient = apiClient;
     }
 
-    /* Build call for linkedTypes */
-    private com.squareup.okhttp.Call linkedTypesCall(List<String> beacons, String sessionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    /* Build call for getPredicates */
+    private com.squareup.okhttp.Call getPredicatesCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/types".replaceAll("\\{format\\}","json");
+        String localVarPath = "/predicates".replaceAll("\\{format\\}","json");
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        if (beacons != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("csv", "beacons", beacons));
-        if (sessionId != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "sessionId", sessionId));
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
 
@@ -100,10 +96,10 @@ public class SummaryApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call linkedTypesValidateBeforeCall(List<String> beacons, String sessionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getPredicatesValidateBeforeCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         
-        com.squareup.okhttp.Call call = linkedTypesCall(beacons, sessionId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getPredicatesCall(progressListener, progressRequestListener);
         return call;
 
         
@@ -114,41 +110,35 @@ public class SummaryApi {
 
     /**
      * 
-     * Get a list of types and # of instances in the knowledge source, and a link to the API call for the list of equivalent terminology 
-     * @param beacons set of IDs of beacons to be used as knowledge sources for the query  (optional)
-     * @param sessionId client-defined session identifier  (optional)
-     * @return List&lt;Summary&gt;
+     * Get a list of predicates used in statements issued by the knowledge source 
+     * @return List&lt;InlineResponse200&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<Summary> linkedTypes(List<String> beacons, String sessionId) throws ApiException {
-        ApiResponse<List<Summary>> resp = linkedTypesWithHttpInfo(beacons, sessionId);
+    public List<InlineResponse200> getPredicates() throws ApiException {
+        ApiResponse<List<InlineResponse200>> resp = getPredicatesWithHttpInfo();
         return resp.getData();
     }
 
     /**
      * 
-     * Get a list of types and # of instances in the knowledge source, and a link to the API call for the list of equivalent terminology 
-     * @param beacons set of IDs of beacons to be used as knowledge sources for the query  (optional)
-     * @param sessionId client-defined session identifier  (optional)
-     * @return ApiResponse&lt;List&lt;Summary&gt;&gt;
+     * Get a list of predicates used in statements issued by the knowledge source 
+     * @return ApiResponse&lt;List&lt;InlineResponse200&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<Summary>> linkedTypesWithHttpInfo(List<String> beacons, String sessionId) throws ApiException {
-        com.squareup.okhttp.Call call = linkedTypesValidateBeforeCall(beacons, sessionId, null, null);
-        Type localVarReturnType = new TypeToken<List<Summary>>(){}.getType();
+    public ApiResponse<List<InlineResponse200>> getPredicatesWithHttpInfo() throws ApiException {
+        com.squareup.okhttp.Call call = getPredicatesValidateBeforeCall(null, null);
+        Type localVarReturnType = new TypeToken<List<InlineResponse200>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
     /**
      *  (asynchronously)
-     * Get a list of types and # of instances in the knowledge source, and a link to the API call for the list of equivalent terminology 
-     * @param beacons set of IDs of beacons to be used as knowledge sources for the query  (optional)
-     * @param sessionId client-defined session identifier  (optional)
+     * Get a list of predicates used in statements issued by the knowledge source 
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call linkedTypesAsync(List<String> beacons, String sessionId, final ApiCallback<List<Summary>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getPredicatesAsync(final ApiCallback<List<InlineResponse200>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -169,8 +159,8 @@ public class SummaryApi {
             };
         }
 
-        com.squareup.okhttp.Call call = linkedTypesValidateBeforeCall(beacons, sessionId, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<List<Summary>>(){}.getType();
+        com.squareup.okhttp.Call call = getPredicatesValidateBeforeCall(progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<List<InlineResponse200>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }

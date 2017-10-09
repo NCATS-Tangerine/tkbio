@@ -250,11 +250,21 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 						bio.knowledge.client.model.Predicate statementsPredicate = response.getPredicate();
 						bio.knowledge.client.model.Object statementsObject = response.getObject();
 
-						ConceptImpl subject = new ConceptImpl(statementsSubject.getClique(), statementsSubject.getId(), null, statementsSubject.getName());
-
-						ConceptImpl object = new ConceptImpl(statementsObject.getClique(), statementsObject.getId(), null, statementsObject.getName());
+						ConceptImpl subject = new ConceptImpl(
+								statementsSubject.getClique(), 
+								statementsSubject.getId(), 
+								statementsSubject.getSemgroup(), 
+								statementsSubject.getName()
+						);
 
 						PredicateImpl predicate = new PredicateImpl(statementsPredicate.getName());
+
+						ConceptImpl object = new ConceptImpl(
+								statementsObject.getClique(), 
+								statementsObject.getId(), 
+								statementsObject.getSemgroup(), 
+								statementsObject.getName()
+						);
 						
 						Statement statement = new GeneralStatement(id, subject, predicate, object);
 						
