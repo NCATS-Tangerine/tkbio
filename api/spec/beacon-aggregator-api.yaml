@@ -408,6 +408,10 @@ paths:
                   type: string
                   description: |
                     human readable name of predicate
+                beacon:
+                  type: string
+                  description: |
+                    beacon ID
           description: |
             Successful response with types and frequency returned
           examples:

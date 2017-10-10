@@ -8,7 +8,7 @@
       "email": "richard@starinformatics.com",
       "responsibleDeveloper": "Richard Bruskiewich",
       "responsibleOrganization": "STAR Informatics/Delphinai Corporation"
-   },
+    },
     "description": "This is the Translator Knowledge Beacon Aggregator web service application programming interface (API).\n",
     "license": {
       "name": "MIT License",
@@ -460,11 +460,15 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "description": "CURIE-encoded identifier of predicate resource"
+                    "description": "CURIE-encoded identifier of predicate resource\n"
                   },
                   "name": {
                     "type": "string",
-                    "description": "human readable name of predicate"
+                    "description": "human readable name of predicate\n"
+                  },
+                  "beacon": {
+                    "type": "string",
+                    "description": "beacon ID\n"
                   }
                 }
               }

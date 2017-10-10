@@ -14,8 +14,9 @@
 package bio.knowledge.client.model;
 
 import java.util.Objects;
+
 import com.google.gson.annotations.SerializedName;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -106,6 +107,11 @@ public class Predicate {
     }
     return o.toString().replace("\n", "\n    ");
   }
+
+public String getBeacon() {
+	// TODO Auto-generated method stub
+	return null;
+}
   
 }
 

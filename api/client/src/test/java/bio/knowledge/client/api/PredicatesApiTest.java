@@ -13,15 +13,13 @@
 
 package bio.knowledge.client.api;
 
-import bio.knowledge.client.ApiException;
-import bio.knowledge.client.model.InlineResponse200;
-import org.junit.Test;
-import org.junit.Ignore;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+import bio.knowledge.client.ApiException;
+import bio.knowledge.client.model.Predicate;
 
 /**
  * API tests for PredicatesApi
@@ -42,7 +40,7 @@ public class PredicatesApiTest {
      */
     @Test
     public void getPredicatesTest() throws ApiException {
-        List<InlineResponse200> response = api.getPredicates();
+        List<Predicate> response = api.getPredicates();
 
         // TODO: test validations
     }

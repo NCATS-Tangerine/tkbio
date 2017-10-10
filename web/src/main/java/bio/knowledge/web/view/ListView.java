@@ -92,6 +92,7 @@ import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.authentication.AuthenticationManager;
+import bio.knowledge.datasource.DataService;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.BeaconResponse;
@@ -122,7 +123,6 @@ import bio.knowledge.service.core.ListTablePager;
 import bio.knowledge.service.core.TableSorter;
 import bio.knowledge.web.ui.DesktopUI;
 import bio.knowledge.web.ui.PopupWindow;
-import bio.knowledge.web.view.ViewUtil.ToolTipGenerator;
 import bio.knowledge.web.ui.ConceptDetailsHandler;
 
 /**
@@ -940,10 +940,10 @@ public class ListView extends BaseView {
 		dataTableLayout.setMargin(true);
 		dataTableLayout.setSpacing(true);
 
-		HorizontalLayout filterBar = new HorizontalLayout();
+		HorizontalLayout filterHeader = new HorizontalLayout();
 
-		filterBar.setWidth("100%");
-		filterBar.setSpacing(true);
+		filterHeader.setWidth("100%");
+		filterHeader.setSpacing(true);
 
 		// add the relation triple in evidence view
 		Label dataTableLabel = null;
@@ -1082,13 +1082,24 @@ public class ListView extends BaseView {
 			dataTableLayout.setComponentAlignment(dataTableLabel, Alignment.MIDDLE_CENTER);
 		}
 
-		setMenuFilter(filterBar);
-		setUpTextFilter(filterBar);
+		HorizontalLayout filterMenuBar = new HorizontalLayout();
+		filterMenuBar.setSpacing(true);
+		
+		Label filterMenuLabel = new Label("<b>Filter By:<b>", ContentMode.HTML);
+		filterMenuBar.addComponent(filterMenuLabel);
+		filterMenuBar.setComponentAlignment(filterMenuLabel, Alignment.MIDDLE_LEFT);
+		
+		setSemGroupFilter(filterMenuBar);
+		setPredicateFilter(filterMenuBar);
+		setUpTextFilter(filterMenuBar);
+		
+		filterHeader.addComponent(filterMenuBar);
+		filterHeader.setComponentAlignment(filterMenuBar, Alignment.MIDDLE_CENTER);
 
 		if (viewName.equals(ViewName.RELATIONS_VIEW) || viewName.equals(ViewName.CONCEPTS_VIEW)
 				|| viewName.equals(ViewName.LIBRARY_VIEW) || viewName.equals(ViewName.EVIDENCE_VIEW)
 				|| viewName.equals(ViewName.ANNOTATIONS_VIEW)) {
-			dataTableLayout.addComponent(filterBar);
+			dataTableLayout.addComponent(filterHeader);
 		}
 
 		if (viewName.equals(ViewName.LIBRARY_VIEW)) {
@@ -1110,7 +1121,7 @@ public class ListView extends BaseView {
 		return dataTableLayout;
 	}
 
-	private void setMenuFilter(HorizontalLayout filterBar) {
+	private void setSemGroupFilter(HorizontalLayout filterMenuBar) {
 
 		if (!(
 				viewName.equals(ViewName.RELATIONS_VIEW) ||
@@ -1120,10 +1131,10 @@ public class ListView extends BaseView {
 			return;
 		}
 
-		MenuBar filterMenu = new MenuBar();
-		filterMenu.addStyleName("semanticfilter-menu");
+		MenuBar semanticFilterMenu = new MenuBar();
+		semanticFilterMenu.addStyleName("semanticfilter-menu");
 
-		MenuItem types = filterMenu.addItem("Any", null, null);
+		MenuItem types = semanticFilterMenu.addItem("Any", null, null);
 
 		MenuItem any = types.addItem("Any", null, null);
 		MenuItem disorders = types.addItem("Disorders", null, null);
@@ -1228,19 +1239,40 @@ public class ListView extends BaseView {
 			item.setCommand(selectCommand);
 		}
 
-		Label menuLabel = new Label("<b>Filter By:<b>", ContentMode.HTML);
-
-		HorizontalLayout menuSelectBar = new HorizontalLayout();
-		menuSelectBar.setSpacing(true);
-		menuSelectBar.addComponent(menuLabel);
-		menuSelectBar.addComponent(filterMenu);
-		menuSelectBar.setComponentAlignment(menuLabel, Alignment.MIDDLE_LEFT);
-
-		filterBar.addComponent(menuSelectBar);
-		filterBar.setComponentAlignment(menuSelectBar, Alignment.MIDDLE_LEFT);
+		filterMenuBar.addComponent(semanticFilterMenu);
 	}
+	
+	private void setPredicateFilter(HorizontalLayout filterMenuBar) {
+		if (! viewName.equals(ViewName.RELATIONS_VIEW) ) {
+			return;
+		}
 
-	private void setUpTextFilter(HorizontalLayout filterBar) {
+		MenuBar predicateFilterMenu = new MenuBar();
+		predicateFilterMenu.addStyleName("predicatefilter-menu");
+
+		MenuItem types = predicateFilterMenu.addItem("Any", null, null);
+
+		MenuBar.Command selectCommand = new MenuBar.Command() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		
+		for (MenuItem item : types.getChildren()) {
+			item.setCommand(selectCommand);
+		}
+
+		filterMenuBar.addComponent(predicateFilterMenu);
+
+	}
+	
+	private void setUpTextFilter(HorizontalLayout filterMenuBar) {
+		
 		if (!viewName.equals(ViewName.RELATIONS_VIEW) && !viewName.equals(ViewName.CONCEPTS_VIEW)
 				&& !viewName.equals(ViewName.LIBRARY_VIEW) && !viewName.equals(ViewName.EVIDENCE_VIEW)
 				&& !viewName.equals(ViewName.ANNOTATIONS_VIEW)) {
@@ -1278,15 +1310,12 @@ public class ListView extends BaseView {
 			});
 		}
 
-		HorizontalLayout textFilterBar = new HorizontalLayout(); // need a
-																	// layout to
-																	// keep the
-																	// icon
-																	// inside
+		// Need a layout to keep the icon inside
+		HorizontalLayout textFilterBar = new HorizontalLayout(); 
 		textFilterBar.addComponent(simpleTextFilter);
 
-		filterBar.addComponent(textFilterBar);
-		filterBar.setComponentAlignment(textFilterBar, Alignment.MIDDLE_RIGHT);
+		filterMenuBar.addComponent(textFilterBar);
+		filterMenuBar.setComponentAlignment(textFilterBar, Alignment.MIDDLE_RIGHT);
 	}
 
 	private String getCellDescription(CellReference cell) {
@@ -1335,15 +1364,6 @@ public class ListView extends BaseView {
 		List<String> columns = new ArrayList<String>();
 		Map<String, RendererClickListener> selectionHandlers = mapping.getSelectionHandlers();
 
-		/*
-		 *  Customized tool tip generator will allow
-		 *  compression of table data by merging 
-		 *  related data fields, such as 'clique' and 'crossReferences'
-		 *  where the latter is displayed as a tooltip
-		 */
-		ToolTipGenerator generator = new ToolTipGenerator();
-		dataTable.setCellDescriptionGenerator(generator);
-		
 		for (String column : mapping.getColumns()) {
 			String[] colspec = column.split("\\|");
 			if (colspec.length == 1) {
@@ -1360,26 +1380,13 @@ public class ListView extends BaseView {
 					dataTable.getColumn(column).setMaximumWidth(150);
 				}
 
-			} else if (colspec.length > 1) {
+			} else {
 
 				// Add a button with callback to this column
 				String columnName = colspec[0].trim();
 				columns.add(columnName);
 				RendererClickListener handler = selectionHandlers.get(columnName);
 				dataTable.addColumn(columnName);
-				
-				// Optionally - specialized toolTip Value
-				String toolTipColumn = colspec[1].trim();
-				if (!(toolTipColumn.equals("*") ||
-					  toolTipColumn.toLowerCase().startsWith("http://") || 
-					  toolTipColumn.toLowerCase().startsWith("https://")
-					)) {
-					// add the column, but as a hidden one?
-					dataTable.addColumn(toolTipColumn).setHidden(true);
-					ToolTipGenerator toolTipGenerator = 
-							(ToolTipGenerator)dataTable.getCellDescriptionGenerator();
-					toolTipGenerator.setToolTipSource(columnName,toolTipColumn);
-				}
 				
 				// Different views will have the dataTable be different sizes,
 				// requiring slightly different maximum widths for each column.
@@ -1591,7 +1598,7 @@ public class ListView extends BaseView {
 	}
 	
 	@Autowired
-	ConceptDetailsHandler cdhandler;
+	ConceptDetailsHandler detailshandler;
 	
 	@Autowired
 	KnowledgeBeaconService kbService;
@@ -1600,7 +1607,6 @@ public class ListView extends BaseView {
 	
 	// Handler for Concept details in various data tables
 	private void onConceptDetailsSelection(RendererClickEvent event, ConceptRole role) {
-		
 		Statement statement = (Statement) event.getItemId();
 		Concept subject = statement.getSubject();
 		Predicate predicate = statement.getRelation();
@@ -1610,7 +1616,7 @@ public class ListView extends BaseView {
 		if (searchMode.equals(RelationSearchMode.WIKIDATA) && role.equals(ConceptRole.OBJECT)) {
 
 			// This is a WikiData item property value...
-			cdhandler.displayDataPage(predicate.getId(), object.getName());
+			detailshandler.displayDataPage(predicate.getId(), object.getName());
 
 		} else {
 
@@ -1705,7 +1711,7 @@ public class ListView extends BaseView {
 			buttonsLayout.setComponentAlignment(operationsLayout, Alignment.MIDDLE_LEFT);
 			buttonsLayout.setComponentAlignment(closeButton, Alignment.MIDDLE_RIGHT);
 
-			VerticalLayout wd_details = cdhandler.getDetails(selectedConcept);
+			VerticalLayout wd_details = detailshandler.getDetails(selectedConcept);
 			wd_details.addComponent(buttonsLayout);
 
 			conceptDetailsWindow.setCaption(conceptName);
@@ -1778,13 +1784,15 @@ public class ListView extends BaseView {
 				null);
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "clique",e->{/*NOP*/});
-		
+
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "name", event -> {
 			Concept concept = (Concept) event.getItemId();
 
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
 
-			// 25-Oct-2016: Here, we *do* want to add the new node to concept map graph!
+			// 25-Oct-2016: Here, we *do* want to add the new node to concept
+			// map
+			// graph!
 			ui.addNodeToConceptMap(concept);
 
 			ui.queryUpdate(concept, RelationSearchMode.RELATIONS);

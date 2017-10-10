@@ -43,6 +43,7 @@ import javax.servlet.http.Cookie;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -620,7 +621,7 @@ public class DesktopUI extends UI implements MessageService {
 		// RelationSearchModes?
 		switch (mode) {
 		case RELATIONS:
-			query.setCurrentQueryConceptById(concept.getId());
+			query.setCurrentQueryConceptById(concept.getId()); //TODO: USE CLIQUE INSTEAD ??
 			break;
 		default:
 			// do nothing?
@@ -639,7 +640,7 @@ public class DesktopUI extends UI implements MessageService {
 	}
 
 	@Autowired
-	ConceptDetailsHandler wd_handler;
+	ConceptDetailsHandler detailsHandler;
 
 	/**
 	 * 
@@ -672,7 +673,7 @@ public class DesktopUI extends UI implements MessageService {
 
 					@Override
 					public Component getPopupComponent() {
-						VerticalLayout popupContent = wd_handler.getDetails(concept);
+						VerticalLayout popupContent = detailsHandler.getDetails(concept);
 						popupContent.setSpacing(true);
 						popupContent.setMargin(true);
 						popupContent.addStyleName("current-concept-popup-layout");
@@ -1622,3 +1623,4 @@ public class DesktopUI extends UI implements MessageService {
 		return this.currentConceptMapName;
 	}
 }
+

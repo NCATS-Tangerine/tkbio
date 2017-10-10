@@ -13,6 +13,7 @@ import bio.knowledge.client.ApiException;
 import bio.knowledge.client.api.AggregatorApi;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.api.EvidenceApi;
+import bio.knowledge.client.api.PredicatesApi;
 import bio.knowledge.client.api.StatementsApi;
 
 /**
@@ -40,12 +41,17 @@ public class KnowledgeBeaconServiceBase {
 	
 	private ApiClient apiClient;
 	private ConceptsApi conceptsApi;
+	private PredicatesApi predicatesApi;
 	private StatementsApi statementsApi;
 	private EvidenceApi evidenceApi;
 	private AggregatorApi aggregatorApi;
 	
 	public ConceptsApi getConceptsApi() {
 		return this.conceptsApi;
+	}
+	
+	public PredicatesApi getPredicatesApi() {
+		return this.predicatesApi;
 	}
 	
 	public StatementsApi getStatementsApi() {
@@ -65,6 +71,7 @@ public class KnowledgeBeaconServiceBase {
 		apiClient = new ApiClient();
 		apiClient.setBasePath(AGGREGATOR_BASE_URL);
 		conceptsApi = new ConceptsApi(apiClient);
+		predicatesApi = new PredicatesApi(apiClient);
 		statementsApi = new StatementsApi(apiClient);
 		evidenceApi = new EvidenceApi(apiClient);
 		aggregatorApi = new AggregatorApi(apiClient);
@@ -100,3 +107,4 @@ public class KnowledgeBeaconServiceBase {
 	}
 
 }
+

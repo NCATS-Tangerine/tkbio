@@ -219,6 +219,14 @@ public class DesktopView extends DesktopDesign implements View {
 		return semanticFilterSelect;
 	}
 	
+	public void setPredicateFilterSelect(NativeSelect filter) {
+		predicateFilterSelect = filter;
+	}
+	
+	public NativeSelect getPredicateFilterSelect() {
+		return predicateFilterSelect;
+	}
+	
 	public HorizontalLayout getViewingConcepts() {
 		return viewingConcepts;
 	}

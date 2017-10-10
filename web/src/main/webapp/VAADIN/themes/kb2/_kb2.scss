@@ -501,6 +501,10 @@ $color-green: #5cb85c;
 		padding-bottom: floor($v-unit-size/2);
 	}
 	
+	.predicatefilter-nav.v-margin-bottom {
+		padding-bottom: floor($v-unit-size/2);
+	}
+	
 	.concept-search-window .table-layout {
 		padding-top: 5px;
 	}

@@ -50,5 +50,25 @@ public class Neo4jPredicate extends Neo4jAbstractIdentifiedEntity implements Pre
 	public Neo4jPredicate( String predicateId, String name, String description ) {
 		super( predicateId, name, description ) ;
 	}
+
+	private String beaconSource = "";
+
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.Predicate#setBeaconSource(java.lang.String)
+	 */
+	@Override
+	public void setBeaconSource(String beaconSource) {
+		this.beaconSource = beaconSource;
+	}	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.Predicate#getBeaconSource()
+	 */
+	@Override
+	public String getBeaconSource() {
+		return beaconSource;
+	}
 	
 }

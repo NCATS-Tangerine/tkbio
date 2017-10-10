@@ -48,4 +48,25 @@ public class PredicateImpl extends AbstractIdentifiedEntity implements Predicate
 		super( predicateId, name, description ) ;
 	}
 	
+	
+	private String beaconSource = "";
+
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.Predicate#setBeaconSource(java.lang.String)
+	 */
+	@Override
+	public void setBeaconSource(String beaconSource) {
+		this.beaconSource = beaconSource;
+	}	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.Predicate#getBeaconSource()
+	 */
+	@Override
+	public String getBeaconSource() {
+		return beaconSource;
+	}
+
 }

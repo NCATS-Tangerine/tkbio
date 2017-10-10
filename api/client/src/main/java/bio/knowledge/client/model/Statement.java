@@ -14,10 +14,9 @@
 package bio.knowledge.client.model;
 
 import java.util.Objects;
-import bio.knowledge.client.model.Predicate;
-import bio.knowledge.client.model.Subject;
+
 import com.google.gson.annotations.SerializedName;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
