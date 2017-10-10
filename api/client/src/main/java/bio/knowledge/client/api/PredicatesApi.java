@@ -13,6 +13,15 @@
 
 package bio.knowledge.client.api;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.google.gson.reflect.TypeToken;
+
 import bio.knowledge.client.ApiCallback;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
@@ -21,19 +30,7 @@ import bio.knowledge.client.Configuration;
 import bio.knowledge.client.Pair;
 import bio.knowledge.client.ProgressRequestBody;
 import bio.knowledge.client.ProgressResponseBody;
-
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-
-
-import bio.knowledge.client.model.InlineResponse200;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import bio.knowledge.client.model.Predicate;
 
 public class PredicatesApi {
     private ApiClient apiClient;
@@ -111,23 +108,23 @@ public class PredicatesApi {
     /**
      * 
      * Get a list of predicates used in statements issued by the knowledge source 
-     * @return List&lt;InlineResponse200&gt;
+     * @return List&lt;Predicate&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<InlineResponse200> getPredicates() throws ApiException {
-        ApiResponse<List<InlineResponse200>> resp = getPredicatesWithHttpInfo();
+    public List<Predicate> getPredicates() throws ApiException {
+        ApiResponse<List<Predicate>> resp = getPredicatesWithHttpInfo();
         return resp.getData();
     }
 
     /**
      * 
      * Get a list of predicates used in statements issued by the knowledge source 
-     * @return ApiResponse&lt;List&lt;InlineResponse200&gt;&gt;
+     * @return ApiResponse&lt;List&lt;Predicate&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<InlineResponse200>> getPredicatesWithHttpInfo() throws ApiException {
+    public ApiResponse<List<Predicate>> getPredicatesWithHttpInfo() throws ApiException {
         com.squareup.okhttp.Call call = getPredicatesValidateBeforeCall(null, null);
-        Type localVarReturnType = new TypeToken<List<InlineResponse200>>(){}.getType();
+        Type localVarReturnType = new TypeToken<List<Predicate>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
@@ -138,7 +135,7 @@ public class PredicatesApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getPredicatesAsync(final ApiCallback<List<InlineResponse200>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getPredicatesAsync(final ApiCallback<List<Predicate>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -160,7 +157,7 @@ public class PredicatesApi {
         }
 
         com.squareup.okhttp.Call call = getPredicatesValidateBeforeCall(progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<List<InlineResponse200>>(){}.getType();
+        Type localVarReturnType = new TypeToken<List<Predicate>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }

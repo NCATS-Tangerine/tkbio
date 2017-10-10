@@ -13,10 +13,10 @@
 
 package bio.knowledge.client;
 
+import java.io.IOException;
+
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.RequestBody;
-
-import java.io.IOException;
 
 import okio.Buffer;
 import okio.BufferedSink;
