@@ -29,8 +29,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-import bio.knowledge.model.Concept;
-import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Statement;
 
 /**

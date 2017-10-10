@@ -1,29 +1,30 @@
 swagger: '2.0'
 info:
   title: Translator Knowledge Beacon Aggregator API
-  version: 1.0.3
+  version: 1.0.4
   contact:
-    responsibleDeveloper: Richard Bruskiewich
-    responsibleOrganization: STAR Informatics/Delphinai Corporation
     url: 'http://starinformatics.com'
     email: richard@starinformatics.com
+    responsibleDeveloper: Richard Bruskiewich
+    responsibleOrganization: STAR Informatics/Delphinai Corporation
   description: >
-    This is the Translator Knowledge Beacon Aggregator web service application programming
-    interface (API).
+    This is the Translator Knowledge Beacon Aggregator web service application
+    programming interface (API).
   license:
     name: MIT License
     url: 'http://opensource.org/licenses/MIT'
 host: kba.ncats.io
 basePath: /
 schemes:
-  - http
+  - https
 produces:
   - application/json
-
 tags:
   - name: summary
     description: Summary statistics about the knowledge source
   - name: concepts
+    description: Queries for concepts
+  - name: predicates
     description: Queries for concepts
   - name: statements
     description: Queries for concept-relationship statements
@@ -31,18 +32,18 @@ tags:
     description: Queries for references cited as evidence for statements
   - name: aggregator
     description: Queries for aggregation information
-
 paths:
   /types:
     get:
       description: >
-        Get a list of types and # of instances in the knowledge source, and a link to the API call for the list of equivalent terminology
+        Get a list of types and # of instances in the knowledge source, and a
+        link to the API call for the list of equivalent terminology
       tags:
         - summary
       parameters:
         - name: beacons
           in: query
-          description: >
+          description: |
             set of IDs of beacons to be used as knowledge sources for the query
           required: false
           type: array
@@ -50,7 +51,7 @@ paths:
             type: string
         - name: sessionId
           in: query
-          description: >
+          description: |
             client-defined session identifier
           required: false
           type: string
@@ -65,12 +66,11 @@ paths:
               properties:
                 id:
                   type: string
-                  description: >
+                  description: |
                     the type 
                 idmap:
                   type: string
-                  description:
-                    The URL to execute the exactmatches API call on the id
+                  description: The URL to execute the exactmatches API call on the id
                 frequency:
                   type: integer
                   description: |
@@ -85,28 +85,31 @@ paths:
             application/json:
               - id: CHEM
                 frequency: 12355
-                idmap: http://myservice.net/api/v1/exactmatches/CHEM
-                beacon: "2"
+                idmap: 'http://myservice.net/api/v1/exactmatches/CHEM'
+                beacon: '2'
               - id: ANAT
                 frequency: 1234
-                idmap: http://myservice.net/api/v1/exactmatches/ANAT   
-                beacon: "2"
+                idmap: 'http://myservice.net/api/v1/exactmatches/ANAT'
+                beacon: '2'
   '/concepts/{conceptId}':
     get:
       description: >
         Retrieves details for a specified concepts in the system, as specified
-        by a (url-encoded) CURIE identifier of a concept known the given knowledge source
+        by a (url-encoded) CURIE identifier of a concept known the given
+        knowledge source
       tags:
         - concepts
       parameters:
         - name: conceptId
           in: path
-          description: (url-encoded) CURIE identifier of concept of interest, e.g. wd:Q126691
+          description: >-
+            (url-encoded) CURIE identifier of concept of interest, e.g.
+            wd:Q126691
           required: true
           type: string
         - name: beacons
           in: query
-          description: >
+          description: |
             set of IDs of beacons to be used as knowledge sources for the query
           required: false
           type: array
@@ -114,7 +117,7 @@ paths:
             type: string
         - name: sessionId
           in: query
-          description: >
+          description: |
             client-defined session identifier
           required: false
           type: string
@@ -130,15 +133,18 @@ paths:
                 clique:
                   type: string
                   description: >
-                    CURIE identifying the inferred equivalent concept clique to which the concept belongs. This is assigned by an identifier precedence heuristic by the beacon-aggregator
+                    CURIE identifying the inferred equivalent concept clique to
+                    which the concept belongs. This is assigned by an identifier
+                    precedence heuristic by the beacon-aggregator
                 id:
                   type: string
-                  description: >
+                  description: |
                     CURIE for the concept in the specified knowledge beacon
                 aliases:
                   type: array
-                  description: |
-                    set of alias CURIES in the equivalent concept clique of the concept
+                  description: >
+                    set of alias CURIES in the equivalent concept clique of the
+                    concept
                   items:
                     type: string
                 name:
@@ -184,14 +190,14 @@ paths:
               - clique: 'wd:Q14883734'
                 id: 'wd:Q14883734'
                 aliases:
-                - 'wd:Q14883734'
-                - 'OMIM:277700'
+                  - 'wd:Q14883734'
+                  - 'OMIM:277700'
                 name: WRN
                 semanticGroup: GENE
                 synonyms: []
                 definition: Werner Syndrome Gene
                 details: []
-                beacon: "3"
+                beacon: '3'
   /concepts:
     get:
       description: |
@@ -232,7 +238,7 @@ paths:
           type: integer
         - name: beacons
           in: query
-          description: >
+          description: |
             set of IDs of beacons to be used as knowledge sources for the query
           required: false
           type: array
@@ -240,7 +246,7 @@ paths:
             type: string
         - name: sessionId
           in: query
-          description: >
+          description: |
             client-defined session identifier
           required: false
           type: string
@@ -256,15 +262,18 @@ paths:
                 clique:
                   type: string
                   description: >
-                    CURIE identifying the inferred equivalent concept clique to which the concept belongs. This is assigned by an identifier precedence heuristic by the beacon-aggregator
+                    CURIE identifying the inferred equivalent concept clique to
+                    which the concept belongs. This is assigned by an identifier
+                    precedence heuristic by the beacon-aggregator
                 id:
                   type: string
-                  description: >
+                  description: |
                     CURIE for the concept in the specified knowledge beacon
                 aliases:
                   type: array
-                  description: |
-                    set of alias CURIES in the equivalent concept clique of the concept
+                  description: >
+                    set of alias CURIES in the equivalent concept clique of the
+                    concept
                   items:
                     type: string
                 name:
@@ -293,79 +302,124 @@ paths:
             Successful response with concept list returned
           examples:
             application/json:
-            - clique: 'WD:Q6591532'
-              id: 'wd:Q6591532'
-              aliases:
-              - 'wd:Q6591532'
-              name: 'WRN protein, human'
-              semanticGroup: CHEM
-              synonyms:
-                - RecQ3
-                - Werner Syndrome ATP-Dependent Helicase
-                - 'RECQL2 protein, human'
-                - EC 3.1.-.-
-                - 'WRN protein, human'
-                - WRN
-                - Exonuclease WRN
-                - Werner Syndrome Protein
-                - RecQ Protein-Like 2
-                - EC 3.6.4.12
-                - 'RECQ3 protein, human'
-                - 'Werner syndrome helicase, human'
-                - WRN Protein
-                - 'DNA Helicase, RecQ-Like Type 3'
-              definition: 'Werner syndrome ATP-dependent helicase (1432 aa, ~162 kDa) is encoded by the human WRN gene. This protein plays a role in both magnesium and ATP-dependent DNA-helicase activity and 3\''->5\'' exonuclease activity towards double-stranded DNA with a 5\''-overhang.'
-              beacon: "3"
-            - id: 'wd:Q18042562'
-              name: WRNIP1
-              semanticGroup: GENE
-              synonyms:
-                - WHIP
-                - Werner helicase interacting protein 1
-                - WRNIP1
-                - bA420G6.2
-              definition: human gene
-              beacon: "4"
-            - id: 'wd:Q14883734'
-              name: WRN
-              semanticGroup: GENE
-              synonyms:
-                - RECQ3
-                - RECQL3
-                - Werner syndrome RecQ like helicase
-                - RECQL2
-              definition: human gene
-              beacon: "4"
-            - id: 'wd:Q1154619'
-              name: Werner Syndrome
-              semanticGroup: DISO
-              synonyms:
-                - Werner Syndrome
-                - Pangeria
-                - 'Syndrome, Werner'
-                - 'Progeria, Adult'
-                - 'Werner Syndrome [Disease/Finding]'
-                - Werner syndrome (disorder)
-                - adult progeria
-                - Werner
-                - syndromes werner
-                - 'Syndrome, Werner\''s'
-                - WRN
-                - Werner\'s syndrome
-                - adults progeria
-                - Werner syndrome (adult progeria) (diagnosis)
-                - Werner syndrome (adult progeria)
-                - 'Syndrome, Werners'
-                - Adult premature aging syndrome
-                - syndromes werner\'s
-                - Werners Syndrome
-                - syndrome werner
-                - Progeria of the adult
-                - WS
-                - syndromes werners
-                - Adult premature ageing syndrome
-              definition: 'autosomal recessive disorder that causes premature aging in adults, characterized by sclerodermal skin changes, cataracts, subcutaneous calcifications, muscular atrophy, a tendency to diabetes mellitus, aged appearance of the face, baldness, and a high incidence of neoplastic disease.'
-              beacon: "3"
+              - clique: 'WD:Q6591532'
+                id: 'wd:Q6591532'
+                aliases:
+                  - 'wd:Q6591532'
+                name: 'WRN protein, human'
+                semanticGroup: CHEM
+                synonyms:
+                  - RecQ3
+                  - Werner Syndrome ATP-Dependent Helicase
+                  - 'RECQL2 protein, human'
+                  - EC 3.1.-.-
+                  - 'WRN protein, human'
+                  - WRN
+                  - Exonuclease WRN
+                  - Werner Syndrome Protein
+                  - RecQ Protein-Like 2
+                  - EC 3.6.4.12
+                  - 'RECQ3 protein, human'
+                  - 'Werner syndrome helicase, human'
+                  - WRN Protein
+                  - 'DNA Helicase, RecQ-Like Type 3'
+                definition: >-
+                  Werner syndrome ATP-dependent helicase (1432 aa, ~162 kDa) is
+                  encoded by the human WRN gene. This protein plays a role in
+                  both magnesium and ATP-dependent DNA-helicase activity and
+                  3\'->5\' exonuclease activity towards double-stranded DNA with
+                  a 5\'-overhang.
+                beacon: '3'
+              - id: 'wd:Q18042562'
+                name: WRNIP1
+                semanticGroup: GENE
+                synonyms:
+                  - WHIP
+                  - Werner helicase interacting protein 1
+                  - WRNIP1
+                  - bA420G6.2
+                definition: human gene
+                beacon: '4'
+              - id: 'wd:Q14883734'
+                name: WRN
+                semanticGroup: GENE
+                synonyms:
+                  - RECQ3
+                  - RECQL3
+                  - Werner syndrome RecQ like helicase
+                  - RECQL2
+                definition: human gene
+                beacon: '4'
+              - id: 'wd:Q1154619'
+                name: Werner Syndrome
+                semanticGroup: DISO
+                synonyms:
+                  - Werner Syndrome
+                  - Pangeria
+                  - 'Syndrome, Werner'
+                  - 'Progeria, Adult'
+                  - 'Werner Syndrome [Disease/Finding]'
+                  - Werner syndrome (disorder)
+                  - adult progeria
+                  - Werner
+                  - syndromes werner
+                  - 'Syndrome, Werner\''s'
+                  - WRN
+                  - Werner\'s syndrome
+                  - adults progeria
+                  - Werner syndrome (adult progeria) (diagnosis)
+                  - Werner syndrome (adult progeria)
+                  - 'Syndrome, Werners'
+                  - Adult premature aging syndrome
+                  - syndromes werner\'s
+                  - Werners Syndrome
+                  - syndrome werner
+                  - Progeria of the adult
+                  - WS
+                  - syndromes werners
+                  - Adult premature ageing syndrome
+                definition: >-
+                  autosomal recessive disorder that causes premature aging in
+                  adults, characterized by sclerodermal skin changes, cataracts,
+                  subcutaneous calcifications, muscular atrophy, a tendency to
+                  diabetes mellitus, aged appearance of the face, baldness, and
+                  a high incidence of neoplastic disease.
+                beacon: '3'
+  /predicates:
+    get:
+      description: >
+        Get a list of predicates used in statements issued by the knowledge
+        source
+      tags:
+        - predicates
+      operationId: getPredicates
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: |
+                    CURIE-encoded identifier of predicate resource
+                name:
+                  type: string
+                  description: |
+                    human readable name of predicate
+                beacon:
+                  type: string
+                  description: |
+                    beacon ID
+          description: |
+            Successful response with types and frequency returned
+          examples:
+            application/json:
+              - id: interacts with
+                idmap: 'http://myservice.net/api/v1/P123'
+              - id: has phenotype
+                idmap: 'http://myservice.net/api/v1/P456'
   /statements:
     get:
       description: >
@@ -379,8 +433,8 @@ paths:
         - name: c
           in: query
           description: >
-            set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly
-            matching concepts to be used in a search for associated
+            set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of
+            exactly matching concepts to be used in a search for associated
             concept-relation statements, e.g. wd:Q126691, wd:Q420626
           required: true
           type: array
@@ -403,8 +457,8 @@ paths:
         - name: keywords
           in: query
           description: >
-            a (url-encoded, space-delimited) string of keywords or substrings against
-            which to match the subject, predicate or object names of the
+            a (url-encoded, space-delimited) string of keywords or substrings
+            against which to match the subject, predicate or object names of the
             set of concept-relations matched by any of the input exact matching
             concepts
           required: false
@@ -412,16 +466,17 @@ paths:
         - name: semgroups
           in: query
           description: >
-            a (url-encoded, space-delimited) string of semantic groups (specified as
-            codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or
-            object concepts associated with the query seed concept (see
+            a (url-encoded, space-delimited) string of semantic groups
+            (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain
+            the subject or object concepts associated with the query seed
+            concept (see
             [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for
             the full list of codes)
           required: false
           type: string
         - name: beacons
           in: query
-          description: >
+          description: |
             set of IDs of beacons to be used as knowledge sources for the query
           required: false
           type: array
@@ -429,7 +484,7 @@ paths:
             type: string
         - name: sessionId
           in: query
-          description: >
+          description: |
             client-defined session identifier
           required: false
           type: string
@@ -437,7 +492,9 @@ paths:
       responses:
         '200':
           description: >
-            Successful response returns a list of concept-relations where there is an exact match of an input concept identifier either to the subject or object concepts of the statement
+            Successful response returns a list of concept-relations where there
+            is an exact match of an input concept identifier either to the
+            subject or object concepts of the statement
           schema:
             type: array
             items:
@@ -446,15 +503,18 @@ paths:
               properties:
                 id:
                   type: string
-                  description: CURIE-encoded identifier for statement (can be used to retrieve associated evidence)
+                  description: >-
+                    CURIE-encoded identifier for statement (can be used to
+                    retrieve associated evidence)
                 subject:
                   title: Subject
                   type: object
                   properties:
                     clique:
                       type: string
-                      description: |
-                        CURIE-encoded cannonical identifier of "equivalent concepts clique"
+                      description: >
+                        CURIE-encoded cannonical identifier of "equivalent
+                        concepts clique"
                     id:
                       type: string
                       description: |
@@ -462,6 +522,13 @@ paths:
                     name:
                       type: string
                       description: human readable label of subject concept
+                    semgroup:
+                      type: string
+                      description: >
+                        a semantic group for the subject concept (specified as a
+                        code CHEM, GENE, etc. - see
+                        [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt)
+                        for the full list of codes)
                 predicate:
                   title: Predicate
                   type: object
@@ -479,8 +546,9 @@ paths:
                   properties:
                     clique:
                       type: string
-                      description: |
-                        CURIE-encoded cannonical identifier of "equivalent concepts clique"
+                      description: >
+                        CURIE-encoded cannonical identifier of "equivalent
+                        concepts clique"
                     id:
                       type: string
                       description: |
@@ -488,6 +556,13 @@ paths:
                     name:
                       type: string
                       description: human readable label of object concept
+                    semgroup:
+                      type: string
+                      description: >
+                        a semantic group for the subject concept (specified as a
+                        code CHEM, GENE, etc. - see
+                        [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt)
+                        for the full list of codes)
                 beacon:
                   type: string
                   description: |
@@ -495,7 +570,7 @@ paths:
           examples:
             application/json:
               - source: semmeddb
-                id: kb:12345
+                id: 'kb:12345'
                 subject:
                   id:
                     - 'wd:Q14912054'
@@ -508,24 +583,28 @@ paths:
                   id:
                     - 'wd:Q2898645'
                   name: Neonatal diabetes mellitus
-                beacon: "1"
+                beacon: '1'
   '/evidence/{statementId}':
     get:
       description: >
-        Retrieves a (paged) list of annotations cited as evidence for a specified concept-relationship statement
+        Retrieves a (paged) list of annotations cited as evidence for a
+        specified concept-relationship statement
       tags:
         - evidence
       parameters:
         - name: statementId
           in: path
           description: >
-            (url-encoded) CURIE identifier of the concept-relationship statement ("assertion", "claim") for which associated evidence is sought, e.g. kbs:Q420626_P2175_Q126691
+            (url-encoded) CURIE identifier of the concept-relationship statement
+            ("assertion", "claim") for which associated evidence is sought, e.g.
+            kbs:Q420626_P2175_Q126691
           required: true
           type: string
         - name: keywords
           in: query
           description: >
-            (url-encoded, space delimited) keyword filter to apply against the label field of the annotation
+            (url-encoded, space delimited) keyword filter to apply against the
+            label field of the annotation
           required: false
           type: string
         - name: pageNumber
@@ -538,12 +617,13 @@ paths:
         - name: pageSize
           in: query
           description: >
-            number of cited references per page to be returned in a paged set of query results
+            number of cited references per page to be returned in a paged set of
+            query results
           required: false
           type: integer
         - name: beacons
           in: query
-          description: >
+          description: |
             set of IDs of beacons to be used as knowledge sources for the query
           required: false
           type: array
@@ -551,14 +631,14 @@ paths:
             type: string
         - name: sessionId
           in: query
-          description: >
+          description: |
             client-defined session identifier
           required: false
           type: string
       operationId: getEvidence
       responses:
         '200':
-          description: >
+          description: |
             successful call returns a list of annotation with metadata
           schema:
             type: array
@@ -568,20 +648,24 @@ paths:
               properties:
                 id:
                   type: string
-                  description: |
-                    CURIE-encoded identifier to an associated external resources (e.g. PMID of a pubmed citation)
+                  description: >
+                    CURIE-encoded identifier to an associated external resources
+                    (e.g. PMID of a pubmed citation)
                 label:
                   type: string
-                  description: |
-                    canonical human readable and searchable label of the annotation (i.e. comment, matched sentence, etc.)
+                  description: >
+                    canonical human readable and searchable label of the
+                    annotation (i.e. comment, matched sentence, etc.)
                 type:
                   type: string
-                  description: |
-                    Gene Ontology Evidence Code (http://www.geneontology.org/page/guide-go-evidence-codes)
+                  description: >
+                    Gene Ontology Evidence Code
+                    (http://www.geneontology.org/page/guide-go-evidence-codes)
                 date:
                   type: string
-                  description: |
-                    publication date of annotation (generally of format 'yyyy-mm-dd')
+                  description: >
+                    publication date of annotation (generally of format
+                    'yyyy-mm-dd')
                 beacon:
                   type: string
                   description: |
@@ -593,20 +677,19 @@ paths:
                 label: >-
                   Neonatal diabetes mellitus and congenital diaphragmatic hernia
                   coincidence or concurrent etiology?
-                type: >-
-                  TAS
-                date: 2012-07-10
-                beacon: "1"
+                type: TAS
+                date: 2012-07-10T00:00:00.000Z
+                beacon: '1'
   /beacons:
     get:
-      description: >
+      description: |
         Get a list of the knowledge beacons that the aggregator can query
       tags:
         - aggregator
       parameters:
         - name: sessionId
           in: query
-          description: >
+          description: |
             client-defined session identifier
           required: false
           type: string
@@ -621,7 +704,7 @@ paths:
               properties:
                 id:
                   type: string
-                  description : |
+                  description: |
                     beacon ID
                 name:
                   type: string
@@ -651,21 +734,21 @@ paths:
             Successful response with beacons
           examples:
             application/json:
-              - id: "1"
+              - id: '1'
                 name: SemMedDB
-                url: http://rkb.ncats.io
+                url: 'http://rkb.ncats.io'
                 description: |
                   Reference Knowledge Beacon implementation indexed by Wikidata
   /errorlog:
     get:
-      description: >
+      description: |
         Get a log of the most recent errors in this session
       tags:
         - aggregator
       parameters:
         - name: sessionId
           in: query
-          description: >
+          description: |
             client-defined session identifier
           required: true
           type: string
@@ -698,7 +781,7 @@ paths:
             Successful response with most recent errors
           examples:
             application/json:
-              - timestamp: "2016-12-31 15:09:24.614"
-                beacon: "1"
-                query: "http://rkb.ncats.io/concepts?keywords=cancer"
+              - timestamp: '2016-12-31 15:09:24.614'
+                beacon: '1'
+                query: 'http://rkb.ncats.io/concepts?keywords=cancer'
                 message: Bad Gateway

@@ -25,7 +25,13 @@
  */
 package bio.knowledge.web.view;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.vaadin.data.Item;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.CellDescriptionGenerator;
+import com.vaadin.ui.Grid.CellReference;
 import com.vaadin.ui.Grid.HeaderCell;
 import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.UI;
@@ -62,13 +68,42 @@ public class ViewUtil {
 		}
 	}
 	
+	static public class ToolTipGenerator implements CellDescriptionGenerator {
+
+		private static final long serialVersionUID = 1L;
+		
+		public ToolTipGenerator() {	}
+		
+		Map<String,String> toolTipMap = new HashMap<String,String>();
+		
+		public void setToolTipSource(String columnId,String toolTipColumnId) {
+			toolTipMap.put(columnId, toolTipColumnId);
+		}
+
+		@Override
+		public String getDescription(CellReference cell) {
+			String toolTipText = "";
+			String columnId = cell.getPropertyId().toString();
+			if(toolTipMap.containsKey( columnId ) ) {
+				String toolTipColumnId =  toolTipMap.get( columnId ) ;
+				Item item = cell.getItem();
+				toolTipText = item.getItemProperty(toolTipColumnId).getValue().toString();
+			} else {
+				toolTipText = cell.getProperty().getValue().toString();
+			}
+			return toolTipText;
+		}
+		
+	}
+	
 	/**
 	 * 
 	 * @param grid
 	 * @param columnId
 	 * @param listener to be bound to the created button
 	 */
-	public static void makeButton(Grid grid, String columnId, RendererClickListener listener, String viewname) {
+	public static void makeButton( Grid grid, String columnId, RendererClickListener listener, String viewname ) {
+		
 		Grid.Column column = grid.getColumn(columnId);
 		
 		String searchPhrase = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();

@@ -1,6 +1,6 @@
 # SummaryApi
 
-All URIs are relative to *http://kba.ncats.io/*
+All URIs are relative to *https://kba.ncats.io/*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

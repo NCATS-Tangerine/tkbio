@@ -34,6 +34,11 @@ public class KnowledgeBeaconRegistry {
 	
 	private List<KnowledgeBeacon> knowledgeBeacons = new ArrayList<KnowledgeBeacon>();
 	
+	/**
+	 * 
+	 * @param url
+	 * @return
+	 */
 	public KnowledgeBeacon getKnowledgeBeaconByUrl(String url) {
 		for (KnowledgeBeacon kb : getKnowledgeBeacons()) {
 			if (kb.getUrl().equals(url)) {
@@ -44,15 +49,30 @@ public class KnowledgeBeaconRegistry {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public List<KnowledgeBeacon> getKnowledgeBeacons() {		
 		return this.knowledgeBeacons;
 	}
+
+
+	/**
+	 * 
+	 * @return
+	 */
+	public int countAllBeacons() {
+		return this.knowledgeBeacons.size();
+	}
 	
+	/**
+	 * 
+	 */
 	@PostConstruct
 	public void init() {
 		initKnowledgeBeacons();
 //		neo4jInit();
-
 	}
 	
 	/**

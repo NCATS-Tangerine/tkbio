@@ -43,6 +43,7 @@ import javax.servlet.http.Cookie;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -87,7 +88,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.datasource.DataService;
 import bio.knowledge.graph.ConceptMapDisplay;
 import bio.knowledge.graph.jsonmodels.Edge;
 import bio.knowledge.graph.jsonmodels.EdgeData;
@@ -160,7 +160,7 @@ public class DesktopUI extends UI implements MessageService {
 	private Logger _logger = LoggerFactory.getLogger(DesktopUI.class);
 	
 	@Autowired
-	KnowledgeBeaconService knowledgeBeaconService;
+	KnowledgeBeaconService kbService;
 
 	@Autowired
 	Registry registry;
@@ -302,7 +302,7 @@ public class DesktopUI extends UI implements MessageService {
 	KnowledgeBeaconRegistry kbRegistry;
 	
 	public void openKnowledgeBeaconWindow() {
-		KnowledgeBeaconWindow kbWindow = new KnowledgeBeaconWindow(kbRegistry, query, knowledgeBeaconService);
+		KnowledgeBeaconWindow kbWindow = new KnowledgeBeaconWindow(kbRegistry, query, kbService);
 		this.addWindow(kbWindow);
 	}
 	
@@ -621,7 +621,7 @@ public class DesktopUI extends UI implements MessageService {
 		// RelationSearchModes?
 		switch (mode) {
 		case RELATIONS:
-			query.setCurrentQueryConceptById(concept.getId());
+			query.setCurrentQueryConceptById(concept.getId()); //TODO: USE CLIQUE INSTEAD ??
 			break;
 		default:
 			// do nothing?
@@ -640,7 +640,7 @@ public class DesktopUI extends UI implements MessageService {
 	}
 
 	@Autowired
-	WikiDetailsHandler wd_handler;
+	ConceptDetailsHandler detailsHandler;
 
 	/**
 	 * 
@@ -673,7 +673,7 @@ public class DesktopUI extends UI implements MessageService {
 
 					@Override
 					public Component getPopupComponent() {
-						VerticalLayout popupContent = wd_handler.getDetails(concept);
+						VerticalLayout popupContent = detailsHandler.getDetails(concept);
 						popupContent.setSpacing(true);
 						popupContent.setMargin(true);
 						popupContent.addStyleName("current-concept-popup-layout");
@@ -885,8 +885,6 @@ public class DesktopUI extends UI implements MessageService {
 		desktopView.getColorSelect().setValue(DEFAULT_CM_COLOR);
 
 		Registry.hasSemanticFilter(ViewName.RELATIONS_VIEW, true);
-		
-		
 
 		currentConcept = query.getCurrentQueryConcept();
 		if (currentConcept.isPresent()) {
@@ -1064,8 +1062,7 @@ public class DesktopUI extends UI implements MessageService {
 
 		query.setCurrentQueryText(queryText);
 
-		// Semantic type constraint in Concept-by-text results listing should
-		// initial be empty
+		// Semantic type constraint in Concept-by-text results listing should initial be empty
 		query.setInitialConceptTypes(new HashSet<SemanticGroup>());
 
 		ConceptSearchResults currentSearchResults = new ConceptSearchResults(viewProvider, ViewName.CONCEPTS_VIEW);
@@ -1287,10 +1284,13 @@ public class DesktopUI extends UI implements MessageService {
 			// Setting manual layout while loading
 			desktopView.getCmLayoutSelect().setValue(MANUAL_CM_LAYOUT);
 			
-			CompletableFuture<List<Concept>> future = knowledgeBeaconService.getConceptDetails(conceptId);
+			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId);
 			
 			try {
-				List<Concept> concepts = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+				List<Concept> concepts = future.get(
+						kbService.weightedTimeout(), 
+						KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
+				);
 				Concept concept = concepts.get(0);
 				query.setCurrentQueryConceptById(concept.getId());
 				setCurrentConceptTitle(concept.getName());
@@ -1623,3 +1623,4 @@ public class DesktopUI extends UI implements MessageService {
 		return this.currentConceptMapName;
 	}
 }
+
