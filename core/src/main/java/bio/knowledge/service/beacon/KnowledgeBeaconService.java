@@ -16,6 +16,7 @@ import bio.knowledge.model.AnnotationImpl;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptImpl;
 import bio.knowledge.model.GeneralStatement;
+import bio.knowledge.model.Predicate;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
@@ -172,6 +173,45 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 				}
 				
 				return concepts;
+			}
+			
+		});
+		
+		return future;
+	}
+	
+	/**
+	 * In our project, annotations really play this role of evidence.
+	 */
+	public CompletableFuture<List<Predicate>> getPredicates() {
+		
+		CompletableFuture<List<Predicate>> future = 
+				CompletableFuture.supplyAsync(new Supplier<List<Predicate>>() {
+
+			@Override
+			public List<Predicate> get() {
+				
+				List<Predicate> predicates = new ArrayList<Predicate>();
+				
+				try {
+					List<bio.knowledge.client.model.Predicate> responses = 
+							getPredicateApi().getPredicates();
+					
+					for (bio.knowledge.client.model.Predicate response : responses) {
+						Predicate predicate = new PredicateImpl();
+						predicate.setId(response.getId());
+						predicate.setName(response.getName());
+						
+						predicate.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
+						
+						predicates.add(predicate);
+					}
+										
+				} catch (Exception e) {
+					
+				}
+				
+				return predicates;
 			}
 			
 		});

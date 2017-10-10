@@ -1082,7 +1082,7 @@ public class ListView extends BaseView {
 			dataTableLayout.setComponentAlignment(dataTableLabel, Alignment.MIDDLE_CENTER);
 		}
 
-		setMenuFilter(filterBar);
+		setSemGroupFilter(filterBar);
 		setUpTextFilter(filterBar);
 
 		if (viewName.equals(ViewName.RELATIONS_VIEW) || viewName.equals(ViewName.CONCEPTS_VIEW)
@@ -1110,7 +1110,7 @@ public class ListView extends BaseView {
 		return dataTableLayout;
 	}
 
-	private void setMenuFilter(HorizontalLayout filterBar) {
+	private void setSemGroupFilter(HorizontalLayout filterBar) {
 
 		if (!(
 				viewName.equals(ViewName.RELATIONS_VIEW) ||
@@ -1209,6 +1209,18 @@ public class ListView extends BaseView {
 					setQueryTypes(typeSet);
 					updateCurrentTable();
 				}
+			}
+			
+			private void setPredicateFilter(HorizontalLayout filterBar) {
+				if (! viewName.equals(ViewName.RELATIONS_VIEW) ) {
+					return;
+				}
+
+				MenuBar predicateFilter = new MenuBar();
+				predicateFilter.addStyleName("semanticfilter-menu");
+
+				MenuItem types = predicateFilter.addItem("Any", null, null);
+	
 			}
 
 			private void updateCurrentTable() {

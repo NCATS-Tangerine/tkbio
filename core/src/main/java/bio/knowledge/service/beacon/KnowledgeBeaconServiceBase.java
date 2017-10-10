@@ -23,6 +23,7 @@ import bio.knowledge.client.api.StatementsApi;
  *
  */
 public class KnowledgeBeaconServiceBase {
+	
 	@Value( "${beaconAggregator.url}" )
 	private String AGGREGATOR_BASE_URL;
 	
@@ -39,12 +40,17 @@ public class KnowledgeBeaconServiceBase {
 	
 	private ApiClient apiClient;
 	private ConceptsApi conceptsApi;
+	private PredicatesApi predicatesApi;
 	private StatementsApi statementsApi;
 	private EvidenceApi evidenceApi;
 	private AggregatorApi aggregatorApi;
 	
 	public ConceptsApi getConceptsApi() {
 		return this.conceptsApi;
+	}
+	
+	public StatementsApi getPredicatesApi() {
+		return this.predicatesApi;
 	}
 	
 	public StatementsApi getStatementsApi() {

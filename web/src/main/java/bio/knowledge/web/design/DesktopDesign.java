@@ -34,6 +34,7 @@ public class DesktopDesign extends VerticalLayout {
 	protected TabSheet dataTabSheet;
 	protected VerticalLayout relationsTab;
 	protected NativeSelect semanticFilterSelect;
+	protected NativeSelect predicateFilterSelect;
 	protected VerticalLayout evidenceTab;
 	protected VerticalLayout referenceTab;
 	protected VerticalLayout referenceLayout;

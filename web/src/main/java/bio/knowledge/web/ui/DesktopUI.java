@@ -885,6 +885,8 @@ public class DesktopUI extends UI implements MessageService {
 		desktopView.getColorSelect().setValue(DEFAULT_CM_COLOR);
 
 		Registry.hasSemanticFilter(ViewName.RELATIONS_VIEW, true);
+		
+		
 
 		currentConcept = query.getCurrentQueryConcept();
 		if (currentConcept.isPresent()) {
