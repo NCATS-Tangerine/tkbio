@@ -25,7 +25,11 @@
  */
 package bio.knowledge.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
@@ -35,7 +39,9 @@ import org.springframework.stereotype.Service;
 
 import bio.knowledge.database.repository.PredicateRepository;
 import bio.knowledge.datasource.DataSourceRegistry;
+import bio.knowledge.model.Concept;
 import bio.knowledge.model.Predicate;
+import bio.knowledge.service.beacon.KnowledgeBeaconService;
 
 /**
  * @author Richard
@@ -49,6 +55,9 @@ public class PredicateService {
 	@Autowired
 	PredicateRepository predicateRepository;
 
+    @Autowired
+    private KnowledgeBeaconService kbService;
+    
 	@Autowired
 	private Cache cache;
 	
@@ -68,8 +77,29 @@ public class PredicateService {
      * 
      * @return
      */
+    private static List<Predicate> predicateListCache = new ArrayList<Predicate>();
+    
 	public List<Predicate> findAllPredicates() {
-    	return (List<Predicate>) (List) predicateRepository.findAllPredicates() ;
+		
+		if(predicateListCache.isEmpty()) {
+			/*
+			 *  Try to populate the list the first time?
+			 * Danger is the if some beacons fail to contribute the first time, 
+			 * they won't have a second chance?
+			 * */
+	    	CompletableFuture<List<Predicate>> future = kbService.getPredicates();
+	    	
+	    	try {
+	    		predicateListCache = future.get(
+						kbService.weightedTimeout(), 
+						KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
+				);
+	    		
+			} catch (InterruptedException | ExecutionException | TimeoutException e) {
+				_logger.warn(e.getMessage());
+			}
+		}
+		return predicateListCache;
     }
     
     /**

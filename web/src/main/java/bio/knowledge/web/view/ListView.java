@@ -113,6 +113,7 @@ import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
 import bio.knowledge.service.DataServiceException;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
+import bio.knowledge.service.PredicateService;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.service.core.ListTableEntryCounter;
@@ -151,6 +152,9 @@ public class ListView extends BaseView {
 	
 	@Autowired
 	KnowledgeBeaconRegistry kbRegistry;
+	
+	@Autowired
+	PredicateService predicateService;
 	
 	// Wrapper for datasource container,
 	// to add extra action columns for 'details', 'data download', etc.
@@ -1087,26 +1091,9 @@ public class ListView extends BaseView {
 		Label filterPrefixLabel = new Label("Filter By");
 		filterPrefixLabel.setStyleName("relation-filter-prefix");
 		filterMenuBar.addComponent(filterPrefixLabel);
-
-		Label semanticFilterLabel = new Label("Semantic Group:");
-		semanticFilterLabel.setStyleName("relation-filter-label");
-		filterMenuBar.addComponent(semanticFilterLabel);
-		//filterMenuBar.setComponentAlignment(semanticFilterLabel, Alignment.MIDDLE_LEFT);
 		
-		setSemGroupFilter(filterMenuBar);
-		
-		Label predicateFilterLabel = new Label("Predicate:");
-		predicateFilterLabel.setStyleName("relation-filter-label");
-		filterMenuBar.addComponent(predicateFilterLabel);
-		//filterMenuBar.setComponentAlignment(predicateFilterLabel, Alignment.MIDDLE_LEFT);
-		
-		setPredicateFilter(filterMenuBar);
-		
-		Label textFilterLabel = new Label("Text:");
-		textFilterLabel.setStyleName("relation-filter-label");
-		filterMenuBar.addComponent(textFilterLabel);
-		//filterMenuBar.setComponentAlignment(textFilterLabel, Alignment.MIDDLE_CENTER);
-		
+		setSemGroupFilter(filterMenuBar);		
+		setPredicateFilter(filterMenuBar);		
 		setUpTextFilter(filterMenuBar);
 		
 		filterHeader.addComponent(filterMenuBar);
@@ -1150,7 +1137,7 @@ public class ListView extends BaseView {
 		MenuBar semanticFilterMenu = new MenuBar();
 		semanticFilterMenu.addStyleName("semanticfilter-menu");
 
-		MenuItem types = semanticFilterMenu.addItem("Any", null, null);
+		MenuItem types = semanticFilterMenu.addItem("Semantic Group", null, null);
 
 		MenuItem any = types.addItem("Any", null, null);
 		MenuItem disorders = types.addItem("Disorders", null, null);
@@ -1163,7 +1150,7 @@ public class ListView extends BaseView {
 
 		if (viewName.equals(ViewName.RELATIONS_VIEW)) {
 			if (type == null || type.isEmpty()) {
-				types.setText("Any");
+				types.setText("Semantic Group");
 			} else {
 				types.setText(type);
 			}
@@ -1259,6 +1246,7 @@ public class ListView extends BaseView {
 	}
 	
 	private void setPredicateFilter(HorizontalLayout filterMenuBar) {
+		
 		if (! viewName.equals(ViewName.RELATIONS_VIEW) ) {
 			return;
 		}
@@ -1266,16 +1254,25 @@ public class ListView extends BaseView {
 		MenuBar predicateFilterMenu = new MenuBar();
 		predicateFilterMenu.addStyleName("predicatefilter-menu");
 
-		MenuItem types = predicateFilterMenu.addItem("Any", null, null);
-
+		MenuItem types = predicateFilterMenu.addItem("Relation", null, null);
+		
+		List<Predicate> predicates = predicateService.findAllPredicates() ;
+		for(Predicate predicate : predicates) {
+			MenuItem predicateItem = types.addItem(predicate.getName(), null, null);
+			predicateItem.setDescription(
+					"Beacon: "+
+					predicate.getBeaconSource()+
+					", Id: "+predicate.getId()
+			);
+		}
+		
 		MenuBar.Command selectCommand = new MenuBar.Command() {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
-				// TODO Auto-generated method stub
-				
+				_logger.debug("Selected Relation: "+selectedItem.getText());
 			}
 		};
 		
@@ -1301,7 +1298,7 @@ public class ListView extends BaseView {
 		if (viewName.equals(ViewName.EVIDENCE_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Sentences");
 		} else if (viewName.equals(ViewName.RELATIONS_VIEW)) {
-			simpleTextFilter.setInputPrompt("Filter Relation Fields");
+			simpleTextFilter.setInputPrompt("Filter Statement Text");
 		} else if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
 			simpleTextFilter.setInputPrompt("Filter Concepts");
 		} else if (viewName.equals(ViewName.LIBRARY_VIEW)) {
