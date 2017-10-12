@@ -92,7 +92,6 @@ import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.datasource.DataService;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.BeaconResponse;
@@ -121,9 +120,9 @@ import bio.knowledge.service.core.ListTableFilteredHitCounter;
 import bio.knowledge.service.core.ListTablePageCounter;
 import bio.knowledge.service.core.ListTablePager;
 import bio.knowledge.service.core.TableSorter;
+import bio.knowledge.web.ui.ConceptDetailsHandler;
 import bio.knowledge.web.ui.DesktopUI;
 import bio.knowledge.web.ui.PopupWindow;
-import bio.knowledge.web.ui.ConceptDetailsHandler;
 
 /**
  * @author Richard
@@ -1085,12 +1084,29 @@ public class ListView extends BaseView {
 		HorizontalLayout filterMenuBar = new HorizontalLayout();
 		filterMenuBar.setSpacing(true);
 		
-		Label filterMenuLabel = new Label("<b>Filter By:<b>", ContentMode.HTML);
-		filterMenuBar.addComponent(filterMenuLabel);
-		filterMenuBar.setComponentAlignment(filterMenuLabel, Alignment.MIDDLE_LEFT);
+		Label filterPrefixLabel = new Label("Filter By");
+		filterPrefixLabel.setStyleName("relation-filter-prefix");
+		filterMenuBar.addComponent(filterPrefixLabel);
+
+		Label semanticFilterLabel = new Label("Semantic Group:");
+		semanticFilterLabel.setStyleName("relation-filter-label");
+		filterMenuBar.addComponent(semanticFilterLabel);
+		//filterMenuBar.setComponentAlignment(semanticFilterLabel, Alignment.MIDDLE_LEFT);
 		
 		setSemGroupFilter(filterMenuBar);
+		
+		Label predicateFilterLabel = new Label("Predicate:");
+		predicateFilterLabel.setStyleName("relation-filter-label");
+		filterMenuBar.addComponent(predicateFilterLabel);
+		//filterMenuBar.setComponentAlignment(predicateFilterLabel, Alignment.MIDDLE_LEFT);
+		
 		setPredicateFilter(filterMenuBar);
+		
+		Label textFilterLabel = new Label("Text:");
+		textFilterLabel.setStyleName("relation-filter-label");
+		filterMenuBar.addComponent(textFilterLabel);
+		//filterMenuBar.setComponentAlignment(textFilterLabel, Alignment.MIDDLE_CENTER);
+		
 		setUpTextFilter(filterMenuBar);
 		
 		filterHeader.addComponent(filterMenuBar);
@@ -1263,9 +1279,11 @@ public class ListView extends BaseView {
 			}
 		};
 		
-		for (MenuItem item : types.getChildren()) {
-			item.setCommand(selectCommand);
-		}
+		List<MenuItem> items = types.getChildren();
+		if(items!=null)
+			for (MenuItem item : items) {
+				item.setCommand(selectCommand);
+			}
 
 		filterMenuBar.addComponent(predicateFilterMenu);
 

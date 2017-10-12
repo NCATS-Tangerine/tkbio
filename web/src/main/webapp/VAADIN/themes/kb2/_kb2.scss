@@ -793,4 +793,15 @@ $color-green: #5cb85c;
 		border-top-left-radius: 0px;
 		border-bottom-left-radius: 0px;
 	}
+	
+	.relation-filter-prefix {
+		font-style: italic;
+		font-weight: bolder;
+		margin-bottom: 1.0em;
+	}
+	
+	.relation-filter-label {
+		font-weight: bold;
+		margin-bottom: 0.5em;
+	}
 }

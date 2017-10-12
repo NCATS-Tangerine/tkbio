@@ -39,11 +39,7 @@ import com.vaadin.ui.UI;
 
 import bio.knowledge.authentication.exceptions.AccountDoesNotExistException;
 import bio.knowledge.authentication.exceptions.EmailAlreadyInUseException;
-import bio.knowledge.authentication.exceptions.InvalidEmailFormatException;
-import bio.knowledge.authentication.exceptions.MissingEmailException;
 import bio.knowledge.authentication.exceptions.MissingNameException;
-import bio.knowledge.authentication.exceptions.PasswordLacksCapitalLetterOrNumberException;
-import bio.knowledge.authentication.exceptions.PasswordTooShortException;
 import bio.knowledge.authentication.exceptions.UsernameAlreadyInUseException;
 import bio.knowledge.validation.InvalidValueException;
 import bio.knowledge.validation.ValidationHandler;

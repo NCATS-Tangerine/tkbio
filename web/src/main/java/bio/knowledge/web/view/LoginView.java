@@ -36,10 +36,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.UI;
 
-import bio.knowledge.authentication.exceptions.AccountDisabledException;
 import bio.knowledge.authentication.exceptions.AccountDoesNotExistException;
-import bio.knowledge.authentication.exceptions.AccountIsLockedException;
-import bio.knowledge.authentication.exceptions.AccountNotVerifiedException;
 import bio.knowledge.authentication.exceptions.InvalidUsernameOrPasswordException;
 import bio.knowledge.web.design.LoginDesign;
 import bio.knowledge.web.ui.DesktopUI;

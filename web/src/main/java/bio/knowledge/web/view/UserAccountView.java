@@ -25,14 +25,8 @@
  */
 package bio.knowledge.web.view;
 
-import java.awt.Desktop;
 import java.util.Collection;
 import java.util.regex.Pattern;
-
-import org.apache.jena.base.Sys;
-import org.apache.jena.sparql.function.library.e;
-import org.eclipse.jetty.server.Authentication;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.GeneratedPropertyContainer;
@@ -51,7 +45,6 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -68,8 +61,6 @@ import bio.knowledge.model.user.Group;
 import bio.knowledge.model.user.Permission;
 import bio.knowledge.model.user.Role;
 import bio.knowledge.model.user.User;
-import bio.knowledge.service.user.GroupService;
-import bio.knowledge.service.user.UserService;
 import bio.knowledge.validation.ValidationHandler;
 import bio.knowledge.web.design.AboutUserDesign;
 import bio.knowledge.web.ui.DesktopUI;

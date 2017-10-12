@@ -45,9 +45,6 @@ import com.vaadin.ui.Window;
 import bio.knowledge.authentication.AuthenticationListener;
 import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.model.user.User;
-import bio.knowledge.service.user.GroupService;
-import bio.knowledge.service.user.PasswordTokenService;
-import bio.knowledge.service.user.UserService;
 import bio.knowledge.web.design.ApplicationViewDesign;
 import bio.knowledge.web.ui.DesktopUI;
 

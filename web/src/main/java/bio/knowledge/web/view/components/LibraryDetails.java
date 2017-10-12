@@ -25,9 +25,6 @@
  */
 package bio.knowledge.web.view.components;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.ExternalResource;
