@@ -9,7 +9,13 @@ info:
     responsibleOrganization: STAR Informatics/Delphinai Corporation
   description: >
     This is the Translator Knowledge Beacon Aggregator web service application
-    programming interface (API).
+    programming interface (API) that provides integrated access to a pool of
+    knowledge sources publishing concepts and relations through the Translator
+    Knowledge Beacon API. This API is similar to that of the latter mentioned
+    API with the addition of some extra informative endpoints plus session
+    identifier and beacon indices. These latter identifiers are locally assigned
+    numeric indices provided to track the use of specific registered beacons
+    within the aggregator API itself.
   license:
     name: MIT License
     url: 'http://opensource.org/licenses/MIT'
@@ -43,8 +49,9 @@ paths:
       parameters:
         - name: beacons
           in: query
-          description: |
-            set of IDs of beacons to be used as knowledge sources for the query
+          description: >
+            set of aggregator indices of beacons to be used as knowledge sources
+            for the query
           required: false
           type: array
           items:
@@ -109,8 +116,9 @@ paths:
           type: string
         - name: beacons
           in: query
-          description: |
-            set of IDs of beacons to be used as knowledge sources for the query
+          description: >
+            set of aggregator indices of beacons to be used as knowledge sources
+            for the query
           required: false
           type: array
           items:
@@ -238,8 +246,9 @@ paths:
           type: integer
         - name: beacons
           in: query
-          description: |
-            set of IDs of beacons to be used as knowledge sources for the query
+          description: >
+            set of aggregator indices of beacons to be used as knowledge sources
+            for the query
           required: false
           type: array
           items:
@@ -408,18 +417,29 @@ paths:
                   type: string
                   description: |
                     human readable name of predicate
-                beacon:
-                  type: string
-                  description: |
-                    beacon ID
+                beacons:
+                  type: array
+                  description: >
+                    list of aggregator indices for beacons that support the use
+                    of this predicate
+                  items:
+                    title: Beacon
+                    type: string
           description: |
             Successful response with types and frequency returned
           examples:
             application/json:
-              - id: interacts with
-                idmap: 'http://myservice.net/api/v1/P123'
-              - id: has phenotype
-                idmap: 'http://myservice.net/api/v1/P456'
+              - id: 'wd:P123'
+                name: interacts with
+                beacons:
+                  - '1'
+                  - '2'
+                  - '3'
+              - id: 'wd:P456'
+                name: has phenotype
+                beacons:
+                  - '1'
+                  - '2'
   /statements:
     get:
       description: >
@@ -474,10 +494,21 @@ paths:
             the full list of codes)
           required: false
           type: string
+        - name: relations
+          in: query
+          description: >
+            a (url-encoded, space-delimited) string of predicate relation
+            identifiers (specified as codes CHEM, GENE, ANAT, etc.) to which to
+            constrain the statement relations retrieved for the given query seed
+            concept. The predicate ids sent should be as published by the
+            beacon-aggregator by the /predicates API endpoint.
+          required: false
+          type: string
         - name: beacons
           in: query
-          description: |
-            set of IDs of beacons to be used as knowledge sources for the query
+          description: >
+            set of aggregator indices of beacons to be used as knowledge sources
+            for the query
           required: false
           type: array
           items:
@@ -623,8 +654,9 @@ paths:
           type: integer
         - name: beacons
           in: query
-          description: |
-            set of IDs of beacons to be used as knowledge sources for the query
+          description: >
+            set of aggregator indices of beacons to be used as knowledge sources
+            for the query
           required: false
           type: array
           items:
@@ -683,16 +715,9 @@ paths:
   /beacons:
     get:
       description: |
-        Get a list of the knowledge beacons that the aggregator can query
+        Get a list of all of the knowledge beacons that the aggregator can query
       tags:
         - aggregator
-      parameters:
-        - name: sessionId
-          in: query
-          description: |
-            client-defined session identifier
-          required: false
-          type: string
       operationId: getBeacons
       responses:
         '200':
