@@ -65,6 +65,7 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.CellReference;
@@ -1137,7 +1138,7 @@ public class ListView extends BaseView {
 		MenuBar semanticFilterMenu = new MenuBar();
 		semanticFilterMenu.addStyleName("semanticfilter-menu");
 
-		MenuItem types = semanticFilterMenu.addItem("Semantic Group", null, null);
+		MenuItem types = semanticFilterMenu.addItem("Any", null, null);
 
 		MenuItem any = types.addItem("Any", null, null);
 		MenuItem disorders = types.addItem("Disorders", null, null);
@@ -1146,11 +1147,11 @@ public class ListView extends BaseView {
 		MenuItem others = types.addItem("Others...", null, null);
 
 		// update the filter text (only in relations view)
-		String type = query.getFilterType();
+		String type = query.getSemGroupFilterType();
 
 		if (viewName.equals(ViewName.RELATIONS_VIEW)) {
 			if (type == null || type.isEmpty()) {
-				types.setText("Semantic Group");
+				types.setText("Any");
 			} else {
 				types.setText(type);
 			}
@@ -1165,7 +1166,7 @@ public class ListView extends BaseView {
 				// update the filter text so that it remembers its value when
 				// comes back
 				if (viewName.equals(ViewName.RELATIONS_VIEW)) {
-					query.setFilterType(selectedItem.getText());
+					query.setSemGroupFilterType(selectedItem.getText());
 				}
 
 				Set<SemanticGroup> typeSet = new HashSet<SemanticGroup>();
@@ -1202,7 +1203,7 @@ public class ListView extends BaseView {
 							// next time when the window is opened
 							if (!viewName.equals(ViewName.CONCEPTS_VIEW)) {
 								Object treeValue = filterView.getTree().getValue();
-								query.setOtherFilterValue(treeValue);
+								query.setOtherSemGroupFilterValue(treeValue);
 							}
 
 							if (filterView.shouldRefresh()) {
@@ -1242,7 +1243,11 @@ public class ListView extends BaseView {
 			item.setCommand(selectCommand);
 		}
 
-		filterMenuBar.addComponent(semanticFilterMenu);
+		VerticalLayout semGrpLayout = new VerticalLayout();
+		Label semGrpLabel = new Label("Semantic Group");
+		semGrpLayout.addComponents(semGrpLabel,semanticFilterMenu);
+		filterMenuBar.addComponent(semGrpLayout);
+		filterMenuBar.setComponentAlignment(semGrpLayout, Alignment.MIDDLE_LEFT);
 	}
 	
 	private void setPredicateFilter(HorizontalLayout filterMenuBar) {
@@ -1250,40 +1255,38 @@ public class ListView extends BaseView {
 		if (! viewName.equals(ViewName.RELATIONS_VIEW) ) {
 			return;
 		}
-
-		MenuBar predicateFilterMenu = new MenuBar();
-		predicateFilterMenu.addStyleName("predicatefilter-menu");
-
-		MenuItem types = predicateFilterMenu.addItem("Relation", null, null);
 		
+		// Create the predicate selection component
 		List<Predicate> predicates = predicateService.findAllPredicates() ;
-		for(Predicate predicate : predicates) {
-			MenuItem predicateItem = types.addItem(predicate.getName(), null, null);
-			predicateItem.setDescription(
-					"Beacon: "+
-					predicate.getBeaconSource()+
-					", Id: "+predicate.getId()
-			);
+		ComboBox predicateFilterSelector = new ComboBox("Relation",predicates);
+
+		// update the filter text 
+		Optional<Predicate> optionalPredicateFilter = query.getPredicateFilterValue();
+		
+		Predicate predicateFilter = null;
+		
+		if (optionalPredicateFilter.isPresent()) {
+			predicateFilter = optionalPredicateFilter.get();
+			predicateFilterSelector.select(predicateFilter);
+		} else {
+			predicateFilterSelector.setNullSelectionItemId(new Label("Any"));
+			predicateFilterSelector.select(predicateFilterSelector.getNullSelectionItemId());
 		}
-		
-		MenuBar.Command selectCommand = new MenuBar.Command() {
 
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void menuSelected(MenuItem selectedItem) {
-				_logger.debug("Selected Relation: "+selectedItem.getText());
+		predicateFilterSelector.addValueChangeListener(event -> {
+			Object value = event.getProperty().getValue();
+			Predicate selected = (Predicate)value;
+			if(selected!=null) {
+			    _logger.debug("Selected Relation: "+selected.toString());
+			    query.setPredicateFilterValue(selected);
+			} else {
+			    _logger.debug("No Predicate filter selected");
+				query.resetPredicateFilterValue();
 			}
-		};
+		});
 		
-		List<MenuItem> items = types.getChildren();
-		if(items!=null)
-			for (MenuItem item : items) {
-				item.setCommand(selectCommand);
-			}
-
-		filterMenuBar.addComponent(predicateFilterMenu);
-
+		filterMenuBar.addComponent(predicateFilterSelector);
+		filterMenuBar.setComponentAlignment(predicateFilterSelector, Alignment.MIDDLE_CENTER);
 	}
 	
 	private void setUpTextFilter(HorizontalLayout filterMenuBar) {
@@ -1329,8 +1332,11 @@ public class ListView extends BaseView {
 		HorizontalLayout textFilterBar = new HorizontalLayout(); 
 		textFilterBar.addComponent(simpleTextFilter);
 
-		filterMenuBar.addComponent(textFilterBar);
-		filterMenuBar.setComponentAlignment(textFilterBar, Alignment.MIDDLE_RIGHT);
+		VerticalLayout textFilterLayout = new VerticalLayout();
+		Label textLabel = new Label("Text");
+		textFilterLayout.addComponents(textLabel,textFilterBar);
+		filterMenuBar.addComponent(textFilterLayout);
+		filterMenuBar.setComponentAlignment(textFilterLayout, Alignment.MIDDLE_RIGHT);
 	}
 
 	private String getCellDescription(CellReference cell) {

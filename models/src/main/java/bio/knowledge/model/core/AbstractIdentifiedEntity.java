@@ -124,8 +124,11 @@ public class AbstractIdentifiedEntity implements IdentifiedEntity {
 	 * @see bio.knowledge.model.core.Identification#getName()
 	 */
 	@Override
-	public String getName() { 
-		return name;
+	public String getName() {
+		if( name==null || name.isEmpty() )
+			return getId();
+		else
+			return name;
 	}
 	
     /* (non-Javadoc)

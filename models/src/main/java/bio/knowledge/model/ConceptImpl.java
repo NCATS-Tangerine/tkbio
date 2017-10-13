@@ -70,7 +70,10 @@ public class ConceptImpl extends AbstractIdentifiedEntity implements Concept {
     public ConceptImpl( String clique, String accessionId, String semgroupName, String name ) {
     	super(accessionId,name,"") ;
     	this.clique = clique;
-    	this.semanticGroup = SemanticGroup.valueOf(semgroupName,SemanticGroup.OBJC) ;
+    	if(semgroupName==null||semgroupName.isEmpty())
+    		this.semanticGroup = SemanticGroup.OBJC;
+    	else
+    		this.semanticGroup = SemanticGroup.valueOf(semgroupName,SemanticGroup.OBJC) ;
     }
     
 	/*

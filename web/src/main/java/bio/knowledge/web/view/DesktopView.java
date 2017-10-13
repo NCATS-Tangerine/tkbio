@@ -214,18 +214,6 @@ public class DesktopView extends DesktopDesign implements View {
 	public HorizontalLayout getCmPanel(){
 		return cmPanel;
 	}
-
-	public NativeSelect getSemanticFilterSelect() {
-		return semanticFilterSelect;
-	}
-	
-	public void setPredicateFilterSelect(NativeSelect filter) {
-		predicateFilterSelect = filter;
-	}
-	
-	public NativeSelect getPredicateFilterSelect() {
-		return predicateFilterSelect;
-	}
 	
 	public HorizontalLayout getViewingConcepts() {
 		return viewingConcepts;

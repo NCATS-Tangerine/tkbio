@@ -63,6 +63,7 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringViewProvider;
@@ -410,6 +411,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * 
 	 */
 	public void gotoStatementsTable() {
+		
 		VerticalLayout relationsTab = desktopView.getRelationsTab();
 
 		if (relationsTabNavigator == null) {
@@ -425,12 +427,12 @@ public class DesktopUI extends UI implements MessageService {
 	}
 	
 	public void displayStatements(String conceptId) {
+		
 		VerticalLayout relationsTab = desktopView.getRelationsTab();
 
 		if (relationsTabNavigator == null) {
 			relationsTabNavigator = new Navigator(UI.getCurrent(), relationsTab);
 			relationsTabNavigator.addProvider(viewProvider);
-
 		}
 
 		relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW + "/" + conceptId);
@@ -454,6 +456,7 @@ public class DesktopUI extends UI implements MessageService {
 	private String lastHighlightNodeId = null;
 
 	private enum HighlightStatus {
+		
 		YES("yes"), NO("no");
 
 		private String text;
@@ -591,6 +594,7 @@ public class DesktopUI extends UI implements MessageService {
 	}
 	
 	public void displayReference(String annotationId) {
+		
 		Navigator navigator = new Navigator(this, desktopView.getReferenceLayout());
 
 		navigator.addProvider(viewProvider);
@@ -658,7 +662,9 @@ public class DesktopUI extends UI implements MessageService {
 		popupLayout.removeAllComponents();
 
 		// create view without content
-		PopupView currentConceptPopupView = new PopupView(concept.getName(), null);
+		String currentCliqueConcept = concept.getName()+" ("+concept.getClique()+")";
+		
+		PopupView currentConceptPopupView = new PopupView(currentCliqueConcept, null);
 		currentConceptPopupView.setHideOnMouseOut(false);
 		currentConceptPopupView.addStyleName("current-concept-label");
 
@@ -1496,11 +1502,18 @@ public class DesktopUI extends UI implements MessageService {
 	 * @see com.vaadin.ui.UI#init(com.vaadin.server.VaadinRequest)
 	 */
 	protected void init(VaadinRequest request) {
+		
 		GoogleAnalyticsTracker ga_tracker = new GoogleAnalyticsTracker(google_tracking_id, application_hostname, "/#!");
 		_logger.info("google_tracking_id: " + google_tracking_id);
 		_logger.info("application_hostname: " + application_hostname);
 
 		ga_tracker.extend(this);
+		
+		/*
+		 *  Disable session timeout
+		 *  See if this resolves the current issue of pesky premature timeout expiration
+		 */
+		VaadinSession.getCurrent().getSession().setMaxInactiveInterval(-1);
 
 		initializeDesktopView();
 

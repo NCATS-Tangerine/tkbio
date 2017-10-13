@@ -39,6 +39,7 @@ import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
+import bio.knowledge.model.Predicate;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 
@@ -336,35 +337,52 @@ public class KBQueryImpl implements KBQuery {
 	private String type = "";
 	
 	@Override
-	public void setFilterType(String type) {
+	public void setSemGroupFilterType(String type) {
 		this.type = type;
 	}
 	
 	@Override
-	public String getFilterType() {
+	public String getSemGroupFilterType() {
 		return this.type;
 	}
 	
 	@Override
-	public void resetFilterType() {
-		setFilterType("");
+	public void resetSemGroupFilterType() {
+		setSemGroupFilterType("");
 	}
 	
 	private Object value = null;
 	
 	@Override
-	public void setOtherFilterValue(Object value) {
+	public void setOtherSemGroupFilterValue(Object value) {
 		this.value = value;
 	}
 	
 	@Override
-	public Object getOtherFilterValue() {
+	public Object getOtherSemGroupFilterValue() {
 		 return value;
 	}
 	
 	// resets the the item id(s) to be used for the tree in the semantic popup window
 	private void resetOtherFilterValue() {
 		value = null;
+	}
+	
+	private Optional<Predicate> predicateFilterValue = Optional.empty();
+
+	@Override
+	public void setPredicateFilterValue(Predicate value) {
+		predicateFilterValue = Optional.of(value);
+	}
+
+	@Override
+	public Optional<Predicate> getPredicateFilterValue() {
+		return predicateFilterValue;
+	}
+
+	@Override
+	public void resetPredicateFilterValue() {
+		predicateFilterValue = Optional.empty();
 	}
 	
 	private Set<String> nodeIds = new HashSet<>();
@@ -393,7 +411,7 @@ public class KBQueryImpl implements KBQuery {
 		currentEvidence = Optional.empty() ;
 		selectedConceptTypes = Optional.empty() ;
 		pmid = Optional.empty();
-		resetFilterType();
+		resetSemGroupFilterType();
 		resetOtherFilterValue();
 		clearNodeIdsFromConceptMap();
 	}

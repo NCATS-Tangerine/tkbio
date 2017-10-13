@@ -25,6 +25,8 @@ import bio.knowledge.service.beacon.KnowledgeBeaconService;
 @SpringView(name = RelationsView.NAME)
 public class RelationsView extends BaseView {
 
+	private static final long serialVersionUID = -5096735414490820214L;
+	
 	public static final String NAME = "relations";
 	private static final int ROWS_TO_DISPLAY = 11;
 	private static final String STYLE = "results-grid";
@@ -78,7 +80,7 @@ public class RelationsView extends BaseView {
 	
 	private void loadDataPage(int pageNumber) {
 		CompletableFuture<List<Statement>> future = kbService.getStatements(
-				"wd:Q126691", null, null, pageNumber, DATAPAGE_SIZE
+				"wd:Q126691", null, null, null, pageNumber, DATAPAGE_SIZE
 		);
 		
 		try {

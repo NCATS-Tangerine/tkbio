@@ -58,6 +58,7 @@ import bio.knowledge.model.Concept;
 import bio.knowledge.model.RdfUtil;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
+import bio.knowledge.model.Predicate;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
 import bio.knowledge.model.neo4j.Neo4jConcept;
@@ -112,7 +113,16 @@ public class StatementService
 			semgroups = semgroups.trim();
 		}
 		
-		CompletableFuture<List<Statement>> future = kbService.getStatements(emci, extraFilter, semgroups, pageIndex, pageSize);
+		Optional<Predicate> optionalPredicateFilter = query.getPredicateFilterValue();
+		
+		Predicate predicateFilter = null;
+		
+		if (optionalPredicateFilter.isPresent()) {
+			predicateFilter = optionalPredicateFilter.get();
+		}
+		
+		CompletableFuture<List<Statement>> future = 
+				kbService.getStatements(emci, extraFilter, semgroups, predicateFilter, pageIndex, pageSize);
 		
 		try {
 			List<Statement> statements = 

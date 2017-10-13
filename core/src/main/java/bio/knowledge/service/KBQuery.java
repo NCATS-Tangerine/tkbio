@@ -33,6 +33,7 @@ import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
+import bio.knowledge.model.Predicate;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 
@@ -110,13 +111,13 @@ public interface KBQuery {
 	
 	/**
 	 * 
-	 * @param query user's current query ConceptSemanticType
+	 * @param query user's current query Concept
 	 */
 	public void setCurrentSelectedConcept(Concept query) ;
 	
 	/**
 	 * 
-	 * @return user's current query ConceptSemanticType
+	 * @return user's current query Concept
 	 */
 	public Optional<Concept> getCurrentSelectedConcept() ;
 
@@ -159,25 +160,25 @@ public interface KBQuery {
 	
 	/**
 	 * 
-	 * @param typeSet specification on initial search result Set of Concept Semantic Type query constraints 
+	 * @param typeSet specification on initial search result Set of Concept query constraints 
 	 */
 	public void setInitialConceptTypes( Set<SemanticGroup> typeSet ) ;
 	
 	/**
 	 * 
-	 * @return optional of initial search result Set Concept Semantic Types query constraints
+	 * @return optional of initial search result Set Concept query constraints
 	 */
 	public Optional< Set<SemanticGroup> > getInitialConceptTypes() ;
 	
 	/**
 	 * 
-	 * @param typeSet specification of current Set of Concept Semantic Type query constraints in Relations Data Table
+	 * @param typeSet specification of current Set of Concept query constraints in Relations Data Table
 	 */
 	public void setConceptTypes( Set<SemanticGroup> typeSet ) ;
 	
 	/**
 	 * 
-	 * @return optional of current Concept Semantic Types query constraints in Relations Data Table
+	 * @return optional of current Concept query constraints in Relations Data Table
 	 */
 	public Optional< Set<SemanticGroup> > getConceptTypes() ;
 	
@@ -220,29 +221,46 @@ public interface KBQuery {
 
 	/**
 	 * Set the filter type to filter the relations table
-	 * @param the filter type (e.g. drugs, dieases, etc.)
+	 * @param the filter type (e.g. drugs, diseases, etc.)
 	 */
-	public void setFilterType(String type);
+	public void setSemGroupFilterType(String type);
 	
 	/**
 	 * Get the filter type that filters the relations table
 	 */
-	public String getFilterType();
+	public String getSemGroupFilterType();
 	
 	/**
 	 * Reset the filter type to the default empty value
 	 */
-	public void resetFilterType();
+	public void resetSemGroupFilterType();
 	
 	/**
 	 * Set the item id(s) to be used for the tree in the semantic popup window
 	 */
-	public void setOtherFilterValue(Object value);
+	public void setOtherSemGroupFilterValue(Object value);
 	
 	/**
 	 * Get the item id(s) used for the tree in the semantic popup window
 	 */
-	public Object getOtherFilterValue();
+	public Object getOtherSemGroupFilterValue();
+	
+	/**
+	 * 
+	 * @param value
+	 */
+	public void setPredicateFilterValue(Predicate value);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Optional<Predicate> getPredicateFilterValue() ;
+	
+	/**
+	 * 
+	 */
+	public void resetPredicateFilterValue() ;
 	
 	/**
 	 * This will return id of all ConceptMap's node. (Used in ConceptMapArchiveService)

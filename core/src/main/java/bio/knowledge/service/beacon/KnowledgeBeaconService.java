@@ -9,6 +9,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +45,8 @@ import bio.knowledge.model.Statement;
 @Service
 public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 	
+	private Logger _logger = LoggerFactory.getLogger(KnowledgeBeaconServiceBase.class);
+
 	@Autowired
 	private KnowledgeBeaconRegistry registry;
 	
@@ -265,6 +269,7 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 			String emci,
 			String keywords,
 			String semgroups,
+			Predicate relation,
 			int pageNumber,
 			int pageSize
 	) {
@@ -280,6 +285,7 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 							pageSize,
 							keywords,
 							semgroups,
+							// relation, TODO: NEED TO ADD 'relation' filter to this beacon-aggregator endpoint
 							customBeacons,
 							sessionId
 					);
@@ -317,7 +323,7 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 
 
 				} catch (Exception e) {
-
+					_logger.error("getStatement() ERROR: "+e.getMessage());
 				}
 				
 				return statements;

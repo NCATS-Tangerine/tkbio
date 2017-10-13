@@ -138,7 +138,7 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 		
 		// get the previous selected item if applicable
 		if (!viewName.equals(ViewName.CONCEPTS_VIEW)) {			
-			Object value = query.getOtherFilterValue();
+			Object value = query.getOtherSemGroupFilterValue();
 			
 			if (value != null) {
 				if (value instanceof Collection) {
