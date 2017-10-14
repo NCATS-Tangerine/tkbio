@@ -456,6 +456,7 @@
             "schema": {
               "type": "array",
               "items": {
+              	"title": "Predicate",
                 "type": "object",
                 "properties": {
                   "id": {
