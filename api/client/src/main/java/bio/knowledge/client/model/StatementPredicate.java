@@ -19,50 +19,50 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * ConceptDetail
+ * StatementPredicate
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-13T21:02:42.351-07:00")
-public class ConceptDetail {
-  @SerializedName("tag")
-  private String tag = null;
+public class StatementPredicate {
+  @SerializedName("id")
+  private String id = null;
 
-  @SerializedName("value")
-  private String value = null;
+  @SerializedName("name")
+  private String name = null;
 
-  public ConceptDetail tag(String tag) {
-    this.tag = tag;
+  public StatementPredicate id(String id) {
+    this.id = id;
     return this;
   }
 
    /**
-   * property name 
-   * @return tag
+   * CURIE-encoded identifier of predicate resource 
+   * @return id
   **/
-  @ApiModelProperty(example = "null", value = "property name ")
-  public String getTag() {
-    return tag;
+  @ApiModelProperty(example = "null", value = "CURIE-encoded identifier of predicate resource ")
+  public String getId() {
+    return id;
   }
 
-  public void setTag(String tag) {
-    this.tag = tag;
+  public void setId(String id) {
+    this.id = id;
   }
 
-  public ConceptDetail value(String value) {
-    this.value = value;
+  public StatementPredicate name(String name) {
+    this.name = name;
     return this;
   }
 
    /**
-   * property value 
-   * @return value
+   * human readable label of concept
+   * @return name
   **/
-  @ApiModelProperty(example = "null", value = "property value ")
-  public String getValue() {
-    return value;
+  @ApiModelProperty(example = "null", value = "human readable label of concept")
+  public String getName() {
+    return name;
   }
 
-  public void setValue(String value) {
-    this.value = value;
+  public void setName(String name) {
+    this.name = name;
   }
 
 
@@ -74,24 +74,24 @@ public class ConceptDetail {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ConceptDetail conceptDetail = (ConceptDetail) o;
-    return Objects.equals(this.tag, conceptDetail.tag) &&
-        Objects.equals(this.value, conceptDetail.value);
+    StatementPredicate statementPredicate = (StatementPredicate) o;
+    return Objects.equals(this.id, statementPredicate.id) &&
+        Objects.equals(this.name, statementPredicate.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tag, value);
+    return Objects.hash(id, name);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ConceptDetail {\n");
+    sb.append("class StatementPredicate {\n");
     
-    sb.append("    tag: ").append(toIndentedString(tag)).append("\n");
-    sb.append("    value: ").append(toIndentedString(value)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("}");
     return sb.toString();
   }

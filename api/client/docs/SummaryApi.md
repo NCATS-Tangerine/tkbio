@@ -23,7 +23,7 @@ Get a list of types and # of instances in the knowledge source, and a link to th
 
 
 SummaryApi apiInstance = new SummaryApi();
-List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of IDs of beacons to be used as knowledge sources for the query 
+List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of aggregator indices of beacons to be used as knowledge sources for the query 
 String sessionId = "sessionId_example"; // String | client-defined session identifier 
 try {
     List<Summary> result = apiInstance.linkedTypes(beacons, sessionId);
@@ -38,7 +38,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **beacons** | [**List&lt;String&gt;**](String.md)| set of IDs of beacons to be used as knowledge sources for the query  | [optional]
+ **beacons** | [**List&lt;String&gt;**](String.md)| set of aggregator indices of beacons to be used as knowledge sources for the query  | [optional]
  **sessionId** | **String**| client-defined session identifier  | [optional]
 
 ### Return type

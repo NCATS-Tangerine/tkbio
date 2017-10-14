@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 <a name="getStatements"></a>
 # **getStatements**
-> List&lt;Statement&gt; getStatements(c, pageNumber, pageSize, keywords, semgroups, beacons, sessionId)
+> List&lt;Statement&gt; getStatements(c, pageNumber, pageSize, keywords, semgroups, relations, beacons, sessionId)
 
 
 
@@ -28,10 +28,11 @@ Integer pageNumber = 56; // Integer | (1-based) number of the page to be returne
 Integer pageSize = 56; // Integer | number of concepts per page to be returned in a paged set of query results 
 String keywords = "keywords_example"; // String | a (url-encoded, space-delimited) string of keywords or substrings against which to match the subject, predicate or object names of the set of concept-relations matched by any of the input exact matching concepts 
 String semgroups = "semgroups_example"; // String | a (url-encoded, space-delimited) string of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes) 
-List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of IDs of beacons to be used as knowledge sources for the query 
+String relations = "relations_example"; // String | a (url-encoded, space-delimited) string of predicate relation identifiers (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the statement relations retrieved for the given query seed concept. The predicate ids sent should be as published by the beacon-aggregator by the /predicates API endpoint. 
+List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of aggregator indices of beacons to be used as knowledge sources for the query 
 String sessionId = "sessionId_example"; // String | client-defined session identifier 
 try {
-    List<Statement> result = apiInstance.getStatements(c, pageNumber, pageSize, keywords, semgroups, beacons, sessionId);
+    List<Statement> result = apiInstance.getStatements(c, pageNumber, pageSize, keywords, semgroups, relations, beacons, sessionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling StatementsApi#getStatements");
@@ -48,7 +49,8 @@ Name | Type | Description  | Notes
  **pageSize** | **Integer**| number of concepts per page to be returned in a paged set of query results  | [optional]
  **keywords** | **String**| a (url-encoded, space-delimited) string of keywords or substrings against which to match the subject, predicate or object names of the set of concept-relations matched by any of the input exact matching concepts  | [optional]
  **semgroups** | **String**| a (url-encoded, space-delimited) string of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)  | [optional]
- **beacons** | [**List&lt;String&gt;**](String.md)| set of IDs of beacons to be used as knowledge sources for the query  | [optional]
+ **relations** | **String**| a (url-encoded, space-delimited) string of predicate relation identifiers (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the statement relations retrieved for the given query seed concept. The predicate ids sent should be as published by the beacon-aggregator by the /predicates API endpoint.  | [optional]
+ **beacons** | [**List&lt;String&gt;**](String.md)| set of aggregator indices of beacons to be used as knowledge sources for the query  | [optional]
  **sessionId** | **String**| client-defined session identifier  | [optional]
 
 ### Return type

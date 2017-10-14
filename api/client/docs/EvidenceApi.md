@@ -27,7 +27,7 @@ String statementId = "statementId_example"; // String | (url-encoded) CURIE iden
 String keywords = "keywords_example"; // String | (url-encoded, space delimited) keyword filter to apply against the label field of the annotation 
 Integer pageNumber = 56; // Integer | (1-based) number of the page to be returned in a paged set of query results 
 Integer pageSize = 56; // Integer | number of cited references per page to be returned in a paged set of query results 
-List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of IDs of beacons to be used as knowledge sources for the query 
+List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of aggregator indices of beacons to be used as knowledge sources for the query 
 String sessionId = "sessionId_example"; // String | client-defined session identifier 
 try {
     List<Annotation> result = apiInstance.getEvidence(statementId, keywords, pageNumber, pageSize, beacons, sessionId);
@@ -46,7 +46,7 @@ Name | Type | Description  | Notes
  **keywords** | **String**| (url-encoded, space delimited) keyword filter to apply against the label field of the annotation  | [optional]
  **pageNumber** | **Integer**| (1-based) number of the page to be returned in a paged set of query results  | [optional]
  **pageSize** | **Integer**| number of cited references per page to be returned in a paged set of query results  | [optional]
- **beacons** | [**List&lt;String&gt;**](String.md)| set of IDs of beacons to be used as knowledge sources for the query  | [optional]
+ **beacons** | [**List&lt;String&gt;**](String.md)| set of aggregator indices of beacons to be used as knowledge sources for the query  | [optional]
  **sessionId** | **String**| client-defined session identifier  | [optional]
 
 ### Return type

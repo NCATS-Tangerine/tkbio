@@ -1,6 +1,6 @@
 /*
  * Translator Knowledge Beacon Aggregator API
- * This is the Translator Knowledge Beacon Aggregator web service application programming interface (API). 
+ * This is the Translator Knowledge Beacon Aggregator web service application programming interface (API) that provides integrated access to a pool of knowledge sources publishing concepts and relations through the Translator Knowledge Beacon API. This API is similar to that of the latter mentioned API with the addition of some extra informative endpoints plus session identifier and beacon indices. These latter identifiers are locally assigned numeric indices provided to track the use of specific registered beacons within the aggregator API itself. 
  *
  * OpenAPI spec version: 1.0.4
  * Contact: richard@starinformatics.com
@@ -14,27 +14,29 @@
 package bio.knowledge.client.model;
 
 import java.util.Objects;
-
+import bio.knowledge.client.model.StatementObject;
+import bio.knowledge.client.model.StatementPredicate;
+import bio.knowledge.client.model.StatementSubject;
 import com.google.gson.annotations.SerializedName;
-
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Statement
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-10T12:14:03.940-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-13T21:02:42.351-07:00")
 public class Statement {
   @SerializedName("id")
   private String id = null;
 
   @SerializedName("subject")
-  private Subject subject = null;
+  private StatementSubject subject = null;
 
   @SerializedName("predicate")
-  private Predicate predicate = null;
+  private StatementPredicate predicate = null;
 
   @SerializedName("object")
-  private Object object = null;
+  private StatementObject object = null;
 
   @SerializedName("beacon")
   private String beacon = null;
@@ -57,7 +59,7 @@ public class Statement {
     this.id = id;
   }
 
-  public Statement subject(Subject subject) {
+  public Statement subject(StatementSubject subject) {
     this.subject = subject;
     return this;
   }
@@ -67,15 +69,15 @@ public class Statement {
    * @return subject
   **/
   @ApiModelProperty(example = "null", value = "")
-  public Subject getSubject() {
+  public StatementSubject getSubject() {
     return subject;
   }
 
-  public void setSubject(Subject subject) {
+  public void setSubject(StatementSubject subject) {
     this.subject = subject;
   }
 
-  public Statement predicate(Predicate predicate) {
+  public Statement predicate(StatementPredicate predicate) {
     this.predicate = predicate;
     return this;
   }
@@ -85,15 +87,15 @@ public class Statement {
    * @return predicate
   **/
   @ApiModelProperty(example = "null", value = "")
-  public Predicate getPredicate() {
+  public StatementPredicate getPredicate() {
     return predicate;
   }
 
-  public void setPredicate(Predicate predicate) {
+  public void setPredicate(StatementPredicate predicate) {
     this.predicate = predicate;
   }
 
-  public Statement object(Object object) {
+  public Statement object(StatementObject object) {
     this.object = object;
     return this;
   }
@@ -103,11 +105,11 @@ public class Statement {
    * @return object
   **/
   @ApiModelProperty(example = "null", value = "")
-  public Object getObject() {
+  public StatementObject getObject() {
     return object;
   }
 
-  public void setObject(Object object) {
+  public void setObject(StatementObject object) {
     this.object = object;
   }
 

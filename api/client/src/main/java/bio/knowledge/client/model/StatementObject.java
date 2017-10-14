@@ -17,33 +17,52 @@ import java.util.Objects;
 import com.google.gson.annotations.SerializedName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Predicate
+ * StatementObject
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-13T21:02:42.351-07:00")
-public class Predicate {
+public class StatementObject {
+  @SerializedName("clique")
+  private String clique = null;
+
   @SerializedName("id")
   private String id = null;
 
   @SerializedName("name")
   private String name = null;
 
-  @SerializedName("beacons")
-  private List<String> beacons = new ArrayList<String>();
+  @SerializedName("semgroup")
+  private String semgroup = null;
 
-  public Predicate id(String id) {
+  public StatementObject clique(String clique) {
+    this.clique = clique;
+    return this;
+  }
+
+   /**
+   * CURIE-encoded cannonical identifier of \"equivalent concepts clique\" 
+   * @return clique
+  **/
+  @ApiModelProperty(example = "null", value = "CURIE-encoded cannonical identifier of \"equivalent concepts clique\" ")
+  public String getClique() {
+    return clique;
+  }
+
+  public void setClique(String clique) {
+    this.clique = clique;
+  }
+
+  public StatementObject id(String id) {
     this.id = id;
     return this;
   }
 
    /**
-   * CURIE-encoded identifier of predicate resource 
+   * CURIE-encoded identifier of object concept 
    * @return id
   **/
-  @ApiModelProperty(example = "null", value = "CURIE-encoded identifier of predicate resource ")
+  @ApiModelProperty(example = "null", value = "CURIE-encoded identifier of object concept ")
   public String getId() {
     return id;
   }
@@ -52,16 +71,16 @@ public class Predicate {
     this.id = id;
   }
 
-  public Predicate name(String name) {
+  public StatementObject name(String name) {
     this.name = name;
     return this;
   }
 
    /**
-   * human readable name of predicate 
+   * human readable label of object concept
    * @return name
   **/
-  @ApiModelProperty(example = "null", value = "human readable name of predicate ")
+  @ApiModelProperty(example = "null", value = "human readable label of object concept")
   public String getName() {
     return name;
   }
@@ -70,27 +89,22 @@ public class Predicate {
     this.name = name;
   }
 
-  public Predicate beacons(List<String> beacons) {
-    this.beacons = beacons;
-    return this;
-  }
-
-  public Predicate addBeaconsItem(String beaconsItem) {
-    this.beacons.add(beaconsItem);
+  public StatementObject semgroup(String semgroup) {
+    this.semgroup = semgroup;
     return this;
   }
 
    /**
-   * list of aggregator indices for beacons that support the use of this predicate 
-   * @return beacons
+   * a semantic group for the subject concept (specified as a code CHEM, GENE, etc. - see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes) 
+   * @return semgroup
   **/
-  @ApiModelProperty(example = "null", value = "list of aggregator indices for beacons that support the use of this predicate ")
-  public List<String> getBeacons() {
-    return beacons;
+  @ApiModelProperty(example = "null", value = "a semantic group for the subject concept (specified as a code CHEM, GENE, etc. - see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes) ")
+  public String getSemgroup() {
+    return semgroup;
   }
 
-  public void setBeacons(List<String> beacons) {
-    this.beacons = beacons;
+  public void setSemgroup(String semgroup) {
+    this.semgroup = semgroup;
   }
 
 
@@ -102,26 +116,28 @@ public class Predicate {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Predicate predicate = (Predicate) o;
-    return Objects.equals(this.id, predicate.id) &&
-        Objects.equals(this.name, predicate.name) &&
-        Objects.equals(this.beacons, predicate.beacons);
+    StatementObject statementObject = (StatementObject) o;
+    return Objects.equals(this.clique, statementObject.clique) &&
+        Objects.equals(this.id, statementObject.id) &&
+        Objects.equals(this.name, statementObject.name) &&
+        Objects.equals(this.semgroup, statementObject.semgroup);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, beacons);
+    return Objects.hash(clique, id, name, semgroup);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Predicate {\n");
+    sb.append("class StatementObject {\n");
     
+    sb.append("    clique: ").append(toIndentedString(clique)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    beacons: ").append(toIndentedString(beacons)).append("\n");
+    sb.append("    semgroup: ").append(toIndentedString(semgroup)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -1,6 +1,6 @@
 /*
  * Translator Knowledge Beacon Aggregator API
- * This is the Translator Knowledge Beacon Aggregator web service application programming interface (API). 
+ * This is the Translator Knowledge Beacon Aggregator web service application programming interface (API) that provides integrated access to a pool of knowledge sources publishing concepts and relations through the Translator Knowledge Beacon API. This API is similar to that of the latter mentioned API with the addition of some extra informative endpoints plus session identifier and beacon indices. These latter identifiers are locally assigned numeric indices provided to track the use of specific registered beacons within the aggregator API itself. 
  *
  * OpenAPI spec version: 1.0.4
  * Contact: richard@starinformatics.com
@@ -13,15 +13,6 @@
 
 package bio.knowledge.client.api;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.google.gson.reflect.TypeToken;
-
 import bio.knowledge.client.ApiCallback;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
@@ -30,8 +21,20 @@ import bio.knowledge.client.Configuration;
 import bio.knowledge.client.Pair;
 import bio.knowledge.client.ProgressRequestBody;
 import bio.knowledge.client.ProgressResponseBody;
+
+import com.google.gson.reflect.TypeToken;
+
+import java.io.IOException;
+
+
 import bio.knowledge.client.model.KnowledgeBeacon;
 import bio.knowledge.client.model.LogEntry;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AggregatorApi {
     private ApiClient apiClient;
@@ -53,15 +56,13 @@ public class AggregatorApi {
     }
 
     /* Build call for getBeacons */
-    private com.squareup.okhttp.Call getBeaconsCall(String sessionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getBeaconsCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/beacons".replaceAll("\\{format\\}","json");
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        if (sessionId != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "sessionId", sessionId));
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
 
@@ -96,10 +97,10 @@ public class AggregatorApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getBeaconsValidateBeforeCall(String sessionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getBeaconsValidateBeforeCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         
-        com.squareup.okhttp.Call call = getBeaconsCall(sessionId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getBeaconsCall(progressListener, progressRequestListener);
         return call;
 
         
@@ -110,38 +111,35 @@ public class AggregatorApi {
 
     /**
      * 
-     * Get a list of the knowledge beacons that the aggregator can query 
-     * @param sessionId client-defined session identifier  (optional)
+     * Get a list of all of the knowledge beacons that the aggregator can query 
      * @return List&lt;KnowledgeBeacon&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<KnowledgeBeacon> getBeacons(String sessionId) throws ApiException {
-        ApiResponse<List<KnowledgeBeacon>> resp = getBeaconsWithHttpInfo(sessionId);
+    public List<KnowledgeBeacon> getBeacons() throws ApiException {
+        ApiResponse<List<KnowledgeBeacon>> resp = getBeaconsWithHttpInfo();
         return resp.getData();
     }
 
     /**
      * 
-     * Get a list of the knowledge beacons that the aggregator can query 
-     * @param sessionId client-defined session identifier  (optional)
+     * Get a list of all of the knowledge beacons that the aggregator can query 
      * @return ApiResponse&lt;List&lt;KnowledgeBeacon&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<KnowledgeBeacon>> getBeaconsWithHttpInfo(String sessionId) throws ApiException {
-        com.squareup.okhttp.Call call = getBeaconsValidateBeforeCall(sessionId, null, null);
+    public ApiResponse<List<KnowledgeBeacon>> getBeaconsWithHttpInfo() throws ApiException {
+        com.squareup.okhttp.Call call = getBeaconsValidateBeforeCall(null, null);
         Type localVarReturnType = new TypeToken<List<KnowledgeBeacon>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
     /**
      *  (asynchronously)
-     * Get a list of the knowledge beacons that the aggregator can query 
-     * @param sessionId client-defined session identifier  (optional)
+     * Get a list of all of the knowledge beacons that the aggregator can query 
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getBeaconsAsync(String sessionId, final ApiCallback<List<KnowledgeBeacon>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getBeaconsAsync(final ApiCallback<List<KnowledgeBeacon>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -162,7 +160,7 @@ public class AggregatorApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getBeaconsValidateBeforeCall(sessionId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getBeaconsValidateBeforeCall(progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<List<KnowledgeBeacon>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;

@@ -1,6 +1,6 @@
 /*
  * Translator Knowledge Beacon Aggregator API
- * This is the Translator Knowledge Beacon Aggregator web service application programming interface (API). 
+ * This is the Translator Knowledge Beacon Aggregator web service application programming interface (API) that provides integrated access to a pool of knowledge sources publishing concepts and relations through the Translator Knowledge Beacon API. This API is similar to that of the latter mentioned API with the addition of some extra informative endpoints plus session identifier and beacon indices. These latter identifiers are locally assigned numeric indices provided to track the use of specific registered beacons within the aggregator API itself. 
  *
  * OpenAPI spec version: 1.0.4
  * Contact: richard@starinformatics.com
@@ -13,15 +13,6 @@
 
 package bio.knowledge.client.api;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.google.gson.reflect.TypeToken;
-
 import bio.knowledge.client.ApiCallback;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
@@ -30,7 +21,19 @@ import bio.knowledge.client.Configuration;
 import bio.knowledge.client.Pair;
 import bio.knowledge.client.ProgressRequestBody;
 import bio.knowledge.client.ProgressResponseBody;
+
+import com.google.gson.reflect.TypeToken;
+
+import java.io.IOException;
+
+
 import bio.knowledge.client.model.Annotation;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EvidenceApi {
     private ApiClient apiClient;
@@ -128,7 +131,7 @@ public class EvidenceApi {
      * @param keywords (url-encoded, space delimited) keyword filter to apply against the label field of the annotation  (optional)
      * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
      * @param pageSize number of cited references per page to be returned in a paged set of query results  (optional)
-     * @param beacons set of IDs of beacons to be used as knowledge sources for the query  (optional)
+     * @param beacons set of aggregator indices of beacons to be used as knowledge sources for the query  (optional)
      * @param sessionId client-defined session identifier  (optional)
      * @return List&lt;Annotation&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -145,7 +148,7 @@ public class EvidenceApi {
      * @param keywords (url-encoded, space delimited) keyword filter to apply against the label field of the annotation  (optional)
      * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
      * @param pageSize number of cited references per page to be returned in a paged set of query results  (optional)
-     * @param beacons set of IDs of beacons to be used as knowledge sources for the query  (optional)
+     * @param beacons set of aggregator indices of beacons to be used as knowledge sources for the query  (optional)
      * @param sessionId client-defined session identifier  (optional)
      * @return ApiResponse&lt;List&lt;Annotation&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -163,7 +166,7 @@ public class EvidenceApi {
      * @param keywords (url-encoded, space delimited) keyword filter to apply against the label field of the annotation  (optional)
      * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
      * @param pageSize number of cited references per page to be returned in a paged set of query results  (optional)
-     * @param beacons set of IDs of beacons to be used as knowledge sources for the query  (optional)
+     * @param beacons set of aggregator indices of beacons to be used as knowledge sources for the query  (optional)
      * @param sessionId client-defined session identifier  (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call

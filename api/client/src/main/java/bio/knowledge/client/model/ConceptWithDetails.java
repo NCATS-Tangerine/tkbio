@@ -14,6 +14,7 @@
 package bio.knowledge.client.model;
 
 import java.util.Objects;
+import bio.knowledge.client.model.ConceptDetail;
 import com.google.gson.annotations.SerializedName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Concept
+ * ConceptWithDetails
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-13T21:02:42.351-07:00")
-public class Concept {
+public class ConceptWithDetails {
   @SerializedName("clique")
   private String clique = null;
 
@@ -46,10 +47,13 @@ public class Concept {
   @SerializedName("definition")
   private String definition = null;
 
+  @SerializedName("details")
+  private List<ConceptDetail> details = new ArrayList<ConceptDetail>();
+
   @SerializedName("beacon")
   private String beacon = null;
 
-  public Concept clique(String clique) {
+  public ConceptWithDetails clique(String clique) {
     this.clique = clique;
     return this;
   }
@@ -67,7 +71,7 @@ public class Concept {
     this.clique = clique;
   }
 
-  public Concept id(String id) {
+  public ConceptWithDetails id(String id) {
     this.id = id;
     return this;
   }
@@ -85,12 +89,12 @@ public class Concept {
     this.id = id;
   }
 
-  public Concept aliases(List<String> aliases) {
+  public ConceptWithDetails aliases(List<String> aliases) {
     this.aliases = aliases;
     return this;
   }
 
-  public Concept addAliasesItem(String aliasesItem) {
+  public ConceptWithDetails addAliasesItem(String aliasesItem) {
     this.aliases.add(aliasesItem);
     return this;
   }
@@ -108,7 +112,7 @@ public class Concept {
     this.aliases = aliases;
   }
 
-  public Concept name(String name) {
+  public ConceptWithDetails name(String name) {
     this.name = name;
     return this;
   }
@@ -126,7 +130,7 @@ public class Concept {
     this.name = name;
   }
 
-  public Concept semanticGroup(String semanticGroup) {
+  public ConceptWithDetails semanticGroup(String semanticGroup) {
     this.semanticGroup = semanticGroup;
     return this;
   }
@@ -144,12 +148,12 @@ public class Concept {
     this.semanticGroup = semanticGroup;
   }
 
-  public Concept synonyms(List<String> synonyms) {
+  public ConceptWithDetails synonyms(List<String> synonyms) {
     this.synonyms = synonyms;
     return this;
   }
 
-  public Concept addSynonymsItem(String synonymsItem) {
+  public ConceptWithDetails addSynonymsItem(String synonymsItem) {
     this.synonyms.add(synonymsItem);
     return this;
   }
@@ -167,7 +171,7 @@ public class Concept {
     this.synonyms = synonyms;
   }
 
-  public Concept definition(String definition) {
+  public ConceptWithDetails definition(String definition) {
     this.definition = definition;
     return this;
   }
@@ -185,7 +189,30 @@ public class Concept {
     this.definition = definition;
   }
 
-  public Concept beacon(String beacon) {
+  public ConceptWithDetails details(List<ConceptDetail> details) {
+    this.details = details;
+    return this;
+  }
+
+  public ConceptWithDetails addDetailsItem(ConceptDetail detailsItem) {
+    this.details.add(detailsItem);
+    return this;
+  }
+
+   /**
+   * Get details
+   * @return details
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public List<ConceptDetail> getDetails() {
+    return details;
+  }
+
+  public void setDetails(List<ConceptDetail> details) {
+    this.details = details;
+  }
+
+  public ConceptWithDetails beacon(String beacon) {
     this.beacon = beacon;
     return this;
   }
@@ -212,27 +239,28 @@ public class Concept {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Concept concept = (Concept) o;
-    return Objects.equals(this.clique, concept.clique) &&
-        Objects.equals(this.id, concept.id) &&
-        Objects.equals(this.aliases, concept.aliases) &&
-        Objects.equals(this.name, concept.name) &&
-        Objects.equals(this.semanticGroup, concept.semanticGroup) &&
-        Objects.equals(this.synonyms, concept.synonyms) &&
-        Objects.equals(this.definition, concept.definition) &&
-        Objects.equals(this.beacon, concept.beacon);
+    ConceptWithDetails conceptWithDetails = (ConceptWithDetails) o;
+    return Objects.equals(this.clique, conceptWithDetails.clique) &&
+        Objects.equals(this.id, conceptWithDetails.id) &&
+        Objects.equals(this.aliases, conceptWithDetails.aliases) &&
+        Objects.equals(this.name, conceptWithDetails.name) &&
+        Objects.equals(this.semanticGroup, conceptWithDetails.semanticGroup) &&
+        Objects.equals(this.synonyms, conceptWithDetails.synonyms) &&
+        Objects.equals(this.definition, conceptWithDetails.definition) &&
+        Objects.equals(this.details, conceptWithDetails.details) &&
+        Objects.equals(this.beacon, conceptWithDetails.beacon);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(clique, id, aliases, name, semanticGroup, synonyms, definition, beacon);
+    return Objects.hash(clique, id, aliases, name, semanticGroup, synonyms, definition, details, beacon);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Concept {\n");
+    sb.append("class ConceptWithDetails {\n");
     
     sb.append("    clique: ").append(toIndentedString(clique)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
@@ -241,6 +269,7 @@ public class Concept {
     sb.append("    semanticGroup: ").append(toIndentedString(semanticGroup)).append("\n");
     sb.append("    synonyms: ").append(toIndentedString(synonyms)).append("\n");
     sb.append("    definition: ").append(toIndentedString(definition)).append("\n");
+    sb.append("    details: ").append(toIndentedString(details)).append("\n");
     sb.append("    beacon: ").append(toIndentedString(beacon)).append("\n");
     sb.append("}");
     return sb.toString();

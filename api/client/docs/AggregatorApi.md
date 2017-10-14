@@ -10,11 +10,11 @@ Method | HTTP request | Description
 
 <a name="getBeacons"></a>
 # **getBeacons**
-> List&lt;KnowledgeBeacon&gt; getBeacons(sessionId)
+> List&lt;KnowledgeBeacon&gt; getBeacons()
 
 
 
-Get a list of the knowledge beacons that the aggregator can query 
+Get a list of all of the knowledge beacons that the aggregator can query 
 
 ### Example
 ```java
@@ -24,9 +24,8 @@ Get a list of the knowledge beacons that the aggregator can query
 
 
 AggregatorApi apiInstance = new AggregatorApi();
-String sessionId = "sessionId_example"; // String | client-defined session identifier 
 try {
-    List<KnowledgeBeacon> result = apiInstance.getBeacons(sessionId);
+    List<KnowledgeBeacon> result = apiInstance.getBeacons();
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling AggregatorApi#getBeacons");
@@ -35,10 +34,7 @@ try {
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **sessionId** | **String**| client-defined session identifier  | [optional]
+This endpoint does not need any parameter.
 
 ### Return type
 
