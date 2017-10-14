@@ -137,7 +137,7 @@ public class StatementsApi {
      * @param pageSize number of concepts per page to be returned in a paged set of query results  (optional)
      * @param keywords a (url-encoded, space-delimited) string of keywords or substrings against which to match the subject, predicate or object names of the set of concept-relations matched by any of the input exact matching concepts  (optional)
      * @param semgroups a (url-encoded, space-delimited) string of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)  (optional)
-     * @param relations a (url-encoded, space-delimited) string of predicate relation identifiers (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the statement relations retrieved for the given query seed concept. The predicate ids sent should be as published by the beacon-aggregator by the /predicates API endpoint.  (optional)
+     * @param relations a (url-encoded, space-delimited) string of predicate relation identifiers with which to constrain the statement relations retrieved  for the given query seed concept. The predicate ids sent should  be as published by the beacon-aggregator by the /predicates API endpoint.  (optional)
      * @param beacons set of aggregator indices of beacons to be used as knowledge sources for the query  (optional)
      * @param sessionId client-defined session identifier  (optional)
      * @return List&lt;Statement&gt;
@@ -156,7 +156,7 @@ public class StatementsApi {
      * @param pageSize number of concepts per page to be returned in a paged set of query results  (optional)
      * @param keywords a (url-encoded, space-delimited) string of keywords or substrings against which to match the subject, predicate or object names of the set of concept-relations matched by any of the input exact matching concepts  (optional)
      * @param semgroups a (url-encoded, space-delimited) string of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)  (optional)
-     * @param relations a (url-encoded, space-delimited) string of predicate relation identifiers (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the statement relations retrieved for the given query seed concept. The predicate ids sent should be as published by the beacon-aggregator by the /predicates API endpoint.  (optional)
+     * @param relations a (url-encoded, space-delimited) string of predicate relation identifiers with which to constrain the statement relations retrieved  for the given query seed concept. The predicate ids sent should  be as published by the beacon-aggregator by the /predicates API endpoint.  (optional)
      * @param beacons set of aggregator indices of beacons to be used as knowledge sources for the query  (optional)
      * @param sessionId client-defined session identifier  (optional)
      * @return ApiResponse&lt;List&lt;Statement&gt;&gt;
@@ -176,7 +176,7 @@ public class StatementsApi {
      * @param pageSize number of concepts per page to be returned in a paged set of query results  (optional)
      * @param keywords a (url-encoded, space-delimited) string of keywords or substrings against which to match the subject, predicate or object names of the set of concept-relations matched by any of the input exact matching concepts  (optional)
      * @param semgroups a (url-encoded, space-delimited) string of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)  (optional)
-     * @param relations a (url-encoded, space-delimited) string of predicate relation identifiers (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the statement relations retrieved for the given query seed concept. The predicate ids sent should be as published by the beacon-aggregator by the /predicates API endpoint.  (optional)
+     * @param relations a (url-encoded, space-delimited) string of predicate relation identifiers with which to constrain the statement relations retrieved  for the given query seed concept. The predicate ids sent should  be as published by the beacon-aggregator by the /predicates API endpoint.  (optional)
      * @param beacons set of aggregator indices of beacons to be used as knowledge sources for the query  (optional)
      * @param sessionId client-defined session identifier  (optional)
      * @param callback The callback to be executed when the API call finishes

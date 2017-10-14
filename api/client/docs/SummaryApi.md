@@ -13,7 +13,7 @@ Method | HTTP request | Description
 
 
 
-Get a list of types and # of instances in the knowledge source, and a link to the API call for the list of equivalent terminology 
+Get a list of types and number of instances in the knowledge source, and a link to the API call for the list of equivalent terminology 
 
 ### Example
 ```java

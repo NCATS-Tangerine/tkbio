@@ -14,63 +14,76 @@
 package bio.knowledge.client.model;
 
 import java.util.Objects;
-import bio.knowledge.client.model.Beacon;
 import com.google.gson.annotations.SerializedName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Predicate
+ * Beacon
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-13T21:43:21.781-07:00")
-public class Predicate {
-  @SerializedName("name")
-  private String name = null;
+public class Beacon {
+  @SerializedName("beacon")
+  private String beacon = null;
 
-  @SerializedName("beacons")
-  private List<Beacon> beacons = new ArrayList<Beacon>();
+  @SerializedName("id")
+  private String id = null;
 
-  public Predicate name(String name) {
-    this.name = name;
+  @SerializedName("definition")
+  private String definition = null;
+
+  public Beacon beacon(String beacon) {
+    this.beacon = beacon;
     return this;
   }
 
    /**
-   * exact unique human readable name of predicate relation 
-   * @return name
+   * aggregator index of the given beacon 
+   * @return beacon
   **/
-  @ApiModelProperty(example = "null", value = "exact unique human readable name of predicate relation ")
-  public String getName() {
-    return name;
+  @ApiModelProperty(example = "null", value = "aggregator index of the given beacon ")
+  public String getBeacon() {
+    return beacon;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setBeacon(String beacon) {
+    this.beacon = beacon;
   }
 
-  public Predicate beacons(List<Beacon> beacons) {
-    this.beacons = beacons;
-    return this;
-  }
-
-  public Predicate addBeaconsItem(Beacon beaconsItem) {
-    this.beacons.add(beaconsItem);
+  public Beacon id(String id) {
+    this.id = id;
     return this;
   }
 
    /**
-   * list of metadata for beacons that support the use of this predicate relation 
-   * @return beacons
+   * unique CURIE-encoded identifier of predicate aggregator indices of beacons in the given beacon 
+   * @return id
   **/
-  @ApiModelProperty(example = "null", value = "list of metadata for beacons that support the use of this predicate relation ")
-  public List<Beacon> getBeacons() {
-    return beacons;
+  @ApiModelProperty(example = "null", value = "unique CURIE-encoded identifier of predicate aggregator indices of beacons in the given beacon ")
+  public String getId() {
+    return id;
   }
 
-  public void setBeacons(List<Beacon> beacons) {
-    this.beacons = beacons;
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public Beacon definition(String definition) {
+    this.definition = definition;
+    return this;
+  }
+
+   /**
+   * human readable definition assigned by the beacon for the predicate relation 
+   * @return definition
+  **/
+  @ApiModelProperty(example = "null", value = "human readable definition assigned by the beacon for the predicate relation ")
+  public String getDefinition() {
+    return definition;
+  }
+
+  public void setDefinition(String definition) {
+    this.definition = definition;
   }
 
 
@@ -82,24 +95,26 @@ public class Predicate {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Predicate predicate = (Predicate) o;
-    return Objects.equals(this.name, predicate.name) &&
-        Objects.equals(this.beacons, predicate.beacons);
+    Beacon beacon = (Beacon) o;
+    return Objects.equals(this.beacon, beacon.beacon) &&
+        Objects.equals(this.id, beacon.id) &&
+        Objects.equals(this.definition, beacon.definition);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, beacons);
+    return Objects.hash(beacon, id, definition);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Predicate {\n");
+    sb.append("class Beacon {\n");
     
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    beacons: ").append(toIndentedString(beacons)).append("\n");
+    sb.append("    beacon: ").append(toIndentedString(beacon)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    definition: ").append(toIndentedString(definition)).append("\n");
     sb.append("}");
     return sb.toString();
   }

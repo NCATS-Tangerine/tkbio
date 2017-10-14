@@ -4,9 +4,8 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **String** | CURIE-encoded identifier of predicate resource  |  [optional]
-**name** | **String** | human readable name of predicate  |  [optional]
-**beacons** | **List&lt;String&gt;** | list of aggregator indices for beacons that support the use of this predicate  |  [optional]
+**name** | **String** | exact unique human readable name of predicate relation  |  [optional]
+**beacons** | [**List&lt;Beacon&gt;**](Beacon.md) | list of metadata for beacons that support the use of this predicate relation  |  [optional]
 
 
 

@@ -114,7 +114,7 @@ public class SummaryApi {
 
     /**
      * 
-     * Get a list of types and # of instances in the knowledge source, and a link to the API call for the list of equivalent terminology 
+     * Get a list of types and number of instances in the knowledge source, and a link to the API call for the list of equivalent terminology 
      * @param beacons set of aggregator indices of beacons to be used as knowledge sources for the query  (optional)
      * @param sessionId client-defined session identifier  (optional)
      * @return List&lt;Summary&gt;
@@ -127,7 +127,7 @@ public class SummaryApi {
 
     /**
      * 
-     * Get a list of types and # of instances in the knowledge source, and a link to the API call for the list of equivalent terminology 
+     * Get a list of types and number of instances in the knowledge source, and a link to the API call for the list of equivalent terminology 
      * @param beacons set of aggregator indices of beacons to be used as knowledge sources for the query  (optional)
      * @param sessionId client-defined session identifier  (optional)
      * @return ApiResponse&lt;List&lt;Summary&gt;&gt;
@@ -141,7 +141,7 @@ public class SummaryApi {
 
     /**
      *  (asynchronously)
-     * Get a list of types and # of instances in the knowledge source, and a link to the API call for the list of equivalent terminology 
+     * Get a list of types and number of instances in the knowledge source, and a link to the API call for the list of equivalent terminology 
      * @param beacons set of aggregator indices of beacons to be used as knowledge sources for the query  (optional)
      * @param sessionId client-defined session identifier  (optional)
      * @param callback The callback to be executed when the API call finishes
