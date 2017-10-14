@@ -102,6 +102,7 @@ import bio.knowledge.model.DomainModelException;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.Predicate;
+import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.IdentifiedEntity;
@@ -1124,6 +1125,10 @@ public class ListView extends BaseView {
 
 		return dataTableLayout;
 	}
+	 
+	private void updateCurrentTable() {
+		gotoPageIndex(0);
+	}
 
 	private void setSemGroupFilter(HorizontalLayout filterMenuBar) {
 
@@ -1226,10 +1231,6 @@ public class ListView extends BaseView {
 				}
 			}
 
-			private void updateCurrentTable() {
-				gotoPageIndex(0);
-			}
-
 			private void setQueryTypes(Set<SemanticGroup> typeSet) {
 				if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
 					query.setInitialConceptTypes(typeSet);
@@ -1250,6 +1251,8 @@ public class ListView extends BaseView {
 		filterMenuBar.setComponentAlignment(semGrpLayout, Alignment.MIDDLE_LEFT);
 	}
 	
+	private static Predicate ANY_RELATION = new PredicateImpl("Any");
+	
 	private void setPredicateFilter(HorizontalLayout filterMenuBar) {
 		
 		if (! viewName.equals(ViewName.RELATIONS_VIEW) ) {
@@ -1258,8 +1261,11 @@ public class ListView extends BaseView {
 		
 		// Create the predicate selection component
 		List<Predicate> predicates = predicateService.findAllPredicates() ;
+		predicates.add(ANY_RELATION);
+		
 		ComboBox predicateFilterSelector = new ComboBox("Relation",predicates);
-
+		predicateFilterSelector.setNullSelectionItemId(ANY_RELATION);
+		
 		// update the filter text 
 		Optional<Predicate> optionalPredicateFilter = query.getPredicateFilterValue();
 		
@@ -1269,7 +1275,6 @@ public class ListView extends BaseView {
 			predicateFilter = optionalPredicateFilter.get();
 			predicateFilterSelector.select(predicateFilter);
 		} else {
-			predicateFilterSelector.setNullSelectionItemId(new Label("Any"));
 			predicateFilterSelector.select(predicateFilterSelector.getNullSelectionItemId());
 		}
 
@@ -1283,6 +1288,7 @@ public class ListView extends BaseView {
 			    _logger.debug("No Predicate filter selected");
 				query.resetPredicateFilterValue();
 			}
+			updateCurrentTable();
 		});
 		
 		filterMenuBar.addComponent(predicateFilterSelector);

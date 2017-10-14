@@ -413,6 +413,7 @@ public class KBQueryImpl implements KBQuery {
 		pmid = Optional.empty();
 		resetSemGroupFilterType();
 		resetOtherFilterValue();
+		resetPredicateFilterValue();
 		clearNodeIdsFromConceptMap();
 	}
 

@@ -305,13 +305,15 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 					 * require recoding of the code stack above this point.
 					 */
 					String relationIds = "" ;
-					List<PredicateBeacon> beacons = relation.getBeacons();
-					if(beacons!=null)
-						for(PredicateBeacon beacon : beacons) {
-							if(!relationIds.isEmpty())
-								relationIds += " ";
-							relationIds += beacon.getId();
-						}
+					if(relation!=null) {
+						List<PredicateBeacon> beacons = relation.getBeacons();
+						if(beacons!=null)
+							for(PredicateBeacon beacon : beacons) {
+								if(!relationIds.isEmpty())
+									relationIds += " ";
+								relationIds += beacon.getId();
+							}
+					}
 					
 					List<bio.knowledge.client.model.Statement> responses = 
 							getStatementsApi().getStatements(
