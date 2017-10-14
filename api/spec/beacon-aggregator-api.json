@@ -162,7 +162,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ConceptDetail",
+                "title": "ConceptWithDetails",
                 "type": "object",
                 "properties": {
                   "clique": {
@@ -202,7 +202,7 @@
                   "details": {
                     "type": "array",
                     "items": {
-                      "title": "Detail",
+                      "title": "ConceptDetail",
                       "type": "object",
                       "properties": {
                         "tag": {
