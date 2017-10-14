@@ -20,50 +20,29 @@ import com.google.gson.annotations.SerializedName;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * LogEntry
+ * Beacon
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-13T21:43:21.781-07:00")
-public class LogEntry {
-  @SerializedName("timestamp")
-  private String timestamp = null;
-
+public class PredicateBeacon {
   @SerializedName("beacon")
   private String beacon = null;
 
-  @SerializedName("query")
-  private String query = null;
+  @SerializedName("id")
+  private String id = null;
 
-  @SerializedName("message")
-  private String message = null;
+  @SerializedName("definition")
+  private String definition = null;
 
-  public LogEntry timestamp(String timestamp) {
-    this.timestamp = timestamp;
-    return this;
-  }
-
-   /**
-   * timestamp 
-   * @return timestamp
-  **/
-  @ApiModelProperty(example = "null", value = "timestamp ")
-  public String getTimestamp() {
-    return timestamp;
-  }
-
-  public void setTimestamp(String timestamp) {
-    this.timestamp = timestamp;
-  }
-
-  public LogEntry beacon(String beacon) {
+  public PredicateBeacon beacon(String beacon) {
     this.beacon = beacon;
     return this;
   }
 
    /**
-   * beacon ID 
+   * aggregator index of the given beacon 
    * @return beacon
   **/
-  @ApiModelProperty(example = "null", value = "beacon ID ")
+  @ApiModelProperty(example = "null", value = "aggregator index of the given beacon ")
   public String getBeacon() {
     return beacon;
   }
@@ -72,40 +51,40 @@ public class LogEntry {
     this.beacon = beacon;
   }
 
-  public LogEntry query(String query) {
-    this.query = query;
+  public PredicateBeacon id(String id) {
+    this.id = id;
     return this;
   }
 
    /**
-   * URL of the API call executed by the aggregator 
-   * @return query
+   * unique CURIE-encoded identifier of predicate aggregator indices of beacons in the given beacon 
+   * @return id
   **/
-  @ApiModelProperty(example = "null", value = "URL of the API call executed by the aggregator ")
-  public String getQuery() {
-    return query;
+  @ApiModelProperty(example = "null", value = "unique CURIE-encoded identifier of predicate aggregator indices of beacons in the given beacon ")
+  public String getId() {
+    return id;
   }
 
-  public void setQuery(String query) {
-    this.query = query;
+  public void setId(String id) {
+    this.id = id;
   }
 
-  public LogEntry message(String message) {
-    this.message = message;
+  public PredicateBeacon definition(String definition) {
+    this.definition = definition;
     return this;
   }
 
    /**
-   * error message 
-   * @return message
+   * human readable definition assigned by the beacon for the predicate relation 
+   * @return definition
   **/
-  @ApiModelProperty(example = "null", value = "error message ")
-  public String getMessage() {
-    return message;
+  @ApiModelProperty(example = "null", value = "human readable definition assigned by the beacon for the predicate relation ")
+  public String getDefinition() {
+    return definition;
   }
 
-  public void setMessage(String message) {
-    this.message = message;
+  public void setDefinition(String definition) {
+    this.definition = definition;
   }
 
 
@@ -117,28 +96,26 @@ public class LogEntry {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    LogEntry logEntry = (LogEntry) o;
-    return Objects.equals(this.timestamp, logEntry.timestamp) &&
-        Objects.equals(this.beacon, logEntry.beacon) &&
-        Objects.equals(this.query, logEntry.query) &&
-        Objects.equals(this.message, logEntry.message);
+    PredicateBeacon beacon = (PredicateBeacon) o;
+    return Objects.equals(this.beacon, beacon.beacon) &&
+        Objects.equals(this.id, beacon.id) &&
+        Objects.equals(this.definition, beacon.definition);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(timestamp, beacon, query, message);
+    return Objects.hash(beacon, id, definition);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class LogEntry {\n");
+    sb.append("class Beacon {\n");
     
-    sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
     sb.append("    beacon: ").append(toIndentedString(beacon)).append("\n");
-    sb.append("    query: ").append(toIndentedString(query)).append("\n");
-    sb.append("    message: ").append(toIndentedString(message)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    definition: ").append(toIndentedString(definition)).append("\n");
     sb.append("}");
     return sb.toString();
   }

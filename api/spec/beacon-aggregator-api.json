@@ -467,7 +467,7 @@
                     "type": "array",
                     "description": "list of metadata for beacons that support the use of this predicate relation\n",
                     "items": {
-                      "title": "Beacon",
+                      "title": "PredicateBeacon",
                       "type": "object",
                       "properties": {
                         "beacon": {

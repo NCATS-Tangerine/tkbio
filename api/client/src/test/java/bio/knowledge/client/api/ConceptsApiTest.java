@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.Concept;
-import bio.knowledge.client.model.ConceptDetail;
+import bio.knowledge.client.model.ConceptWithDetails;
 
 /**
  * API tests for ConceptsApi
@@ -44,7 +44,7 @@ public class ConceptsApiTest {
         String conceptId = null;
         List<String> beacons = null;
         String sessionId = null;
-        List<ConceptDetail> response = api.getConceptDetails(conceptId, beacons, sessionId);
+        List<ConceptWithDetails> response = api.getConceptDetails(conceptId, beacons, sessionId);
 
         // TODO: test validations
     }

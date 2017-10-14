@@ -14,13 +14,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.client.model.Subject;
+import bio.knowledge.client.model.StatementSubject;
+import bio.knowledge.client.model.StatementPredicate;
+import bio.knowledge.client.model.StatementObject;
+
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.AnnotationImpl;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptImpl;
 import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.Predicate;
+import bio.knowledge.model.Predicate.PredicateBeacon;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
@@ -185,9 +189,10 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 				List<Concept> concepts = new ArrayList<Concept>();
 				
 				try {
-					List<bio.knowledge.client.model.ConceptDetail> responses = getConceptsApi().getConceptDetails(conceptId, customBeacons, sessionId);
+					List<bio.knowledge.client.model.ConceptWithDetails> responses = 
+							getConceptsApi().getConceptDetails(conceptId, customBeacons, sessionId);
 					
-					for (bio.knowledge.client.model.ConceptDetail response : responses) {
+					for (bio.knowledge.client.model.ConceptWithDetails response : responses) {
 						SemanticGroup semgroup;
 						try {
 							semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
@@ -244,11 +249,22 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 							getPredicatesApi().getPredicates();
 					
 					for (bio.knowledge.client.model.Predicate response : responses) {
-						Predicate predicate = new PredicateImpl();
-						predicate.setId(response.getId());
-						predicate.setName(response.getName());
 						
-						predicate.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
+						PredicateImpl predicate = new PredicateImpl();
+						
+						predicate.setName(response.getName());
+
+						List<bio.knowledge.client.model.PredicateBeacon> beacons = response.getBeacons();
+						if(beacons!=null)
+							for(bio.knowledge.client.model.PredicateBeacon pb : beacons) {
+								Predicate.PredicateBeacon beacon = 
+										predicate.new PredicateBeaconImpl(
+												pb.getBeacon(),
+												pb.getId(),
+												pb.getDefinition()
+										) ;
+								predicate.addBeacon(beacon);
+							}
 						
 						predicates.add(predicate);
 					}
@@ -278,25 +294,44 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 			@Override
 			public List<Statement> get() {
 				List<Statement> statements = new ArrayList<Statement>();
-				try {					
-					List<bio.knowledge.client.model.Statement> responses = getStatementsApi().getStatements(
-							Arrays.asList(emci.split(" ")),
-							pageNumber,
-							pageSize,
-							keywords,
-							semgroups,
-							// relation, TODO: NEED TO ADD 'relation' filter to this beacon-aggregator endpoint
-							customBeacons,
-							sessionId
-					);
+				try {
+					
+					/*
+					 * First iteration only supports filtering of statements
+					 * on a single predicate relation.
+					 * 
+					 * Filtering by multiple predicate identifiers is supported
+					 * by the beacon-aggregator but TKBio support will
+					 * require recoding of the code stack above this point.
+					 */
+					String relationIds = "" ;
+					List<PredicateBeacon> beacons = relation.getBeacons();
+					if(beacons!=null)
+						for(PredicateBeacon beacon : beacons) {
+							if(!relationIds.isEmpty())
+								relationIds += " ";
+							relationIds += beacon.getId();
+						}
+					
+					List<bio.knowledge.client.model.Statement> responses = 
+							getStatementsApi().getStatements(
+								Arrays.asList(emci.split(" ")),
+								pageNumber,
+								pageSize,
+								keywords,
+								semgroups,
+								relationIds,
+								customBeacons,
+								sessionId
+						);
 
 					for (bio.knowledge.client.model.Statement response : responses) {
 						
 						String id = response.getId();
 						
-						Subject statementsSubject = response.getSubject();
-						bio.knowledge.client.model.Predicate statementsPredicate = response.getPredicate();
-						bio.knowledge.client.model.Object statementsObject = response.getObject();
+						StatementSubject statementsSubject = response.getSubject();
+						StatementPredicate statementsPredicate = response.getPredicate();
+						StatementObject statementsObject = response.getObject();
 
 						ConceptImpl subject = new ConceptImpl(
 								statementsSubject.getClique(), 

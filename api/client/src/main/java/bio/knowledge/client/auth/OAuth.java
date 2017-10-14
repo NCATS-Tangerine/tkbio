@@ -13,10 +13,10 @@
 
 package bio.knowledge.client.auth;
 
-import bio.knowledge.client.Pair;
-
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
+
+import bio.knowledge.client.Pair;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-13T21:43:21.781-07:00")
 public class OAuth implements Authentication {

@@ -25,6 +25,9 @@
  */
 package bio.knowledge.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.core.AbstractIdentifiedEntity;
 
@@ -48,25 +51,52 @@ public class PredicateImpl extends AbstractIdentifiedEntity implements Predicate
 		super( predicateId, name, description ) ;
 	}
 	
-	
-	private String beaconSource = "";
+	public class PredicateBeaconImpl implements PredicateBeacon {
 
-	/*
-	 * (non-Javadoc)
-	 * @see bio.knowledge.model.Predicate#setBeaconSource(java.lang.String)
-	 */
-	@Override
-	public void setBeaconSource(String beaconSource) {
-		this.beaconSource = beaconSource;
-	}	
-	
-	/*
-	 * (non-Javadoc)
-	 * @see bio.knowledge.model.Predicate#getBeaconSource()
-	 */
-	@Override
-	public String getBeaconSource() {
-		return beaconSource;
+		private String beaconId;
+		private String predicateId;
+		private String definition;
+		
+		public PredicateBeaconImpl(
+				String beaconId,
+				String predicateId,
+				String definition
+			) {
+			this.beaconId = beaconId;
+			this.predicateId = predicateId;
+			this.definition = definition;
+		}
+		
+		@Override
+		public String getBeacon() {
+			return beaconId;
+		}
+
+		@Override
+		public String getId() {
+			return predicateId;
+		}
+
+		@Override
+		public String getDefinition() {
+			return definition;
+		}
 	}
 
+	private List<PredicateBeacon> beacons = new ArrayList<PredicateBeacon>();
+	
+	@Override
+	public void setBeacons(List<PredicateBeacon> beacons) {
+		this.beacons.addAll(beacons);
+	}
+
+	@Override
+	public List<PredicateBeacon> getBeacons() {
+		return beacons;
+	}
+
+	@Override
+	public void addBeacon(PredicateBeacon beacon) {
+		beacons.add(beacon);
+	}
 }

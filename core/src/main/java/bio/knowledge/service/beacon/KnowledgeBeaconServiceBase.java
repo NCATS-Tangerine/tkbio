@@ -96,7 +96,7 @@ public class KnowledgeBeaconServiceBase {
 	private void setupBeacons() {
 		try {
 			beaconIdMap = new HashMap<String, String>();
-			beacons = aggregatorApi.getBeacons(null);
+			beacons = aggregatorApi.getBeacons();
 			for (bio.knowledge.client.model.KnowledgeBeacon b : beacons) {
 				beaconIdMap.put(b.getId(), b.getName());
 			}

@@ -13,13 +13,13 @@
 
 package bio.knowledge.client.model;
 
-import java.util.Objects;
-import bio.knowledge.client.model.Beacon;
-import com.google.gson.annotations.SerializedName;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import com.google.gson.annotations.SerializedName;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Predicate
@@ -30,7 +30,7 @@ public class Predicate {
   private String name = null;
 
   @SerializedName("beacons")
-  private List<Beacon> beacons = new ArrayList<Beacon>();
+  private List<PredicateBeacon> beacons = new ArrayList<PredicateBeacon>();
 
   public Predicate name(String name) {
     this.name = name;
@@ -50,12 +50,12 @@ public class Predicate {
     this.name = name;
   }
 
-  public Predicate beacons(List<Beacon> beacons) {
+  public Predicate beacons(List<PredicateBeacon> beacons) {
     this.beacons = beacons;
     return this;
   }
 
-  public Predicate addBeaconsItem(Beacon beaconsItem) {
+  public Predicate addBeaconsItem(PredicateBeacon beaconsItem) {
     this.beacons.add(beaconsItem);
     return this;
   }
@@ -65,11 +65,11 @@ public class Predicate {
    * @return beacons
   **/
   @ApiModelProperty(example = "null", value = "list of metadata for beacons that support the use of this predicate relation ")
-  public List<Beacon> getBeacons() {
+  public List<PredicateBeacon> getBeacons() {
     return beacons;
   }
 
-  public void setBeacons(List<Beacon> beacons) {
+  public void setBeacons(List<PredicateBeacon> beacons) {
     this.beacons = beacons;
   }
 

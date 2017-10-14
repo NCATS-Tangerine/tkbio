@@ -420,7 +420,7 @@ paths:
                     list of metadata for beacons that support the use of this
                     predicate relation
                   items:
-                    title: Beacon
+                    title: PredicateBeacon
                     type: object
                     properties:
                       beacon:

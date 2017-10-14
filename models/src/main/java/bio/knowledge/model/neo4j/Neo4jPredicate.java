@@ -25,6 +25,9 @@
  */
 package bio.knowledge.model.neo4j;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.neo4j.ogm.annotation.NodeEntity;
 
 import bio.knowledge.model.Predicate;
@@ -50,25 +53,56 @@ public class Neo4jPredicate extends Neo4jAbstractIdentifiedEntity implements Pre
 	public Neo4jPredicate( String predicateId, String name, String description ) {
 		super( predicateId, name, description ) ;
 	}
-
-	private String beaconSource = "";
-
-	/*
-	 * (non-Javadoc)
-	 * @see bio.knowledge.model.Predicate#setBeaconSource(java.lang.String)
-	 */
-	@Override
-	public void setBeaconSource(String beaconSource) {
-		this.beaconSource = beaconSource;
-	}	
 	
-	/*
-	 * (non-Javadoc)
-	 * @see bio.knowledge.model.Predicate#getBeaconSource()
-	 */
+	public class Neo4jPredicateBeacon implements Predicate.PredicateBeacon {
+
+		private String beaconId;
+		private String predicateId;
+		private String definition;
+		
+		public Neo4jPredicateBeacon(
+				String beaconId,
+				String predicateId,
+				String definition
+			) {
+			this.beaconId = beaconId;
+			this.predicateId = predicateId;
+			this.definition = definition;
+
+		}
+		
+		@Override
+		public String getBeacon() {
+			return beaconId;
+		}
+
+		@Override
+		public String getId() {
+			return predicateId;
+		}
+
+		@Override
+		public String getDefinition() {
+			return definition;
+		}
+		
+	}
+
+	private List<PredicateBeacon> beacons = new ArrayList<PredicateBeacon>();
+	
 	@Override
-	public String getBeaconSource() {
-		return beaconSource;
+	public void setBeacons(List<PredicateBeacon> beacons) {
+		this.beacons.addAll(beacons);
+	}
+
+	@Override
+	public List<PredicateBeacon> getBeacons() {
+		return beacons;
+	}
+
+	@Override
+	public void addBeacon(PredicateBeacon beacon) {
+		beacons.add(beacon);
 	}
 	
 }

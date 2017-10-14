@@ -42,7 +42,7 @@ public class AggregatorApiTest {
     @Test
     public void getBeaconsTest() throws ApiException {
         String sessionId = null;
-        List<KnowledgeBeacon> response = api.getBeacons(sessionId);
+        List<KnowledgeBeacon> response = api.getBeacons();
 
         // TODO: test validations
     }
