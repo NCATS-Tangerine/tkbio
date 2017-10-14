@@ -539,7 +539,7 @@ paths:
                     CURIE-encoded identifier for statement (can be used to
                     retrieve associated evidence)
                 subject:
-                  title: Subject
+                  title: StatementSubject
                   type: object
                   properties:
                     clique:
@@ -562,7 +562,7 @@ paths:
                         [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt)
                         for the full list of codes)
                 predicate:
-                  title: Predicate
+                  title: StatementPredicate
                   type: object
                   properties:
                     id:
@@ -573,7 +573,7 @@ paths:
                       type: string
                       description: human readable label of concept
                 object:
-                  title: Object
+                  title: StatementObject
                   type: object
                   properties:
                     clique:
