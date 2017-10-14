@@ -52,7 +52,7 @@
   "paths": {
     "/types": {
       "get": {
-        "description": "Get a list of types and # of instances in the knowledge source, and a link to the API call for the list of equivalent terminology\n",
+        "description": "Get a list of types and number of instances in the knowledge source, and a link to the API call for the list of equivalent terminology\n",
         "tags": [
           "summary"
         ],
@@ -456,46 +456,54 @@
             "schema": {
               "type": "array",
               "items": {
-              	"title": "Predicate",
+                "title": "Predicate",
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "type": "string",
-                    "description": "CURIE-encoded identifier of predicate resource\n"
-                  },
                   "name": {
                     "type": "string",
-                    "description": "human readable name of predicate\n"
+                    "description": "exact unique human readable name of predicate relation\n"
                   },
                   "beacons": {
                     "type": "array",
-                    "description": "list of aggregator indices for beacons that support the use of this predicate\n",
+                    "description": "list of metadata for beacons that support the use of this predicate relation\n",
                     "items": {
                       "title": "Beacon",
-                      "type": "string"
+                      "type": "object",
+                      "properties": {
+                        "beacon": {
+                          "type": "string",
+                          "description": "aggregator index of the given beacon\n"
+                        },
+                        "id": {
+                          "type": "string",
+                          "description": "unique CURIE-encoded identifier of predicate aggregator indices of beacons in the given beacon\n"
+                        },
+                        "definition": {
+                          "type": "string",
+                          "description": "human readable definition assigned by the beacon for the predicate relation\n"
+                        }
+                      }
                     }
                   }
                 }
               }
             },
-            "description": "Successful response with types and frequency returned\n",
+            "description": "Successful response with predicates with CURIE and definitions indexed by beacons which support the relation\n",
             "examples": {
               "application/json": [
                 {
-                  "id": "wd:P123",
                   "name": "interacts with",
                   "beacons": [
-                    "1",
-                    "2",
-                    "3"
-                  ]
-                },
-                {
-                  "id": "wd:P456",
-                  "name": "has phenotype",
-                  "beacons": [
-                    "1",
-                    "2"
+                    {
+                      "beacon": 1,
+                      "id": "wd:P123",
+                      "definition": "influences in some manner"
+                    },
+                    {
+                      "beacon": 3,
+                      "id": "mybeacon:P456",
+                      "definition": "has a physical connection with"
+                    }
                   ]
                 }
               ]
@@ -552,7 +560,7 @@
           {
             "name": "relations",
             "in": "query",
-            "description": "a (url-encoded, space-delimited) string of predicate relation identifiers (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the statement relations retrieved for the given query seed concept. The predicate ids sent should be as published by the beacon-aggregator by the /predicates API endpoint.\n",
+            "description": "a (url-encoded, space-delimited) string of predicate relation identifiers with which to constrain the statement relations retrieved  for the given query seed concept. The predicate ids sent should  be as published by the beacon-aggregator by the /predicates API endpoint.\n",
             "required": false,
             "type": "string"
           },
