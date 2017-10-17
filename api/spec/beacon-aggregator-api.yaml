@@ -616,6 +616,7 @@ paths:
                   id:
                     - 'wd:Q14912054'
                   name: KCNJ11
+                  semanticGroup: 'GENE'
                 predicate:
                   id:
                     - 'kbp:10'
@@ -624,6 +625,7 @@ paths:
                   id:
                     - 'wd:Q2898645'
                   name: Neonatal diabetes mellitus
+                  semanticGroup: 'DISO'
                 beacon: '1'
   '/evidence/{statementId}':
     get:
