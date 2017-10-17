@@ -176,8 +176,8 @@ public class KnowledgeBeaconService {
 	 *  to set some reasonable timeouts for various queries
 	 */
 	public final int DEFAULT_TIMEOUT_WEIGHTING = 1000;
-	public final int CONCEPTS_QUERY_TIMEOUT_WEIGHTING   = 2000;
-	public final int STATEMENTS_QUERY_TIMEOUT_WEIGHTING = 10000; 
+	public final int CONCEPTS_QUERY_TIMEOUT_WEIGHTING   = 5000;
+	public final int STATEMENTS_QUERY_TIMEOUT_WEIGHTING = 12000; 
 	
 	public int apiWeightedTimeout(Integer timeOutWeighting,List<String> beacons, Integer pageSize ) {
 		int numberOfBeacons = beacons!=null ? beacons.size() : registry.countAllBeacons() ;
