@@ -101,6 +101,9 @@ public class StatementService
 		String extraFilter = query.getSimpleTextFilter();
 		String emci = query.getCurrentQueryConceptId();
 		
+		// Sometimes this function gets call without any conceptId's (e.g. during table refresh)
+		if(emci==null) return new ArrayList<Statement>();
+		
 		Optional<Set<SemanticGroup>> optionalSemanticGroupSet = query.getConceptTypes();
 		
 		String semgroups = "";

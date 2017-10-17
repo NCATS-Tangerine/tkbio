@@ -220,13 +220,13 @@ paths:
             which to match concept names and synonyms, e.g. diabetes.
           required: true
           type: string
-        - name: semgroups
+        - name: semanticGroups
           in: query
           description: >
             a (url-encoded) space-delimited set of semantic groups (specified as
             codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched
             by the main keyword search (see
-            [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for
+            [semantic groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for
             the full list of codes)
           required: false
           type: string
@@ -493,14 +493,14 @@ paths:
             concepts
           required: false
           type: string
-        - name: semgroups
+        - name: semanticGroups
           in: query
           description: >
             a (url-encoded, space-delimited) string of semantic groups
             (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain
             the subject or object concepts associated with the query seed
             concept (see
-            [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for
+            [Semantic Groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for
             the full list of codes)
           required: false
           type: string
@@ -563,12 +563,12 @@ paths:
                     name:
                       type: string
                       description: human readable label of subject concept
-                    semgroup:
+                    semanticGroup:
                       type: string
                       description: >
                         a semantic group for the subject concept (specified as a
                         code CHEM, GENE, etc. - see
-                        [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt)
+                        [Semantic Groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt)
                         for the full list of codes)
                 predicate:
                   title: StatementPredicate
@@ -597,12 +597,12 @@ paths:
                     name:
                       type: string
                       description: human readable label of object concept
-                    semgroup:
+                    semanticGroup:
                       type: string
                       description: >
                         a semantic group for the subject concept (specified as a
                         code CHEM, GENE, etc. - see
-                        [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt)
+                        [Semantic Groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt)
                         for the full list of codes)
                 beacon:
                   type: string

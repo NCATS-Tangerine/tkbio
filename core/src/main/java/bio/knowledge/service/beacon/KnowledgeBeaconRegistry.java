@@ -22,7 +22,13 @@ import bio.knowledge.model.beacon.neo4j.Neo4jKnowledgeBeacon;
 //@Service
 //@PropertySource("classpath:application.properties")
 @Component
-@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+/*
+ *  RMB: Oct 15, 2017: not sure why the beacon registry needs to have session scope
+ *  Perhaps only session management needed is for a user specific subset 
+ *  (dynamically set by the Beacons dialog) which might control 
+ *  queries of the API but not the whole catalog of beacons itself)
+ */
+//@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class KnowledgeBeaconRegistry {
 	
 	private static String masterKnowledgeBeaconList = "https://raw.githubusercontent.com/"

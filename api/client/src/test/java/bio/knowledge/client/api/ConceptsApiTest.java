@@ -60,12 +60,12 @@ public class ConceptsApiTest {
     @Test
     public void getConceptsTest() throws ApiException {
         String keywords = null;
-        String semgroups = null;
+        String semanticGroups = null;
         Integer pageNumber = null;
         Integer pageSize = null;
         List<String> beacons = null;
         String sessionId = null;
-        List<Concept> response = api.getConcepts(keywords, semgroups, pageNumber, pageSize, beacons, sessionId);
+        List<Concept> response = api.getConcepts(keywords, semanticGroups, pageNumber, pageSize, beacons, sessionId);
 
         // TODO: test validations
     }

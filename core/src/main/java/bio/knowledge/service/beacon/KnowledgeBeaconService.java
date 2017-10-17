@@ -1,21 +1,37 @@
 
 package bio.knowledge.service.beacon;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.squareup.okhttp.OkHttpClient;
 
 import bio.knowledge.client.model.StatementSubject;
 import bio.knowledge.client.model.StatementPredicate;
+import bio.knowledge.client.ApiClient;
+import bio.knowledge.client.ApiException;
+import bio.knowledge.client.api.AggregatorApi;
+import bio.knowledge.client.api.ConceptsApi;
+import bio.knowledge.client.api.EvidenceApi;
+import bio.knowledge.client.api.PredicatesApi;
+import bio.knowledge.client.api.StatementsApi;
 import bio.knowledge.client.model.StatementObject;
 
 import bio.knowledge.model.Annotation;
@@ -38,7 +54,7 @@ import bio.knowledge.model.Statement;
  *         it is necessary because we're asynchronously setting their ApiClient
  *         objects (which encapsulate the URI to be queried) in
  *         {@code GenericDataService}.
- *         <br><br>
+ *         <br/><br/>
  *         The methods in this class are ugly and confusing.. But it's somewhat
  *         unavoidable. Take a look at how they are used in
  *         {@code GenericKnowledgeService}. A SupplierBuilder builds a
@@ -47,12 +63,73 @@ import bio.knowledge.model.Statement;
  *
  */
 @Service
-public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
+public class KnowledgeBeaconService {
 	
-	private Logger _logger = LoggerFactory.getLogger(KnowledgeBeaconServiceBase.class);
+	private Logger _logger = LoggerFactory.getLogger(KnowledgeBeaconService.class);
 
+	@Value( "${beaconAggregator.url}" )
+	private String AGGREGATOR_BASE_URL;
+	
 	@Autowired
 	private KnowledgeBeaconRegistry registry;
+	
+	public String getAggregatorBaseUrl() {
+		if (!AGGREGATOR_BASE_URL.startsWith("http://") && !AGGREGATOR_BASE_URL.startsWith("https://")) {
+			AGGREGATOR_BASE_URL = "http://" + AGGREGATOR_BASE_URL;
+		}
+		
+		return AGGREGATOR_BASE_URL;
+	}
+	
+	private Map<String, String> beaconIdMap = null;
+	private List<bio.knowledge.client.model.KnowledgeBeacon> beacons = null;
+	
+	//private ApiClient apiClient;
+	private ConceptsApi conceptsApi;
+	private PredicatesApi predicatesApi;
+	private StatementsApi statementsApi;
+	private EvidenceApi evidenceApi;
+	private AggregatorApi aggregatorApi;
+	
+	public ConceptsApi getConceptsApi(int pageSize) {
+		
+		conceptsApi.getApiClient().setConnectTimeout( apiWeightedTimeout( CONCEPTS_QUERY_TIMEOUT_WEIGHTING, new Integer(pageSize)) );
+		_logger.debug("kbs.getConcepts() conceptsApi() connect timeout is currently set to '"+new Integer(conceptsApi.getApiClient().getConnectTimeout())+"' milliseconds");
+
+		OkHttpClient httpClient = conceptsApi.getApiClient().getHttpClient();
+		httpClient.setReadTimeout( apiWeightedTimeout( CONCEPTS_QUERY_TIMEOUT_WEIGHTING, new Integer(pageSize)), TimeUnit.MILLISECONDS);
+		_logger.debug("kbs.getConcepts() conceptsApi() HTTP client read timeout is currently set to '"+new Long(httpClient.getReadTimeout())+"' milliseconds");
+
+		return conceptsApi;
+	}
+	
+	public ConceptsApi getConceptsApi() {
+		return getConceptsApi(0);  // default without pagesize
+	}
+	
+	public PredicatesApi getPredicatesApi() {
+		return this.predicatesApi;
+	}
+	
+	public StatementsApi getStatementsApi(int pageSize) {
+		
+		statementsApi.getApiClient().setConnectTimeout( apiWeightedTimeout( STATEMENTS_QUERY_TIMEOUT_WEIGHTING, new Integer(pageSize)) );
+		_logger.debug("kbs.getStatements() getStatementsApi() connect timeout is currently set to '"+new Integer(statementsApi.getApiClient().getConnectTimeout())+"' milliseconds");
+
+		OkHttpClient httpClient = statementsApi.getApiClient().getHttpClient();
+		httpClient.setReadTimeout( apiWeightedTimeout( STATEMENTS_QUERY_TIMEOUT_WEIGHTING, new Integer(pageSize)), TimeUnit.MILLISECONDS);
+		_logger.debug("kbs.getStatements() getStatementsApi() HTTP client read timeout is currently set to '"+new Long(httpClient.getReadTimeout())+"' milliseconds");
+
+		return statementsApi;
+	}
+	
+	public EvidenceApi getEvidenceApi() {
+		return this.evidenceApi;
+	}
+	
+	public AggregatorApi getAggregatorApi() {
+		return this.aggregatorApi;
+	}
 	
 	public static final long     BEACON_TIMEOUT_DURATION = 1;
 	public static final TimeUnit BEACON_TIMEOUT_UNIT = TimeUnit.MINUTES;
@@ -65,7 +142,7 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 	 * @param pageSize
 	 * @return
 	 */
-	public long weightedTimeout( List<String> beacons, Integer pageSize) {
+	public long weightedTimeout( List<String> beacons, Integer pageSize ) {
 		long timescale;
 		if(!(beacons==null || beacons.isEmpty())) 
 			timescale = beacons.size();
@@ -93,6 +170,83 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 		return weightedTimeout(null, 0); // 
 	}
 	
+	/*
+	 *  ApiClient timeout weightings here are in milliseconds
+	 *  These are used below alongside beacon number and pagesizes 
+	 *  to set some reasonable timeouts for various queries
+	 */
+	public final int DEFAULT_TIMEOUT_WEIGHTING = 1000;
+	public final int CONCEPTS_QUERY_TIMEOUT_WEIGHTING   = 2000;
+	public final int STATEMENTS_QUERY_TIMEOUT_WEIGHTING = 10000; 
+	
+	public int apiWeightedTimeout(Integer timeOutWeighting,List<String> beacons, Integer pageSize ) {
+		int numberOfBeacons = beacons!=null ? beacons.size() : registry.countAllBeacons() ;
+		_logger.debug("apiWeightedTimeout parameters: timeout weight: "+ timeOutWeighting + ", # beacons: "+ numberOfBeacons +", data page size: "+ pageSize);
+		return timeOutWeighting*(int)weightedTimeout(beacons,pageSize);
+	}
+	
+	public int apiWeightedTimeout(Integer timeOutWeighting, Integer pageSize) {
+		return apiWeightedTimeout(timeOutWeighting, null, pageSize );
+	}
+	
+	public int apiWeightedTimeout(Integer timeOutWeighting) {
+		return apiWeightedTimeout(timeOutWeighting, 0);
+	}
+	
+	public int apiWeightedTimeout() {
+		return apiWeightedTimeout(DEFAULT_TIMEOUT_WEIGHTING);
+	}
+	
+	@PostConstruct
+	private void initBeacons() {
+		
+		/*
+		 *  RMB: Oct 16, 2017
+		 *  This function originally assigned a single ApiCLient 
+		 *  for all the various distinct Api data type (concepts, 
+		 *  predicates, statements, et al.) classes, but it is 
+		 *  unclear if this is the right thing to do since one 
+		 *  may need to process some concurrent activities, 
+		 *  class-specific timeouts, etc. Therefore, I have 
+		 *  rewritten the code to create a separate 
+		 *  ApiClient instance for each data type class.
+		 */
+		conceptsApi = new ConceptsApi(new ApiClient().setBasePath(AGGREGATOR_BASE_URL));
+		predicatesApi = new PredicatesApi(new ApiClient().setBasePath(AGGREGATOR_BASE_URL));
+		statementsApi = new StatementsApi(new ApiClient().setBasePath(AGGREGATOR_BASE_URL));
+		evidenceApi = new EvidenceApi(new ApiClient().setBasePath(AGGREGATOR_BASE_URL));
+		aggregatorApi = new AggregatorApi(new ApiClient().setBasePath(AGGREGATOR_BASE_URL));
+	}
+	
+	public List<bio.knowledge.client.model.KnowledgeBeacon> getKnowledgeBeacons() {
+		if (beacons == null) {
+			setupBeacons();
+		}
+		
+		return beacons;
+	}
+	
+	public Map<String, String> getBeaconIdMap() {
+		if (beaconIdMap == null) {
+			setupBeacons();
+		}
+		
+		return this.beaconIdMap;
+	}
+	
+	private void setupBeacons() {
+		try {
+			beaconIdMap = new HashMap<String, String>();
+			beacons = aggregatorApi.getBeacons();
+			for (bio.knowledge.client.model.KnowledgeBeacon b : beacons) {
+				beaconIdMap.put(b.getId(), b.getName());
+			}
+		} catch (ApiException e) {
+			beaconIdMap = null;
+			throw new RuntimeException("Could not connect to the Beacon Aggregator. Make sure that it is online and that you have set up application.properties properly");
+		}
+	}
+
 	private List<String> customBeacons = null;
 	private String sessionId = null;
 	
@@ -102,6 +256,10 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 	
 	public void setCustomBeacons(List<String> customBeacons){ 
 		this.customBeacons = customBeacons;
+	}
+	
+	public List<String>  getCustomBeacons(){ 
+		return customBeacons;
 	}
 	
 	public void setSessionId(String sessionId) {
@@ -135,17 +293,25 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 
 			@Override
 			public List<Concept> get() {
+				
+				// Utility time variable for profiling
+				Instant start = Instant.now();
+				
 				List<Concept> concepts = new ArrayList<Concept>();
 				
 				try {
-					List<bio.knowledge.client.model.Concept> responses = getConceptsApi().getConcepts(
+					
+					_logger.debug("kbs.getConcepts() - before responses");
+					
+					List<bio.knowledge.client.model.Concept> responses = getConceptsApi(pageSize).getConcepts(
 							keywords,
 							semanticGroups,
 							pageNumber,
 							pageSize,
-							customBeacons,
+							getCustomBeacons(),
 							sessionId
 					);
+
 					for (bio.knowledge.client.model.Concept response : responses) {
 						SemanticGroup semgroup;
 						try {
@@ -169,10 +335,18 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 						concept.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
 						concepts.add(concept);
 					}
+
+					_logger.debug("Concept retrieval successfully completed?");
 					
 				} catch (Exception e) {
-					
+					_logger.error("getConcepts() ERROR: "+e.getMessage());
 				}
+				
+				Instant end = Instant.now();
+				
+				// Time of exit either after success or timeout failure
+				long ms = start.until(end, ChronoUnit.MILLIS);
+				_logger.error("getConcepts() ApiClient data processing duration was: "+new Long(ms)+" milliseconds.");
 				
 				return concepts;
 			}
@@ -190,7 +364,7 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 				
 				try {
 					List<bio.knowledge.client.model.ConceptWithDetails> responses = 
-							getConceptsApi().getConceptDetails(conceptId, customBeacons, sessionId);
+							getConceptsApi().getConceptDetails(conceptId, getCustomBeacons(), sessionId);
 					
 					for (bio.knowledge.client.model.ConceptWithDetails response : responses) {
 						SemanticGroup semgroup;
@@ -293,6 +467,10 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 
 			@Override
 			public List<Statement> get() {
+				
+				// Utility time variable for profiling
+				Instant start = Instant.now();
+				
 				List<Statement> statements = new ArrayList<Statement>();
 				try {
 					
@@ -315,18 +493,22 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 							}
 					}
 					
+					_logger.debug("kbs.getStatements() - before responses");
+				
 					List<bio.knowledge.client.model.Statement> responses = 
-							getStatementsApi().getStatements(
+							getStatementsApi(pageSize).getStatements(
 								Arrays.asList(emci.split(" ")),
 								pageNumber,
 								pageSize,
 								keywords,
 								semgroups,
 								relationIds,
-								customBeacons,
+								getCustomBeacons(),
 								sessionId
 						);
 
+					_logger.debug("kbs.getStatements() - after responses");
+					
 					for (bio.knowledge.client.model.Statement response : responses) {
 						
 						String id = response.getId();
@@ -338,7 +520,7 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 						ConceptImpl subject = new ConceptImpl(
 								statementsSubject.getClique(), 
 								statementsSubject.getId(), 
-								statementsSubject.getSemgroup(), 
+								statementsSubject.getSemanticGroup(), 
 								statementsSubject.getName()
 						);
 
@@ -347,7 +529,7 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 						ConceptImpl object = new ConceptImpl(
 								statementsObject.getClique(), 
 								statementsObject.getId(), 
-								statementsObject.getSemgroup(), 
+								statementsObject.getSemanticGroup(), 
 								statementsObject.getName()
 						);
 						
@@ -358,10 +540,17 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 						statements.add(statement);
 					}
 
+					_logger.debug("Statement retrieval successfully completed?");
 
 				} catch (Exception e) {
-					_logger.error("getStatement() ERROR: "+e.getMessage());
+					_logger.error("getStatements() ERROR: "+e.getMessage());
 				}
+				
+				Instant end = Instant.now();
+
+				// Time of exit either after success or timeout failure
+				long ms = start.until(end, ChronoUnit.MILLIS);
+				_logger.error("getStatements() ApiClient data processing duration was: "+new Long(ms)+" milliseconds.");
 				
 				return statements;
 			}
@@ -395,7 +584,7 @@ public class KnowledgeBeaconService extends KnowledgeBeaconServiceBase {
 							keywords,
 							pageNumber,
 							pageSize,
-							customBeacons,
+							getCustomBeacons(),
 							sessionId
 					);
 					

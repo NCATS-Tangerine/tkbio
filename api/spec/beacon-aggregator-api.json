@@ -261,9 +261,9 @@
             "type": "string"
           },
           {
-            "name": "semgroups",
+            "name": "semanticGroups",
             "in": "query",
-            "description": "a (url-encoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n",
+            "description": "a (url-encoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [Semantic Groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n",
             "required": false,
             "type": "string"
           },
@@ -551,9 +551,9 @@
             "type": "string"
           },
           {
-            "name": "semgroups",
+            "name": "semanticGroups",
             "in": "query",
-            "description": "a (url-encoded, space-delimited) string of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n",
+            "description": "a (url-encoded, space-delimited) string of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see [Semantic Groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n",
             "required": false,
             "type": "string"
           },
@@ -612,9 +612,9 @@
                         "type": "string",
                         "description": "human readable label of subject concept"
                       },
-                      "semgroup": {
+                      "semanticGroup": {
                         "type": "string",
-                        "description": "a semantic group for the subject concept (specified as a code CHEM, GENE, etc. - see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n"
+                        "description": "a semantic group for the subject concept (specified as a code CHEM, GENE, etc. - see [Semantic Groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n"
                       }
                     }
                   },
@@ -648,9 +648,9 @@
                         "type": "string",
                         "description": "human readable label of object concept"
                       },
-                      "semgroup": {
+                      "semanticGroup": {
                         "type": "string",
-                        "description": "a semantic group for the subject concept (specified as a code CHEM, GENE, etc. - see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n"
+                        "description": "a semantic group for the subject concept (specified as a code CHEM, GENE, etc. - see [Semantic Groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n"
                       }
                     }
                   },
