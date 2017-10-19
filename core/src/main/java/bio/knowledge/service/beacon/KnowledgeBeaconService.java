@@ -338,8 +338,16 @@ public class KnowledgeBeaconService {
 		return future;
 	}
 	
+	/**
+	 * The beacon aggregator called by this method via the ConceptsApi, searches across the clique identifier.
+	 * 
+	 * @param cliqueId
+	 * @param beacons
+	 * @param sessionId
+	 * @return
+	 */
 	public CompletableFuture<List<Concept>> getConceptDetails( 
-			String conceptId,
+			String cliqueId,
 			List<String> beacons,
 			String sessionId
 		) {
@@ -351,7 +359,7 @@ public class KnowledgeBeaconService {
 				
 				try {
 					List<bio.knowledge.client.model.ConceptWithDetails> responses = 
-							getConceptsApi().getConceptDetails( conceptId, beacons, sessionId );
+							getConceptsApi().getConceptDetails( cliqueId, beacons, sessionId );
 					
 					for (bio.knowledge.client.model.ConceptWithDetails response : responses) {
 						SemanticGroup semgroup;
@@ -628,7 +636,7 @@ public class KnowledgeBeaconService {
 	}
 	
 	public int getKnowledgeBeaconCount( List<String> beacons ) {
-		int cbsize = beacons.size();
+		int cbsize = beacons==null?0:beacons.size();
 		return cbsize > 0 ? cbsize : countAllBeacons();
 	}
 	

@@ -288,7 +288,7 @@ public class ConceptDetailsHandler {
 				if (descriptor.isWikiDatum()) {
 					valueActionButton.setCaption("Add to Map");
 					valueActionButton.addClickListener(
-							e -> addItemToMapFromList(currentConcept, descriptor.getKey(), valueList, itemMap));
+							e -> addWikiDataItemToMapFromList(currentConcept, descriptor.getKey(), valueList, itemMap));
 
 				} else {
 					valueActionButton.setCaption("Display");
@@ -374,12 +374,17 @@ public class ConceptDetailsHandler {
 		}
 	}
 
-	private void addItemToMapFromList(Concept subject, String relation, ComboBox source, Map<String, String> itemMap) {
+	private void addWikiDataItemToMapFromList(Concept subject, String relation, ComboBox source, Map<String, String> itemMap) {
 		
 		String id = (String) source.getValue();
 		if (itemMap.containsKey(id)) {
 			
+			/*
+			 * WikiData id's are often clique id's, but perhaps not always... 
+			 * this 'annotate' call may occasionally fail?
+			 */
 			Concept object = conceptService.annotate("wd:" + itemMap.get(id));
+			
 			if(object==null) return;
 			
 			// If annotated 'object' concept exists, add it to the concept map!

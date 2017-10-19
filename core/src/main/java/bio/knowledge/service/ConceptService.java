@@ -468,17 +468,16 @@ public class ConceptService
 	}
 
 	/**
-	 * @param cui of the Concept to match
+	 * @param cliqueId CURIE of the Concept to match 
+	 * @parem list of beacons to search against (default: empty list triggers search against all known beacons)
 	 * @return
 	 */
-	public Concept findById(
-			String conceptId
-		) {
+	public Concept findByCliqueId( String cliqueId, List<String> beacons ) {
 		
-		List<String> beacons = query.getCustomBeacons();
 		String sessionId = query.getUserSessionId();
 
-    	CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId,beacons,sessionId);
+    	CompletableFuture<List<Concept>> future = 
+    			kbService.getConceptDetails(cliqueId,beacons,sessionId);
    
     	try {
 			List<Concept> concepts = future.get(
@@ -492,35 +491,34 @@ public class ConceptService
 	}
 	
 	/**
+	 * @param CURIE concept identifier of the Concept to match across current session list of beacons
+	 * 
+	 * @return Concept found
+	 */
+	public Concept findByCliqueId( String cliqueId ) {
+		List<String> beacons = query.getCustomBeacons();
+		return findByCliqueId( cliqueId, beacons ) ;
+		
+	}
+	
+	/**
+	 * 
+	 * @param CURIE concept clique identifier to match across all known beacons
+	 * 
+	 * @return Concept returned with detailed annotation, if found
+	 */
+	public Concept searchAllBeacons( String cliqueId ) {
+		return findByCliqueId( cliqueId, null ) ;
+		
+	}
+	
+	/**
 	 * @param ConceptId
 	 * @return Concept
 	 */
-	public Optional<Concept> getDetailsByConceptId( String id ) {
+	public Optional<Concept> getDetailsByCliqueId( String id ) {
 		
-		Concept concept = findById(id) ;
-		
-		/*  // deprecated complexity!
-		if(RdfUtil.getQualifier(conceptId).isEmpty()) {
-			/* 
-			 * No qualifier on CST Id: assume that this is a 
-			 * SemMedDb recorded Concept or Concept 
-			 * for look up in main database?
-			 * /
-			if(conceptId.startsWith("C")) {
-				// this is a root concept node CUI?
-				concept = conceptService.findByCui(conceptId) ;
-			} else {
-				concept = ConceptRepository.findByConceptId(conceptId);
-			}
-		} else {
-			/* 
-			 * This is a qualified URI identifying a non-SemMedDb node, 
-			 * which must be resolved elsewhere (i.e. in WikiData?)
-			 * Note that the system treats WikiData the same way as 'getDetails()'
-			 * /
-			concept = getQualifiedDataItem(conceptId) ;
-		}
-		*/
+		Concept concept = findByCliqueId(id) ;
 		
 		if(concept==null) {
 			return Optional.empty();
@@ -615,12 +613,10 @@ public class ConceptService
 	 * @param ConceptId
 	 * @return Concept
 	 */
-	public Optional<Concept> getDetailsById(
-			String id
-		) {
+	public Optional<Concept> getDetailsById( String id ) {
 		
 		// Try first to find this item in the local database(?)
-		Concept concept = findById(id);
+		Concept concept = findByCliqueId(id);
 		if(concept==null) {
 			/* 
 			 * This is a qualified URI identifying a local data item, 
@@ -891,9 +887,7 @@ public class ConceptService
      * @param predicate
      * @return
      */
-    public Concept annotate(
-    		String id
-		) {
+    public Concept annotate( String id ) {
 
     	if(id.isEmpty()) {
     		_logger.warn(
@@ -918,7 +912,7 @@ public class ConceptService
 		if (cachedConcept == null) {
 
 			// Not cached... then first, attempt to retrieve it from the local database
-			Optional<Concept> databaseConceptOpt = getDetailsByConceptId(id);
+			Optional<Concept> databaseConceptOpt = getDetailsByCliqueId(id);
 			
 			if(databaseConceptOpt.isPresent()) {
 				concept = databaseConceptOpt.get();

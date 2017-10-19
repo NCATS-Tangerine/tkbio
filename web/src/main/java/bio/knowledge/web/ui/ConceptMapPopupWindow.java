@@ -194,23 +194,33 @@ public class ConceptMapPopupWindow {
 		conceptDetailsWindowOnGraph.center();
 	}
 
-	public void conceptMapNodePopUp(String accessionId, String name, int x, int y) {
+	/**
+	 *  Nodes are assumed to be globally identified by clique identifiers.
+	 *  This method attempts to return a fully annotation Concept object
+	 *  aggregating concept details across all beacons.
+	 *  
+	 * @param cliqueId
+	 * @param name
+	 * @param x
+	 * @param y
+	 */
+	public void conceptMapNodePopUp(String cliqueId, String name, int x, int y) {
 		
-		Concept concept = conceptService.findById(accessionId);
+		Concept concept = conceptService.searchAllBeacons(cliqueId);
 		
-		boolean conceptIsOffline = false;
+		boolean conceptIsAvailable = true;
 		
 		if (concept == null) {
 			try {
-				concept = conceptService.getQualifiedDataItem(accessionId);
-				conceptIsOffline = true;
+				concept = conceptService.getQualifiedDataItem(cliqueId);
+				conceptIsAvailable = true;
 			} catch (DataSourceException e) {
-				
+				conceptIsAvailable = false;
 			}
 		}
 		
-		if (conceptIsOffline) {
-			details.addComponent(new Label("Cannot find concept — datasource may be offline."));
+		if (!conceptIsAvailable) {
+			details.addComponent(new Label("Cannot find concept '"+name+"'. Datasource may be offline?"));
 		}
 		
 		final Concept selectedConcept = concept;
@@ -229,7 +239,7 @@ public class ConceptMapPopupWindow {
 		if (showRelations != null)
 			buttonsLayout.addComponent(showRelations);
 		
-		if (selectedConcept == null || conceptIsOffline) {
+		if (selectedConcept == null || conceptIsAvailable) {
 			addAnno.setEnabled(false);
 			showRelations.setEnabled(false);
 		}
@@ -247,7 +257,7 @@ public class ConceptMapPopupWindow {
 				if (dialog.isConfirmed()) {
 
 					// Confirmed to continue
-					parentUi.getConceptMap().deleteNodefromConceptMap(accessionId);
+					parentUi.getConceptMap().deleteNodefromConceptMap(cliqueId);
 					conceptDetailsWindowOnGraph.close();
 					
 				} else {
@@ -445,14 +455,14 @@ public class ConceptMapPopupWindow {
 			// statement doesn't exist in database
 			if (statement == null) {
 				// find subject
-				Concept subject = conceptService.findById(sourceId);
+				Concept subject = conceptService.findByCliqueId(sourceId);
 				if (subject == null) {
 					// subject = new Concept();
 					return;
 				}
 
 				// find object
-				Concept object = conceptService.findById(targetId);
+				Concept object = conceptService.findByCliqueId(targetId);
 				if (object == null) {
 					// object = new Concept();
 					return;
