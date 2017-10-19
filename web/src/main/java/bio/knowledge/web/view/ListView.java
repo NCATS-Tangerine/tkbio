@@ -324,6 +324,11 @@ public class ListView extends BaseView {
 			refresh();
 		}
 		
+		private int countKnowledgeBeacons() {
+			List<String> beacons = query.getCustomBeacons();
+			return kbService.getKnowledgeBeaconCount(beacons);
+		}
+		
 		private int loadDataPage(int pageNumber) {
 			try {
 				String filter;
@@ -338,12 +343,14 @@ public class ListView extends BaseView {
 				}
 				
 				// We always want to fill the table with enough rows so that the scroll bar shows.
+				
 				int rows = (int) dataTable.getHeightByRows();
-				int beacons = kbService.getKnowledgeBeaconCount();
+				int beacons = countKnowledgeBeacons();
 				int pageSize = (int) (rows * 2 / beacons) + 1;
 				List<? extends IdentifiedEntity> data;
 				String previousId = null;
 				int gatheredDataCount = 0;
+				
 				do {
 					data = pager.getDataPage(pageNumber, pageSize, filter != null ? filter.trim() : null, sorter, isAscending);
 					
@@ -1667,8 +1674,12 @@ public class ListView extends BaseView {
 				// x+=400 ;
 			} else
 				throw new RuntimeException("Unsupported Relationship Concept Role?");
+
+			List<String> beacons = query.getCustomBeacons();
+			String sessionId = query.getUserSessionId();
 			
-			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId);
+			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId,beacons,sessionId);
+			
 			Concept selectedConcept;
 			try {
 				List<Concept> concepts = 

@@ -28,22 +28,19 @@ import bio.knowledge.web.ui.DesktopUI;
 
 public class KnowledgeBeaconWindow extends Window {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3216657180755749441L;
 	
 	private final KnowledgeBeaconRegistry kbRegistry;
-	private final KnowledgeBeaconService kbService;
+	private final KnowledgeBeaconService  kbService;
 	
 	private List<KnowledgeBeacon> defaultBeacons;
-	private String sessionId = RandomStringUtils.randomAlphanumeric(20);
 
 	private OptionGroup optionGroup;
 
 	public KnowledgeBeaconWindow(KnowledgeBeaconRegistry kbRegistry, KBQuery query, KnowledgeBeaconService kbService) {
+
 		this.kbRegistry = kbRegistry;
-		this.kbService = kbService;
+		this.kbService  = kbService;
 		
 		defaultBeacons = kbService.getKnowledgeBeacons();
 		
@@ -60,7 +57,7 @@ public class KnowledgeBeaconWindow extends Window {
 		mainLayout.setMargin(true);
 		mainLayout.setSpacing(true);
 		
-		VerticalLayout chooseKbPanel = buildChooseKbPanel();
+		VerticalLayout chooseKbPanel = buildChooseKbPanel(query);
 		chooseKbPanel.addComponent(optionGroup);
 		
 //		FormLayout addKbPanel = buildAddKbPanel();
@@ -80,36 +77,36 @@ public class KnowledgeBeaconWindow extends Window {
 		mainLayout.addComponents( optionGroup, closeButton );
 		mainLayout.setComponentAlignment(closeButton, Alignment.BOTTOM_RIGHT);
 		
-		SingleRadioButton radioButton = new SingleRadioButton("Record logs", false);
+		SingleRadioButton recordLogsRadioButton = new SingleRadioButton("Record logs", false);
 		Button viewLogs = new Button("View Logs");
-		viewLogs.setEnabled(kbService.hasSessionId());
-		radioButton.setChecked(kbService.hasSessionId());
+		viewLogs.setEnabled(query.hasSessionId());
+		recordLogsRadioButton.setChecked(query.hasSessionId());
 		
 		viewLogs.addClickListener(event -> {
-			getUI().getPage().open(kbService.getAggregatorBaseUrl() + "/errorlog?sessionId=" + sessionId, "_blank");
+			getUI().getPage().open(kbService.getAggregatorBaseUrl() + "/errorlog?sessionId=" + query.getUserSessionId(), "_blank");
 		});
 		
-		radioButton.addValueChangeListener(event -> {
-			if (radioButton.isChecked()) {
+		recordLogsRadioButton.addValueChangeListener(event -> {
+			if (recordLogsRadioButton.isChecked()) {
 				viewLogs.setEnabled(true);
-				kbService.setSessionId(sessionId);
+				query.setUserSessionId();
 			} else {
 				viewLogs.setEnabled(false);
-				kbService.clearSessionId();
+				query.clearUserSessionId();
 			}
 		});
 		
-		mainLayout.addComponent(radioButton);
+		mainLayout.addComponent(recordLogsRadioButton);
 		mainLayout.addComponent(viewLogs);
-		
-		
 	}
 
-	private VerticalLayout buildChooseKbPanel() {
+	private VerticalLayout buildChooseKbPanel(KBQuery query) {
+		
 		VerticalLayout panel = new VerticalLayout();
+		
 		optionGroup.setCaption("Set Active Knowledge Beacons:");
 		
-		refreshOptionGroup();
+		refreshOptionGroup(query.getCustomBeacons());
 		
 		optionGroup.addValueChangeListener(event -> {
 			
@@ -124,7 +121,7 @@ public class KnowledgeBeaconWindow extends Window {
 						).collect(Collectors.toList())
 			);
 			
-			kbService.setCustomBeacons(beaconIds);
+			query.setCustomBeacons(beaconIds);
 			
 		});
 		
@@ -133,7 +130,14 @@ public class KnowledgeBeaconWindow extends Window {
 		return panel;
 	}
 
-	private FormLayout buildAddKbPanel() {
+	/*
+	 * Users don't add ad hoc beacons to TKBio anymore but register them
+	 * outside the system, at Github NCATS-Tangerine/translator-knowledge-beacon
+	 * or perhaps, at Smart-API.info?
+	 */
+	@Deprecated
+	private FormLayout buildAddKbPanel(KBQuery query) {
+		
 		FormLayout flayout = new FormLayout();
 		flayout.setMargin(false);
 		flayout.setWidth(3, Unit.INCH);
@@ -165,6 +169,7 @@ public class KnowledgeBeaconWindow extends Window {
 		
 		Button addButton = new Button();
 		addButton.setCaption("Add Beacon");
+		
 		addButton.addClickListener(event -> {
 //				kbRegistry.addKnowledgeBeacon("name", "description", textField.getValue());
 //				Notification.show("Knowledge beacon " + textField.getValue() + " added");
@@ -182,7 +187,8 @@ public class KnowledgeBeaconWindow extends Window {
 			}
 			
 			kbRegistry.addKnowledgeBeacon(name, description, url);
-			refreshOptionGroup();
+			
+			refreshOptionGroup(query.getCustomBeacons());
 		});
 	
 		flayout.addComponents(nameField, urlField, descrArea, addButton);
@@ -191,13 +197,18 @@ public class KnowledgeBeaconWindow extends Window {
 		return flayout;
 	}
 	
-	private void refreshOptionGroup() {
+	private void refreshOptionGroup(List<String> customBeacons) {
+		
 		optionGroup.removeAllItems();
 		optionGroup.setMultiSelect(true);
+		
 		for (KnowledgeBeacon kb : defaultBeacons) {
+			
 			optionGroup.addItem(kb);
 			optionGroup.setItemCaption(kb, kb.getName() + " - " + kb.getUrl());
-			optionGroup.select(kb);
+			
+			if( customBeacons.isEmpty() || customBeacons.contains(kb.getId())) 
+				optionGroup.select(kb);
 		}
 	}
 	

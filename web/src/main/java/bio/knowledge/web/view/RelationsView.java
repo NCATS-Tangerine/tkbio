@@ -79,9 +79,21 @@ public class RelationsView extends BaseView {
 	}
 	
 	private void loadDataPage(int pageNumber) {
-		CompletableFuture<List<Statement>> future = kbService.getStatements(
-				"wd:Q126691", null, null, null, pageNumber, DATAPAGE_SIZE
-		);
+		
+		List<String> beacons = query.getCustomBeacons();
+		String sessionId = query.getUserSessionId();
+		
+		CompletableFuture<List<Statement>> future = 
+				kbService.getStatements(
+									"wd:Q126691", 
+									null, 
+									null, 
+									null, 
+									pageNumber, 
+									DATAPAGE_SIZE,
+									beacons,
+									sessionId
+								);
 		
 		try {
 			List<Statement> statements = future.get(TIME_OUT, TIME_UNIT);

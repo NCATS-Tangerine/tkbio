@@ -44,6 +44,7 @@ import bio.knowledge.model.Predicate.PredicateBeacon;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
+import bio.knowledge.service.KBQuery;
 
 /**
  * 
@@ -222,7 +223,6 @@ public class KnowledgeBeaconService {
 		if (beacons == null) {
 			setupBeacons();
 		}
-		
 		return beacons;
 	}
 	
@@ -230,8 +230,11 @@ public class KnowledgeBeaconService {
 		if (beaconIdMap == null) {
 			setupBeacons();
 		}
-		
-		return this.beaconIdMap;
+		return beaconIdMap;
+	}
+	
+	public int countAllBeacons() {
+		return getBeaconIdMap().size();
 	}
 	
 	private void setupBeacons() {
@@ -247,33 +250,10 @@ public class KnowledgeBeaconService {
 		}
 	}
 
-	private List<String> customBeacons = null;
-	private String sessionId = null;
-	
 	private String getBeaconNameFromId(String id) {
 		return getBeaconIdMap().get(id);
 	}
-	
-	public void setCustomBeacons(List<String> customBeacons){ 
-		this.customBeacons = customBeacons;
-	}
-	
-	public List<String>  getCustomBeacons(){ 
-		return customBeacons;
-	}
-	
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
-	}
-	
-	public void clearCustomBeacons() {
-		customBeacons = null;
-	}
-	
-	public void clearSessionId() {
-		sessionId = null;
-	}
-	
+
 	/**
 	 * Gets a list of concepts satisfying a query with the given parameters.
 	 * @param keywords
@@ -287,7 +267,10 @@ public class KnowledgeBeaconService {
 	public CompletableFuture<List<Concept>> getConcepts(String keywords,
 			String semanticGroups,
 			int pageNumber,
-			int pageSize
+			int pageSize,
+			List<String> beacons,
+			String sessionId
+			
 	) {
 		CompletableFuture<List<Concept>> future = CompletableFuture.supplyAsync(new Supplier<List<Concept>>() {
 
@@ -308,7 +291,7 @@ public class KnowledgeBeaconService {
 							semanticGroups,
 							pageNumber,
 							pageSize,
-							getCustomBeacons(),
+							beacons,
 							sessionId
 					);
 
@@ -355,7 +338,11 @@ public class KnowledgeBeaconService {
 		return future;
 	}
 	
-	public CompletableFuture<List<Concept>> getConceptDetails(String conceptId) {
+	public CompletableFuture<List<Concept>> getConceptDetails( 
+			String conceptId,
+			List<String> beacons,
+			String sessionId
+		) {
 		CompletableFuture<List<Concept>> future = CompletableFuture.supplyAsync(new Supplier<List<Concept>>() {
 
 			@Override
@@ -364,7 +351,7 @@ public class KnowledgeBeaconService {
 				
 				try {
 					List<bio.knowledge.client.model.ConceptWithDetails> responses = 
-							getConceptsApi().getConceptDetails(conceptId, getCustomBeacons(), sessionId);
+							getConceptsApi().getConceptDetails( conceptId, beacons, sessionId );
 					
 					for (bio.knowledge.client.model.ConceptWithDetails response : responses) {
 						SemanticGroup semgroup;
@@ -461,7 +448,9 @@ public class KnowledgeBeaconService {
 			String semgroups,
 			Predicate relation,
 			int pageNumber,
-			int pageSize
+			int pageSize,
+			List<String> beacons,
+			String sessionId
 	) {
 		CompletableFuture<List<Statement>> future = CompletableFuture.supplyAsync(new Supplier<List<Statement>>() {
 
@@ -503,7 +492,7 @@ public class KnowledgeBeaconService {
 								keywords,
 								semgroups,
 								relationIds,
-								getCustomBeacons(),
+								beacons,
 								sessionId
 						);
 
@@ -567,7 +556,9 @@ public class KnowledgeBeaconService {
 			String statementId,
 			String keywords,
 			int pageNumber,
-			int pageSize
+			int pageSize,
+			List<String> beacons,
+			String sessionId
 	) {
 		CompletableFuture<List<Annotation>> future = CompletableFuture.supplyAsync(new Supplier<List<Annotation>>() {
 
@@ -584,7 +575,7 @@ public class KnowledgeBeaconService {
 							keywords,
 							pageNumber,
 							pageSize,
-							getCustomBeacons(),
+							beacons,
 							sessionId
 					);
 					
@@ -620,9 +611,11 @@ public class KnowledgeBeaconService {
 			Statement statement,
 			String keywords,
 			int pageNumber,
-			int pageSize
+			int pageSize,
+			List<String> beacons,
+			String sessionId
 		) {
-		return getEvidences(statement.getId(), keywords, pageNumber, pageSize);
+		return getEvidences( statement.getId(), keywords, pageNumber, pageSize, beacons, sessionId );
 	}
 
 	/**
@@ -634,12 +627,9 @@ public class KnowledgeBeaconService {
 		return emci;
 	}
 	
-	public int getKnowledgeBeaconCount() {
-		return customBeacons != null ? customBeacons.size() : getBeaconIdMap().size();
-	}
-
-	public boolean hasSessionId() {
-		return this.sessionId != null;
+	public int getKnowledgeBeaconCount( List<String> beacons ) {
+		int cbsize = beacons.size();
+		return cbsize > 0 ? cbsize : countAllBeacons();
 	}
 	
 }

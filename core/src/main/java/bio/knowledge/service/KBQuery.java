@@ -25,6 +25,7 @@
  */
 package bio.knowledge.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -42,6 +43,70 @@ import bio.knowledge.model.Statement;
  * @author Chandan Mishra (cmishra@sfu.ca)
  */
 public interface KBQuery {
+	
+	/* 
+	 * For User authentication, we use string instead of the userprofile object
+	 *  since the Userprofile object is defined in a package whose dependencies 
+	 *  are downstream from core.
+	 */
+	
+	/**
+	 * 
+	 * @return String user identifier 
+	 */
+	public String currentUserId() ;
+	
+	/**
+	 * 
+	 * @param userId user identifier
+	 */
+	public void currentUserId(String userId);
+
+	/**
+	 * 
+	 * Generates a unique String session identifier user and activates it in the current session.
+	 */
+	public void setUserSessionId();
+
+	/**
+	 * 
+	 * @return String session identifier
+	 */
+	public String getUserSessionId();
+
+	/**
+	 * 
+	 */
+	public void clearUserSessionId();
+	
+
+	/**
+	 * 
+	 * @return true if a session identifier is set; false otherwise
+	 */
+	public boolean hasSessionId();
+
+	/**
+	 * 
+	 * @param customBeacons
+	 */
+	void setCustomBeacons(List<String> customBeacons);
+
+	/**
+	 * 
+	 * @return
+	 */
+	List<String> getCustomBeacons();
+
+	/**
+	 * Clears the list of custom beacons
+	 */
+	void clearCustomBeacons();
+	
+	/**
+	 * Clears the list of custom beacons
+	 */
+	int countCustomBeacons();
 	
 	/**
 	 * 
@@ -304,10 +369,6 @@ public interface KBQuery {
 	public int tempCoordY();
 	public void tempCoordX(int x);
 	public void tempCoordY(int y);
-	
-	// we use string instead of the userprofile object since the Userprofile object is defined in a package whose dependencies are downstream from core.
-	public String currentUserId() ;
-	public void currentUserId(String userId);
 
 	public String currentConceptId=null;
 

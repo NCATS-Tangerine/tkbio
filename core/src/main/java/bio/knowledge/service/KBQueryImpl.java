@@ -25,10 +25,13 @@
  */
 package bio.knowledge.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -51,6 +54,104 @@ import bio.knowledge.model.Statement;
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class KBQueryImpl implements KBQuery {
+
+	private String userId = "";
+	
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.service.KBQuery#currentUserId()
+	 */
+	@Override
+	public String currentUserId() {
+		return this.userId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.service.KBQuery#currentUserId(java.lang.String)
+	 */
+	@Override
+	public void currentUserId(String userId) {
+		this.userId = userId;
+	}
+
+	private String sessionId = "";
+	
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.service.KBQuery#setUserSessionId(java.lang.String)
+	 */
+	@Override
+	public void setUserSessionId() {
+		this.sessionId = RandomStringUtils.randomAlphanumeric(20);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.service.KBQuery#getUserSessionId()
+	 */
+	@Override
+	public String getUserSessionId() {
+		return sessionId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.service.KBQuery#clearUserSessionId()
+	 */
+	@Override
+	public void clearUserSessionId() {
+		sessionId = "";
+	}
+	
+
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.service.KBQuery#hasSessionId()
+	 */
+	@Override
+	public boolean hasSessionId() {
+		return !sessionId.isEmpty();
+	}
+
+	private List<String> customBeacons = new ArrayList<String>();
+	
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.service.KBQuery#setCustomBeacons(java.util.List)
+	 */
+	@Override
+	public void setCustomBeacons(List<String> customBeacons){ 
+		this.customBeacons = customBeacons;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.service.KBQuery#getCustomBeacons()
+	 */
+	@Override
+	public List<String>  getCustomBeacons(){ 
+		return customBeacons;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.service.KBQuery#clearCustomBeacons()
+	 */
+	@Override
+	public void clearCustomBeacons() {
+		customBeacons = null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.service.KBQuery#countCustomBeacons()
+	 */
+	@Override
+	public int countCustomBeacons() {
+		return customBeacons.size();
+	}
+
 	
 	private String currentQueryText = "" ; 
 
@@ -438,15 +539,12 @@ public class KBQueryImpl implements KBQuery {
 
 	@Override
 	public Concept getLastSelectedConcept() {
-		// TODO Auto-generated method stub
 		return lastSelectedConcept;
 	}
 
 	public int tempX;
 	public int tempY;
 
-	private String userId;
-	
 	@Override
 	public int tempCoordX() {
 		return tempX;
@@ -465,16 +563,6 @@ public class KBQueryImpl implements KBQuery {
 	@Override
 	public void tempCoordY(int y) {
 		this.tempY = y;
-	}
-
-	@Override
-	public String currentUserId() {
-		return this.userId;
-	}
-
-	@Override
-	public void currentUserId(String userId) {
-		this.userId = userId;
 	}
 
 	private String relationsTextFilter;

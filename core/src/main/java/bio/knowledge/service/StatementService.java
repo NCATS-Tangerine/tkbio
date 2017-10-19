@@ -93,7 +93,13 @@ public class StatementService
 	private KnowledgeBeaconService kbService;
 	
 	@Override
-	public List<Statement> getDataPage(int pageIndex, int pageSize, String filter, TableSorter sorter, boolean isAscending) {
+	public List<Statement> getDataPage(
+			int pageIndex, 
+			int pageSize, 
+			String filter, 
+			TableSorter sorter, 
+			boolean isAscending
+	) {
 
 		/**
 		 * We are not using the {@code filter} field, since here it refers to the main keywords search text
@@ -123,9 +129,12 @@ public class StatementService
 		if (optionalPredicateFilter.isPresent()) {
 			predicateFilter = optionalPredicateFilter.get();
 		}
+
+		List<String> beacons = query.getCustomBeacons();
+		String sessionId = query.getUserSessionId();
 		
 		CompletableFuture<List<Statement>> future = 
-				kbService.getStatements(emci, extraFilter, semgroups, predicateFilter, pageIndex, pageSize);
+				kbService.getStatements(emci, extraFilter, semgroups, predicateFilter, pageIndex, pageSize,beacons,sessionId);
 		
 		try {
 			List<Statement> statements = 

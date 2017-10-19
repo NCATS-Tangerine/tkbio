@@ -115,6 +115,7 @@ public class KnowledgeBeaconRegistry {
 	/**
 	 * Initiates the registry by grabbing beacons from the neo4j database
 	 */
+	@Deprecated
 	private void neo4jInit() {
 		// Reference Knowledge Beacon
 		createBeacon(

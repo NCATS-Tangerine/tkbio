@@ -160,9 +160,6 @@ public class DesktopUI extends UI implements MessageService {
 	private Logger _logger = LoggerFactory.getLogger(DesktopUI.class);
 	
 	@Autowired
-	KnowledgeBeaconService kbService;
-
-	@Autowired
 	Registry registry;
 	
 	@Autowired
@@ -171,6 +168,15 @@ public class DesktopUI extends UI implements MessageService {
 	@Autowired
 	AuthenticationManager authenticationManager;
 
+	@Autowired
+	private KBQuery query;
+
+	@Autowired
+	Cache cache;
+	
+	@Autowired
+	KnowledgeBeaconService kbService;
+	
 	/**
 	 * 
 	 * @return
@@ -269,12 +275,6 @@ public class DesktopUI extends UI implements MessageService {
 		}
 		return msg;
 	}
-
-	@Autowired
-	private KBQuery query;
-
-	@Autowired
-	Cache cache;
 
 	private Optional<Concept> currentConcept;
 
@@ -1288,8 +1288,11 @@ public class DesktopUI extends UI implements MessageService {
 
 			// Setting manual layout while loading
 			desktopView.getCmLayoutSelect().setValue(MANUAL_CM_LAYOUT);
+
+			List<String> beacons = query.getCustomBeacons();
+			String sessionId = query.getUserSessionId();
 			
-			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId);
+			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId,beacons,sessionId);
 			
 			try {
 				List<Concept> concepts = future.get(

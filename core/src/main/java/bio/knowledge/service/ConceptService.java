@@ -116,8 +116,11 @@ public class ConceptService
 			semgroups = semgroups.trim();
 		}
 		
+		List<String> beacons = query.getCustomBeacons();
+		String sessionId = query.getUserSessionId();
+		
     	CompletableFuture<List<Concept>> future =
-    			kbService.getConcepts(filter, semgroups, pageIndex, pageSize);
+    			kbService.getConcepts(filter, semgroups, pageIndex, pageSize,beacons,sessionId);
     	
     	try {
 			return future.get(
@@ -203,18 +206,29 @@ public class ConceptService
 	@Override
 	public Page<Concept> findByNameLike(String filter, Pageable pageable) {
 		_logger.trace("Inside ConceptService.findByNameLike()");
-		return findAllFiltered(filter,pageable);
+
+		List<String> beacons = query.getCustomBeacons();
+		String sessionId = query.getUserSessionId();
+		
+		return findAllFiltered(filter,pageable,beacons,sessionId);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	// TODO: I think this is where the refactoring faltered
-	private Page<Concept> findAllFiltered(String filter, Pageable pageable) {
+	private Page<Concept> findAllFiltered(
+			String filter, 
+			Pageable pageable,
+			List<String> beacons,
+			String sessionId
+		) {
 		
 		CompletableFuture<List<Concept>> future = kbService.getConcepts(
 				filter,
 				null,
 				pageable.getPageNumber(),
-				pageable.getPageSize()
+				pageable.getPageSize(),
+				beacons,
+				sessionId
 		);
 		
 		try {
@@ -324,7 +338,11 @@ public class ConceptService
 		 *  to the currently known currentQueryString; The problem here is how to perform the 
 		 *  secondary text filtering on the resulting table of data?
 		 */
-		return findAllFiltered("",pageable);
+
+		List<String> beacons = query.getCustomBeacons();
+		String sessionId = query.getUserSessionId();
+		
+		return findAllFiltered("",pageable,beacons,sessionId);
 	}
 	
 	/* (non-Javadoc)
@@ -453,12 +471,18 @@ public class ConceptService
 	 * @param cui of the Concept to match
 	 * @return
 	 */
-	public Concept findById(String conceptId) {
-    	CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId);
+	public Concept findById(
+			String conceptId
+		) {
+		
+		List<String> beacons = query.getCustomBeacons();
+		String sessionId = query.getUserSessionId();
+
+    	CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId,beacons,sessionId);
    
     	try {
 			List<Concept> concepts = future.get(
-					KnowledgeBeaconService.BEACON_TIMEOUT_DURATION*kbService.getKnowledgeBeaconCount(), // scale timeout by nunmber of beacons
+					KnowledgeBeaconService.BEACON_TIMEOUT_DURATION*kbService.getKnowledgeBeaconCount(beacons), // scale timeout by nunmber of beacons
 					KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
 			);
 			return concepts.isEmpty() ? null : concepts.get(0);
@@ -471,7 +495,7 @@ public class ConceptService
 	 * @param ConceptId
 	 * @return Concept
 	 */
-	public Optional<Concept> getDetailsByConceptId(String id) {
+	public Optional<Concept> getDetailsByConceptId( String id ) {
 		
 		Concept concept = findById(id) ;
 		
@@ -591,7 +615,9 @@ public class ConceptService
 	 * @param ConceptId
 	 * @return Concept
 	 */
-	public Optional<Concept> getDetailsById(String id) {
+	public Optional<Concept> getDetailsById(
+			String id
+		) {
 		
 		// Try first to find this item in the local database(?)
 		Concept concept = findById(id);
@@ -865,7 +891,9 @@ public class ConceptService
      * @param predicate
      * @return
      */
-    public Concept annotate(String id) {
+    public Concept annotate(
+    		String id
+		) {
 
     	if(id.isEmpty()) {
     		_logger.warn(
@@ -888,10 +916,9 @@ public class ConceptService
 		Concept cachedConcept = (Concept) cacheLocation.getEntity();
 		
 		if (cachedConcept == null) {
-			
+
 			// Not cached... then first, attempt to retrieve it from the local database
-			Optional<Concept> databaseConceptOpt = 
-						getDetailsByConceptId(id);
+			Optional<Concept> databaseConceptOpt = getDetailsByConceptId(id);
 			
 			if(databaseConceptOpt.isPresent()) {
 				concept = databaseConceptOpt.get();
