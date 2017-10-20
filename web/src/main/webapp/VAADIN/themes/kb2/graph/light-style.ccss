@@ -106,7 +106,7 @@ edge {
 }
 
 [semgroup="OBJC"] {
-	background-color: #2196F3;
+	background-color: #808080;
 }
 
 [semgroup="OCCU"] {
