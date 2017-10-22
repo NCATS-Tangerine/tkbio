@@ -20,9 +20,9 @@ import com.google.gson.annotations.SerializedName;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * Beacon
+ * PredicateBeacon
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-13T21:43:21.781-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-21T20:46:51.565-07:00")
 public class PredicateBeacon {
   @SerializedName("beacon")
   private String beacon = null;
@@ -96,10 +96,10 @@ public class PredicateBeacon {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    PredicateBeacon beacon = (PredicateBeacon) o;
-    return Objects.equals(this.beacon, beacon.beacon) &&
-        Objects.equals(this.id, beacon.id) &&
-        Objects.equals(this.definition, beacon.definition);
+    PredicateBeacon predicateBeacon = (PredicateBeacon) o;
+    return Objects.equals(this.beacon, predicateBeacon.beacon) &&
+        Objects.equals(this.id, predicateBeacon.id) &&
+        Objects.equals(this.definition, predicateBeacon.definition);
   }
 
   @Override
@@ -111,7 +111,7 @@ public class PredicateBeacon {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Beacon {\n");
+    sb.append("class PredicateBeacon {\n");
     
     sb.append("    beacon: ").append(toIndentedString(beacon)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");

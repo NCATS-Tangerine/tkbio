@@ -4,7 +4,6 @@ package bio.knowledge.service.beacon;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +43,6 @@ import bio.knowledge.model.Predicate.PredicateBeacon;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
-import bio.knowledge.service.KBQuery;
 
 /**
  * 
@@ -371,7 +369,7 @@ public class KnowledgeBeaconService {
 						
 						Concept concept = new ConceptImpl(
 								response.getClique(),
-								response.getId(),
+								response.getClique(),
 								semgroup,
 								response.getName()
 						);
@@ -381,6 +379,9 @@ public class KnowledgeBeaconService {
 						
 						concept.setSynonyms(String.join(" ", response.getSynonyms()));
 						concept.setDescription(response.getDefinition());
+						
+						// Harvest details here?
+						
 						concept.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
 						concepts.add(concept);
 					}
@@ -451,7 +452,7 @@ public class KnowledgeBeaconService {
 	}
 	
 	public CompletableFuture<List<Statement>> getStatements(
-			String emci,
+			String cliqueId,
 			String keywords,
 			String semgroups,
 			Predicate relation,
@@ -494,7 +495,7 @@ public class KnowledgeBeaconService {
 				
 					List<bio.knowledge.client.model.Statement> responses = 
 							getStatementsApi(pageSize).getStatements(
-								Arrays.asList(emci.split(" ")),
+								cliqueId,
 								pageNumber,
 								pageSize,
 								keywords,

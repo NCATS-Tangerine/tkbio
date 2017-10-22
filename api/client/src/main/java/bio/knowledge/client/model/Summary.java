@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Summary
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-13T21:43:21.781-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-21T20:46:51.565-07:00")
 public class Summary {
   @SerializedName("id")
   private String id = null;
@@ -42,10 +42,10 @@ public class Summary {
   }
 
    /**
-   * the type  
+   * the concept type (semantic group) 
    * @return id
   **/
-  @ApiModelProperty(example = "null", value = "the type  ")
+  @ApiModelProperty(example = "null", value = "the concept type (semantic group) ")
   public String getId() {
     return id;
   }

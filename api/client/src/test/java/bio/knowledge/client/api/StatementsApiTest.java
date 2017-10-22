@@ -40,7 +40,7 @@ public class StatementsApiTest {
      */
     @Test
     public void getStatementsTest() throws ApiException {
-        List<String> c = null;
+        String cliqueId = null;
         Integer pageNumber = null;
         Integer pageSize = null;
         String keywords = null;
@@ -48,7 +48,7 @@ public class StatementsApiTest {
         String relations = null;
         List<String> beacons = null;
         String sessionId = null;
-        List<Statement> response = api.getStatements(c, pageNumber, pageSize, keywords, semanticGroups, relations, beacons, sessionId);
+        List<Statement> response = api.getStatements(cliqueId, pageNumber, pageSize, keywords, semanticGroups, relations, beacons, sessionId);
 
         // TODO: test validations
     }

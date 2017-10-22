@@ -17,6 +17,7 @@ import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Grid.SelectionMode;
 
+import bio.knowledge.client.model.Concept;
 import bio.knowledge.grid.Grid;
 import bio.knowledge.grid.Grid.ScrollListener;
 import bio.knowledge.model.Statement;
@@ -81,11 +82,12 @@ public class RelationsView extends BaseView {
 	private void loadDataPage(int pageNumber) {
 		
 		List<String> beacons = query.getCustomBeacons();
-		String sessionId = query.getUserSessionId();
+		String sessionId     = query.getUserSessionId();
+		String conceptId     = query.getCurrentQueryConceptId();
 		
 		CompletableFuture<List<Statement>> future = 
 				kbService.getStatements(
-									"wd:Q126691", 
+									conceptId, 
 									null, 
 									null, 
 									null, 

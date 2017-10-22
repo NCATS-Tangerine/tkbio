@@ -52,15 +52,15 @@ public class StatementsApi {
     }
 
     /* Build call for getStatements */
-    private com.squareup.okhttp.Call getStatementsCall(List<String> c, Integer pageNumber, Integer pageSize, String keywords, String semanticGroups, String relations, List<String> beacons, String sessionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getStatementsCall(String cliqueId, Integer pageNumber, Integer pageSize, String keywords, String semanticGroups, String relations, List<String> beacons, String sessionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
         String localVarPath = "/statements".replaceAll("\\{format\\}","json");
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        if (c != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("csv", "c", c));
+        if (cliqueId != null)
+        localVarQueryParams.addAll(apiClient.parameterToPairs("", "cliqueId", cliqueId));
         if (pageNumber != null)
         localVarQueryParams.addAll(apiClient.parameterToPairs("", "pageNumber", pageNumber));
         if (pageSize != null)
@@ -109,15 +109,15 @@ public class StatementsApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getStatementsValidateBeforeCall(List<String> c, Integer pageNumber, Integer pageSize, String keywords, String semanticGroups, String relations, List<String> beacons, String sessionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getStatementsValidateBeforeCall(String cliqueId, Integer pageNumber, Integer pageSize, String keywords, String semanticGroups, String relations, List<String> beacons, String sessionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
-        // verify the required parameter 'c' is set
-        if (c == null) {
-            throw new ApiException("Missing the required parameter 'c' when calling getStatements(Async)");
+        // verify the required parameter 'cliqueId' is set
+        if (cliqueId == null) {
+            throw new ApiException("Missing the required parameter 'cliqueId' when calling getStatements(Async)");
         }
         
         
-        com.squareup.okhttp.Call call = getStatementsCall(c, pageNumber, pageSize, keywords, semanticGroups, relations, beacons, sessionId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getStatementsCall(cliqueId, pageNumber, pageSize, keywords, semanticGroups, relations, beacons, sessionId, progressListener, progressRequestListener);
         return call;
 
         
@@ -129,7 +129,7 @@ public class StatementsApi {
     /**
      * 
      * Given a list of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, retrieves a paged list of concept-relations where either the subject or object concept matches at least one concept in the input list 
-     * @param c set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts to be used in a search for associated concept-relation statements, e.g. wd:Q126691, wd:Q420626  (required)
+     * @param cliqueId a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier, as returned  by any other endpoint of the beacon aggregator API, of an exactly matching  concept clique of interest.  (required)
      * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
      * @param pageSize number of concepts per page to be returned in a paged set of query results  (optional)
      * @param keywords a (url-encoded, space-delimited) string of keywords or substrings against which to match the subject, predicate or object names of the set of concept-relations matched by any of the input exact matching concepts  (optional)
@@ -140,15 +140,15 @@ public class StatementsApi {
      * @return List&lt;Statement&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<Statement> getStatements(List<String> c, Integer pageNumber, Integer pageSize, String keywords, String semanticGroups, String relations, List<String> beacons, String sessionId) throws ApiException {
-        ApiResponse<List<Statement>> resp = getStatementsWithHttpInfo(c, pageNumber, pageSize, keywords, semanticGroups, relations, beacons, sessionId);
+    public List<Statement> getStatements(String cliqueId, Integer pageNumber, Integer pageSize, String keywords, String semanticGroups, String relations, List<String> beacons, String sessionId) throws ApiException {
+        ApiResponse<List<Statement>> resp = getStatementsWithHttpInfo(cliqueId, pageNumber, pageSize, keywords, semanticGroups, relations, beacons, sessionId);
         return resp.getData();
     }
 
     /**
      * 
      * Given a list of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, retrieves a paged list of concept-relations where either the subject or object concept matches at least one concept in the input list 
-     * @param c set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts to be used in a search for associated concept-relation statements, e.g. wd:Q126691, wd:Q420626  (required)
+     * @param cliqueId a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier, as returned  by any other endpoint of the beacon aggregator API, of an exactly matching  concept clique of interest.  (required)
      * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
      * @param pageSize number of concepts per page to be returned in a paged set of query results  (optional)
      * @param keywords a (url-encoded, space-delimited) string of keywords or substrings against which to match the subject, predicate or object names of the set of concept-relations matched by any of the input exact matching concepts  (optional)
@@ -159,8 +159,8 @@ public class StatementsApi {
      * @return ApiResponse&lt;List&lt;Statement&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<Statement>> getStatementsWithHttpInfo(List<String> c, Integer pageNumber, Integer pageSize, String keywords, String semanticGroups, String relations, List<String> beacons, String sessionId) throws ApiException {
-        com.squareup.okhttp.Call call = getStatementsValidateBeforeCall(c, pageNumber, pageSize, keywords, semanticGroups, relations, beacons, sessionId, null, null);
+    public ApiResponse<List<Statement>> getStatementsWithHttpInfo(String cliqueId, Integer pageNumber, Integer pageSize, String keywords, String semanticGroups, String relations, List<String> beacons, String sessionId) throws ApiException {
+        com.squareup.okhttp.Call call = getStatementsValidateBeforeCall(cliqueId, pageNumber, pageSize, keywords, semanticGroups, relations, beacons, sessionId, null, null);
         Type localVarReturnType = new TypeToken<List<Statement>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -168,7 +168,7 @@ public class StatementsApi {
     /**
      *  (asynchronously)
      * Given a list of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, retrieves a paged list of concept-relations where either the subject or object concept matches at least one concept in the input list 
-     * @param c set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts to be used in a search for associated concept-relation statements, e.g. wd:Q126691, wd:Q420626  (required)
+     * @param cliqueId a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier, as returned  by any other endpoint of the beacon aggregator API, of an exactly matching  concept clique of interest.  (required)
      * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
      * @param pageSize number of concepts per page to be returned in a paged set of query results  (optional)
      * @param keywords a (url-encoded, space-delimited) string of keywords or substrings against which to match the subject, predicate or object names of the set of concept-relations matched by any of the input exact matching concepts  (optional)
@@ -180,7 +180,7 @@ public class StatementsApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getStatementsAsync(List<String> c, Integer pageNumber, Integer pageSize, String keywords, String semanticGroups, String relations, List<String> beacons, String sessionId, final ApiCallback<List<Statement>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getStatementsAsync(String cliqueId, Integer pageNumber, Integer pageSize, String keywords, String semanticGroups, String relations, List<String> beacons, String sessionId, final ApiCallback<List<Statement>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -201,7 +201,7 @@ public class StatementsApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getStatementsValidateBeforeCall(c, pageNumber, pageSize, keywords, semanticGroups, relations, beacons, sessionId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getStatementsValidateBeforeCall(cliqueId, pageNumber, pageSize, keywords, semanticGroups, relations, beacons, sessionId, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<List<Statement>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;

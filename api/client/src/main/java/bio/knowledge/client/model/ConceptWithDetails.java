@@ -24,13 +24,10 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * ConceptWithDetails
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-13T21:43:21.781-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-21T20:46:51.565-07:00")
 public class ConceptWithDetails {
   @SerializedName("clique")
   private String clique = null;
-
-  @SerializedName("id")
-  private String id = null;
 
   @SerializedName("aliases")
   private List<String> aliases = new ArrayList<String>();
@@ -59,34 +56,16 @@ public class ConceptWithDetails {
   }
 
    /**
-   * CURIE identifying the inferred equivalent concept clique to which the concept belongs. This is assigned by an identifier precedence heuristic by the beacon-aggregator 
+   * CURIE identifying the equivalent concept clique to which the concept belongs. 
    * @return clique
   **/
-  @ApiModelProperty(example = "null", value = "CURIE identifying the inferred equivalent concept clique to which the concept belongs. This is assigned by an identifier precedence heuristic by the beacon-aggregator ")
+  @ApiModelProperty(example = "null", value = "CURIE identifying the equivalent concept clique to which the concept belongs. ")
   public String getClique() {
     return clique;
   }
 
   public void setClique(String clique) {
     this.clique = clique;
-  }
-
-  public ConceptWithDetails id(String id) {
-    this.id = id;
-    return this;
-  }
-
-   /**
-   * CURIE for the concept in the specified knowledge beacon 
-   * @return id
-  **/
-  @ApiModelProperty(example = "null", value = "CURIE for the concept in the specified knowledge beacon ")
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
   }
 
   public ConceptWithDetails aliases(List<String> aliases) {
@@ -241,7 +220,6 @@ public class ConceptWithDetails {
     }
     ConceptWithDetails conceptWithDetails = (ConceptWithDetails) o;
     return Objects.equals(this.clique, conceptWithDetails.clique) &&
-        Objects.equals(this.id, conceptWithDetails.id) &&
         Objects.equals(this.aliases, conceptWithDetails.aliases) &&
         Objects.equals(this.name, conceptWithDetails.name) &&
         Objects.equals(this.semanticGroup, conceptWithDetails.semanticGroup) &&
@@ -253,7 +231,7 @@ public class ConceptWithDetails {
 
   @Override
   public int hashCode() {
-    return Objects.hash(clique, id, aliases, name, semanticGroup, synonyms, definition, details, beacon);
+    return Objects.hash(clique, aliases, name, semanticGroup, synonyms, definition, details, beacon);
   }
 
 
@@ -263,7 +241,6 @@ public class ConceptWithDetails {
     sb.append("class ConceptWithDetails {\n");
     
     sb.append("    clique: ").append(toIndentedString(clique)).append("\n");
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    aliases: ").append(toIndentedString(aliases)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    semanticGroup: ").append(toIndentedString(semanticGroup)).append("\n");
