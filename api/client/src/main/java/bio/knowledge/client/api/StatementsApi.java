@@ -13,15 +13,6 @@
 
 package bio.knowledge.client.api;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.google.gson.reflect.TypeToken;
-
 import bio.knowledge.client.ApiCallback;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
@@ -30,7 +21,19 @@ import bio.knowledge.client.Configuration;
 import bio.knowledge.client.Pair;
 import bio.knowledge.client.ProgressRequestBody;
 import bio.knowledge.client.ProgressResponseBody;
+
+import com.google.gson.reflect.TypeToken;
+
+import java.io.IOException;
+
+
 import bio.knowledge.client.model.Statement;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StatementsApi {
     private ApiClient apiClient;
@@ -56,11 +59,10 @@ public class StatementsApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/statements".replaceAll("\\{format\\}","json");
+        String localVarPath = "/statements/{cliqueId}".replaceAll("\\{format\\}","json")
+        .replaceAll("\\{" + "cliqueId" + "\\}", apiClient.escapeString(cliqueId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        if (cliqueId != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "cliqueId", cliqueId));
         if (pageNumber != null)
         localVarQueryParams.addAll(apiClient.parameterToPairs("", "pageNumber", pageNumber));
         if (pageSize != null)

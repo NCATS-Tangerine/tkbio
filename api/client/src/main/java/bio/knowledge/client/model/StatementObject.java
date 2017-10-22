@@ -14,15 +14,14 @@
 package bio.knowledge.client.model;
 
 import java.util.Objects;
-
 import com.google.gson.annotations.SerializedName;
-
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
  * StatementObject
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-21T20:46:51.565-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-22T00:21:02.756-07:00")
 public class StatementObject {
   @SerializedName("clique")
   private String clique = null;

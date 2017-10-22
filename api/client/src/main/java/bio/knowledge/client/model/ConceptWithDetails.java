@@ -13,18 +13,18 @@
 
 package bio.knowledge.client.model;
 
+import java.util.Objects;
+import bio.knowledge.client.model.ConceptDetail;
+import com.google.gson.annotations.SerializedName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import com.google.gson.annotations.SerializedName;
-
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * ConceptWithDetails
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-21T20:46:51.565-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-22T00:21:02.756-07:00")
 public class ConceptWithDetails {
   @SerializedName("clique")
   private String clique = null;

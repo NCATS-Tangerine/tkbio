@@ -13,7 +13,7 @@
 
 package bio.knowledge.client;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-21T20:46:51.565-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-22T00:21:02.756-07:00")
 public class Configuration {
     private static ApiClient defaultApiClient = new ApiClient();
 

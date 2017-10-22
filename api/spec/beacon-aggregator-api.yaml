@@ -444,7 +444,7 @@ paths:
                   - beacon: 3
                     id: 'mybeacon:P456'
                     definition: has a physical connection with
-  /statements:
+  '/statements/{cliqueId}':
     get:
       description: >
         Given a list of [CURIE-encoded](https://www.w3.org/TR/curie/)
@@ -455,7 +455,7 @@ paths:
         - statements
       parameters:
         - name: cliqueId
-          in: query
+          in: path
           description: >
             a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier, as returned 
             by any other endpoint of the beacon aggregator API, of an exactly matching 

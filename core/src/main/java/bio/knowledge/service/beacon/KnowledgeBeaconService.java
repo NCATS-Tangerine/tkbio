@@ -175,8 +175,8 @@ public class KnowledgeBeaconService {
 	 *  to set some reasonable timeouts for various queries
 	 */
 	public final int DEFAULT_TIMEOUT_WEIGHTING = 1000;
-	public final int CONCEPTS_QUERY_TIMEOUT_WEIGHTING   = 5000;
-	public final int STATEMENTS_QUERY_TIMEOUT_WEIGHTING = 12000; 
+	public final int CONCEPTS_QUERY_TIMEOUT_WEIGHTING   = 10000;
+	public final int STATEMENTS_QUERY_TIMEOUT_WEIGHTING = 15000; 
 	
 	public int apiWeightedTimeout(Integer timeOutWeighting,List<String> beacons, Integer pageSize ) {
 		int numberOfBeacons = beacons!=null ? beacons.size() : registry.countAllBeacons() ;
@@ -466,6 +466,13 @@ public class KnowledgeBeaconService {
 			@Override
 			public List<Statement> get() {
 				
+				_logger.debug(
+						"kbs.getStatements(): processing cliqueId: "+cliqueId+
+						", keywords: "+keywords+
+						", semgroups: "+semgroups+
+						", relation: "+relation
+				);
+				
 				// Utility time variable for profiling
 				Instant start = Instant.now();
 				
@@ -495,15 +502,15 @@ public class KnowledgeBeaconService {
 				
 					List<bio.knowledge.client.model.Statement> responses = 
 							getStatementsApi(pageSize).getStatements(
-								cliqueId,
-								pageNumber,
-								pageSize,
-								keywords,
-								semgroups,
-								relationIds,
-								beacons,
-								sessionId
-						);
+									cliqueId,
+									pageNumber,
+									pageSize,
+									keywords,
+									semgroups,
+									relationIds,
+									beacons,
+									sessionId
+							);
 
 					_logger.debug("kbs.getStatements() - after responses");
 					

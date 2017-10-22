@@ -624,7 +624,7 @@ public class DesktopUI extends UI implements MessageService {
 		// RelationSearchModes?
 		switch (mode) {
 		case RELATIONS:
-			query.setCurrentQueryConceptById(concept.getId()); //TODO: USE CLIQUE INSTEAD ??
+			query.setCurrentQueryConceptById(concept.getClique()); 
 			break;
 		default:
 			// do nothing?

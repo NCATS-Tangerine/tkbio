@@ -507,7 +507,7 @@
         }
       }
     },
-    "/statements": {
+    "/statements/{cliqueId}": {
       "get": {
         "description": "Given a list of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, retrieves a paged list of concept-relations where either the subject or object concept matches at least one concept in the input list\n",
         "tags": [
@@ -516,7 +516,7 @@
         "parameters": [
           {
             "name": "cliqueId",
-            "in": "query",
+            "in": "path",
             "description": "a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of an exactly matching clique as returned by any other endpoint of the beacon aggregator API.\n",
             "required": true,
             "type": "string"

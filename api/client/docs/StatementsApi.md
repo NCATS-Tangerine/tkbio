@@ -4,7 +4,7 @@ All URIs are relative to *https://kba.ncats.io/*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getStatements**](StatementsApi.md#getStatements) | **GET** /statements | 
+[**getStatements**](StatementsApi.md#getStatements) | **GET** /statements/{cliqueId} | 
 
 
 <a name="getStatements"></a>
