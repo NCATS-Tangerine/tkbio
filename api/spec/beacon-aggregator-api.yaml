@@ -31,7 +31,7 @@ tags:
   - name: concepts
     description: Queries for concepts
   - name: predicates
-    description: Queries for concepts
+    description: Queries for predicates
   - name: statements
     description: Queries for concept-relationship statements
   - name: evidence
@@ -74,7 +74,7 @@ paths:
                 id:
                   type: string
                   description: |
-                    the type 
+                    the concept type (semantic group)
                 idmap:
                   type: string
                   description: The URL to execute the exactmatches API call on the id
@@ -98,20 +98,20 @@ paths:
                 frequency: 1234
                 idmap: 'http://myservice.net/api/v1/exactmatches/ANAT'
                 beacon: '2'
-  '/concepts/{conceptId}':
+  '/concepts/{cliqueId}':
     get:
       description: >
-        Retrieves details for a specified concepts in the system, as specified
-        by a (url-encoded) CURIE identifier of a concept known the given
-        knowledge source
+        Retrieves details for a specified clique of equivalent concepts in the system, 
+        as specified by a (url-encoded) CURIE identifier of a clique known to the aggregator
       tags:
         - concepts
       parameters:
-        - name: conceptId
+        - name: cliqueId
           in: path
           description: >-
-            (url-encoded) CURIE identifier of concept of interest, e.g.
-            wd:Q126691
+            a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier, as returned 
+            by any other endpoint of the beacon aggregator API, of an exactly matching 
+            concept clique of interest.
           required: true
           type: string
         - name: beacons
@@ -141,13 +141,8 @@ paths:
                 clique:
                   type: string
                   description: >
-                    CURIE identifying the inferred equivalent concept clique to
-                    which the concept belongs. This is assigned by an identifier
-                    precedence heuristic by the beacon-aggregator
-                id:
-                  type: string
-                  description: |
-                    CURIE for the concept in the specified knowledge beacon
+                    CURIE identifying the equivalent concept clique to
+                    which the concept belongs.
                 aliases:
                   type: array
                   description: >
@@ -192,11 +187,10 @@ paths:
                   description: |
                     beacon ID
           description: |
-            Successful response with concept details returned
+            Successful response with clique concept details returned
           examples:
             application/json:
               - clique: 'wd:Q14883734'
-                id: 'wd:Q14883734'
                 aliases:
                   - 'wd:Q14883734'
                   - 'OMIM:277700'
@@ -460,16 +454,14 @@ paths:
       tags:
         - statements
       parameters:
-        - name: c
+        - name: cliqueId
           in: query
           description: >
-            set of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of
-            exactly matching concepts to be used in a search for associated
-            concept-relation statements, e.g. wd:Q126691, wd:Q420626
+            a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier, as returned 
+            by any other endpoint of the beacon aggregator API, of an exactly matching 
+            concept clique of interest.
           required: true
-          type: array
-          items:
-            type: string
+          type: string
         - name: pageNumber
           in: query
           description: |
