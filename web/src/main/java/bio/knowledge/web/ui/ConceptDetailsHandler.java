@@ -110,7 +110,7 @@ public class ConceptDetailsHandler {
 		Label aliasesLabel   = new Label();
 
 		cliqueLabel.setCaption("Clique Id:");
-		accessionLabel.setCaption("C Id:");
+		accessionLabel.setCaption("Accession Id:");
 		nameLabel.setCaption("Name:");
 		typeLabel.setCaption("Semantic Group:");
 		aliasesLabel.setCaption("Aliases:");
