@@ -132,7 +132,7 @@ public class ConceptMapPopupWindow {
 	private KBQuery query;
 	
 	@Autowired
-	ConceptDetailsHandler wd_handler;
+	ConceptDetailsHandler detailshandler;
 
 	// position
 	int myX;
@@ -206,50 +206,66 @@ public class ConceptMapPopupWindow {
 	 */
 	public void conceptMapNodePopUp(String cliqueId, String name, int x, int y) {
 		
-		Concept concept = conceptService.searchAllBeacons(cliqueId);
+		/*
+		 *  This search is new beacon "concept details" 
+		 *  search for data... should work in principle
+		 */
+		Concept annotatedConcept = conceptService.searchAllBeacons(cliqueId);
 		
-		boolean conceptIsAvailable = true;
-		
-		if (concept == null) {
+		if (annotatedConcept == null) {
 			try {
-				concept = conceptService.getQualifiedDataItem(cliqueId);
-				conceptIsAvailable = true;
+				
+				/*
+				 *  Older KB 3.0 direct WikiData retrieval (bypasses beacons)
+				 *  but doesn't recognize non-WikiData entities
+				 *  (Q: Could this somehow be generalized, though, for any standard
+				 *  CURIE pointing to an external resource(?) e.g. NCBIGene, CHEBI, etc?)
+				 */
+				annotatedConcept = conceptService.getQualifiedDataItem(cliqueId);
+				
 			} catch (DataSourceException e) {
-				conceptIsAvailable = false;
+				
+				details.addComponent(new Label("Cannot find concept '"+name+"'. Datasource may be offline?"));
 			}
-		}
+		} 
 		
-		if (!conceptIsAvailable) {
-			details.addComponent(new Label("Cannot find concept '"+name+"'. Datasource may be offline?"));
-		}
+		final Concept selectedConcept = annotatedConcept;
 		
-		final Concept selectedConcept = concept;
-		addAnno = new Button("Add Annotation", e -> {
-			parentUi.getPredicatePopupWindow().conceptMapUserAnnotation(selectedConcept, x, y);
-		});
-		addAnno.setEnabled(false);
-		if (addAnno != null && ((DesktopUI) UI.getCurrent()).getAuthenticationManager().isUserAuthenticated() )
-			buttonsLayout.addComponent(addAnno);
-		
-		showRelations = new Button("Show Relations", e -> {
-			parentUi.queryUpdate(selectedConcept, RelationSearchMode.RELATIONS);
-			conceptDetailsWindowOnGraph.close();
-			parentUi.gotoStatementsTable();
-		});
-		if (showRelations != null)
-			buttonsLayout.addComponent(showRelations);
-		
-		if (selectedConcept == null || conceptIsAvailable) {
+		if( selectedConcept != null ) {
+			
+			/* DISABLE FOR NOW - review and republish feature later
+			addAnno = new Button("Add Annotation", e -> {
+				parentUi.getPredicatePopupWindow().conceptMapUserAnnotation(selectedConcept, x, y);
+			});
+			
 			addAnno.setEnabled(false);
-			showRelations.setEnabled(false);
+
+			
+			if (addAnno != null && ((DesktopUI) UI.getCurrent()).getAuthenticationManager().isUserAuthenticated() )
+				buttonsLayout.addComponent(addAnno);
+			*/
+			
+			showRelations = new Button("Show Relations", e -> {
+				parentUi.queryUpdate(selectedConcept, RelationSearchMode.RELATIONS);
+				conceptDetailsWindowOnGraph.close();
+				parentUi.gotoStatementsTable();
+			});
+			
+			//if (showRelations != null)
+			buttonsLayout.addComponent(showRelations);
+			
+			//if (selectedConcept == null || !conceptIsAvailable) {
+				//addAnno.setEnabled(false);
+				//showRelations.setEnabled(false);
+			//}
+			
+			// Create buttons related to node popup
+			// Okay -> no
+			// ShowRelations -> conditional
+			// Cancel -> yes
+			// Delete -> yes
+			// addAnno -> yes
 		}
-		
-		// Create buttons related to node popup
-		// Okay -> no
-		// ShowRelations -> conditional
-		// Cancel -> yes
-		// Delete -> yes
-		// addAnno -> yes
 
 		delete = new Button("Delete", e -> {
 			ConfirmDialog.show(parentUi, "Please Confirm:", "Are you really sure?", "I am", "Not quite",
@@ -276,9 +292,9 @@ public class ConceptMapPopupWindow {
 		if (selectedConcept == null) {
 			basicSkeleton(name, null, x, y);
 		} else {
-			VerticalLayout wd_details = wd_handler.getDetails(selectedConcept);
-			wd_details.setWidthUndefined();
-			basicSkeleton(name, selectedConcept.getSemanticGroup().getDescription(), x, y, wd_details);
+			VerticalLayout conceptdetails = detailshandler.getDetails(selectedConcept);
+			conceptdetails.setWidthUndefined();
+			basicSkeleton(name, selectedConcept.getSemanticGroup().getDescription(), x, y, conceptdetails);
 		}
 	}
 	

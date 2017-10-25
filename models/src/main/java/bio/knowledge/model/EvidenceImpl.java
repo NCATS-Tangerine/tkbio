@@ -28,11 +28,8 @@ package bio.knowledge.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import bio.knowledge.model.Annotation;
-import bio.knowledge.model.Evidence;
-import bio.knowledge.model.Statement;
-import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.AbstractIdentifiedEntity;
+import bio.knowledge.model.core.IdentifiedEntity;
 
 /**
  * @author Kenneth

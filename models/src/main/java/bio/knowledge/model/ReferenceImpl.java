@@ -25,7 +25,6 @@
  */
 package bio.knowledge.model;
 
-import bio.knowledge.model.Reference;
 import bio.knowledge.model.core.AbstractAnnotatedEntity;
 
 /**

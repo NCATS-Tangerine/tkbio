@@ -31,11 +31,14 @@ import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.api.EvidenceApi;
 import bio.knowledge.client.api.PredicatesApi;
 import bio.knowledge.client.api.StatementsApi;
+import bio.knowledge.client.model.ConceptDetail;
+import bio.knowledge.client.model.ConceptWithDetails;
 import bio.knowledge.client.model.StatementObject;
 
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.AnnotationImpl;
 import bio.knowledge.model.Concept;
+import bio.knowledge.model.ConceptDetailImpl;
 import bio.knowledge.model.ConceptImpl;
 import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.Predicate;
@@ -43,6 +46,8 @@ import bio.knowledge.model.Predicate.PredicateBeacon;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
+import bio.knowledge.model.core.Feature;
+import bio.knowledge.model.core.OntologyTerm;
 
 /**
  * 
@@ -336,6 +341,12 @@ public class KnowledgeBeaconService {
 		return future;
 	}
 	
+
+	private OntologyTerm resolveTag(String tag) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	/**
 	 * The beacon aggregator called by this method via the ConceptsApi, searches across the clique identifier.
 	 * 
@@ -356,13 +367,16 @@ public class KnowledgeBeaconService {
 				List<Concept> concepts = new ArrayList<Concept>();
 				
 				try {
-					List<bio.knowledge.client.model.ConceptWithDetails> responses = 
+					List<ConceptWithDetails> responses = 
 							getConceptsApi().getConceptDetails( cliqueId, beacons, sessionId );
 					
-					for (bio.knowledge.client.model.ConceptWithDetails response : responses) {
+					for (ConceptWithDetails response : responses) {
+						
 						SemanticGroup semgroup;
 						try {
+							
 							semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
+							
 						} catch (IllegalArgumentException e) {
 							semgroup = null;
 						}
@@ -380,7 +394,16 @@ public class KnowledgeBeaconService {
 						concept.setSynonyms(String.join(" ", response.getSynonyms()));
 						concept.setDescription(response.getDefinition());
 						
-						// Harvest details here?
+						// Harvest beacon concept details here?
+						List<ConceptDetail> details = response.getDetails() ;
+						Set<Feature> conceptDetails = concept.getFeatures();
+						for(ConceptDetail entry : details) {
+							Feature detail = new ConceptDetailImpl();
+							OntologyTerm tag = resolveTag(entry.getTag());
+							detail.setTag(tag);
+							detail.setValue(entry.getValue());
+							conceptDetails.add(detail);
+						}
 						
 						concept.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
 						concepts.add(concept);

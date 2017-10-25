@@ -28,11 +28,6 @@ package bio.knowledge.model;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import bio.knowledge.model.Concept;
-import bio.knowledge.model.Evidence;
-import bio.knowledge.model.Predicate;
-import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.AbstractIdentifiedEntity;
 
 public abstract class AbstractStatement extends AbstractIdentifiedEntity implements Statement {

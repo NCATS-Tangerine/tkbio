@@ -3,9 +3,8 @@ package bio.knowledge.model;
 import java.util.Set;
 
 import bio.knowledge.model.core.AnnotatedEntity;
-import bio.knowledge.model.core.IdentifiedEntity;
 
-public interface Concept extends IdentifiedEntity, AnnotatedEntity, BeaconResponse {
+public interface Concept extends AnnotatedEntity, BeaconResponse {
 	
 	public static final String SEMGROUP_FIELD_START = "[" ;
 	public static final String SEMGROUP_FIELD_END   = "]" ;
@@ -109,15 +108,5 @@ public interface Concept extends IdentifiedEntity, AnnotatedEntity, BeaconRespon
 	 * @return
 	 */
 	Set<String> getTerms();
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	String toString();
-
-	String getName();
-
-	void setBeaconSource(String string);
 
 }

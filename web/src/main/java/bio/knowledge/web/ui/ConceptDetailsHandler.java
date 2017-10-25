@@ -91,7 +91,8 @@ public class ConceptDetailsHandler {
 		query.setCurrentSelectedConcept(selectedConcept);
 		
 		try {
-			descriptionBuilder = null; // resetting descriptionBuilder
+			// resetting descriptionBuilder
+			descriptionBuilder = null; 
 			conceptService.getDescription(this::updateDescription);
 		} catch (TimeoutException te) {
 			_logger.error(te.getMessage());
@@ -102,23 +103,23 @@ public class ConceptDetailsHandler {
 		}
 
 		// set up the common labels
+		Label cliqueLabel    = new Label();
 		Label accessionLabel = new Label();
 		Label nameLabel      = new Label();
 		Label typeLabel      = new Label();
-		Label cliqueLabel    = new Label();
 		Label aliasesLabel   = new Label();
 
-		accessionLabel.setCaption("Accession Id:");
+		cliqueLabel.setCaption("Clique Id:");
+		accessionLabel.setCaption("C Id:");
 		nameLabel.setCaption("Name:");
 		typeLabel.setCaption("Semantic Group:");
-		cliqueLabel.setCaption("Clique Id:");
 		aliasesLabel.setCaption("Aliases:");
 
 		if (selectedConcept != null) {
+			cliqueLabel.setValue(selectedConcept.getClique());
 			accessionLabel.setValue(selectedConcept.getId());
 			nameLabel.setValue(selectedConcept.getName());
 			typeLabel.setValue(selectedConcept.getSemanticGroup().getDescription());
-			cliqueLabel.setValue(selectedConcept.getClique());
 			aliasesLabel.setContentMode(ContentMode.HTML);
 			aliasesLabel.setValue(String.join("<br/>", selectedConcept.getCrossReferences()));
 		} else {
@@ -136,11 +137,14 @@ public class ConceptDetailsHandler {
 		labelsLayout.setSpacing(false);
 		labelsLayout.setWidth("100%");
 		
-		labelsLayout.addComponents(accessionLabel, nameLabel, typeLabel, cliqueLabel, aliasesLabel);
+		labelsLayout.addComponents(cliqueLabel, accessionLabel, nameLabel, typeLabel, aliasesLabel);
 		
-		boolean wiki_article_available = descriptionBuilder != null && !descriptionBuilder.getArticleUrl().equals("");
+		boolean wiki_article_available = 
+				descriptionBuilder != null && 
+				!descriptionBuilder.getArticleUrl().equals("");
 		
 		if (wiki_article_available) {
+			
 			VerticalLayout article_uri_layout = new VerticalLayout();
 			article_uri_layout.setCaption("Wikipedia Url:");
 			Button articleDisplayButton = new Button(selectedConcept.getName());
@@ -152,8 +156,8 @@ public class ConceptDetailsHandler {
 
 		Map<Integer, Component> sordidDetails = new TreeMap<Integer, Component>();
 		if (descriptionBuilder != null) {
-			// TODO: Generalize the listing of tag=value pairs for diverse
-			// concept types!
+			
+			// TODO: Generalize the listing of tag=value pairs for diverse concept types!
 			Map<String, String> conceptDetails = descriptionBuilder.getDetails();
 
 			for (String key : conceptDetails.keySet()) {

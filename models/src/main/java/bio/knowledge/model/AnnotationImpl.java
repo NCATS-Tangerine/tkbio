@@ -28,9 +28,6 @@ package bio.knowledge.model;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
 
-import bio.knowledge.model.Annotation;
-import bio.knowledge.model.Reference;
-import bio.knowledge.model.EvidenceCode;
 import bio.knowledge.model.core.AbstractIdentifiedEntity;
 
 /**

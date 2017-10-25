@@ -480,16 +480,100 @@ public class ConceptService
     			kbService.getConceptDetails(cliqueId,beacons,sessionId);
    
     	try {
+    		
 			List<Concept> concepts = future.get(
-					KnowledgeBeaconService.BEACON_TIMEOUT_DURATION*kbService.getKnowledgeBeaconCount(beacons), // scale timeout by nunmber of beacons
+					
+					// scale timeout by nunmber of beacons
+					KnowledgeBeaconService.BEACON_TIMEOUT_DURATION * 
+					         kbService.getKnowledgeBeaconCount(beacons),
+					         
 					KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
 			);
-			return concepts.isEmpty() ? null : concepts.get(0);
+			
+			/* 
+			 * Concept details for a single clique may now be harvested from 
+			 * many sources, so they should be properly merged, and not just
+			 * one copy taken....
+			 */
+			
+			if(!concepts.isEmpty()) {
+				
+				Concept annotatedConcept = mergeConceptDetails(concepts);
+				return annotatedConcept;
+				
+			} else {
+				return null;
+			}
+			
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			
 			return null;
 		}
 	}
 	
+	private Concept mergeConceptDetails(List<Concept> concepts) {
+		
+		/*
+		 *  Blightly assuming that all the concepts records in
+		 *  the list pertain to one clique. Identification
+		 *  of the concept is likely also the clique id.
+		 *  Semantic group assignment can be upgraded from
+		 *  OBJC, if discovered.
+		 *  
+		 *  Need to perhaps merge aliases, synonyms and
+		 *  most certainly, details?
+		 */
+		Concept merged = concepts.get(0);
+		
+		merged.setDescription(merged.getBeaconSource()+":"+merged.getDescription());
+		merged.setSynonyms(merged.getBeaconSource()+":"+merged.getSynonyms());
+		
+		for(int i = 1;i<concepts.size();i++) {
+
+			Concept additional = concepts.get(i);
+
+			// Merge beacon sources
+			merged.setBeaconSource(
+					merged.getBeaconSource()+
+					" | "+additional.getBeaconSource()
+			);
+			
+			// Merge other definitions
+			merged.setDescription(
+					merged.getDescription()+
+					" | "+additional.getBeaconSource()+":"+additional.getDescription()
+			);
+
+			// Merge synonyms
+			merged.setSynonyms(
+					merged.getSynonyms()+
+					" | "+additional.getBeaconSource()+":"+additional.getSynonyms()
+			);
+			
+			/* 
+			 * More precise semantic type discovered?
+			 * TODO: Need to generalize concepts 
+			 * to handle multiple semantic types?
+			 */
+			if( merged.getSemanticGroup().equals(SemanticGroup.OBJC) &&
+				additional.getSemanticGroup() != null &&
+				! additional.getSemanticGroup().equals(SemanticGroup.OBJC) 
+			) merged.setSemanticGroup(additional.getSemanticGroup());
+			
+			// merge cross-references and terms 
+			merged.getCrossReferences().addAll(additional.getCrossReferences());
+			merged.getTerms().addAll(additional.getTerms());
+			
+			/*
+			 *  Merge details... may have some duplication
+			 *  in feature objects based on tags?
+			 */
+			merged.getFeatures().addAll(additional.getFeatures());	
+		}
+		
+		return merged;
+	}
+
 	/**
 	 * @param CURIE concept identifier of the Concept to match across current session list of beacons
 	 * 
@@ -697,6 +781,7 @@ public class ConceptService
 	public void getDescription( Function<ResultSet,Void> handler ) throws Exception {
 		
 		Optional<Concept> cscOpt = query.getCurrentSelectedConcept();
+		
 		if (!cscOpt.isPresent()) return;
 		
 		Concept concept = cscOpt.get();

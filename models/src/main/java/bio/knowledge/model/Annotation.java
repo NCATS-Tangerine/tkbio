@@ -1,6 +1,5 @@
 package bio.knowledge.model;
 
-import bio.knowledge.model.Reference;
 import bio.knowledge.model.core.IdentifiedEntity;
 
 public interface Annotation extends IdentifiedEntity, BeaconResponse {
