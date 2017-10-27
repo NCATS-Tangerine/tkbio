@@ -98,6 +98,7 @@ import bio.knowledge.model.Annotation;
 import bio.knowledge.model.BeaconResponse;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
+import bio.knowledge.model.DisplayableStatement;
 import bio.knowledge.model.DomainModelException;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
@@ -571,6 +572,86 @@ public class ListView extends BaseView {
 				if (object instanceof BeaconResponse) {
 					BeaconResponse beaconResponse = (BeaconResponse) object;
 					return beaconResponse.getBeaconSource();
+				}
+				return "";
+			}
+
+			@Override
+			public Class<String> getType() {
+				return String.class;
+			}
+			
+		});
+
+		gpcontainer.addGeneratedProperty("subjectId", new PropertyValueGenerator<String>() {
+
+			private static final long serialVersionUID = 2393111751549742042L;
+
+			@Override
+			public String getValue(Item item, Object object, Object propertyId) {
+				if (object instanceof DisplayableStatement) {
+					DisplayableStatement c = (DisplayableStatement) object;
+					return c.getSubject().getId();
+				}
+				return "";
+			}
+
+			@Override
+			public Class<String> getType() {
+				return String.class;
+			}
+			
+		});
+
+		gpcontainer.addGeneratedProperty("subjectClique", new PropertyValueGenerator<String>() {
+
+			private static final long serialVersionUID = 5174351710679478588L;
+
+			@Override
+			public String getValue(Item item, Object object, Object propertyId) {
+				if (object instanceof DisplayableStatement) {
+					DisplayableStatement c = (DisplayableStatement) object;
+					return c.getSubject().getClique();
+				}
+				return "";
+			}
+
+			@Override
+			public Class<String> getType() {
+				return String.class;
+			}
+			
+		});
+
+		gpcontainer.addGeneratedProperty("objectId", new PropertyValueGenerator<String>() {
+
+			private static final long serialVersionUID = 5437937835853569650L;
+
+			@Override
+			public String getValue(Item item, Object object, Object propertyId) {
+				if (object instanceof DisplayableStatement) {
+					DisplayableStatement c = (DisplayableStatement) object;
+					return c.getObject().getId();
+				}
+				return "";
+			}
+
+			@Override
+			public Class<String> getType() {
+				return String.class;
+			}
+			
+		});
+
+		gpcontainer.addGeneratedProperty("objectClique", new PropertyValueGenerator<String>() {
+
+			private static final long serialVersionUID = 8058294339364614146L;
+
+			@Override
+			public String getValue(Item item, Object object, Object propertyId) {
+				if (object instanceof DisplayableStatement) {
+					DisplayableStatement c = (DisplayableStatement) object;
+					return c.getObject().getClique();
 				}
 				return "";
 			}
@@ -1533,7 +1614,7 @@ public class ListView extends BaseView {
 		 * 'container' Bean field.
 		 * 
 		 * If a pipe "|" character is appended, followed by an asterix "*", then
-		 * the field value is taken to be a URL which can be rendered.
+		 * the field value is taken to cliekable field.
 		 * 
 		 * If a pipe "|" character is appended with additional characters OTHER
 		 * THAN an asterix "*", those characters are assumed to be a URL
@@ -1559,17 +1640,21 @@ public class ListView extends BaseView {
 
 			String[] fieldParts = fieldName.split("\\|");
 			fieldName = fieldParts[0];
-
+			
 			Property<?> itemProperty = item.getItemProperty(fieldName);
 
 			Label label = new Label();
 			label.setStyleName("emphasized");
 			detailsPane.addComponent(label);
+			
 			Object fieldValue = null;
 
 			if (itemProperty != null) {
+				
 				fieldValue = itemProperty.getValue();
+
 				label.setCaption(getMessage(fieldName) + ": ");
+				
 				if (fieldValue != null) {
 					if (fieldParts.length > 1) {
 						String url = fieldParts[1];
@@ -1817,7 +1902,7 @@ public class ListView extends BaseView {
 				ViewName.CONCEPTS_VIEW,
 				new BeanItemContainer<Concept>(Concept.class), 
 				conceptService,
-				new String[] { "beaconSource", "clique|crossReferences", "name|*", "semanticGroup", "description|*", "synonyms|*"},
+				new String[] { "beaconSource", "clique", "id", "name|*", "semanticGroup", "description|*", "synonyms|*"},
 				null, 
 				null);
 
@@ -1885,7 +1970,17 @@ public class ListView extends BaseView {
 		});
 
 		registry.setMapping(ViewName.RELATIONS_VIEW, new BeanItemContainer<Statement>(Statement.class),
-				statementService, new String[] { "beaconSource", "subject|*", COL_ID_RELATION, "object|*", "evidence|*" }, null);
+				statementService, new String[] { 
+						"beaconSource", 
+						"subjectClique",
+						"subjectId",
+						"subject|*", 
+						COL_ID_RELATION, 
+						"object|*", 
+						"objectClique",
+						"objectId",
+						"evidence|*" 
+				}, null);
 
 		
 		registry.addSelectionHandler(ViewName.RELATIONS_VIEW, COL_ID_SUBJECT,

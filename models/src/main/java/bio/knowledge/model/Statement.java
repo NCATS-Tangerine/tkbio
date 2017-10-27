@@ -4,7 +4,7 @@ import java.util.List;
 
 import bio.knowledge.model.core.IdentifiedEntity;
 
-public interface Statement extends IdentifiedEntity, BeaconResponse {
+public interface Statement extends IdentifiedEntity, DisplayableStatement, BeaconResponse {
 	/**
 	 * 
 	 * @param subject to be added to the Statement
@@ -27,21 +27,11 @@ public interface Statement extends IdentifiedEntity, BeaconResponse {
 	 */
 	void setSubject(Concept subject);
 
-	/**
-	 * 
-	 * @return
-	 */
-	Concept getSubject();
 
 	/**
 	 * @param predicate the predicate to set
 	 */
 	void setRelation(Predicate relation);
-
-	/**
-	 * @return the predicate
-	 */
-	Predicate getRelation();
 
 	/**
 	 * 
@@ -67,20 +57,9 @@ public interface Statement extends IdentifiedEntity, BeaconResponse {
 
 	/**
 	 * 
-	 * @return
-	 */
-	Concept getObject();
-
-	/**
-	 * 
 	 * @param evidence to be associated with the Statement
 	 */
 	void setEvidence(Evidence evidence);
-
-	/**
-	 * @return associated Evidence (e.g. References) supporting the Statement
-	 */
-	Evidence getEvidence();
 
 	/*
 	 * (non-Javadoc)
