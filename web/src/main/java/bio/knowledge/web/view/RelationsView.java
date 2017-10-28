@@ -17,7 +17,6 @@ import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Grid.SelectionMode;
 
-import bio.knowledge.client.model.Concept;
 import bio.knowledge.grid.Grid;
 import bio.knowledge.grid.Grid.ScrollListener;
 import bio.knowledge.model.Statement;

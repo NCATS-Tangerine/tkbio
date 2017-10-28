@@ -74,7 +74,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -646,6 +645,11 @@ public class DesktopUI extends UI implements MessageService {
 	@Autowired
 	ConceptDetailsHandler detailsHandler;
 
+	private String getCurrentConceptTitle(Concept concept) {
+		String cct = concept.getName()+" ("+concept.getClique()+")";
+		return cct;
+	}
+	
 	/**
 	 * 
 	 * @param concept
@@ -662,37 +666,36 @@ public class DesktopUI extends UI implements MessageService {
 		popupLayout.setVisible(true);
 		popupLayout.removeAllComponents();
 
-		// create view without content
-		String currentCliqueConcept = concept.getName()+" ("+concept.getClique()+")";
-		
-		PopupView currentConceptPopupView = new PopupView(currentCliqueConcept, null);
+		PopupView currentConceptPopupView = new PopupView(getCurrentConceptTitle(concept), null);
 		currentConceptPopupView.setHideOnMouseOut(false);
 		currentConceptPopupView.addStyleName("current-concept-label");
 
-		popupLayout.addLayoutClickListener(new LayoutClickListener() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void layoutClick(LayoutClickEvent event) {
-				currentConceptPopupView.setContent(new Content() {
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public Component getPopupComponent() {
-						VerticalLayout popupContent = detailsHandler.getDetails(concept);
-						popupContent.setSpacing(true);
-						popupContent.setMargin(true);
-						popupContent.addStyleName("current-concept-popup-layout");
-						return popupContent;
-					}
-
-					@Override
-					public String getMinimizedValueAsHTML() {
-						return concept.getName();
-					}
-				});
+		popupLayout.addLayoutClickListener(
+			new LayoutClickListener() {
+				private static final long serialVersionUID = 1L;
+	
+				@Override
+				public void layoutClick(LayoutClickEvent event) {
+					currentConceptPopupView.setContent(new Content() {
+						private static final long serialVersionUID = 1L;
+	
+						@Override
+						public Component getPopupComponent() {
+							VerticalLayout popupContent = detailsHandler.getDetails(concept);
+							popupContent.setSpacing(true);
+							popupContent.setMargin(true);
+							popupContent.addStyleName("current-concept-popup-layout");
+							return popupContent;
+						}
+	
+						@Override
+						public String getMinimizedValueAsHTML() {
+							return getCurrentConceptTitle(concept);
+						}
+					});
+				}
 			}
-		});
+		);
 
 		popupLayout.addComponent(currentConceptPopupView);
 		popupLayout.setComponentAlignment(currentConceptPopupView, Alignment.MIDDLE_CENTER);
