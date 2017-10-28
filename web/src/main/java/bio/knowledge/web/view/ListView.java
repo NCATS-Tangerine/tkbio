@@ -151,7 +151,11 @@ public class ListView extends BaseView {
 	private static final String COL_ID_REFERENCE = "reference";
 	private static final String COL_ID_PUBLICATION_DATE = "publicationDate";
 
-	private static final int ROWS_TO_DISPLAY = 11;
+	/*
+	 *  RMB: Oct 27, 2017: reduced table height to 8 from 11 
+	 *  when data table moved to 100% width of bottom pane
+	 */
+	private static final int ROWS_TO_DISPLAY = 8; 
 	
 	@Autowired
 	KnowledgeBeaconRegistry kbRegistry;
@@ -808,13 +812,6 @@ public class ListView extends BaseView {
 
 //		createPageControls(listContainer);
 
-		// button that can add row(s) of the grid to the graph
-		if (viewName.equals(ViewName.RELATIONS_VIEW)) {
-			makeAddToMapButton(dataTableLayout);
-		} else if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
-			
-		}
-
 		dataTableLayout.addComponent(pageBar);
 		dataTableLayout.addComponent(enPageBar);
 		dataTableLayout.setSizeFull();
@@ -861,7 +858,7 @@ public class ListView extends BaseView {
 		return tabsheet;
 	}
 
-	private void makeAddToMapButton(VerticalLayout dataTableLayout) {
+	private void makeAddToMapButton(HorizontalLayout hostLayout) {
 
 		Button addToGraphButton = new Button("Add to Map", e -> {
 			Collection<Object> items = dataTable.getSelectionModel().getSelectedRows();
@@ -892,7 +889,8 @@ public class ListView extends BaseView {
 		});
 
 		addToGraphButton.setEnabled(false);
-		addToGraphButton.setWidth(100, Unit.PERCENTAGE);
+		addToGraphButton.setWidth(250, Unit.PIXELS);
+		addToGraphButton.setStyleName("add-to-map-button");
 
 		// add selection listener for the grid
 		dataTable.addSelectionListener(selection -> {
@@ -900,7 +898,11 @@ public class ListView extends BaseView {
 
 			addToGraphButton.setEnabled(isEmpty ? false : true);
 		});
-		dataTableLayout.addComponent(addToGraphButton);
+		VerticalLayout atgbLayout = new VerticalLayout();
+		atgbLayout.addComponent(addToGraphButton);
+		hostLayout.addComponent(atgbLayout);
+		hostLayout.setComponentAlignment(atgbLayout, Alignment.BOTTOM_RIGHT);
+
 	}
 
 	/*
@@ -1177,6 +1179,7 @@ public class ListView extends BaseView {
 
 		HorizontalLayout filterMenuBar = new HorizontalLayout();
 		filterMenuBar.setSpacing(true);
+		filterMenuBar.setMargin(false);
 		
 		Label filterPrefixLabel = new Label("Filter By");
 		filterPrefixLabel.setStyleName("relation-filter-prefix");
@@ -1185,6 +1188,13 @@ public class ListView extends BaseView {
 		setSemGroupFilter(filterMenuBar);		
 		setPredicateFilter(filterMenuBar);		
 		setUpTextFilter(filterMenuBar);
+		
+		// button that can add row(s) of the grid to the graph
+		if (viewName.equals(ViewName.RELATIONS_VIEW)) {
+			makeAddToMapButton(filterMenuBar);
+		} else if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
+			
+		}
 		
 		filterHeader.addComponent(filterMenuBar);
 		filterHeader.setComponentAlignment(filterMenuBar, Alignment.MIDDLE_CENTER);
@@ -1977,8 +1987,8 @@ public class ListView extends BaseView {
 						"subject|*", 
 						COL_ID_RELATION, 
 						"object|*", 
-						"objectClique",
 						"objectId",
+						"objectClique",
 						"evidence|*" 
 				}, null);
 

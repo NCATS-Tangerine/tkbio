@@ -85,6 +85,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
 
 import bio.knowledge.authentication.AuthenticationManager;
@@ -651,7 +652,7 @@ public class DesktopUI extends UI implements MessageService {
 	 */
 	private void setConceptLabelDescription(Concept concept) {
 
-		VerticalLayout popupLayout = getDesktop().getPopUpLayout();
+		HorizontalLayout popupLayout = getDesktop().getPopUpLayout();
 
 		if (concept == null) {
 			popupLayout.setVisible(false);
@@ -1136,7 +1137,7 @@ public class DesktopUI extends UI implements MessageService {
 		desktopView.getCmLayoutSelect().setValue(DEFAULT_CM_LAYOUT);
 		desktopView.getCmPanel().addComponent(cm);
 
-		HorizontalSplitPanel splitPanel = desktopView.getDesktopSplitPanel();
+		VerticalSplitPanel splitPanel = desktopView.getDesktopSplitPanel();
 
 		// March 26, 2017 - Ben want's his resizable pane back...
 		// He's willing to accept the UI consequences!

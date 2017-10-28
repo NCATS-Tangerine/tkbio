@@ -39,6 +39,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.VerticalSplitPanel;
 
 import bio.knowledge.web.design.DesktopDesign;
 import bio.knowledge.web.ui.DesktopUI;
@@ -235,15 +236,15 @@ public class DesktopView extends DesktopDesign implements View {
 		return cmLayoutSelect;
 	}
 	
-	public void setDesktopSplitPanel(HorizontalSplitPanel splitPanel) {
+	public void setDesktopSplitPanel(VerticalSplitPanel splitPanel) {
 		this.desktopSplitPanel = splitPanel ;
 	}
 	
-	public HorizontalSplitPanel getDesktopSplitPanel() {
+	public VerticalSplitPanel getDesktopSplitPanel() {
 		return desktopSplitPanel ;
 	}
 
-	public VerticalLayout getPopUpLayout() {
+	public HorizontalLayout getPopUpLayout() {
 		return popUpLayout;
 	}
 	
