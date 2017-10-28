@@ -1083,7 +1083,7 @@ public class DesktopUI extends UI implements MessageService {
 		conceptSearchWindow.setResizable(true);
 
 		// setWindowSize(conceptSearchWindow);
-		conceptSearchWindow.setWidth(120.0f, Unit.EM);
+		conceptSearchWindow.setWidth(150.0f, Unit.EM);
 
 		conceptSearchWindow.setContent(currentSearchResults);
 
