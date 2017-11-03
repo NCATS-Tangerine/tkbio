@@ -1025,7 +1025,8 @@ public class ListView extends BaseView {
 			dataTable.setSelectionMode(SelectionMode.MULTI);
 
 		// the panel will give it scrollbars.
-		Panel dataPanel = new Panel(getMessage("global_menu_list", getMessage(datatype + "_plural")));
+		//Panel dataPanel = new Panel(getMessage("global_menu_list", getMessage(datatype + "_plural")));
+		Panel dataPanel = new Panel("Data Table");
 		dataPanel.setContent(dataTable);
 		dataPanel.setSizeFull();
 
