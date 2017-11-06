@@ -2,12 +2,10 @@
   "swagger": "2.0",
   "info": {
     "title": "Translator Knowledge Beacon Aggregator API",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "contact": {
       "url": "http://starinformatics.com",
-      "email": "richard@starinformatics.com",
-      "responsibleDeveloper": "Richard Bruskiewich",
-      "responsibleOrganization": "STAR Informatics/Delphinai Corporation"
+      "email": "richard@starinformatics.com"
     },
     "description": "This is the Translator Knowledge Beacon Aggregator web service application programming interface (API) that provides integrated access to a pool of knowledge sources publishing concepts and relations through the Translator Knowledge Beacon API. This API is similar to that of the latter mentioned API with the addition of some extra informative endpoints plus session identifier and beacon indices. These latter identifiers are locally assigned numeric indices provided to track the use of specific registered beacons within the aggregator API itself.\n",
     "license": {
@@ -81,12 +79,12 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "Summary",
+                "title": "ServerSummary",
                 "type": "object",
                 "properties": {
                   "id": {
                     "type": "string",
-                    "description": "the concept type (semantic group)"
+                    "description": "the concept type (semantic group)\n"
                   },
                   "idmap": {
                     "type": "string",
@@ -126,7 +124,7 @@
     },
     "/concepts/{cliqueId}": {
       "get": {
-        "description": "Retrieves details for a specified clique of equivalent concepts in the system, as specified by a (url-encoded) CURIE identifier of a clique known to the aggregator",
+        "description": "Retrieves details for a specified clique of equivalent concepts in the system,  as specified by a (url-encoded) CURIE identifier of a clique known to the aggregator\n",
         "tags": [
           "concepts"
         ],
@@ -134,7 +132,7 @@
           {
             "name": "cliqueId",
             "in": "path",
-            "description": "a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier, as returned by any other endpoint of the beacon aggregator API, of an exactly matching concept clique of interest.",
+            "description": "a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier, as returned  by any other endpoint of the beacon aggregator API, of an exactly matching  concept clique of interest.",
             "required": true,
             "type": "string"
           },
@@ -162,12 +160,16 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ConceptWithDetails",
+                "title": "ServerConceptWithDetails",
                 "type": "object",
                 "properties": {
                   "clique": {
                     "type": "string",
-                    "description": "CURIE identifying the inferred equivalent concept clique to which the concept belongs. This is assigned by an identifier precedence heuristic by the beacon-aggregator\n"
+                    "description": "CURIE identifying the equivalent concept clique to which the concept belongs.\n"
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "CURIE identifying the specific beacon source concept being described.\n"
                   },
                   "aliases": {
                     "type": "array",
@@ -198,7 +200,7 @@
                   "details": {
                     "type": "array",
                     "items": {
-                      "title": "ConceptDetail",
+                      "title": "ServerConceptDetail",
                       "type": "object",
                       "properties": {
                         "tag": {
@@ -219,7 +221,7 @@
                 }
               }
             },
-            "description": "Successful response with concept details returned\n",
+            "description": "Successful response with clique concept details returned\n",
             "examples": {
               "application/json": [
                 {
@@ -258,7 +260,7 @@
           {
             "name": "semanticGroups",
             "in": "query",
-            "description": "a (url-encoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [Semantic Groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n",
+            "description": "a (url-encoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [semantic groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n",
             "required": false,
             "type": "string"
           },
@@ -300,7 +302,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "Concept",
+                "title": "ServerConcept",
                 "type": "object",
                 "properties": {
                   "clique": {
@@ -451,7 +453,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "Predicate",
+                "title": "ServerPredicate",
                 "type": "object",
                 "properties": {
                   "name": {
@@ -462,7 +464,7 @@
                     "type": "array",
                     "description": "list of metadata for beacons that support the use of this predicate relation\n",
                     "items": {
-                      "title": "PredicateBeacon",
+                      "title": "ServerPredicateBeacon",
                       "type": "object",
                       "properties": {
                         "beacon": {
@@ -507,18 +509,46 @@
         }
       }
     },
-    "/statements/{cliqueId}": {
+    "/statements": {
       "get": {
-        "description": "Given a list of [CURIE-encoded](https://www.w3.org/TR/curie/) identifiers of exactly matching concepts, retrieves a paged list of concept-relations where either the subject or object concept matches at least one concept in the input list\n",
+        "description": "Given a specification [CURIE-encoded](https://www.w3.org/TR/curie/) a 'source' clique identifier for a set of exactly matching concepts,  retrieves a paged list of concept-relations where either the subject or object concept matches the 'source' clique identifier.  Optionally, a 'target' clique identifier may also be given, in which case the 'target' clique identifier should match the concept clique opposing the 'source', that is, if the 'source' matches a subject, then the  'target' should match the object of a given statement (or vice versa).\n",
         "tags": [
           "statements"
         ],
         "parameters": [
           {
-            "name": "cliqueId",
-            "in": "path",
-            "description": "a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of an exactly matching clique as returned by any other endpoint of the beacon aggregator API.\n",
+            "name": "source",
+            "in": "query",
+            "description": "a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of the exactly matching 'source' clique, as defined by other endpoints of the beacon aggregator API. \n",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "relations",
+            "in": "query",
+            "description": "a (url-encoded, space-delimited) string of predicate relation identifiers with which to constrain the statement relations retrieved  for the given query seed concept. The predicate ids sent should  be as published by the beacon-aggregator by the /predicates API endpoint.\n",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "target",
+            "in": "query",
+            "description": "a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of the exactly matching 'target' clique, as defined by other endpoints of the beacon aggregator API. \n",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "keywords",
+            "in": "query",
+            "description": "a (url-encoded, space-delimited) string of keywords or substrings against which to match the 'target' concept or 'predicate' names of the set of concept-relations matched by the 'source' concepts.\n",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "semanticGroups",
+            "in": "query",
+            "description": "a (url-encoded, space-delimited) string of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain 'target' concepts associated with the given 'source' concept  (see [Semantic Groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n",
+            "required": false,
             "type": "string"
           },
           {
@@ -534,27 +564,6 @@
             "description": "number of concepts per page to be returned in a paged set of query\nresults\n",
             "required": false,
             "type": "integer"
-          },
-          {
-            "name": "keywords",
-            "in": "query",
-            "description": "a (url-encoded, space-delimited) string of keywords or substrings against which to match the subject, predicate or object names of the set of concept-relations matched by any of the input exact matching concepts\n",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "semanticGroups",
-            "in": "query",
-            "description": "a (url-encoded, space-delimited) string of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see [Semantic Groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)\n",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "relations",
-            "in": "query",
-            "description": "a (url-encoded, space-delimited) string of predicate relation identifiers with which to constrain the statement relations retrieved  for the given query seed concept. The predicate ids sent should  be as published by the beacon-aggregator by the /predicates API endpoint.\n",
-            "required": false,
-            "type": "string"
           },
           {
             "name": "beacons",
@@ -581,7 +590,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "Statement",
+                "title": "ServerStatement",
                 "type": "object",
                 "properties": {
                   "id": {
@@ -589,12 +598,12 @@
                     "description": "CURIE-encoded identifier for statement (can be used to retrieve associated evidence)"
                   },
                   "subject": {
-                    "title": "StatementSubject",
+                    "title": "ServerStatementSubject",
                     "type": "object",
                     "properties": {
                       "clique": {
                         "type": "string",
-                        "description": "CURIE-encoded cannonical identifier of \"equivalent concepts clique\"\n"
+                        "description": "CURIE-encoded canonical identifier of \"equivalent concepts clique\"\n"
                       },
                       "id": {
                         "type": "string",
@@ -611,7 +620,7 @@
                     }
                   },
                   "predicate": {
-                    "title": "StatementPredicate",
+                    "title": "ServerStatementPredicate",
                     "type": "object",
                     "properties": {
                       "id": {
@@ -625,12 +634,12 @@
                     }
                   },
                   "object": {
-                    "title": "StatementObject",
+                    "title": "ServerStatementObject",
                     "type": "object",
                     "properties": {
                       "clique": {
                         "type": "string",
-                        "description": "CURIE-encoded cannonical identifier of \"equivalent concepts clique\"\n"
+                        "description": "CURIE-encoded canonical identifier of \"equivalent concepts clique\"\n"
                       },
                       "id": {
                         "type": "string",
@@ -746,7 +755,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "Annotation",
+                "title": "ServerAnnotation",
                 "type": "object",
                 "properties": {
                   "id": {
@@ -801,7 +810,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "KnowledgeBeacon",
+                "title": "ServerKnowledgeBeacon",
                 "type": "object",
                 "properties": {
                   "id": {
@@ -871,7 +880,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "LogEntry",
+                "title": "ServerLogEntry",
                 "type": "object",
                 "properties": {
                   "timestamp": {
