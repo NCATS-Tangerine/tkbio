@@ -90,6 +90,7 @@ public class RelationsView extends BaseView {
 									null, 
 									null, 
 									null, 
+									null, 
 									pageNumber, 
 									DATAPAGE_SIZE,
 									beacons,

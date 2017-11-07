@@ -72,7 +72,7 @@ public class Nodes extends HashSet<HashMap<String, HashMap<String, Serializable>
 	 */
 	public Node getNodeById(String nodeId) {
 		
-		ArrayList match = (ArrayList) this.nodes.parallelStream().filter(node -> {
+		ArrayList<Node> match = (ArrayList<Node>) this.nodes.parallelStream().filter(node -> {
 			String itemId = (String) node.get("data").get("id");
 			return itemId.equals(nodeId);
 		}).collect(Collectors.toList());

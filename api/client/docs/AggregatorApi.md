@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 <a name="getBeacons"></a>
 # **getBeacons**
-> List&lt;KnowledgeBeacon&gt; getBeacons()
+> List&lt;BeaconMetadata&gt; getBeacons()
 
 
 
@@ -25,7 +25,7 @@ Get a list of all of the knowledge beacons that the aggregator can query
 
 AggregatorApi apiInstance = new AggregatorApi();
 try {
-    List<KnowledgeBeacon> result = apiInstance.getBeacons();
+    List<BeaconMetadata> result = apiInstance.getBeacons();
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling AggregatorApi#getBeacons");
@@ -38,7 +38,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**List&lt;KnowledgeBeacon&gt;**](KnowledgeBeacon.md)
+[**List&lt;BeaconMetadata&gt;**](BeaconMetadata.md)
 
 ### Authorization
 
@@ -51,7 +51,7 @@ No authorization required
 
 <a name="getErrors"></a>
 # **getErrors**
-> List&lt;LogEntry&gt; getErrors(sessionId)
+> List&lt;BeaconLogEntry&gt; getErrors(sessionId)
 
 
 
@@ -67,7 +67,7 @@ Get a log of the most recent errors in this session
 AggregatorApi apiInstance = new AggregatorApi();
 String sessionId = "sessionId_example"; // String | client-defined session identifier 
 try {
-    List<LogEntry> result = apiInstance.getErrors(sessionId);
+    List<BeaconLogEntry> result = apiInstance.getErrors(sessionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling AggregatorApi#getErrors");
@@ -83,7 +83,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;LogEntry&gt;**](LogEntry.md)
+[**List&lt;BeaconLogEntry&gt;**](BeaconLogEntry.md)
 
 ### Authorization
 

@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 <a name="getConceptDetails"></a>
 # **getConceptDetails**
-> List&lt;ConceptWithDetails&gt; getConceptDetails(cliqueId, beacons, sessionId)
+> List&lt;BeaconConceptWithDetails&gt; getConceptDetails(cliqueId, beacons, sessionId)
 
 
 
@@ -28,7 +28,7 @@ String cliqueId = "cliqueId_example"; // String | a [CURIE-encoded](https://www.
 List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of aggregator indices of beacons to be used as knowledge sources for the query 
 String sessionId = "sessionId_example"; // String | client-defined session identifier 
 try {
-    List<ConceptWithDetails> result = apiInstance.getConceptDetails(cliqueId, beacons, sessionId);
+    List<BeaconConceptWithDetails> result = apiInstance.getConceptDetails(cliqueId, beacons, sessionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConceptsApi#getConceptDetails");
@@ -46,7 +46,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;ConceptWithDetails&gt;**](ConceptWithDetails.md)
+[**List&lt;BeaconConceptWithDetails&gt;**](BeaconConceptWithDetails.md)
 
 ### Authorization
 
@@ -59,7 +59,7 @@ No authorization required
 
 <a name="getConcepts"></a>
 # **getConcepts**
-> List&lt;Concept&gt; getConcepts(keywords, semanticGroups, pageNumber, pageSize, beacons, sessionId)
+> List&lt;BeaconConcept&gt; getConcepts(keywords, semanticGroups, pageNumber, pageSize, beacons, sessionId)
 
 
 
@@ -80,7 +80,7 @@ Integer pageSize = 56; // Integer | number of concepts per page to be returned i
 List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of aggregator indices of beacons to be used as knowledge sources for the query 
 String sessionId = "sessionId_example"; // String | client-defined session identifier 
 try {
-    List<Concept> result = apiInstance.getConcepts(keywords, semanticGroups, pageNumber, pageSize, beacons, sessionId);
+    List<BeaconConcept> result = apiInstance.getConcepts(keywords, semanticGroups, pageNumber, pageSize, beacons, sessionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConceptsApi#getConcepts");
@@ -101,7 +101,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;Concept&gt;**](Concept.md)
+[**List&lt;BeaconConcept&gt;**](BeaconConcept.md)
 
 ### Authorization
 

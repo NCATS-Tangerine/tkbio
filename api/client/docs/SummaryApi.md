@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 <a name="linkedTypes"></a>
 # **linkedTypes**
-> List&lt;Summary&gt; linkedTypes(beacons, sessionId)
+> List&lt;BeaconSummary&gt; linkedTypes(beacons, sessionId)
 
 
 
@@ -26,7 +26,7 @@ SummaryApi apiInstance = new SummaryApi();
 List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of aggregator indices of beacons to be used as knowledge sources for the query 
 String sessionId = "sessionId_example"; // String | client-defined session identifier 
 try {
-    List<Summary> result = apiInstance.linkedTypes(beacons, sessionId);
+    List<BeaconSummary> result = apiInstance.linkedTypes(beacons, sessionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling SummaryApi#linkedTypes");
@@ -43,7 +43,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;Summary&gt;**](Summary.md)
+[**List&lt;BeaconSummary&gt;**](BeaconSummary.md)
 
 ### Authorization
 

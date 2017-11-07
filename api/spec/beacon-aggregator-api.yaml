@@ -66,7 +66,7 @@ paths:
           schema:
             type: array
             items:
-              title: ServerSummary
+              title: BeaconSummary
               type: object
               properties:
                 id:
@@ -134,7 +134,7 @@ paths:
           schema:
             type: array
             items:
-              title: ServerConceptWithDetails
+              title: BeaconConceptWithDetails
               type: object
               properties:
                 clique:
@@ -175,7 +175,7 @@ paths:
                 details:
                   type: array
                   items:
-                    title: ServerConceptDetail
+                    title: BeaconConceptDetail
                     type: object
                     properties:
                       tag:
@@ -263,7 +263,7 @@ paths:
           schema:
             type: array
             items:
-              title: ServerConcept
+              title: BeaconConcept
               type: object
               properties:
                 clique:
@@ -405,7 +405,7 @@ paths:
           schema:
             type: array
             items:
-              title: ServerPredicate
+              title: BeaconPredicate
               type: object
               properties:
                 name:
@@ -418,7 +418,7 @@ paths:
                     list of metadata for beacons that support the use of this
                     predicate relation
                   items:
-                    title: ServerPredicateBeacon
+                    title: BeaconPredicateRecord
                     type: object
                     properties:
                       beacon:
@@ -546,7 +546,7 @@ paths:
           schema:
             type: array
             items:
-              title: ServerStatement
+              title: BeaconStatement
               type: object
               properties:
                 id:
@@ -555,7 +555,7 @@ paths:
                     CURIE-encoded identifier for statement (can be used to
                     retrieve associated evidence)
                 subject:
-                  title: ServerStatementSubject
+                  title: BeaconStatementSubject
                   type: object
                   properties:
                     clique:
@@ -578,7 +578,7 @@ paths:
                         Groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt)
                         for the full list of codes)
                 predicate:
-                  title: ServerStatementPredicate
+                  title: BeaconStatementPredicate
                   type: object
                   properties:
                     id:
@@ -589,7 +589,7 @@ paths:
                       type: string
                       description: human readable label of concept
                 object:
-                  title: ServerStatementObject
+                  title: BeaconStatementObject
                   type: object
                   properties:
                     clique:
@@ -694,7 +694,7 @@ paths:
           schema:
             type: array
             items:
-              title: ServerAnnotation
+              title: BeaconAnnotation
               type: object
               properties:
                 id:
@@ -743,7 +743,7 @@ paths:
           schema:
             type: array
             items:
-              title: ServerKnowledgeBeacon
+              title: BeaconMetadata
               type: object
               properties:
                 id:
@@ -802,7 +802,7 @@ paths:
           schema:
             type: array
             items:
-              title: ServerLogEntry
+              title: BeaconLogEntry
               type: object
               properties:
                 timestamp:

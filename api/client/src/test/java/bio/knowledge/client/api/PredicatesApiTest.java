@@ -19,7 +19,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import bio.knowledge.client.ApiException;
-import bio.knowledge.client.model.Predicate;
+import bio.knowledge.client.model.BeaconPredicate;
 
 /**
  * API tests for PredicatesApi
@@ -40,7 +40,7 @@ public class PredicatesApiTest {
      */
     @Test
     public void getPredicatesTest() throws ApiException {
-        List<Predicate> response = api.getPredicates();
+        List<BeaconPredicate> response = api.getPredicates();
 
         // TODO: test validations
     }

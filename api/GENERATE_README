@@ -6,7 +6,12 @@ code accessing the beacon-aggregator.
 Type the script name without any arguments to get the usage. Note that for TKBio,
 we only need to generate the client code.
 
-The client API specification is in the spec/knowledge-beacon-api.yaml file. 
+The client API specification is in the spec/beacon-aggregator-api.yaml file.
+This specification is generally identical to the one in the actual 
+beacon-aggregator project, except for the various 'title' fields used
+in generating data transfer objects. These are renamed from 'Server' to 'Beacon' prefixes
+with some internal name changes to suit as well, to ensure that generated classes
+don't have a direct name conflict with the main TKBIO model classes.
 
 After regenerating the client code, you need to fix the functions in the KnowledgeBeaconService
 of the bio.knowledge.service.beacon package in the 'core' subproject.

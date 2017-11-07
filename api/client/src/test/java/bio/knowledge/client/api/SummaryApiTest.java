@@ -20,7 +20,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import bio.knowledge.client.ApiException;
-import bio.knowledge.client.model.Summary;
+import bio.knowledge.client.model.BeaconSummary;
 
 /**
  * API tests for SummaryApi
@@ -43,7 +43,7 @@ public class SummaryApiTest {
     public void linkedTypesTest() throws ApiException {
     	List<String> beacons = new ArrayList<String>() ;
         String sessionId = "";
-        List<Summary> response = api.linkedTypes(beacons, sessionId);
+        List<BeaconSummary> response = api.linkedTypes(beacons, sessionId);
     }
     
 }

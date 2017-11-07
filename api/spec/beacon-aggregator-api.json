@@ -79,7 +79,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ServerSummary",
+                "title": "BeaconSummary",
                 "type": "object",
                 "properties": {
                   "id": {
@@ -160,7 +160,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ServerConceptWithDetails",
+                "title": "BeaconConceptWithDetails",
                 "type": "object",
                 "properties": {
                   "clique": {
@@ -200,7 +200,7 @@
                   "details": {
                     "type": "array",
                     "items": {
-                      "title": "ServerConceptDetail",
+                      "title": "BeaconConceptDetail",
                       "type": "object",
                       "properties": {
                         "tag": {
@@ -302,7 +302,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ServerConcept",
+                "title": "BeaconConcept",
                 "type": "object",
                 "properties": {
                   "clique": {
@@ -453,7 +453,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ServerPredicate",
+                "title": "BeaconPredicate",
                 "type": "object",
                 "properties": {
                   "name": {
@@ -464,7 +464,7 @@
                     "type": "array",
                     "description": "list of metadata for beacons that support the use of this predicate relation\n",
                     "items": {
-                      "title": "ServerPredicateBeacon",
+                      "title": "BeaconPredicateRecord",
                       "type": "object",
                       "properties": {
                         "beacon": {
@@ -590,7 +590,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ServerStatement",
+                "title": "BeaconStatement",
                 "type": "object",
                 "properties": {
                   "id": {
@@ -598,7 +598,7 @@
                     "description": "CURIE-encoded identifier for statement (can be used to retrieve associated evidence)"
                   },
                   "subject": {
-                    "title": "ServerStatementSubject",
+                    "title": "BeaconStatementSubject",
                     "type": "object",
                     "properties": {
                       "clique": {
@@ -620,7 +620,7 @@
                     }
                   },
                   "predicate": {
-                    "title": "ServerStatementPredicate",
+                    "title": "BeaconStatementPredicate",
                     "type": "object",
                     "properties": {
                       "id": {
@@ -634,7 +634,7 @@
                     }
                   },
                   "object": {
-                    "title": "ServerStatementObject",
+                    "title": "BeaconStatementObject",
                     "type": "object",
                     "properties": {
                       "clique": {
@@ -755,7 +755,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ServerAnnotation",
+                "title": "BeaconAnnotation",
                 "type": "object",
                 "properties": {
                   "id": {
@@ -810,7 +810,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ServerKnowledgeBeacon",
+                "title": "BeaconMetadata",
                 "type": "object",
                 "properties": {
                   "id": {
@@ -880,7 +880,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ServerLogEntry",
+                "title": "BeaconLogEntry",
                 "type": "object",
                 "properties": {
                   "timestamp": {

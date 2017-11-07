@@ -19,7 +19,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import bio.knowledge.client.ApiException;
-import bio.knowledge.client.model.Statement;
+import bio.knowledge.client.model.BeaconStatement;
 
 /**
  * API tests for StatementsApi
@@ -40,15 +40,16 @@ public class StatementsApiTest {
      */
     @Test
     public void getStatementsTest() throws ApiException {
-        String cliqueId = null;
-        Integer pageNumber = null;
-        Integer pageSize = null;
+        String sourceClique = null;
+        String relations = null;
+        String targetClique = null;
         String keywords = null;
         String semanticGroups = null;
-        String relations = null;
+        Integer pageNumber = null;
+        Integer pageSize = null;
         List<String> beacons = null;
         String sessionId = null;
-        List<Statement> response = api.getStatements(cliqueId, pageNumber, pageSize, keywords, semanticGroups, relations, beacons, sessionId);
+        List<BeaconStatement> response = api.getStatements(sourceClique, relations, targetClique, keywords, semanticGroups, pageNumber, pageSize, beacons, sessionId);
 
         // TODO: test validations
     }

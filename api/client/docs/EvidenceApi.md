@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 <a name="getEvidence"></a>
 # **getEvidence**
-> List&lt;Annotation&gt; getEvidence(statementId, keywords, pageNumber, pageSize, beacons, sessionId)
+> List&lt;BeaconAnnotation&gt; getEvidence(statementId, keywords, pageNumber, pageSize, beacons, sessionId)
 
 
 
@@ -30,7 +30,7 @@ Integer pageSize = 56; // Integer | number of cited references per page to be re
 List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of aggregator indices of beacons to be used as knowledge sources for the query 
 String sessionId = "sessionId_example"; // String | client-defined session identifier 
 try {
-    List<Annotation> result = apiInstance.getEvidence(statementId, keywords, pageNumber, pageSize, beacons, sessionId);
+    List<BeaconAnnotation> result = apiInstance.getEvidence(statementId, keywords, pageNumber, pageSize, beacons, sessionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling EvidenceApi#getEvidence");
@@ -51,7 +51,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;Annotation&gt;**](Annotation.md)
+[**List&lt;BeaconAnnotation&gt;**](BeaconAnnotation.md)
 
 ### Authorization
 

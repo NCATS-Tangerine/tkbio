@@ -188,7 +188,7 @@ public interface KBQuery {
 
 	/**
 	 * 
-	 * @param Statement currently displayed
+	 * @param BeaconStatement currently displayed
 
 	 */
 	public void setCurrentStatement(Statement selectedStatement) ;
@@ -213,7 +213,7 @@ public interface KBQuery {
 
 	/**
 	 * 
-	 * @param Annotation currently selected
+	 * @param BeaconAnnotation currently selected
 	 */
 	public void setCurrentAnnotation( Annotation annotation ) ;
 	

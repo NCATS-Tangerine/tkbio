@@ -18,7 +18,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import bio.knowledge.client.model.KnowledgeBeacon;
+import bio.knowledge.client.model.BeaconMetadata;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
@@ -31,7 +31,7 @@ public class KnowledgeBeaconWindow extends Window {
 	private final KnowledgeBeaconRegistry kbRegistry;
 	private final KnowledgeBeaconService  kbService;
 	
-	private List<KnowledgeBeacon> defaultBeacons;
+	private List<BeaconMetadata> defaultBeacons;
 
 	private OptionGroup optionGroup;
 
@@ -109,8 +109,8 @@ public class KnowledgeBeaconWindow extends Window {
 		optionGroup.addValueChangeListener(event -> {
 			
 			@SuppressWarnings("unchecked")
-			Collection<KnowledgeBeacon> selected = 
-					(Collection<KnowledgeBeacon>) event.getProperty().getValue();
+			Collection<BeaconMetadata> selected = 
+					(Collection<BeaconMetadata>) event.getProperty().getValue();
 			
 			List<String> beaconIds = new ArrayList<String>();
 			beaconIds.addAll(
@@ -200,7 +200,7 @@ public class KnowledgeBeaconWindow extends Window {
 		optionGroup.removeAllItems();
 		optionGroup.setMultiSelect(true);
 		
-		for (KnowledgeBeacon kb : defaultBeacons) {
+		for (BeaconMetadata kb : defaultBeacons) {
 			
 			optionGroup.addItem(kb);
 			optionGroup.setItemCaption(kb, kb.getName() + " - " + kb.getUrl());

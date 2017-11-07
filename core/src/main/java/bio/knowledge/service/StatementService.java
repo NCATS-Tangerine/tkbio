@@ -104,11 +104,14 @@ public class StatementService
 		/**
 		 * We are not using the {@code filter} field, since here it refers to the main keywords search text
 		 */
-		String extraFilter = query.getSimpleTextFilter();
-		String emci = query.getCurrentQueryConceptId();
+		String extraFilter   = query.getSimpleTextFilter();
+		String sourceClique  = query.getCurrentQueryConceptId();
+		
+		// TODO: implement the targetClique specification in TKBIO
+		String targetClique  = "";
 		
 		// Sometimes this function gets call without any conceptId's (e.g. during table refresh)
-		if(emci==null) return new ArrayList<Statement>();
+		if(sourceClique==null) return new ArrayList<Statement>();
 		
 		Optional<Set<SemanticGroup>> optionalSemanticGroupSet = query.getConceptTypes();
 		
@@ -134,7 +137,7 @@ public class StatementService
 		String sessionId = query.getUserSessionId();
 		
 		CompletableFuture<List<Statement>> future = 
-				kbService.getStatements(emci, extraFilter, semgroups, predicateFilter, pageIndex, pageSize,beacons,sessionId);
+				kbService.getStatements( sourceClique, predicateFilter, targetClique, extraFilter, semgroups, pageIndex, pageSize,beacons,sessionId);
 		
 		try {
 			List<Statement> statements = 
