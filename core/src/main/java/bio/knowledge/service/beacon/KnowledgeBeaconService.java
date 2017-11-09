@@ -70,6 +70,15 @@ import bio.knowledge.model.core.OntologyTerm;
 public class KnowledgeBeaconService {
 	
 	private Logger _logger = LoggerFactory.getLogger(KnowledgeBeaconService.class);
+	
+	/*
+	 *  ApiClient timeout weightings here are in milliseconds
+	 *  These are used below alongside beacon number and pagesizes 
+	 *  to set some reasonable timeouts for various queries
+	 */
+	public final int DEFAULT_TIMEOUT_WEIGHTING = 5000;
+	public final int CONCEPTS_QUERY_TIMEOUT_WEIGHTING   = 20000;
+	public final int STATEMENTS_QUERY_TIMEOUT_WEIGHTING = 60000; 
 
 	@Value( "${beaconAggregator.url}" )
 	private String AGGREGATOR_BASE_URL;
@@ -173,15 +182,6 @@ public class KnowledgeBeaconService {
 	public long weightedTimeout() {
 		return weightedTimeout(null, 0); // 
 	}
-	
-	/*
-	 *  ApiClient timeout weightings here are in milliseconds
-	 *  These are used below alongside beacon number and pagesizes 
-	 *  to set some reasonable timeouts for various queries
-	 */
-	public final int DEFAULT_TIMEOUT_WEIGHTING = 1000;
-	public final int CONCEPTS_QUERY_TIMEOUT_WEIGHTING   = 10000;
-	public final int STATEMENTS_QUERY_TIMEOUT_WEIGHTING = 15000; 
 	
 	public int apiWeightedTimeout(Integer timeOutWeighting,List<String> beacons, Integer pageSize ) {
 		int numberOfBeacons = beacons!=null ? beacons.size() : registry.countAllBeacons() ;
