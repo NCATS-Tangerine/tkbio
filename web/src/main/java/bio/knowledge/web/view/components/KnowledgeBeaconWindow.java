@@ -29,8 +29,6 @@ public class KnowledgeBeaconWindow extends Window {
 	private static final long serialVersionUID = -3216657180755749441L;
 	
 	private final KnowledgeBeaconRegistry kbRegistry;
-	private final KnowledgeBeaconService  kbService;
-	
 	private List<BeaconMetadata> defaultBeacons;
 
 	private OptionGroup optionGroup;
@@ -38,8 +36,6 @@ public class KnowledgeBeaconWindow extends Window {
 	public KnowledgeBeaconWindow(KnowledgeBeaconRegistry kbRegistry, KBQuery query, KnowledgeBeaconService kbService) {
 
 		this.kbRegistry = kbRegistry;
-		this.kbService  = kbService;
-		
 		defaultBeacons = kbService.getKnowledgeBeacons();
 		
 		optionGroup = new OptionGroup("Beacons", defaultBeacons);
@@ -81,7 +77,7 @@ public class KnowledgeBeaconWindow extends Window {
 		recordLogsRadioButton.setChecked(query.hasSessionId());
 		
 		viewLogs.addClickListener(event -> {
-			getUI().getPage().open(kbService.getAggregatorBaseUrl() + "/errorlog?sessionId=" + query.getUserSessionId(), "_blank");
+			getUI().getPage().open(kbService.getPublicAggregatorBaseUrl() + "/errorlog?sessionId=" + query.getUserSessionId(), "_blank");
 		});
 		
 		recordLogsRadioButton.addValueChangeListener(event -> {
@@ -133,6 +129,7 @@ public class KnowledgeBeaconWindow extends Window {
 	 * outside the system, at Github NCATS-Tangerine/translator-knowledge-beacon
 	 * or perhaps, at Smart-API.info?
 	 */
+	@SuppressWarnings("unused")
 	@Deprecated
 	private FormLayout buildAddKbPanel(KBQuery query) {
 		

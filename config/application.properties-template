@@ -25,7 +25,10 @@
 ##
 # Knowledge.Bio Application Properties
 #
-# Beacon Aggregator URL - by default set to local machine at port 8080
+# Public Beacon Aggregator URL - by default set to local beacon aggregator URL
+publicBeaconAggregator.url=http://localhost:8080
+#
+# Local (private subnet) Beacon Aggregator URL - by default set to local machine at port 8080
 beaconAggregator.url=http://localhost:8080
 #
 # Logging

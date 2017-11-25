@@ -80,11 +80,28 @@ public class KnowledgeBeaconService {
 	public final int CONCEPTS_QUERY_TIMEOUT_WEIGHTING   = 20000;
 	public final int STATEMENTS_QUERY_TIMEOUT_WEIGHTING = 60000; 
 
+	/*
+	 * Here we need to discriminate between the
+	 * "local" private (i.e. Docker LAN) version of
+	 * the beacon aggregator URL and the fully
+	 * public "external" URL.
+	 */
+	@Value( "${publicBeaconAggregator.url}" )
+	private String PUBLIC_AGGREGATOR_BASE_URL;
+	
 	@Value( "${beaconAggregator.url}" )
 	private String AGGREGATOR_BASE_URL;
 	
 	@Autowired
 	private KnowledgeBeaconRegistry registry;
+	
+	public String getPublicAggregatorBaseUrl() {
+		if (!PUBLIC_AGGREGATOR_BASE_URL.startsWith("http://") && !PUBLIC_AGGREGATOR_BASE_URL.startsWith("https://")) {
+			PUBLIC_AGGREGATOR_BASE_URL = "http://" + PUBLIC_AGGREGATOR_BASE_URL;
+		}
+		
+		return PUBLIC_AGGREGATOR_BASE_URL;
+	}
 	
 	public String getAggregatorBaseUrl() {
 		if (!AGGREGATOR_BASE_URL.startsWith("http://") && !AGGREGATOR_BASE_URL.startsWith("https://")) {
