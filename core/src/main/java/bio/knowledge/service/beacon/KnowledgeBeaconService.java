@@ -22,8 +22,6 @@ import org.springframework.stereotype.Service;
 
 import com.squareup.okhttp.OkHttpClient;
 
-import bio.knowledge.client.model.BeaconStatementSubject;
-import bio.knowledge.client.model.BeaconStatementPredicate;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.api.AggregatorApi;
@@ -34,7 +32,8 @@ import bio.knowledge.client.api.StatementsApi;
 import bio.knowledge.client.model.BeaconConceptDetail;
 import bio.knowledge.client.model.BeaconConceptWithDetails;
 import bio.knowledge.client.model.BeaconStatementObject;
-
+import bio.knowledge.client.model.BeaconStatementPredicate;
+import bio.knowledge.client.model.BeaconStatementSubject;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.AnnotationImpl;
 import bio.knowledge.model.Concept;

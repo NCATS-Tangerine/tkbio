@@ -25,14 +25,19 @@
  */
 package bio.knowledge.web.view;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -65,6 +70,9 @@ public class ReferenceView extends ReferenceDesign implements View {
 
 	private static final long serialVersionUID = -827840039603594744L;
 	
+	private Logger _logger = LoggerFactory.getLogger(ReferenceView.class);
+	
+	// TODO: Might be helpful to replace this with a call to PrefixCommons?
 	private Map<String, String> urlMapping = new HashMap<String, String>();
 	
 	@PostConstruct
@@ -113,6 +121,9 @@ public class ReferenceView extends ReferenceDesign implements View {
 	
 	private String getUrl(String id) {
 		
+		if(id.startsWith("http://") || id.startsWith("https://"))
+			return id; // whoa! I'm a URL already?
+		
 		String[] pc = parseCURIE(id);
 		
 		if (! (pc[1].isEmpty()||pc[2].isEmpty())) {
@@ -146,13 +157,22 @@ public class ReferenceView extends ReferenceDesign implements View {
 	
 	@Override
 	public void enter(ViewChangeEvent event) {
-		removeAllComponents();
+		
 		String annotationId = null;
 		
 		Optional<Annotation> annotationOpt = query.getCurrentAnnotation();
+		
 		String parameters = event.getParameters();
 		if (parameters != null && !parameters.isEmpty()) {
-			annotationId = parameters.split("/")[0];
+			String encodedId = parameters.split("/")[0];
+			
+			try {
+				annotationId = URLDecoder.decode(encodedId, StandardCharsets.UTF_8.toString());
+			} catch (UnsupportedEncodingException e) {
+				_logger.error("ReferenceView.enter() ERROR for encoded annotation id: '"+encodedId+"': "+e.getMessage());
+				return;
+			}
+			
 		} else if (annotationOpt.isPresent()) {
 			annotationId = annotationOpt.get().getId();
 		} else {
@@ -160,13 +180,19 @@ public class ReferenceView extends ReferenceDesign implements View {
 		}
 		
 		try {
-			// TODO: At the moment, evidence id's are URL's
+			// TODO: At the moment, evidence id's should be URL's?
 			URL url = new URL(annotationId);
 			setUri(url.toString());
 		} catch (MalformedURLException e) {
 			setUri(getUrl(annotationId));
 		}
 		
+		/*
+		 *  Assume that you have something to work with
+		 *  at this point so refresh the display!
+		 */
+		removeAllComponents();
+
 		VerticalLayout localAbstractLayout = new VerticalLayout() ;	
 		localAbstractLayout.setMargin(true);
 		localAbstractLayout.setSpacing(true);

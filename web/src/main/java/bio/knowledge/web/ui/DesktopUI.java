@@ -1,7 +1,7 @@
 /*-------------------------------------------------------------------------------
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-16 Scripps Institute (USA) - Dr. Benjamin Good
+ * Copyright (c) 2015-17 Scripps Institute (USA) - Dr. Benjamin Good
  *                       STAR Informatics / Delphinai Corporation (Canada) - Dr. Richard Bruskiewich
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,6 +27,9 @@ package bio.knowledge.web.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
@@ -100,6 +103,7 @@ import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.user.User;
+import bio.knowledge.model.util.Util;
 import bio.knowledge.service.AuthenticationState;
 import bio.knowledge.service.Cache;
 import bio.knowledge.service.ConceptMapArchiveService;
@@ -147,7 +151,7 @@ import bio.knowledge.web.view.components.UserDetails;
 		"https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" })
 @PreserveOnRefresh
 @Widgetset("bio.knowledge.renderer.ButtonRendererWidgetset")
-public class DesktopUI extends UI implements MessageService {
+public class DesktopUI extends UI implements MessageService, Util {
 
 	// private static final int DAY_IN_SECOND = 86400;
 
@@ -232,7 +236,7 @@ public class DesktopUI extends UI implements MessageService {
 	 */
 	public String getMessage(String id) {
 
-		if (id == null || id.isEmpty())
+		if (nullOrEmpty(id))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage id?");
 
 		Locale locale = this.getLocale();
@@ -255,10 +259,10 @@ public class DesktopUI extends UI implements MessageService {
 	 */
 	public String getMessage(String id, String tag) {
 
-		if (id == null || id.isEmpty())
+		if (nullOrEmpty(id))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage id?");
 
-		if (tag == null || tag.isEmpty())
+		if (nullOrEmpty(tag))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage tag?");
 
 		Locale locale = getLocale();
@@ -590,15 +594,34 @@ public class DesktopUI extends UI implements MessageService {
 	 */
 	public void displayReference(Annotation annotation) {
 		query.setCurrentAnnotation(annotation);
-		displayReference(annotation.getId());
+		String id = annotation.getId();
+		if(!nullOrEmpty(id))
+			displayReference(id);
+		else
+			ConfirmDialog.show(this,
+					"<span style='text-align:center;'>No evidence reference available.</span>",
+					cd -> {
+					}).setContentMode(ConfirmDialog.ContentMode.HTML);
 	}
-	
+
 	public void displayReference(String annotationId) {
 		
+		/* 
+		 * Sometimes need to URL encode the 
+		 * annotation identifier (e.g. if from WikiData)
+		 */
+		String encodedId = "";
+		try {
+			encodedId = URLEncoder.encode(annotationId, StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException e) {
+			_logger.error("displayReference() ERROR for annotationId '"+annotationId+"': "+e.getMessage());
+			return;
+		}		
 		Navigator navigator = new Navigator(this, desktopView.getReferenceLayout());
 
 		navigator.addProvider(viewProvider);
-		navigator.navigateTo(ReferenceView.NAME + "/" + annotationId);
+
+		navigator.navigateTo(ReferenceView.NAME + "/" + encodedId);
 		
 		VerticalLayout referenceTab = desktopView.getReferenceTab();
 		TabSheet tabsheet = desktopView.getDataTabSheet();
@@ -1056,7 +1079,7 @@ public class DesktopUI extends UI implements MessageService {
 		// RMB: March 1, 2017 - empty queries seem too problematic now
 		// so we ignore them again!
 
-		if (queryText == null || queryText.trim().isEmpty()) {
+		if (nullOrEmpty(queryText.trim())) {
 			ConfirmDialog.show(this,
 					"<span style='text-align:center;'>Please type in a non-empty query string in the search box</span>",
 					cd -> {

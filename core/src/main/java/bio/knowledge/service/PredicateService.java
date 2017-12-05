@@ -39,7 +39,6 @@ import org.springframework.stereotype.Service;
 
 import bio.knowledge.database.repository.PredicateRepository;
 import bio.knowledge.datasource.DataSourceRegistry;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 

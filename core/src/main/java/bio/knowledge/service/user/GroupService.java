@@ -1,7 +1,5 @@
 package bio.knowledge.service.user;
 
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

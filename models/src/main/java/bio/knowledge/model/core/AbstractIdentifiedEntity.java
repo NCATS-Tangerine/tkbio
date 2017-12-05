@@ -26,7 +26,6 @@
 package bio.knowledge.model.core;
 
 import bio.knowledge.model.RdfUtil;
-import bio.knowledge.model.core.IdentifiedEntity;
 
 /**
  * @author Richard

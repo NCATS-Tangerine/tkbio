@@ -111,6 +111,7 @@ import bio.knowledge.model.core.OntologyTerm;
 import bio.knowledge.model.organization.ContactForm;
 import bio.knowledge.model.umls.SemanticType;
 import bio.knowledge.model.user.User;
+import bio.knowledge.model.util.Util;
 import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
 import bio.knowledge.service.DataServiceException;
@@ -134,7 +135,7 @@ import bio.knowledge.web.ui.PopupWindow;
  *
  */
 @SpringView(name = ListView.NAME)
-public class ListView extends BaseView {
+public class ListView extends BaseView implements Util {
 	
 	public static final String NAME = "list";
 
@@ -1254,7 +1255,7 @@ public class ListView extends BaseView {
 		String type = query.getSemGroupFilterType();
 
 		if (viewName.equals(ViewName.RELATIONS_VIEW)) {
-			if (type == null || type.isEmpty()) {
+			if (nullOrEmpty(type)) {
 				types.setText("Any");
 			} else {
 				types.setText(type);
@@ -1587,7 +1588,7 @@ public class ListView extends BaseView {
 
 		// TODO: refactor the execution flow. batch-handle
 		// the property value declarations, the event handler declarations
-		if (viewName == null || viewName.isEmpty()) {
+		if (nullOrEmpty(viewName)) {
 
 			String message = new String("Not sure what type of data you want to list here...");
 			Label label = new Label(message);
@@ -2029,6 +2030,5 @@ public class ListView extends BaseView {
 					DesktopUI ui = (DesktopUI) UI.getCurrent();
 					ui.displayReference(annotation);
 				});
-
 	}
 }
