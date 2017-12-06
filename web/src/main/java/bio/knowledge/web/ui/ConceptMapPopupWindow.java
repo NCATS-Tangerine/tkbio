@@ -302,13 +302,13 @@ public class ConceptMapPopupWindow {
 			String uri, String statementId) {
 
 		// Generate popup content from passed data
-		Optional<Concept> sourceOpt = conceptService.getDetailsById(sourceId);
+		Optional<Concept> sourceOpt = conceptService.getDetailsByCliqueId(sourceId);
 		if (!sourceOpt.isPresent())
 			return;
 		Concept sourceConcept = sourceOpt.get();
 		String sourceName = sourceConcept.getName();
 
-		Optional<Concept> targetOpt = conceptService.getDetailsById(targetId);
+		Optional<Concept> targetOpt = conceptService.getDetailsByCliqueId(targetId);
 		if (!targetOpt.isPresent())
 			return;
 		Concept targetConcept = targetOpt.get();
@@ -486,9 +486,9 @@ public class ConceptMapPopupWindow {
 
 				// add this to the database
 				statement = new Neo4jGeneralStatement(statementId,
-						conceptService.getDetailsById(sourceId).get(), 
+						conceptService.getDetailsByCliqueId(sourceId).get(), 
 						relation,
-						conceptService.getDetailsById(targetId).get());
+						conceptService.getDetailsByCliqueId(targetId).get());
 
 				Evidence evidence = evidenceService.createByEvidenceId(evidenceId);
 				statement.setEvidence(evidence);

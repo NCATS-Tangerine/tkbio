@@ -170,6 +170,20 @@ public class KBQueryImpl implements KBQuery {
 	public String getCurrentQueryText() {
 		return currentQueryText ;
 	}
+
+	private Boolean matchingByIdentifier = false;
+	
+	@Override
+	public void setMatchingMode(Boolean matchByID) {
+		matchingByIdentifier = matchByID;
+	}
+
+	@Override
+	public Boolean matchByIdentifier() {
+		return matchingByIdentifier;
+	}
+
+
 	
 	@Autowired
 	private ConceptService conceptService ;
@@ -509,6 +523,7 @@ public class KBQueryImpl implements KBQuery {
 	@Override
 	public void resetQuery() {
 		queryConcept = Optional.empty() ;
+		matchingByIdentifier = false;
 		currentStatement = Optional.empty() ;
 		currentEvidence = Optional.empty() ;
 		selectedConceptTypes = Optional.empty() ;

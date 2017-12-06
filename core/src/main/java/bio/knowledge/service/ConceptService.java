@@ -597,6 +597,19 @@ public class ConceptService
 	}
 	
 	/**
+	 * This method needs to search the Equivalent Concept Cliques 
+	 * for a matching clique, then return the associated concept. 
+	 * First iteration (flawed!), is to assume that the curie is 
+	 * the clique id (probably patently false most of the time!
+	 *  
+	 * @param curie to be resolved to a concept
+	 * @return Optional<Concept> of matching concept
+	 */
+	public Optional<Concept> findByIdentifier( String curie ) {
+		return getDetailsByCliqueId( curie ) ;
+	}
+	
+	/**
 	 * @param ConceptId
 	 * @return Concept
 	 */
@@ -696,8 +709,8 @@ public class ConceptService
 	/**
 	 * @param ConceptId
 	 * @return Concept
-	 */
-	public Optional<Concept> getDetailsById( String id ) {
+	 * /
+	public Optional<Concept> getDetailsByCliqueId( String id ) {
 		
 		// Try first to find this item in the local database(?)
 		Concept concept = findByCliqueId(id);
@@ -706,7 +719,7 @@ public class ConceptService
 			 * This is a qualified URI identifying a local data item, 
 			 * which must be resolved elsewhere (i.e. in WikiData?)
 			 * Note that the system treats WikiData the same way as 'getDetails()'
-			 */
+			 * /
 			try {
 				concept = getQualifiedDataItem(id) ;
 			} catch (DataSourceException e) {
@@ -720,7 +733,7 @@ public class ConceptService
 			return Optional.of(concept) ;
 		}
 	}
-
+	*/
 	
 	/*
 	 * Gene annotation by NCBI ("Entrez") Gene Id

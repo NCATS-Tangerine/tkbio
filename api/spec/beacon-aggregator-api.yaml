@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Translator Knowledge Beacon Aggregator API
-  version: 1.0.5
+  version: 1.0.6
   contact:
     url: 'http://starinformatics.com'
     email: richard@starinformatics.com
@@ -96,114 +96,6 @@ paths:
                 frequency: 1234
                 idmap: 'http://myservice.net/api/v1/exactmatches/ANAT'
                 beacon: '2'
-  '/concepts/{cliqueId}':
-    get:
-      description: >
-        Retrieves details for a specified clique of equivalent concepts in the
-        system,  as specified by a (url-encoded) CURIE identifier of a clique
-        known to the aggregator
-      tags:
-        - concepts
-      parameters:
-        - name: cliqueId
-          in: path
-          description: >-
-            a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier, as
-            returned  by any other endpoint of the beacon aggregator API, of an
-            exactly matching  concept clique of interest.
-          required: true
-          type: string
-        - name: beacons
-          in: query
-          description: >
-            set of aggregator indices of beacons to be used as knowledge sources
-            for the query
-          required: false
-          type: array
-          items:
-            type: string
-        - name: sessionId
-          in: query
-          description: |
-            client-defined session identifier
-          required: false
-          type: string
-      operationId: getConceptDetails
-      responses:
-        '200':
-          schema:
-            type: array
-            items:
-              title: BeaconConceptWithDetails
-              type: object
-              properties:
-                clique:
-                  type: string
-                  description: >
-                    CURIE identifying the equivalent concept clique to which the
-                    concept belongs.
-                id:
-                  type: string
-                  description: >
-                    CURIE identifying the specific beacon source concept being
-                    described.
-                aliases:
-                  type: array
-                  description: >
-                    set of alias CURIES in the equivalent concept clique of the
-                    concept
-                  items:
-                    type: string
-                name:
-                  type: string
-                  description: |
-                    canonical human readable name of the concept
-                semanticGroup:
-                  type: string
-                  description: |
-                    concept semantic type
-                synonyms:
-                  type: array
-                  description: |
-                    list of synonyms for concept
-                  items:
-                    type: string
-                definition:
-                  type: string
-                  description: |
-                    concept definition
-                details:
-                  type: array
-                  items:
-                    title: BeaconConceptDetail
-                    type: object
-                    properties:
-                      tag:
-                        type: string
-                        description: |
-                          property name
-                      value:
-                        type: string
-                        description: |
-                          property value
-                beacon:
-                  type: string
-                  description: |
-                    beacon ID
-          description: |
-            Successful response with clique concept details returned
-          examples:
-            application/json:
-              - clique: 'wd:Q14883734'
-                aliases:
-                  - 'wd:Q14883734'
-                  - 'OMIM:277700'
-                name: WRN
-                semanticGroup: GENE
-                synonyms: []
-                definition: Werner Syndrome Gene
-                details: []
-                beacon: '3'
   /concepts:
     get:
       description: |
@@ -392,6 +284,154 @@ paths:
                   diabetes mellitus, aged appearance of the face, baldness, and
                   a high incidence of neoplastic disease.
                 beacon: '3'
+  '/clique/{identifier}':
+    get:
+      description: >
+        Retrieves the beacon aggregator assigned clique of equivalent concepts
+        that includes the specified (url-encoded) CURIE identifier. Note that
+        the clique to which a given concept CURIE belongs may change over time
+        as the aggregator progressively discovers the members of the clique.
+      tags:
+        - concepts
+      parameters:
+        - name: identifier
+          in: path
+          description: >-
+            a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of
+            interest to be resolved to a concept clique
+          required: true
+          type: string
+        - name: sessionId
+          in: query
+          description: |
+            client-defined session identifier
+          required: false
+          type: string
+      operationId: getClique
+      responses:
+        '200':
+          schema:
+            title: BeaconCliqueIdentifier
+            type: object
+            properties:
+              cliqueId:
+                type: string
+                description: >
+                  CURIE identifying the equivalent concept clique to which the 
+                  input concept CURIE belongs.
+          description: |
+            Successful response with clique identifier returned
+          examples:
+            application/json:
+              cliqueId: 'NCBIGENE:2176'
+  '/concepts/{cliqueId}':
+    get:
+      description: >
+        Retrieves details for a specified clique of equivalent concepts in the
+        system,  as specified by a (url-encoded) CURIE identifier of a clique
+        known to the aggregator
+      tags:
+        - concepts
+      parameters:
+        - name: cliqueId
+          in: path
+          description: >-
+            a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier, as
+            returned  by any other endpoint of the beacon aggregator API, of an
+            exactly matching  concept clique of interest.
+          required: true
+          type: string
+        - name: beacons
+          in: query
+          description: >
+            set of aggregator indices of beacons to be used as knowledge sources
+            for the query
+          required: false
+          type: array
+          items:
+            type: string
+        - name: sessionId
+          in: query
+          description: |
+            client-defined session identifier
+          required: false
+          type: string
+      operationId: getConceptDetails
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              title: BeaconConceptWithDetails
+              type: object
+              properties:
+                clique:
+                  type: string
+                  description: >
+                    CURIE identifying the equivalent concept clique to which the
+                    concept belongs.
+                id:
+                  type: string
+                  description: >
+                    CURIE identifying the specific beacon source concept being
+                    described.
+                aliases:
+                  type: array
+                  description: >
+                    set of alias CURIES in the equivalent concept clique of the
+                    concept
+                  items:
+                    type: string
+                name:
+                  type: string
+                  description: |
+                    canonical human readable name of the concept
+                semanticGroup:
+                  type: string
+                  description: |
+                    concept semantic type
+                synonyms:
+                  type: array
+                  description: |
+                    list of synonyms for concept
+                  items:
+                    type: string
+                definition:
+                  type: string
+                  description: |
+                    concept definition
+                details:
+                  type: array
+                  items:
+                    title: BeaconConceptDetail
+                    type: object
+                    properties:
+                      tag:
+                        type: string
+                        description: |
+                          property name
+                      value:
+                        type: string
+                        description: |
+                          property value
+                beacon:
+                  type: string
+                  description: |
+                    beacon ID
+          description: |
+            Successful response with clique concept details returned
+          examples:
+            application/json:
+              - clique: 'wd:Q14883734'
+                aliases:
+                  - 'wd:Q14883734'
+                  - 'OMIM:277700'
+                name: WRN
+                semanticGroup: GENE
+                synonyms: []
+                definition: Werner Syndrome Gene
+                details: []
+                beacon: '3'
   /predicates:
     get:
       description: >
@@ -418,7 +458,7 @@ paths:
                     list of metadata for beacons that support the use of this
                     predicate relation
                   items:
-                    title: BeaconPredicateRecord
+                    title: BeaconPredicateBeacon
                     type: object
                     properties:
                       beacon:
@@ -743,7 +783,7 @@ paths:
           schema:
             type: array
             items:
-              title: BeaconMetadata
+              title: BeaconKnowledgeBeacon
               type: object
               properties:
                 id:

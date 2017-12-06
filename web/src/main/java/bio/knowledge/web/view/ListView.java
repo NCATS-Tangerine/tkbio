@@ -93,7 +93,6 @@ import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.authentication.AuthenticationManager;
-import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.BeaconResponse;
 import bio.knowledge.model.Concept;
@@ -862,8 +861,11 @@ public class ListView extends BaseView implements Util {
 	private void makeAddToMapButton(HorizontalLayout hostLayout) {
 
 		Button addToGraphButton = new Button("Add to Map", e -> {
+			
 			Collection<Object> items = dataTable.getSelectionModel().getSelectedRows();
+			
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
+			
 			for (Object item: items) {
 				
 				Statement statement = (Statement) item;
@@ -1922,25 +1924,9 @@ public class ListView extends BaseView implements Util {
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "name", event -> {
 			Concept concept = (Concept) event.getItemId();
-
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
-
-			// 25-Oct-2016: Here, we *do* want to add the new node to concept
-			// map
-			// graph!
-			ui.addNodeToConceptMap(concept);
-
-			ui.queryUpdate(concept, RelationSearchMode.RELATIONS);
-
-			// 27-Oct-2016: Hack to reverse a side-effect of
-			// queryUpdate's setConceptInSession's highlighter code
-			String accessionId = concept.getId();
-			Node node = ui.getConceptMap().getElements().getNodes().getNodeById(accessionId);
-			if (node != null)
-				node.getData().setState("add");
-
+			ui.processConceptSearch(concept);
 			ui.closeConceptSearchWindow();
-
 			ui.gotoStatementsTable();
 		});
 		

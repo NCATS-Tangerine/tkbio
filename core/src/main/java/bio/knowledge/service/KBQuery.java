@@ -121,13 +121,24 @@ public interface KBQuery {
 	public String getCurrentQueryText() ;
 
 	/**
-	 * @param identifier of the user's current query ConceptSemanticType
+	 * @param matchById is true if matching a CURIE; false if simple keyword search
+	 */
+	public void setMatchingMode(Boolean matchByID);
+	
+	/**
+	 * 
+	 * @return true if directly querying by CURIE identifier
+	 */
+	public Boolean matchByIdentifier() ;
+	
+	/**
+	 * @param identifier of the user's current query Concept
 	 */
 	public void setCurrentQueryConceptById(String identifier) ;
 	
 	/**
 	 * 
-	 * @return user's current query ConceptSemanticType
+	 * @return user's current query Concept
 	 */
 	public Optional<Concept> getCurrentQueryConcept() ;
 

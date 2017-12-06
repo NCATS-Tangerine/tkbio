@@ -80,7 +80,7 @@ public class DesktopView extends DesktopDesign implements View {
 	}
 
 	/**
-	 * @param searchBtn the searchBtn to set
+	 * @param searchBtn Button to set
 	 */
 	public void setSearchBtn(Button searchBtn) {
 		this.searchBtn = searchBtn;

@@ -75,6 +75,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -107,6 +108,7 @@ import bio.knowledge.model.util.Util;
 import bio.knowledge.service.AuthenticationState;
 import bio.knowledge.service.Cache;
 import bio.knowledge.service.ConceptMapArchiveService;
+import bio.knowledge.service.ConceptService;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
@@ -180,6 +182,9 @@ public class DesktopUI extends UI implements MessageService, Util {
 	
 	@Autowired
 	KnowledgeBeaconService kbService;
+	
+	@Autowired
+	ConceptService conceptService;
 	
 	/**
 	 * 
@@ -385,6 +390,20 @@ public class DesktopUI extends UI implements MessageService, Util {
 			conceptSearchWindow.close();
 			conceptSearchWindow = null;
 		}
+	}
+	
+	public void processConceptSearch(Concept concept) {
+		
+		addNodeToConceptMap(concept);
+
+		queryUpdate(concept, RelationSearchMode.RELATIONS);
+
+		// 27-Oct-2016: Hack to reverse a side-effect of
+		// queryUpdate's setConceptInSession's highlighting code
+		String accessionId = concept.getId();
+		Node node = getConceptMap().getElements().getNodes().getNodeById(accessionId);
+		if (node != null)
+			node.getData().setState("add");	
 	}
 
 	private Window conceptMapLibraryWindow = null;
@@ -867,6 +886,17 @@ public class DesktopUI extends UI implements MessageService, Util {
 		desktopView.getSearchBtn().addClickListener(e -> {
 			searchBtnClickListener(searchField, e);
 		});
+		
+		HorizontalLayout viewingConcepts = desktopView.getViewingConcepts();
+		viewingConcepts.setSpacing(true);
+		
+		// Choice of matching either by CURIE or by keywords
+		CheckBox matchByIdCb = new CheckBox("Match By Identifier");
+		matchByIdCb.setValue(query.matchByIdentifier());
+		matchByIdCb.addValueChangeListener(
+				event -> query.setMatchingMode(matchByIdCb.getValue())
+		);
+		viewingConcepts.addComponent(matchByIdCb);
 
 		// Button to reinitialize the query and map
 		desktopView.getClearMapBtn().addClickListener(e -> newQueryConfirmation(e));
@@ -1094,34 +1124,57 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 		query.setCurrentQueryText(queryText);
 
-		// Semantic type constraint in Concept-by-text results listing should initial be empty
-		query.setInitialConceptTypes(new HashSet<SemanticGroup>());
+		if(query.matchByIdentifier()) {
+			/*
+			 * Matching by CURIE - resolve the matching concept 
+			 * then go directly to the statements table
+			 */
+			 Optional<Concept> conceptOpt = 
+					 			conceptService.findByIdentifier(queryText);
+			if (!conceptOpt.isPresent()) {
+				ConfirmDialog.show(this,
+					"<span style='text-align:center;'>Concept identifier '"+queryText+"' could not be resolved?</span>",
+					cd -> {
+					}).setContentMode(ConfirmDialog.ContentMode.HTML);
+				return;
+			}
+			Concept concept = conceptOpt.get();
+			processConceptSearch(concept);
 
-		ConceptSearchResults currentSearchResults = new ConceptSearchResults(viewProvider, ViewName.CONCEPTS_VIEW);
-		conceptSearchWindow = new Window();
-		conceptSearchWindow.setCaption("Concepts Matched by Key Words");
-		conceptSearchWindow.addStyleName("concept-search-window");
-		conceptSearchWindow.center();
-		conceptSearchWindow.setModal(true);
-		conceptSearchWindow.setResizable(true);
-
-		// setWindowSize(conceptSearchWindow);
-		conceptSearchWindow.setWidth(150.0f, Unit.EM);
-
-		conceptSearchWindow.setContent(currentSearchResults);
-
-		conceptSearchWindow.addCloseListener(event -> {
-			searchBtn.setEnabled(true);
 			gotoStatementsTable();
-		});
-
-		// Attempting dynamic resize - not really working
-
-		// conceptSearchWindow.addResizeListener(
-		// event -> windowSizeHandler(event)
-		// );
-
-		UI.getCurrent().addWindow(conceptSearchWindow);
+			
+		} else { // Klassical Keyword search
+	
+			// Semantic type constraint in Concept-by-text results listing should initial be empty
+			query.setInitialConceptTypes(new HashSet<SemanticGroup>());
+	
+			ConceptSearchResults currentSearchResults = 
+					new ConceptSearchResults(viewProvider, ViewName.CONCEPTS_VIEW);
+			conceptSearchWindow = new Window();
+			conceptSearchWindow.setCaption("Concepts Matched by Key Words");
+			conceptSearchWindow.addStyleName("concept-search-window");
+			conceptSearchWindow.center();
+			conceptSearchWindow.setModal(true);
+			conceptSearchWindow.setResizable(true);
+	
+			// setWindowSize(conceptSearchWindow);
+			conceptSearchWindow.setWidth(150.0f, Unit.EM);
+	
+			conceptSearchWindow.setContent(currentSearchResults);
+	
+			conceptSearchWindow.addCloseListener(event -> {
+				searchBtn.setEnabled(true);
+				gotoStatementsTable();
+			});
+	
+			// Attempting dynamic resize - not really working
+	
+			// conceptSearchWindow.addResizeListener(
+			// event -> windowSizeHandler(event)
+			// );
+	
+			UI.getCurrent().addWindow(conceptSearchWindow);
+		}
 	}
 
 	/**
