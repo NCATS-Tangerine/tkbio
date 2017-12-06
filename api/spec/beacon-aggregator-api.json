@@ -509,7 +509,7 @@
                     "type": "array",
                     "description": "list of metadata for beacons that support the use of this predicate relation\n",
                     "items": {
-                      "title": "BeaconPredicateBeacon",
+                      "title": "BeaconPredicateRecord",
                       "type": "object",
                       "properties": {
                         "beacon": {
@@ -855,7 +855,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "BeaconKnowledgeBeacon",
+                "title": "BeaconMetadata",
                 "type": "object",
                 "properties": {
                   "id": {

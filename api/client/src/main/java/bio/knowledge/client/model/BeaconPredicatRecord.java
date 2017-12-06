@@ -19,26 +19,47 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * BeaconStatementPredicate
+ * BeaconPredicatRecord
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-12-06T00:34:53.486-08:00")
-public class BeaconStatementPredicate {
+public class BeaconPredicatRecord {
+  @SerializedName("beacon")
+  private String beacon = null;
+
   @SerializedName("id")
   private String id = null;
 
-  @SerializedName("name")
-  private String name = null;
+  @SerializedName("definition")
+  private String definition = null;
 
-  public BeaconStatementPredicate id(String id) {
+  public BeaconPredicatRecord beacon(String beacon) {
+    this.beacon = beacon;
+    return this;
+  }
+
+   /**
+   * aggregator index of the given beacon 
+   * @return beacon
+  **/
+  @ApiModelProperty(example = "null", value = "aggregator index of the given beacon ")
+  public String getBeacon() {
+    return beacon;
+  }
+
+  public void setBeacon(String beacon) {
+    this.beacon = beacon;
+  }
+
+  public BeaconPredicatRecord id(String id) {
     this.id = id;
     return this;
   }
 
    /**
-   * CURIE-encoded identifier of predicate resource 
+   * unique CURIE-encoded identifier of predicate aggregator indices of beacons in the given beacon 
    * @return id
   **/
-  @ApiModelProperty(example = "null", value = "CURIE-encoded identifier of predicate resource ")
+  @ApiModelProperty(example = "null", value = "unique CURIE-encoded identifier of predicate aggregator indices of beacons in the given beacon ")
   public String getId() {
     return id;
   }
@@ -47,22 +68,22 @@ public class BeaconStatementPredicate {
     this.id = id;
   }
 
-  public BeaconStatementPredicate name(String name) {
-    this.name = name;
+  public BeaconPredicatRecord definition(String definition) {
+    this.definition = definition;
     return this;
   }
 
    /**
-   * human readable label of concept
-   * @return name
+   * human readable definition assigned by the beacon for the predicate relation 
+   * @return definition
   **/
-  @ApiModelProperty(example = "null", value = "human readable label of concept")
-  public String getName() {
-    return name;
+  @ApiModelProperty(example = "null", value = "human readable definition assigned by the beacon for the predicate relation ")
+  public String getDefinition() {
+    return definition;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setDefinition(String definition) {
+    this.definition = definition;
   }
 
 
@@ -74,24 +95,26 @@ public class BeaconStatementPredicate {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    BeaconStatementPredicate beaconStatementPredicate = (BeaconStatementPredicate) o;
-    return Objects.equals(this.id, beaconStatementPredicate.id) &&
-        Objects.equals(this.name, beaconStatementPredicate.name);
+    BeaconPredicatRecord beaconPredicatRecord = (BeaconPredicatRecord) o;
+    return Objects.equals(this.beacon, beaconPredicatRecord.beacon) &&
+        Objects.equals(this.id, beaconPredicatRecord.id) &&
+        Objects.equals(this.definition, beaconPredicatRecord.definition);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name);
+    return Objects.hash(beacon, id, definition);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class BeaconStatementPredicate {\n");
+    sb.append("class BeaconPredicatRecord {\n");
     
+    sb.append("    beacon: ").append(toIndentedString(beacon)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    definition: ").append(toIndentedString(definition)).append("\n");
     sb.append("}");
     return sb.toString();
   }

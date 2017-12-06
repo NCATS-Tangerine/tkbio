@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * BeaconConcept
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-12-06T00:28:23.617-08:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-12-06T00:34:53.486-08:00")
 public class BeaconConcept {
   @SerializedName("clique")
   private String clique = null;

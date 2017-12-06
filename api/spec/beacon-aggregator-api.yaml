@@ -457,8 +457,8 @@ paths:
                   description: >
                     list of metadata for beacons that support the use of this
                     predicate relation
-                  items:
-                    title: BeaconPredicateBeacon
+                  items: 
+                    title: BeaconPredicatRecord
                     type: object
                     properties:
                       beacon:
@@ -783,7 +783,7 @@ paths:
           schema:
             type: array
             items:
-              title: BeaconKnowledgeBeacon
+              title: BeaconMetadata
               type: object
               properties:
                 id:
