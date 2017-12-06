@@ -4,9 +4,57 @@ All URIs are relative to *https://kba.ncats.io/*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**getClique**](ConceptsApi.md#getClique) | **GET** /clique/{identifier} | 
 [**getConceptDetails**](ConceptsApi.md#getConceptDetails) | **GET** /concepts/{cliqueId} | 
 [**getConcepts**](ConceptsApi.md#getConcepts) | **GET** /concepts | 
 
+
+<a name="getClique"></a>
+# **getClique**
+> BeaconCliqueIdentifier getClique(identifier, sessionId)
+
+
+
+Retrieves the beacon aggregator assigned clique of equivalent concepts that includes the specified (url-encoded) CURIE identifier. Note that the clique to which a given concept CURIE belongs may change over time as the aggregator progressively discovers the members of the clique. 
+
+### Example
+```java
+// Import classes:
+//import bio.knowledge.client.ApiException;
+//import bio.knowledge.client.api.ConceptsApi;
+
+
+ConceptsApi apiInstance = new ConceptsApi();
+String identifier = "identifier_example"; // String | a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of interest to be resolved to a concept clique
+String sessionId = "sessionId_example"; // String | client-defined session identifier 
+try {
+    BeaconCliqueIdentifier result = apiInstance.getClique(identifier, sessionId);
+    System.out.println(result);
+} catch (ApiException e) {
+    System.err.println("Exception when calling ConceptsApi#getClique");
+    e.printStackTrace();
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **identifier** | **String**| a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of interest to be resolved to a concept clique |
+ **sessionId** | **String**| client-defined session identifier  | [optional]
+
+### Return type
+
+[**BeaconCliqueIdentifier**](BeaconCliqueIdentifier.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 <a name="getConceptDetails"></a>
 # **getConceptDetails**

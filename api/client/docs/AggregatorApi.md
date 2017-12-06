@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 <a name="getBeacons"></a>
 # **getBeacons**
-> List&lt;BeaconMetadata&gt; getBeacons()
+> List&lt;BeaconKnowledgeBeacon&gt; getBeacons()
 
 
 
@@ -25,7 +25,7 @@ Get a list of all of the knowledge beacons that the aggregator can query
 
 AggregatorApi apiInstance = new AggregatorApi();
 try {
-    List<BeaconMetadata> result = apiInstance.getBeacons();
+    List<BeaconKnowledgeBeacon> result = apiInstance.getBeacons();
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling AggregatorApi#getBeacons");
@@ -38,7 +38,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**List&lt;BeaconMetadata&gt;**](BeaconMetadata.md)
+[**List&lt;BeaconKnowledgeBeacon&gt;**](BeaconKnowledgeBeacon.md)
 
 ### Authorization
 

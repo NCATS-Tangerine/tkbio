@@ -19,50 +19,29 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * BeaconLogEntry
+ * BeaconPredicateBeacon
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-12-06T00:28:23.617-08:00")
-public class BeaconLogEntry {
-  @SerializedName("timestamp")
-  private String timestamp = null;
-
+public class BeaconPredicateBeacon {
   @SerializedName("beacon")
   private String beacon = null;
 
-  @SerializedName("query")
-  private String query = null;
+  @SerializedName("id")
+  private String id = null;
 
-  @SerializedName("message")
-  private String message = null;
+  @SerializedName("definition")
+  private String definition = null;
 
-  public BeaconLogEntry timestamp(String timestamp) {
-    this.timestamp = timestamp;
-    return this;
-  }
-
-   /**
-   * timestamp 
-   * @return timestamp
-  **/
-  @ApiModelProperty(example = "null", value = "timestamp ")
-  public String getTimestamp() {
-    return timestamp;
-  }
-
-  public void setTimestamp(String timestamp) {
-    this.timestamp = timestamp;
-  }
-
-  public BeaconLogEntry beacon(String beacon) {
+  public BeaconPredicateBeacon beacon(String beacon) {
     this.beacon = beacon;
     return this;
   }
 
    /**
-   * beacon ID 
+   * aggregator index of the given beacon 
    * @return beacon
   **/
-  @ApiModelProperty(example = "null", value = "beacon ID ")
+  @ApiModelProperty(example = "null", value = "aggregator index of the given beacon ")
   public String getBeacon() {
     return beacon;
   }
@@ -71,40 +50,40 @@ public class BeaconLogEntry {
     this.beacon = beacon;
   }
 
-  public BeaconLogEntry query(String query) {
-    this.query = query;
+  public BeaconPredicateBeacon id(String id) {
+    this.id = id;
     return this;
   }
 
    /**
-   * URL of the API call executed by the aggregator 
-   * @return query
+   * unique CURIE-encoded identifier of predicate aggregator indices of beacons in the given beacon 
+   * @return id
   **/
-  @ApiModelProperty(example = "null", value = "URL of the API call executed by the aggregator ")
-  public String getQuery() {
-    return query;
+  @ApiModelProperty(example = "null", value = "unique CURIE-encoded identifier of predicate aggregator indices of beacons in the given beacon ")
+  public String getId() {
+    return id;
   }
 
-  public void setQuery(String query) {
-    this.query = query;
+  public void setId(String id) {
+    this.id = id;
   }
 
-  public BeaconLogEntry message(String message) {
-    this.message = message;
+  public BeaconPredicateBeacon definition(String definition) {
+    this.definition = definition;
     return this;
   }
 
    /**
-   * error message 
-   * @return message
+   * human readable definition assigned by the beacon for the predicate relation 
+   * @return definition
   **/
-  @ApiModelProperty(example = "null", value = "error message ")
-  public String getMessage() {
-    return message;
+  @ApiModelProperty(example = "null", value = "human readable definition assigned by the beacon for the predicate relation ")
+  public String getDefinition() {
+    return definition;
   }
 
-  public void setMessage(String message) {
-    this.message = message;
+  public void setDefinition(String definition) {
+    this.definition = definition;
   }
 
 
@@ -116,28 +95,26 @@ public class BeaconLogEntry {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    BeaconLogEntry beaconLogEntry = (BeaconLogEntry) o;
-    return Objects.equals(this.timestamp, beaconLogEntry.timestamp) &&
-        Objects.equals(this.beacon, beaconLogEntry.beacon) &&
-        Objects.equals(this.query, beaconLogEntry.query) &&
-        Objects.equals(this.message, beaconLogEntry.message);
+    BeaconPredicateBeacon beaconPredicateBeacon = (BeaconPredicateBeacon) o;
+    return Objects.equals(this.beacon, beaconPredicateBeacon.beacon) &&
+        Objects.equals(this.id, beaconPredicateBeacon.id) &&
+        Objects.equals(this.definition, beaconPredicateBeacon.definition);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(timestamp, beacon, query, message);
+    return Objects.hash(beacon, id, definition);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class BeaconLogEntry {\n");
+    sb.append("class BeaconPredicateBeacon {\n");
     
-    sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
     sb.append("    beacon: ").append(toIndentedString(beacon)).append("\n");
-    sb.append("    query: ").append(toIndentedString(query)).append("\n");
-    sb.append("    message: ").append(toIndentedString(message)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    definition: ").append(toIndentedString(definition)).append("\n");
     sb.append("}");
     return sb.toString();
   }

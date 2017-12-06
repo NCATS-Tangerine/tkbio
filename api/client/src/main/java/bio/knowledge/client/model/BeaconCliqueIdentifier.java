@@ -14,63 +14,34 @@
 package bio.knowledge.client.model;
 
 import java.util.Objects;
-import bio.knowledge.client.model.BeaconPredicateBeacon;
 import com.google.gson.annotations.SerializedName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * BeaconPredicate
+ * BeaconCliqueIdentifier
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-12-06T00:28:23.617-08:00")
-public class BeaconPredicate {
-  @SerializedName("name")
-  private String name = null;
+public class BeaconCliqueIdentifier {
+  @SerializedName("cliqueId")
+  private String cliqueId = null;
 
-  @SerializedName("beacons")
-  private List<BeaconPredicateBeacon> beacons = new ArrayList<BeaconPredicateBeacon>();
-
-  public BeaconPredicate name(String name) {
-    this.name = name;
+  public BeaconCliqueIdentifier cliqueId(String cliqueId) {
+    this.cliqueId = cliqueId;
     return this;
   }
 
    /**
-   * exact unique human readable name of predicate relation 
-   * @return name
+   * CURIE identifying the equivalent concept clique to which the  input concept CURIE belongs. 
+   * @return cliqueId
   **/
-  @ApiModelProperty(example = "null", value = "exact unique human readable name of predicate relation ")
-  public String getName() {
-    return name;
+  @ApiModelProperty(example = "null", value = "CURIE identifying the equivalent concept clique to which the  input concept CURIE belongs. ")
+  public String getCliqueId() {
+    return cliqueId;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public BeaconPredicate beacons(List<BeaconPredicateBeacon> beacons) {
-    this.beacons = beacons;
-    return this;
-  }
-
-  public BeaconPredicate addBeaconsItem(BeaconPredicateBeacon beaconsItem) {
-    this.beacons.add(beaconsItem);
-    return this;
-  }
-
-   /**
-   * list of metadata for beacons that support the use of this predicate relation 
-   * @return beacons
-  **/
-  @ApiModelProperty(example = "null", value = "list of metadata for beacons that support the use of this predicate relation ")
-  public List<BeaconPredicateBeacon> getBeacons() {
-    return beacons;
-  }
-
-  public void setBeacons(List<BeaconPredicateBeacon> beacons) {
-    this.beacons = beacons;
+  public void setCliqueId(String cliqueId) {
+    this.cliqueId = cliqueId;
   }
 
 
@@ -82,24 +53,22 @@ public class BeaconPredicate {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    BeaconPredicate beaconPredicate = (BeaconPredicate) o;
-    return Objects.equals(this.name, beaconPredicate.name) &&
-        Objects.equals(this.beacons, beaconPredicate.beacons);
+    BeaconCliqueIdentifier beaconCliqueIdentifier = (BeaconCliqueIdentifier) o;
+    return Objects.equals(this.cliqueId, beaconCliqueIdentifier.cliqueId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, beacons);
+    return Objects.hash(cliqueId);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class BeaconPredicate {\n");
+    sb.append("class BeaconCliqueIdentifier {\n");
     
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    beacons: ").append(toIndentedString(beacons)).append("\n");
+    sb.append("    cliqueId: ").append(toIndentedString(cliqueId)).append("\n");
     sb.append("}");
     return sb.toString();
   }
