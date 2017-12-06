@@ -458,7 +458,7 @@ paths:
                     list of metadata for beacons that support the use of this
                     predicate relation
                   items: 
-                    title: BeaconPredicatRecord
+                    title: BeaconPredicateRecord
                     type: object
                     properties:
                       beacon:

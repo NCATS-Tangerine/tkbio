@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * BeaconConceptWithDetails
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-12-06T00:34:53.486-08:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-12-06T00:37:22.296-08:00")
 public class BeaconConceptWithDetails {
   @SerializedName("clique")
   private String clique = null;
