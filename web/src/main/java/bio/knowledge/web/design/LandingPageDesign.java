@@ -24,12 +24,6 @@ public class LandingPageDesign extends VerticalLayout {
 	protected HorizontalLayout searchLayout;
 	protected Button launchBtn;
 	protected Image overviewImage;
-	protected Image step1Img;
-	protected Image step2Img;
-	protected Image step3Img;
-	protected Image step4Img;
-	protected Image step5Img;
-	protected Image step6Img;
 	protected Image usecaseImg;
 
 	public LandingPageDesign() {

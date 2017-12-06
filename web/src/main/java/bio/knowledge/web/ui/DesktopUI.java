@@ -1116,7 +1116,6 @@ public class DesktopUI extends UI implements MessageService, Util {
 					}).setContentMode(ConfirmDialog.ContentMode.HTML);
 
 			searchBtn.setEnabled(true);
-			searchField.clear();
 			return;
 		}
 
@@ -1131,16 +1130,22 @@ public class DesktopUI extends UI implements MessageService, Util {
 			 */
 			 Optional<Concept> conceptOpt = 
 					 			conceptService.findByIdentifier(queryText);
+			 
 			if (!conceptOpt.isPresent()) {
 				ConfirmDialog.show(this,
-					"<span style='text-align:center;'>Concept identifier '"+queryText+"' could not be resolved?</span>",
+					"<span style='text-align:center;'>Concept identified by '"+queryText+"' could not be resolved?<br/>"
+							+ "Please check if you have a valid CURIE identifier for your concept of interest!</span>",
 					cd -> {
 					}).setContentMode(ConfirmDialog.ContentMode.HTML);
+				searchBtn.setEnabled(true);
 				return;
 			}
+			
 			Concept concept = conceptOpt.get();
 			processConceptSearch(concept);
 
+			searchBtn.setEnabled(true);
+			
 			gotoStatementsTable();
 			
 		} else { // Klassical Keyword search

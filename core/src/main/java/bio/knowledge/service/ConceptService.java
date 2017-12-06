@@ -483,7 +483,7 @@ public class ConceptService
     		
 			List<Concept> concepts = future.get(
 					
-					// scale timeout by nunmber of beacons
+					// scale timeout by number of beacons
 					KnowledgeBeaconService.BEACON_TIMEOUT_DURATION * 
 					         kbService.getKnowledgeBeaconCount(beacons),
 					         
@@ -602,12 +602,43 @@ public class ConceptService
 	 * First iteration (flawed!), is to assume that the curie is 
 	 * the clique id (probably patently false most of the time!
 	 *  
-	 * @param curie to be resolved to a concept
+	 * @param identifier CURIE to be resolved to a concept
 	 * @return Optional<Concept> of matching concept
 	 */
-	public Optional<Concept> findByIdentifier( String curie ) {
-		return getDetailsByCliqueId( curie ) ;
+	public Optional<Concept> findByIdentifier( String identifier ) {
+		
+		String sessionId = query.getUserSessionId();
+
+    	CompletableFuture<String> future = 
+    			kbService.findByIdentifier(identifier,sessionId) ;
+    	
+    	Concept concept = null;
+    	
+    	try {
+    		
+			String cliqueId = future.get(
+					KnowledgeBeaconService.BEACON_TIMEOUT_DURATION,
+					KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
+			);
+			
+			if(!cliqueId.isEmpty()) {
+				// Need to retrieve actual Concept associated with clique here?
+				concept = findByCliqueId(cliqueId);
+			}
+			
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			_logger.warn("ConceptService.findByIdentifier(): matching concept "
+					+ "could not be retrieved for identifier '"+ identifier
+					+ "'. Exception: "+e.getMessage());
+		}
+    	
+		if(concept == null) {
+			return Optional.empty();
+		} else {
+			return Optional.of(concept) ;
+		}
 	}
+
 	
 	/**
 	 * @param ConceptId

@@ -78,12 +78,6 @@ public class LandingPageView extends LandingPageDesign implements View {
 	private void initImages() {
 		logoImage.setAlternateText("Knowledge.Bio logo");
 		overviewImage.setAlternateText("Steps overview");
-		step1Img.setAlternateText("Step 1");
-		step2Img.setAlternateText("Step 2");
-		step3Img.setAlternateText("Step 3");
-		step4Img.setAlternateText("Step 4");
-		step5Img.setAlternateText("Step 5");
-		step6Img.setAlternateText("Step 6");
 		usecaseImg.setAlternateText("Use Case");
 	}
 }

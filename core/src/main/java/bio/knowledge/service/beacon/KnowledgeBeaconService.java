@@ -29,6 +29,7 @@ import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.api.EvidenceApi;
 import bio.knowledge.client.api.PredicatesApi;
 import bio.knowledge.client.api.StatementsApi;
+import bio.knowledge.client.model.BeaconCliqueIdentifier;
 import bio.knowledge.client.model.BeaconConceptDetail;
 import bio.knowledge.client.model.BeaconConceptWithDetails;
 import bio.knowledge.client.model.BeaconStatementObject;
@@ -40,6 +41,7 @@ import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptDetailImpl;
 import bio.knowledge.model.ConceptImpl;
 import bio.knowledge.model.GeneralStatement;
+import bio.knowledge.model.OntologyTermImpl;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Predicate.PredicateBeacon;
 import bio.knowledge.model.PredicateImpl;
@@ -357,10 +359,41 @@ public class KnowledgeBeaconService {
 		return future;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public CompletableFuture<String> findByIdentifier(String identifier, String sessionId) {
+		
+		CompletableFuture<String> future = 
+				CompletableFuture.supplyAsync( new Supplier<String>() {
 
+			@Override
+			public String get() {
+				
+				try {
+					BeaconCliqueIdentifier response = 
+							getConceptsApi().getClique(identifier, sessionId);
+					
+					if(response != null) 
+						return response.getCliqueId();
+
+				} catch (Exception e) {
+					_logger.warn("KnowledgeBeaconService.findByIdentifier() ERROR: "
+							+ "BeaconCliqueIdentifier not found for "
+							+ "identifier '"+identifier+"'? Exception: " + e.getMessage());
+				}
+				return "";
+			}
+		});
+		
+		return future;
+	}
+	
 	private OntologyTerm resolveTag(String tag) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Does this simple-minded implementation need to be elaborated?
+		// For example, do I need to manage a catalog of known ontology terms here?
+		return new OntologyTermImpl(tag);
 	}
 	
 	/**
@@ -688,6 +721,7 @@ public class KnowledgeBeaconService {
 		int cbsize = beacons==null?0:beacons.size();
 		return cbsize > 0 ? cbsize : countAllBeacons();
 	}
+
 	
 }
 

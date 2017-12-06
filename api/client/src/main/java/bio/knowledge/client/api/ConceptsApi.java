@@ -13,6 +13,15 @@
 
 package bio.knowledge.client.api;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.google.gson.reflect.TypeToken;
+
 import bio.knowledge.client.ApiCallback;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
@@ -21,21 +30,9 @@ import bio.knowledge.client.Configuration;
 import bio.knowledge.client.Pair;
 import bio.knowledge.client.ProgressRequestBody;
 import bio.knowledge.client.ProgressResponseBody;
-
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-
-
 import bio.knowledge.client.model.BeaconCliqueIdentifier;
 import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconConceptWithDetails;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ConceptsApi {
     private ApiClient apiClient;
@@ -100,22 +97,14 @@ public class ConceptsApi {
         return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
-    @SuppressWarnings("rawtypes")
     private com.squareup.okhttp.Call getCliqueValidateBeforeCall(String identifier, String sessionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'identifier' is set
         if (identifier == null) {
             throw new ApiException("Missing the required parameter 'identifier' when calling getClique(Async)");
         }
-        
-        
         com.squareup.okhttp.Call call = getCliqueCall(identifier, sessionId, progressListener, progressRequestListener);
         return call;
-
-        
-        
-        
-        
     }
 
     /**
@@ -226,21 +215,14 @@ public class ConceptsApi {
         return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
-    @SuppressWarnings("rawtypes")
     private com.squareup.okhttp.Call getConceptDetailsValidateBeforeCall(String cliqueId, List<String> beacons, String sessionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'cliqueId' is set
         if (cliqueId == null) {
             throw new ApiException("Missing the required parameter 'cliqueId' when calling getConceptDetails(Async)");
         }
-        
-        
         com.squareup.okhttp.Call call = getConceptDetailsCall(cliqueId, beacons, sessionId, progressListener, progressRequestListener);
         return call;
-
-        
-        
-        
         
     }
 
@@ -362,22 +344,14 @@ public class ConceptsApi {
         return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
     
-    @SuppressWarnings("rawtypes")
     private com.squareup.okhttp.Call getConceptsValidateBeforeCall(String keywords, String semanticGroups, Integer pageNumber, Integer pageSize, List<String> beacons, String sessionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'keywords' is set
         if (keywords == null) {
             throw new ApiException("Missing the required parameter 'keywords' when calling getConcepts(Async)");
         }
-        
-        
         com.squareup.okhttp.Call call = getConceptsCall(keywords, semanticGroups, pageNumber, pageSize, beacons, sessionId, progressListener, progressRequestListener);
         return call;
-
-        
-        
-        
-        
     }
 
     /**
