@@ -805,7 +805,13 @@ $color-green: #5cb85c;
 		margin-bottom: 0.5em;
 	}
 	
+	.relation-filter {
+		vertical-align: bottom;
+		background-color: darkgreen;
+	}
+	
 	.add-to-map-button {
 		vertical-align: bottom;
+		background-color: darkgreen;
 	}
 }

@@ -65,7 +65,6 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.CellReference;
@@ -1232,6 +1231,43 @@ public class ListView extends BaseView implements Util {
 		gotoPageIndex(0);
 	}
 
+	// Popup Window for "Other..." Semantic Group selection
+	private void otherSemanticGroupSelectionWindow() {
+		
+		Window conceptSemanticWindow = new Window("Others...");
+		
+		conceptSemanticWindow.addStyleName("semanticfilter-window");
+		conceptSemanticWindow.setModal(true);
+		conceptSemanticWindow.center();
+
+		SemanticFilterView filterView = new SemanticFilterView(conceptSemanticWindow, viewName, query);
+
+		conceptSemanticWindow.setContent(filterView);
+		conceptSemanticWindow.setWidth("23%");
+		conceptSemanticWindow.setHeight(450, Unit.PIXELS);
+
+		conceptSemanticWindow.addCloseListener(new CloseListener() {
+			private static final long serialVersionUID = -4799904881921178600L;
+
+			@Override
+			public void windowClose(CloseEvent e) {
+
+				// save the values selected so that it can be
+				// displayed next time when the window is opened
+				if (!viewName.equals(ViewName.CONCEPTS_VIEW)) {
+					Object treeValue = filterView.getSelector().getValue();
+					query.setOtherSemGroupFilterValue(treeValue);
+				}
+
+				if (filterView.shouldRefresh()) {
+					updateCurrentTable();
+				}
+			}
+		});
+
+		UI.getCurrent().addWindow(conceptSemanticWindow);
+	}
+	
 	private void setSemGroupFilter(HorizontalLayout filterMenuBar) {
 
 		if (!(
@@ -1281,45 +1317,18 @@ public class ListView extends BaseView implements Util {
 
 				if (selectedItem == disorders) {
 					type = SemanticGroup.DISO;
+					
 				} else if (selectedItem == genes) {
 					type = SemanticGroup.GENE;
+					
 				} else if (selectedItem == drugs) {
 					type = SemanticGroup.CHEM;
+					
 				} else if (selectedItem == any) {
 					type = null;
+					
 				} else if (selectedItem == others) {
-					Window conceptSemanticWindow = new Window("Others...");
-					conceptSemanticWindow.addStyleName("semanticfilter-window");
-					conceptSemanticWindow.setModal(true);
-					conceptSemanticWindow.center();
-
-					SemanticFilterView filterView = new SemanticFilterView(conceptSemanticWindow, viewName, query);
-
-					conceptSemanticWindow.setContent(filterView);
-					conceptSemanticWindow.setWidth("23%");
-					conceptSemanticWindow.setHeight(450, Unit.PIXELS);
-
-					conceptSemanticWindow.addCloseListener(new CloseListener() {
-						private static final long serialVersionUID = -4799904881921178600L;
-
-						@Override
-						public void windowClose(CloseEvent e) {
-
-							// save the values selected so that it can be
-							// displayed
-							// next time when the window is opened
-							if (!viewName.equals(ViewName.CONCEPTS_VIEW)) {
-								Object treeValue = filterView.getTree().getValue();
-								query.setOtherSemGroupFilterValue(treeValue);
-							}
-
-							if (filterView.shouldRefresh()) {
-								updateCurrentTable();
-							}
-						}
-					});
-
-					UI.getCurrent().addWindow(conceptSemanticWindow);
+					otherSemanticGroupSelectionWindow() ;
 				}
 
 				if (type != null) {
@@ -1354,16 +1363,65 @@ public class ListView extends BaseView implements Util {
 	}
 	
 	private static Predicate ANY_RELATION = new PredicateImpl("Any");
-	
+
+	private void displayPredicateFilter() {
+			
+		Window predicateFilterWindow = new Window("Predicate Filter");
+		
+		predicateFilterWindow.addStyleName("predicatefilter-window");
+		predicateFilterWindow.setModal(true);
+		predicateFilterWindow.center();
+		
+		// Create the predicate selection component
+		List<Predicate> predicates = predicateService.findAllPredicates() ;
+		predicates.add(ANY_RELATION);
+		
+		PredicateFilterView predicateFilterView = 
+				new PredicateFilterView(predicateFilterWindow, viewName, query, predicates);
+
+		predicateFilterWindow.setContent(predicateFilterView);
+		predicateFilterWindow.setWidth("23%");
+		predicateFilterWindow.setHeight(450, Unit.PIXELS);
+
+		predicateFilterWindow.addCloseListener(new CloseListener() {
+			private static final long serialVersionUID = -4799904881921178600L;
+
+			@Override
+			public void windowClose(CloseEvent e) {
+
+				// save the values selected so that it can be
+				// displayed next time when the window is opened
+				if (!viewName.equals(ViewName.CONCEPTS_VIEW)) {
+					Object treeValue = predicateFilterView.getTree().getValue();
+					// Convert predicate values into list here instead of null?
+					query.setPredicateFilterValue(null);
+				}
+
+				if (predicateFilterView.shouldRefresh()) {
+					updateCurrentTable();
+				}
+			}
+		});
+
+		UI.getCurrent().addWindow(predicateFilterWindow);
+	}
 	private void setPredicateFilter(HorizontalLayout filterMenuBar) {
 		
 		if (! viewName.equals(ViewName.RELATIONS_VIEW) ) {
 			return;
 		}
+				
+		Button showPredicateFilter = new Button("Relation Filter");
+		showPredicateFilter.setStyleName("relation-filter");
 		
-		// Create the predicate selection component
-		List<Predicate> predicates = predicateService.findAllPredicates() ;
-		predicates.add(ANY_RELATION);
+		showPredicateFilter.addClickListener(e -> {
+			displayPredicateFilter();
+		});
+		
+		filterMenuBar.addComponent(showPredicateFilter);
+		filterMenuBar.setComponentAlignment(showPredicateFilter, Alignment.BOTTOM_CENTER);
+
+		/*
 		
 		ComboBox predicateFilterSelector = new ComboBox("Relation",predicates);
 		predicateFilterSelector.setNullSelectionItemId(ANY_RELATION);
@@ -1395,6 +1453,8 @@ public class ListView extends BaseView implements Util {
 		
 		filterMenuBar.addComponent(predicateFilterSelector);
 		filterMenuBar.setComponentAlignment(predicateFilterSelector, Alignment.MIDDLE_CENTER);
+		*/
+		
 	}
 	
 	private void setUpTextFilter(HorizontalLayout filterMenuBar) {

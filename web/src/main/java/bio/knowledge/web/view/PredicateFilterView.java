@@ -29,46 +29,58 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.shared.ui.MultiSelectMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.Window;
 
+import bio.knowledge.model.Predicate;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.service.KBQuery;
-import bio.knowledge.web.design.SemanticFilterDesign;
+import bio.knowledge.service.PredicateService;
+import bio.knowledge.web.design.PredicateFilterDesign;
 
-@SpringView(name = SemanticFilterView.NAME)
-public class SemanticFilterView extends SemanticFilterDesign implements View {
+@SpringView(name = PredicateFilterView.NAME)
+public class PredicateFilterView extends PredicateFilterDesign implements View {
 
 	private static final long serialVersionUID = 3768288267000228449L;
 	
-	public static final String NAME = "semantic_filter" ;
+	@Autowired
+	PredicateService predicateService;
+	
+	public static final String NAME = "predicate_filter" ;
 	
 	private KBQuery query;
 	private boolean shouldRefresh = false;
 	
 	private Window window;
-	private ListSelect semgroupList;
+	private Tree tree;
 
 	private String viewName = "";
 
 	private Set<SemanticGroup> typeSet;
 	private Collection<Object> itemIds; // stores item ids (including categories)
-
-	public SemanticFilterView(Window window, String viewName, KBQuery query) { 
+	
+	List<Predicate> predicates ;
+	
+	public PredicateFilterView(Window window, String viewName, KBQuery query, List<Predicate> predicates) { 
 		this.query = query;
 		this.window = window;
 		this.viewName = viewName;
+		this.predicates = predicates;
 			
 		initialize();
 	}
@@ -78,19 +90,6 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 		initialize();
 	}
 
-	private void refreshSemanticGroups(Boolean selectAll) {
-		itemIds.clear();
-		for (SemanticGroup type : SemanticGroup.values()) {
-			String typeDescription = type.getDescription();
-			itemIds.add(typeDescription);
-		}
-		if(selectAll)
-			semgroupList.setValue(itemIds);
-		else
-			semgroupList.setValue(null);
-	}
-	
-	@SuppressWarnings("unchecked")
 	private void initialize() {
 		removeAllComponents();
 		
@@ -99,40 +98,49 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 		
 		setMargin(new MarginInfo(false, true, true, true));
 		
-		semgroupList = new ListSelect();
-		semgroupList.addStyleName("filter-ListSelect");
-		semgroupList.setMultiSelect(true);
-		semgroupList.setMultiSelect(true);
-		semgroupList.setImmediate(true);
+		tree = new Tree();
+		tree.addStyleName("filter-tree");
+		tree.setMultiSelect(true);
+		tree.setMultiselectMode(MultiSelectMode.SIMPLE);
+		tree.setImmediate(true);
 		
-        semgroupList.addValueChangeListener(e -> {
+        tree.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null){
-                semgroupList.setValue(itemIds);
+                tree.setValue(itemIds);
             }
         });
 		
-		// Add semantic type categories as root items in the ListSelect.
-		for (SemanticGroup type : SemanticGroup.values()) {
-			String typeDescription = type.getDescription();
-			semgroupList.addItem(typeDescription);
-		}
-		
-		// get the previous selected item if applicable
-		if (!viewName.equals(ViewName.CONCEPTS_VIEW)) {
+		tree.addItemClickListener(e -> {
+			Object selectedId = e.getItemId();
+			boolean shouldRemove = false;
 			
-			Object value = query.getOtherSemGroupFilterValue();
-			
-			if (value != null) {
-				if (value instanceof Collection) {
-					itemIds.clear();
-					itemIds.addAll((Collection<Object>) value);
-					
-					semgroupList.setValue(itemIds);
+			if (itemIds.contains(selectedId)) {
+				itemIds.remove(selectedId);
+				shouldRemove = true;
+			} else {
+				itemIds.add(selectedId);
+				shouldRemove = false;
+			}
+						
+			// if the node is has children, add or remove them
+			if (tree.hasChildren(selectedId)) {
+				tree.expandItem(selectedId); // expand this subtree for user clarity
+				
+				Iterator<?> childIterator = tree.getChildren(selectedId).iterator();
+				while (childIterator.hasNext()) {
+					String childId = (String)childIterator.next();
+					if (shouldRemove) {
+						itemIds.remove(childId);
+					} else {
+						itemIds.add(childId);
+					}
 				}
 			}
-		}
+		});
 		
-		Label title = new Label("<h3><b>Select Concept SemanticGroup Filters:</b></h3>", ContentMode.HTML);
+		tree.addItems(predicates);
+		
+		Label title = new Label("<h3><b>Select Concept Predicate Relations Filters:</b></h3>", ContentMode.HTML);
 		
 		HorizontalLayout titleBar = new HorizontalLayout();
 		titleBar.addComponent(title);
@@ -157,8 +165,11 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 			Iterator<Object> iterator = itemIds.iterator();
 			while (iterator.hasNext()) {
 				String itemId = (String)iterator.next();
-				SemanticGroup type = SemanticGroup.lookUpByDescription(itemId);
-				typeSet.add(type);
+				
+				if (!tree.hasChildren(itemId)) {
+					SemanticGroup type = SemanticGroup.lookUpByDescription(itemId);
+					typeSet.add(type);
+				}
 			}
 			
 			// maybe make this as one of the functions for kbquery
@@ -174,23 +185,23 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 		});
 		
 		selectAllBtn.addClickListener(e -> {
-			refreshSemanticGroups(true);
+			//refreshSemanticGroups(true);
 		});
 		
 		clearAllBtn.addClickListener(e -> {
-			refreshSemanticGroups(false);
+			//refreshSemanticGroups(false);
 		});
 		
 		nav.addComponents(applyBtn, cancelBtn, selectAllBtn, clearAllBtn);
 	
-		addComponents(titleBar, nav, semgroupList);
+		addComponents(titleBar, nav, tree);
 	}
 	
 	public boolean shouldRefresh() {
 		return shouldRefresh;
 	}
 	
-	public ListSelect getSelector() {
-		return semgroupList;
+	public Tree getTree() {
+		return tree;
 	}
 }
