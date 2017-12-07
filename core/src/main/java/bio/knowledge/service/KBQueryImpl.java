@@ -523,7 +523,6 @@ public class KBQueryImpl implements KBQuery {
 	@Override
 	public void resetQuery() {
 		queryConcept = Optional.empty() ;
-		matchingByIdentifier = false;
 		currentStatement = Optional.empty() ;
 		currentEvidence = Optional.empty() ;
 		selectedConceptTypes = Optional.empty() ;
