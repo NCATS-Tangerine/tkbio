@@ -125,9 +125,10 @@ public class StatementService
 			semgroups = semgroups.trim();
 		}
 		
-		Optional<Predicate> optionalPredicateFilter = query.getPredicateFilterValue();
+		Optional<Set<Predicate>> optionalPredicateFilter = 
+										query.getPredicateFilterValue();
 		
-		Predicate predicateFilter = null;
+		Set<Predicate> predicateFilter = null;
 		
 		if (optionalPredicateFilter.isPresent()) {
 			predicateFilter = optionalPredicateFilter.get();

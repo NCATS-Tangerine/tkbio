@@ -364,7 +364,7 @@ public class ConceptMapPopupWindow {
 		
 		// create the collections necessary for the menus
 		// predicate
-		List<Predicate> predicateCollection = predicateService.findAllPredicates();
+		Set<Predicate> predicateCollection = predicateService.findAllPredicates();
 
 		// graph nodes
 		// because it's essentially json data we need to manufacture the new

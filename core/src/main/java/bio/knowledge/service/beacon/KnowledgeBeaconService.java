@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -49,6 +50,7 @@ import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.Feature;
 import bio.knowledge.model.core.OntologyTerm;
+import bio.knowledge.model.util.Util;
 
 /**
  * 
@@ -68,7 +70,7 @@ import bio.knowledge.model.core.OntologyTerm;
  *
  */
 @Service
-public class KnowledgeBeaconService {
+public class KnowledgeBeaconService implements Util {
 	
 	private Logger _logger = LoggerFactory.getLogger(KnowledgeBeaconService.class);
 	
@@ -476,15 +478,15 @@ public class KnowledgeBeaconService {
 	 * 
 	 * @return
 	 */
-	public CompletableFuture<List<Predicate>> getPredicates() {
+	public CompletableFuture<Set<Predicate>> getPredicates() {
 		
-		CompletableFuture<List<Predicate>> future = 
-				CompletableFuture.supplyAsync(new Supplier<List<Predicate>>() {
+		CompletableFuture<Set<Predicate>> future = 
+				CompletableFuture.supplyAsync(new Supplier<Set<Predicate>>() {
 
 			@Override
-			public List<Predicate> get() {
+			public Set<Predicate> get() {
 				
-				List<Predicate> predicates = new ArrayList<Predicate>();
+				Set<Predicate> predicates = new TreeSet<Predicate>();
 				
 				try {
 					List<bio.knowledge.client.model.BeaconPredicate> responses = 
@@ -525,7 +527,7 @@ public class KnowledgeBeaconService {
 	
 	public CompletableFuture<List<Statement>> getStatements(
 			String sourceClique,
-			Predicate relation,
+			Set<Predicate> relations,
 			String targetClique,
 			String keywords,
 			String semgroups,
@@ -543,7 +545,7 @@ public class KnowledgeBeaconService {
 						"kbs.getStatements(): processing cliqueId: "+sourceClique+
 						", keywords: "+keywords+
 						", semgroups: "+semgroups+
-						", relation: "+relation
+						", relation: "+relations
 				);
 				
 				// Utility time variable for profiling
@@ -561,14 +563,16 @@ public class KnowledgeBeaconService {
 					 * require recoding of the code stack above this point.
 					 */
 					String relationIds = "" ;
-					if(relation!=null) {
-						List<PredicateBeacon> beacons = relation.getBeacons();
-						if(beacons!=null)
+					if(!nullOrEmpty(relations)) {
+						for(Predicate p : relations) {
+						List<PredicateBeacon> beacons = p.getBeacons();
+						if(!nullOrEmpty(beacons))
 							for(PredicateBeacon beacon : beacons) {
 								if(!relationIds.isEmpty())
 									relationIds += " ";
 								relationIds += beacon.getId();
 							}
+						}
 					}
 					
 					_logger.debug("kbs.getStatements() - before responses");

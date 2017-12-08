@@ -325,13 +325,13 @@ public interface KBQuery {
 	 * 
 	 * @param value
 	 */
-	public void setPredicateFilterValue(Predicate value);
+	public void setPredicateFilterValue(Set<Predicate> predicates);
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public Optional<Predicate> getPredicateFilterValue() ;
+	public Optional<Set<Predicate>> getPredicateFilterValue() ;
 	
 	/**
 	 * 

@@ -25,6 +25,8 @@
  */
 package bio.knowledge.model.util;
 
+import java.util.Collection;
+
 /**
  * Utility functions to make code more readable?
  * 
@@ -35,6 +37,12 @@ public interface Util {
 	
 	default public boolean nullOrEmpty(String id) {
 		if(id==null || id.isEmpty()) 
+			return true;
+		return false;
+	}
+	
+	default public boolean nullOrEmpty(Collection<?> list) {
+		if(list==null || list.isEmpty()) 
 			return true;
 		return false;
 	}

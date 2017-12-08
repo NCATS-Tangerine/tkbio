@@ -65,6 +65,7 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.CellReference;
@@ -101,7 +102,6 @@ import bio.knowledge.model.DomainModelException;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.Predicate;
-import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.IdentifiedEntity;
@@ -1255,7 +1255,7 @@ public class ListView extends BaseView implements Util {
 				// save the values selected so that it can be
 				// displayed next time when the window is opened
 				if (!viewName.equals(ViewName.CONCEPTS_VIEW)) {
-					Object treeValue = filterView.getSelector().getValue();
+					Object treeValue = filterView.getTree().getValue();
 					query.setOtherSemGroupFilterValue(treeValue);
 				}
 
@@ -1361,10 +1361,8 @@ public class ListView extends BaseView implements Util {
 		filterMenuBar.addComponent(semGrpLayout);
 		filterMenuBar.setComponentAlignment(semGrpLayout, Alignment.MIDDLE_LEFT);
 	}
-	
-	private static Predicate ANY_RELATION = new PredicateImpl("Any");
 
-	private void displayPredicateFilter() {
+	private void displayPredicateFilter(ComboBox selectedRelations) {
 			
 		Window predicateFilterWindow = new Window("Predicate Filter");
 		
@@ -1372,12 +1370,8 @@ public class ListView extends BaseView implements Util {
 		predicateFilterWindow.setModal(true);
 		predicateFilterWindow.center();
 		
-		// Create the predicate selection component
-		List<Predicate> predicates = predicateService.findAllPredicates() ;
-		predicates.add(ANY_RELATION);
-		
 		PredicateFilterView predicateFilterView = 
-				new PredicateFilterView(predicateFilterWindow, viewName, query, predicates);
+				new PredicateFilterView(predicateService, predicateFilterWindow);
 
 		predicateFilterWindow.setContent(predicateFilterView);
 		predicateFilterWindow.setWidth("23%");
@@ -1389,16 +1383,14 @@ public class ListView extends BaseView implements Util {
 			@Override
 			public void windowClose(CloseEvent e) {
 
-				// save the values selected so that it can be
-				// displayed next time when the window is opened
-				if (!viewName.equals(ViewName.CONCEPTS_VIEW)) {
-					Object treeValue = predicateFilterView.getTree().getValue();
-					// Convert predicate values into list here instead of null?
-					query.setPredicateFilterValue(null);
-				}
-
-				if (predicateFilterView.shouldRefresh()) {
-					updateCurrentTable();
+				if (viewName.equals(ViewName.RELATIONS_VIEW)) {
+					Set<Predicate> selections = 
+							predicateFilterView.getSelectedPredicates();
+					query.setPredicateFilterValue(selections);
+					selectedRelations.addItems(selections);
+					if (predicateFilterView.shouldRefresh()) {
+						updateCurrentTable();
+					}
 				}
 			}
 		});
@@ -1411,18 +1403,22 @@ public class ListView extends BaseView implements Util {
 			return;
 		}
 				
-		Button showPredicateFilter = new Button("Relation Filter");
-		showPredicateFilter.setStyleName("relation-filter");
+		Button showRelationFilter = new Button("Relation Filter");
+		showRelationFilter.setStyleName("relation-filter");
 		
-		showPredicateFilter.addClickListener(e -> {
-			displayPredicateFilter();
+		ComboBox selectedRelations = new ComboBox("Selected Relations");
+		
+		showRelationFilter.addClickListener(e -> {
+			displayPredicateFilter(selectedRelations);
 		});
 		
-		filterMenuBar.addComponent(showPredicateFilter);
-		filterMenuBar.setComponentAlignment(showPredicateFilter, Alignment.BOTTOM_CENTER);
-
-		/*
+		filterMenuBar.addComponent(showRelationFilter);
+		filterMenuBar.setComponentAlignment(showRelationFilter, Alignment.BOTTOM_CENTER);
+	
+		filterMenuBar.addComponent(selectedRelations);
+		filterMenuBar.setComponentAlignment(selectedRelations, Alignment.BOTTOM_CENTER);
 		
+		/*
 		ComboBox predicateFilterSelector = new ComboBox("Relation",predicates);
 		predicateFilterSelector.setNullSelectionItemId(ANY_RELATION);
 		

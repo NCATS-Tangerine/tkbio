@@ -484,15 +484,15 @@ public class KBQueryImpl implements KBQuery {
 		value = null;
 	}
 	
-	private Optional<Predicate> predicateFilterValue = Optional.empty();
+	private Optional<Set<Predicate>> predicateFilterValue = Optional.empty();
 
 	@Override
-	public void setPredicateFilterValue(Predicate value) {
-		predicateFilterValue = Optional.of(value);
+	public void setPredicateFilterValue(Set<Predicate> predicates) {
+		predicateFilterValue = Optional.of(predicates);
 	}
 
 	@Override
-	public Optional<Predicate> getPredicateFilterValue() {
+	public Optional<Set<Predicate>> getPredicateFilterValue() {
 		return predicateFilterValue;
 	}
 

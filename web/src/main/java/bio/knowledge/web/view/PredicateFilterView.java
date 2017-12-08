@@ -25,62 +25,54 @@
  */
 package bio.knowledge.web.view;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.shared.ui.MultiSelectMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Tree;
+import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 
 import bio.knowledge.model.Predicate;
-import bio.knowledge.model.SemanticGroup;
-import bio.knowledge.service.KBQuery;
+import bio.knowledge.model.util.Util;
 import bio.knowledge.service.PredicateService;
 import bio.knowledge.web.design.PredicateFilterDesign;
 
 @SpringView(name = PredicateFilterView.NAME)
-public class PredicateFilterView extends PredicateFilterDesign implements View {
+public class PredicateFilterView extends PredicateFilterDesign implements View, Util {
 
 	private static final long serialVersionUID = 3768288267000228449L;
 	
-	@Autowired
-	PredicateService predicateService;
+	private Logger _logger = LoggerFactory.getLogger(PredicateFilterView.class);
+
+	private PredicateService predicateService;
 	
 	public static final String NAME = "predicate_filter" ;
 	
-	private KBQuery query;
 	private boolean shouldRefresh = false;
 	
 	private Window window;
-	private Tree tree;
+	private ListSelect predicateSelector;
 
-	private String viewName = "";
-
-	private Set<SemanticGroup> typeSet;
-	private Collection<Object> itemIds; // stores item ids (including categories)
+	private Set<Predicate> predicateSet;
+	//private Collection<Object> itemIds; // stores item ids (including categories)
 	
-	List<Predicate> predicates ;
-	
-	public PredicateFilterView(Window window, String viewName, KBQuery query, List<Predicate> predicates) { 
-		this.query = query;
+	public PredicateFilterView(PredicateService predicateService, Window window) { 
+		
+		this.predicateService = predicateService;
 		this.window = window;
-		this.viewName = viewName;
-		this.predicates = predicates;
 			
 		initialize();
 	}
@@ -91,56 +83,91 @@ public class PredicateFilterView extends PredicateFilterDesign implements View {
 	}
 
 	private void initialize() {
+		
 		removeAllComponents();
 		
-		typeSet = new HashSet<SemanticGroup>();
-		itemIds = new LinkedHashSet<>();
+		predicateSet = new HashSet<Predicate>();
 		
 		setMargin(new MarginInfo(false, true, true, true));
 		
-		tree = new Tree();
-		tree.addStyleName("filter-tree");
-		tree.setMultiSelect(true);
-		tree.setMultiselectMode(MultiSelectMode.SIMPLE);
-		tree.setImmediate(true);
+		TextField searchField = new TextField();
 		
-        tree.addValueChangeListener(e -> {
-            if (e.getProperty().getValue() != null){
-                tree.setValue(itemIds);
-            }
-        });
-		
-		tree.addItemClickListener(e -> {
-			Object selectedId = e.getItemId();
-			boolean shouldRemove = false;
-			
-			if (itemIds.contains(selectedId)) {
-				itemIds.remove(selectedId);
-				shouldRemove = true;
-			} else {
-				itemIds.add(selectedId);
-				shouldRemove = false;
+		searchField.addValueChangeListener( e -> {
+			String queryText = searchField.getValue();
+			if (nullOrEmpty(queryText.trim())) {
+				return;
 			}
-						
-			// if the node is has children, add or remove them
-			if (tree.hasChildren(selectedId)) {
-				tree.expandItem(selectedId); // expand this subtree for user clarity
-				
-				Iterator<?> childIterator = tree.getChildren(selectedId).iterator();
-				while (childIterator.hasNext()) {
-					String childId = (String)childIterator.next();
-					if (shouldRemove) {
-						itemIds.remove(childId);
-					} else {
-						itemIds.add(childId);
-					}
-				}
-			}
+			queryText = queryText.trim();
+			_logger.debug("Searching predicates for match to '"+queryText+"'");
+			predicateSelector.removeAllItems();
+			Optional<Set<Predicate>> matchingOpt = 
+					predicateService.getMatchingPredicates(queryText);
+			if(matchingOpt.isPresent())
+				predicateSelector.addItems(matchingOpt.get());
 		});
 		
-		tree.addItems(predicates);
+		predicateSelector = new ListSelect();
+		predicateSelector.addStyleName("filter-tree");
+		predicateSelector.setMultiSelect(true);
+		predicateSelector.setImmediate(true);
+		predicateSelector.setRows(10);
+		predicateSelector.setWidth("100em");
+		predicateSelector.addItems(predicateService.findAllPredicates());
 		
-		Label title = new Label("<h3><b>Select Concept Predicate Relations Filters:</b></h3>", ContentMode.HTML);
+		Set<Predicate> selectedSet = new HashSet<Predicate>();
+        predicateSelector.addValueChangeListener(e -> {
+        	@SuppressWarnings("unchecked")
+			Set<Predicate> selection = 
+        			(Set<Predicate>) e.getProperty().getValue();
+            if ( selection != null) {
+				selectedSet.addAll(selection);
+            }
+		});		
+
+        ListSelect selectedPredicates = new ListSelect();
+        selectedPredicates.addStyleName("filter-tree");
+        selectedPredicates.setMultiSelect(true);
+        selectedPredicates.setImmediate(true);
+        selectedPredicates.setRows(10);
+        selectedPredicates.setWidth("100em");
+
+		Set<Predicate> removedSet = new HashSet<Predicate>();
+		selectedPredicates.addValueChangeListener(e -> {
+        	@SuppressWarnings("unchecked")
+			Set<Predicate> selection = 
+        			(Set<Predicate>) e.getProperty().getValue();
+            if ( selection != null) {
+				if (removedSet.containsAll(selection)) {
+					removedSet.removeAll(selection);
+				} else {
+					removedSet.addAll(selection);
+				}
+            }
+		});	
+        
+		Button selectBtn = new Button("Select");
+		selectBtn.addClickListener(e -> {
+			selectedPredicates.removeAllItems();
+			selectedPredicates.addItems(selectedSet);
+			selectedSet.clear();
+		});
+		
+		Button removeBtn = new Button("Remove");
+		removeBtn.addClickListener(e -> {
+			selectedSet.removeAll(removedSet);
+			removedSet.clear();
+			selectedPredicates.removeAllItems();
+			selectedPredicates.addItems(selectedSet);
+		});
+		
+		HorizontalLayout selectionButtons = new HorizontalLayout();
+		selectionButtons.setSpacing(true);
+		selectionButtons.setMargin(true);
+		selectionButtons.addComponents(selectBtn,removeBtn);
+		selectionButtons.setComponentAlignment(selectBtn, Alignment.MIDDLE_LEFT);
+		selectionButtons.setComponentAlignment(removeBtn, Alignment.MIDDLE_RIGHT);
+		
+		Label title = new Label("<h3><b>Select Relation Filter:</b></h3>", ContentMode.HTML);
 		
 		HorizontalLayout titleBar = new HorizontalLayout();
 		titleBar.addComponent(title);
@@ -149,59 +176,31 @@ public class PredicateFilterView extends PredicateFilterDesign implements View {
 		HorizontalLayout nav = new HorizontalLayout();
 		nav.setSpacing(true);
 		nav.setMargin(new MarginInfo(false, false, true, false));
-		nav.setStyleName("semanticfilter-nav", true);
+		nav.setStyleName("predicatefilter-nav", true);
+
+		Button doneBtn   = new Button("Done");
+		Button cancelBtn = new Button("Cancel");
 		
-		Button applyBtn     = new Button("Apply");
-		Button cancelBtn    = new Button("Cancel");
-		Button selectAllBtn = new Button("Select All");
-		Button clearAllBtn  = new Button("Clear All");
+		doneBtn.addClickListener(e -> {
+			shouldRefresh = true;
+			window.close();
+		});
 		
 		cancelBtn.addClickListener(e -> {
 			window.close();
 		});
 		
-		applyBtn.addClickListener(e -> {
-
-			Iterator<Object> iterator = itemIds.iterator();
-			while (iterator.hasNext()) {
-				String itemId = (String)iterator.next();
-				
-				if (!tree.hasChildren(itemId)) {
-					SemanticGroup type = SemanticGroup.lookUpByDescription(itemId);
-					typeSet.add(type);
-				}
-			}
-			
-			// maybe make this as one of the functions for kbquery
-			if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
-				query.setInitialConceptTypes(typeSet);
-			} else if (viewName.equals(ViewName.RELATIONS_VIEW)) {
-				query.setConceptTypes(typeSet);
-			}
-			
-			shouldRefresh = true;
-			
-			this.window.close();
-		});
-		
-		selectAllBtn.addClickListener(e -> {
-			//refreshSemanticGroups(true);
-		});
-		
-		clearAllBtn.addClickListener(e -> {
-			//refreshSemanticGroups(false);
-		});
-		
-		nav.addComponents(applyBtn, cancelBtn, selectAllBtn, clearAllBtn);
+		nav.addComponents(searchField, doneBtn, cancelBtn);
 	
-		addComponents(titleBar, nav, tree);
+		setSpacing(true);
+		addComponents(titleBar, nav, predicateSelector, selectionButtons, selectedPredicates);
 	}
 	
 	public boolean shouldRefresh() {
 		return shouldRefresh;
 	}
-	
-	public Tree getTree() {
-		return tree;
+
+	public Set<Predicate> getSelectedPredicates() {
+		return predicateSet;
 	}
 }

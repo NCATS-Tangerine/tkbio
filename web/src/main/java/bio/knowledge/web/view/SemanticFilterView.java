@@ -34,13 +34,14 @@ import java.util.Set;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.shared.ui.MultiSelectMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.Window;
 
 import bio.knowledge.model.SemanticGroup;
@@ -58,12 +59,13 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 	private boolean shouldRefresh = false;
 	
 	private Window window;
-	private ListSelect semgroupList;
+	private Tree tree;
 
 	private String viewName = "";
 
 	private Set<SemanticGroup> typeSet;
 	private Collection<Object> itemIds; // stores item ids (including categories)
+	
 
 	public SemanticFilterView(Window window, String viewName, KBQuery query) { 
 		this.query = query;
@@ -78,18 +80,6 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 		initialize();
 	}
 
-	private void refreshSemanticGroups(Boolean selectAll) {
-		itemIds.clear();
-		for (SemanticGroup type : SemanticGroup.values()) {
-			String typeDescription = type.getDescription();
-			itemIds.add(typeDescription);
-		}
-		if(selectAll)
-			semgroupList.setValue(itemIds);
-		else
-			semgroupList.setValue(null);
-	}
-	
 	@SuppressWarnings("unchecked")
 	private void initialize() {
 		removeAllComponents();
@@ -99,27 +89,55 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 		
 		setMargin(new MarginInfo(false, true, true, true));
 		
-		semgroupList = new ListSelect();
-		semgroupList.addStyleName("filter-ListSelect");
-		semgroupList.setMultiSelect(true);
-		semgroupList.setMultiSelect(true);
-		semgroupList.setImmediate(true);
+		tree = new Tree();
+		tree.addStyleName("filter-tree");
+		tree.setMultiSelect(true);
+		tree.setMultiselectMode(MultiSelectMode.SIMPLE);
+		tree.setImmediate(true);
 		
-        semgroupList.addValueChangeListener(e -> {
+        tree.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null){
-                semgroupList.setValue(itemIds);
+                tree.setValue(itemIds);
             }
         });
 		
-		// Add semantic type categories as root items in the ListSelect.
+		tree.addItemClickListener(e -> {
+			Object selectedId = e.getItemId();
+			boolean shouldRemove = false;
+			
+			if (itemIds.contains(selectedId)) {
+				itemIds.remove(selectedId);
+				shouldRemove = true;
+			} else {
+				itemIds.add(selectedId);
+				shouldRemove = false;
+			}
+						
+			// if the node is has children, add or remove them
+			if (tree.hasChildren(selectedId)) {
+				tree.expandItem(selectedId); // expand this subtree for user clarity
+				
+				Iterator<?> childIterator = tree.getChildren(selectedId).iterator();
+				while (childIterator.hasNext()) {
+					String childId = (String)childIterator.next();
+					if (shouldRemove) {
+						itemIds.remove(childId);
+					} else {
+						itemIds.add(childId);
+					}
+				}
+			}
+		});
+		
+		// Add semantic type categories as root items in the tree.
 		for (SemanticGroup type : SemanticGroup.values()) {
-			String typeDescription = type.getDescription();
-			semgroupList.addItem(typeDescription);
+			String typeDesciption = type.getDescription();
+			tree.addItem(typeDesciption);
+			tree.setChildrenAllowed(typeDesciption, false);
 		}
 		
 		// get the previous selected item if applicable
-		if (!viewName.equals(ViewName.CONCEPTS_VIEW)) {
-			
+		if (!viewName.equals(ViewName.CONCEPTS_VIEW)) {			
 			Object value = query.getOtherSemGroupFilterValue();
 			
 			if (value != null) {
@@ -127,7 +145,16 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 					itemIds.clear();
 					itemIds.addAll((Collection<Object>) value);
 					
-					semgroupList.setValue(itemIds);
+					tree.setValue(itemIds);
+					
+					for (final Iterator<Object> i = itemIds.iterator(); i.hasNext();) {
+						Object itemId = i.next();
+						Object parent = tree.getParent(itemId);
+						
+						if (parent != null) {
+							tree.expandItem(parent);
+						}
+					}
 				}
 			}
 		}
@@ -143,10 +170,8 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 		nav.setMargin(new MarginInfo(false, false, true, false));
 		nav.setStyleName("semanticfilter-nav", true);
 		
-		Button applyBtn     = new Button("Apply");
-		Button cancelBtn    = new Button("Cancel");
-		Button selectAllBtn = new Button("Select All");
-		Button clearAllBtn  = new Button("Clear All");
+		Button applyBtn = new Button("Apply");
+		Button cancelBtn = new Button("Cancel");
 		
 		cancelBtn.addClickListener(e -> {
 			window.close();
@@ -157,8 +182,11 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 			Iterator<Object> iterator = itemIds.iterator();
 			while (iterator.hasNext()) {
 				String itemId = (String)iterator.next();
-				SemanticGroup type = SemanticGroup.lookUpByDescription(itemId);
-				typeSet.add(type);
+				
+				if (!tree.hasChildren(itemId)) {
+					SemanticGroup type = SemanticGroup.lookUpByDescription(itemId);
+					typeSet.add(type);
+				}
 			}
 			
 			// maybe make this as one of the functions for kbquery
@@ -173,24 +201,16 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 			this.window.close();
 		});
 		
-		selectAllBtn.addClickListener(e -> {
-			refreshSemanticGroups(true);
-		});
-		
-		clearAllBtn.addClickListener(e -> {
-			refreshSemanticGroups(false);
-		});
-		
-		nav.addComponents(applyBtn, cancelBtn, selectAllBtn, clearAllBtn);
+		nav.addComponents(applyBtn, cancelBtn);
 	
-		addComponents(titleBar, nav, semgroupList);
+		addComponents(titleBar, nav, tree);
 	}
 	
 	public boolean shouldRefresh() {
 		return shouldRefresh;
 	}
 	
-	public ListSelect getSelector() {
-		return semgroupList;
+	public Tree getTree() {
+		return tree;
 	}
 }
