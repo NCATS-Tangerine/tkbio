@@ -85,17 +85,12 @@ public class LibraryDetails extends VerticalLayout {
 
 	public void update(ConceptMapArchive map) {
 		Button addToMapBtn = new Button("Add to map");
-		addToMapBtn.addClickListener(new ClickListener() {
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				DesktopUI ui = (DesktopUI) UI.getCurrent();
-				ui.loadMap(map);
-				query.addImportedMap(map);
-				ui.closeLibraryWindow();
-				ui.gotoStatementsTable();
-			}
-
+		addToMapBtn.addClickListener(event -> {
+			DesktopUI ui = (DesktopUI) UI.getCurrent();
+			ui.loadMap(map);
+			query.addImportedMap(map);
+			ui.closeLibraryWindow();
+			ui.gotoStatementsTable();
 		});
 
 		Button backBtn = new Button("Go back");
@@ -103,6 +98,11 @@ public class LibraryDetails extends VerticalLayout {
 
 		Button exportBtn = new Button("Export");
 		exportBtn.addClickListener(new ClickListener() {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -7718663503254990128L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
