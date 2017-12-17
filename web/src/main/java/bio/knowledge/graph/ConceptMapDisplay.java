@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -55,6 +56,7 @@ import bio.knowledge.graph.jsonmodels.Nodes;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.Statement;
+import bio.knowledge.service.ConceptService;
 import bio.knowledge.web.ui.DesktopUI;
 
 @JavaScript({
@@ -88,7 +90,9 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 		return (ConceptMapDisplayState) super.getState();
 	}
 
-	public ConceptMapDisplay() {
+	private ConceptService conceptService;
+	public ConceptMapDisplay(ConceptService conceptService) {
+		this.conceptService = conceptService;
 		initializeRPCFunctions();
 	}
 
@@ -314,6 +318,7 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 	@Override
 	public void clearGraph() {
 		this.setElements(new Elements());
+		this.cmNodeCache.clear();
 		getState().nodeTracker = new HashMap<String, HashMap<String, HashMap<String, String>>>();
 		markAsDirty();
 	}
@@ -371,11 +376,16 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 					int y = nodes.getJSONObject(i).getJSONObject("position").getInt("y");
 
 					JSONObject data = nodes.getJSONObject(i).getJSONObject("data");
+					
+					/*
 					String nodeId = data.getString("id");
 					String nodeName = data.getString("name");
 					String nodeGroup = data.getString("semgroup");
 
-					Node newNode = new Node(nodeId, nodeName, nodeGroup, x, y);	
+					Node newNode = new Node(nodeId, nodeName, nodeGroup, x, y);
+					*/
+					
+					Node newNode = resolve(data,x,y);
 
 					// TODO: Could I use an existing parent to avoid certain steps in the generation of the nodeTracker somehow?
 //					String nodeParent = "";
@@ -388,13 +398,17 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 					this.addNodeToConceptMap(newNode);
 				}
 			}
+			
 			if (elements.has("edges")) {
 				JSONArray edges = elements.getJSONArray("edges");
 				// prepare edges
 				for (int i = 0; i < edges.length(); i++) {
 					JSONObject data = edges.getJSONObject(i).getJSONObject("data");
-					String edgeSource = data.getString("source");
-					String edgeTarget = data.getString("target");
+					
+					String edgeSource = resolve(data.getString("source"));
+					
+					String edgeTarget = resolve(data.getString("target"));
+					
 					String edgeLabel  = data.getString("label");
 					String edgeDescription  = data.getString("description");
 					String edgeUri  = data.getString("uri");
@@ -410,6 +424,55 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 					Notification.Type.ERROR_MESSAGE).show(Page.getCurrent());
 		}
 
+	}
+	
+	private String resolve(String nodeId) {
+		
+		Optional<Concept> conceptOpt = conceptService.findByIdentifier(nodeId);
+		
+		if(conceptOpt.isPresent()) {
+			/*
+			 * Use the resolved concept clique id
+			 * instead of archived concept node id
+			 */
+			Concept concept = conceptOpt.get();
+			return concept.getClique();
+		} else
+			// Can't resolve any better than the archived id
+			return nodeId; 
+	}
+	
+	// Cache the nodes of loaded concept maps as you encounter them
+	private Map<String,Node> cmNodeCache = new HashMap<String,Node>();
+	
+	/*
+	 * This version of resolve assumes 
+	 * that the entity to be resolved is 
+	 * an archived Concept Map node
+	 */
+	private Node resolve(JSONObject data, int x, int y) {
+		
+		String nodeId    = data.getString("id");
+		String nodeName  = data.getString("name");
+		String nodeGroup = data.getString("semgroup");
+		
+		Optional<Concept> conceptOpt = conceptService.findByIdentifier(nodeId);
+		
+		if(conceptOpt.isPresent()) {
+			/*
+			 * Use the resolved concept clique concept
+			 * instead of archived concept node details
+			 */
+			Concept concept = conceptOpt.get();
+			nodeId    = concept.getClique();
+			nodeName  = concept.getName();
+			nodeGroup = concept.getSemanticGroup().name();
+		}
+		
+		if(!cmNodeCache.containsKey(nodeId))
+			cmNodeCache.put(nodeId,new Node(nodeId, nodeName, nodeGroup, x, y));
+		
+		return cmNodeCache.get(nodeId);
 	}
 
 	public String convertToSIF() {
