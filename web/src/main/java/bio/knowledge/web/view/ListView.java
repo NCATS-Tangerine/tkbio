@@ -377,8 +377,11 @@ public class ListView extends BaseView implements Util {
 					}
 					
 					String filter = makeFilter();
-					if (!filter.isEmpty()) {
-						container.addAll(pager.getDataPage(currentPageIndex, pageSize, filter, sorter, isAscending));
+					int pageNumber = currentPageIndex + 1;
+					if (filter.isEmpty() && viewName.equals(ViewName.CONCEPTS_VIEW)){
+						// We don't want to initiate an empty search when we load the CONCEPTS_VIEW page
+					} else {
+						container.addAll(pager.getDataPage(pageNumber, pageSize, filter, sorter, isAscending));
 					}
 					
 					//TODO: DEC 15 2018
@@ -681,7 +684,7 @@ public class ListView extends BaseView implements Util {
 			Button pageBtn = new Button(Integer.toString(i + 1));
 			pageBtn.addStyleName(PAGE_BUTTON_STYLE);
 			pageBtn.addClickListener(e -> {
-				int pageIndex = Integer.parseInt(e.getButton().getCaption());
+				int pageIndex = Integer.parseInt(e.getButton().getCaption()) - 1;
 				gotoPageIndex(pageIndex);
 			});
 
