@@ -6,33 +6,36 @@ This is Knowledge.Bio, a Java-based web application for discovering, navigating,
 
 The software project is a US [National Institute of Health](https://www.nih.gov/) funded initiative, begun in 2015, within the scope of the Heart BD2K program as a collaboration between...
 
-* The [Scripps Research Institute](http://www.scripps.edu/) (TSRI), San Diego, CA, USA:
-
-	Dr. Benjamin Good, Project Owner
-
-and 
-
 * [STAR Informatics/Delphinai Corporation](https://starinformatics.com), Port Moody, BC, Canada:	
  
 	Dr. Richard Bruskiewich, CEO (2015 - present)
 	Kenneth Huellas-Bruskiewicz (2015 - present)
 	Lance Hannestad (2016,2017)
-	Farzin Ahmed (2015 - 2016)
+	Yinglun "Colin" Qiao (2016,2017)
+	Meera Godden (2017)
 	Chandan Kumar Mishra (2016)
 	Jarielle Lim (2016)
-	Yinglun "Colin" Qiao (2016)
 	Rudy Kong Tin Lun (2016)
-	Meera Godden (2017)
+	Farzin Ahmed (2015 - 2016)
+	
+* through an initial collaboration with
 
-The current (2017) effort to advance Knowledge.Bio is a collaboration with the [Lawrence Berkeley Laboratory](http://www.lbl.gov/), San Francisco, CA, USA, care of
+	Dr. Benjamin Good
+
+previously at the [Scripps Research Institute](http://www.scripps.edu/) (TSRI), San Diego, CA, USA 
+
+* The current (2017) effort to advance Knowledge.Bio is a collaboration funded by NIH through the [Lawrence Berkeley Laboratory](http://www.lbl.gov/), San Francisco, CA, USA, care of
 
     Dr. Christopher Mungall
 
-with the objective of repurposing it as a web client for the [NIH NCATS Translator initiative](https://ncats.nih.gov/translator), with direct funding brokered by NCATS Principal Investigator,
+with the objective of repurposing it as a web client for the [NIH NCATS Translator initiative](https://ncats.nih.gov/translator).
+
+* We are also grateful for NIH funding received for the summer of 2017 as brokered by the NCATS Principal Investigator,
 
 	Dr. Christopher Chute
 
-and others at the [INSTITUTE for CLINICAL & TRANSLATIONAL RESEARCH](https://ictr.johnshopkins.edu/) (ICTR), Johns Hopkins University School of Medicine, Baltimore, MD, USA. 
+at the [INSTITUTE for CLINICAL & TRANSLATIONAL RESEARCH](https://ictr.johnshopkins.edu/) (ICTR), Johns Hopkins University School of Medicine, Baltimore, MD, USA.
+
 
 # Table of Contents
 #### [Introduction]()
@@ -73,9 +76,15 @@ The Gradle build process imports the majority of our dependencies. However, befo
 
 1. Before starting, ensure that you install the Gradle-based [Buildship tool](https://projects.eclipse.org/projects/tools.buildship) for Eclipse into your Eclipse IDE. You should also install the latest Gradle version from gradle.org and configure the Buildship tool, in the Eclipse "Window..Preferences" to point to the Gradle distribution folder.
 
-2. Clone the TKBio project from the project repository into a local Git repository on your workstation.
+2. Clone the TKBio project from the [Github project repository](https://github.com/NCATS-Tangerine/tkbio) into a local Git repository on your workstation.
 
-3. "Import from..Git Repository" to import it into the Eclipse IDE. You should be able to use the "Import Existing Eclipse Project" wizard option to create it and select "Search for nested projects". This should import the project as a working "Gradle" managed project and all the subprojects should appear as separate Eclipse projects within the package manager
+3. Start up Eclipse with a (preferably empty) workspace folder.
+
+4. Use the Project "Import from .. Git Repository" to import it into the Eclipse IDE. You should be able to use the "Import as general project" wizard option to load it and select "Search for nested projects". 
+
+5. Selecting the project in the Project Package Explorer, access the (right mouse button) context menu to select "Configure .. Add Gradle Nature".  This should configure the project as a working "Gradle" managed project with all the subprojects appearing as separate Eclipse folders within the package manager
+
+This should give you a workable Eclipse installation. You can now proceed to "Spring and Neo4j Configuration" to prepare the application for running (see below).
 
 Before working with the code, Eclipse might show "Problems" tab errors. These do not usually affect the Gradle build process and execution of the application.
 
@@ -85,7 +94,7 @@ In order to run the application components of Knowledge.Bio, some basic configur
 
 That said, the project provides templates for a default set of Java Properties-based configuration files for itself, under the **"tkbio/config"** folder. Copy the template files, **removing** the "-template" suffix as you copy them into the necessary resources folders. These folders are labeled as **"src/main/resources"** in all of **"tkbio/web/"**, **"tkbio/database/"**, and **"tkbio/dataloader/"**.
 
-As of August 2017, these are two files required and given templates. The main configuration file is the **applications.properties**, containing the means for linking to other NCAT project services. Neo4j uses the **ogm.properties file**, necessary for linking the client to the database.
+As of August 2017, these are two files required and given templates. The main configuration file is the **applications.properties**, containing the means for linking to other NCAT project services. Neo4j uses the **ogm.properties file**  the application to the database for user accounts and concept map archives.
 
 You don't need to modify most of these properties, but there are fields which need customization, as follows.
 
