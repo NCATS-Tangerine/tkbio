@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -65,6 +66,7 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
@@ -150,6 +152,15 @@ public class ListView extends BaseView implements Util {
 	private static final String COL_ID_REFERENCE = "reference";
 	private static final String COL_ID_PUBLICATION_DATE = "publicationDate";
 
+	private static final int ELLIPSIS_INDEX_OFFSET = 2;
+	// style names
+	private static final String PAGE_STATUS_LABEL_STYLE = "page-status-label";
+	private static final String CURRENT_PAGE_BUTTON_STYLE = "current-page-button";
+	private static final String CURRENT_PAGE_SIZE_STYLE = "current-page-size";
+	private static final String PAGE_BUTTON_STYLE = "page-button";
+	private static final String PAGE_CONTROL_BUTTON_STYLE = "pagecontrol-button";
+
+	
 	/*
 	 *  RMB: Oct 27, 2017: reduced table height to 8 from 11 
 	 *  when data table moved to 100% width of bottom pane
@@ -212,6 +223,8 @@ public class ListView extends BaseView implements Util {
 		private static final long serialVersionUID = -1922666185642169173L;
 
 		public final static int PAGE_WINDOW_SIZE = 5;
+		
+		private static final int PAGE_WINDOW_OFFSET = PAGE_WINDOW_SIZE / 2;
 
 		private static final int DEFAULT_PAGE_SIZE = 15;
 		private static final int DEFAULT_CURRENT_PAGE_INDEX = 0;
@@ -333,53 +346,19 @@ public class ListView extends BaseView implements Util {
 			return kbService.getKnowledgeBeaconCount(beacons);
 		}
 		
-		private int loadDataPage(int pageNumber) {
-			try {
-				String filter;
-				if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
-					filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
-				} else {
-					filter = "";
-				}
-
-				if(!simpleTextFilter.isEmpty()) {
-					filter += " " + simpleTextFilter ;
-				}
-				
-				// We always want to fill the table with enough rows so that the scroll bar shows.
-				
-				int rows = (int) dataTable.getHeightByRows();
-				int beacons = countKnowledgeBeacons();
-				int pageSize = (int) (rows * 2 / beacons) + 1;
-				List<? extends IdentifiedEntity> data;
-				String previousId = null;
-				int gatheredDataCount = 0;
-				
-				do {
-					data = pager.getDataPage(pageNumber, pageSize, filter != null ? filter.trim() : null, sorter, isAscending);
-					
-					if (!data.isEmpty()) {
-						if (previousId != null) {
-							if (previousId.equals(data.get(0).getId())) {
-								// In this case paging is broken, and we want to break out of the loop
-								// without adding anymore data.
-								break;
-							}
-						} else {
-							previousId = data.get(0).getId();
-						}
-					}
-					
-					pageNumber += 1;
-					gatheredDataCount += data.size();
-					container.addAll(data);
-				} while(data.size() != 0 && gatheredDataCount < dataTable.getHeightByRows() * 2);
-				
-				loadedAllData = data.size() == 0;
-				return pageNumber;
-			} catch (Exception e) {
-				throw new RuntimeException(e);
+		public String makeFilter() {
+			String filter;
+			if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
+				filter = DesktopUI.getCurrent().getDesktop().getSearch().getValue();
+			} else {
+				filter = "";
 			}
+			
+			if(!simpleTextFilter.isEmpty()) {
+				filter += " " + simpleTextFilter ;
+			}
+			
+			return filter;
 		}
 
 		public void refresh() {
@@ -396,11 +375,20 @@ public class ListView extends BaseView implements Util {
 						authenticationState.setState(null, null);
 					}
 					
-					nextPageNumber = loadDataPage(1);
+					String filter = makeFilter();
+					int pageNumber = currentPageIndex + 1;
+					if (filter.isEmpty() && viewName.equals(ViewName.CONCEPTS_VIEW)){
+						// We don't want to initiate an empty search when we load the CONCEPTS_VIEW page
+					} else {
+						container.addAll(pager.getDataPage(pageNumber, pageSize, filter, sorter, isAscending));
+					}
 					
-					sortDataTable();
+					//TODO: DEC 15 2018
+//					sortDataTable();
 				}
 			}
+			
+			createPageControls(listContainer);
 		}
 		
 		public void sortDataTable() {
@@ -408,31 +396,6 @@ public class ListView extends BaseView implements Util {
 			for (SortOrder order : dataTable.getSortOrder()) {
 				dataTable.sort(order.getPropertyId(), order.getDirection());
 			}
-		}
-		
-		private boolean loadedAllData = false;
-		private boolean loadingDataPage = false;
-		private int nextPageNumber;
-		public void loadNextPage() {
-			if (pager != null && !loadedAllData) {
-				//int pageSize = (int) (dataTable.getHeightByRows() * 2 / kbService.getKnowledgeBeaconCount());
-				loadingDataPage = true;
-				//String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
-				
-				// Simplistic addition of text filtering to tables which can use it
-				// Won't really work so well in StatementService, I suspect...
-				//if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
-				
-				nextPageNumber = loadDataPage(nextPageNumber);
-				
-				loadingDataPage = false;
-			}
-			
-			sortDataTable();
-		}
-		
-		public boolean isLoading() {
-			return loadingDataPage;
 		}
 
 		/**
@@ -450,7 +413,9 @@ public class ListView extends BaseView implements Util {
 		 *         table
 		 */
 		public long getTotalHits() {
-			return hitCounter != null ? hitCounter.countHits(simpleTextFilter) : 0;
+			return 1000;
+			//TODO: DEC 15 2018 commented this line out
+//			return hitCounter != null ? hitCounter.countHits(simpleTextFilter) : 0;
 		}
 
 		/**
@@ -532,7 +497,236 @@ public class ListView extends BaseView implements Util {
 		listContainer.refresh();
 
 		// refresh page controls
-//		createPageControls(listContainer);
+		createPageControls(listContainer);
+	}
+	
+	private void pageSizeSelector(ClickEvent e) {
+
+		String value = e.getButton().getCaption();
+
+		int pageSize = 10;
+		try {
+			pageSize = Integer.parseInt(value);
+		} catch (NumberFormatException nfe) {
+			pageSize = 10;
+		}
+		listContainer.setPageSize(pageSize);
+
+		gotoPageIndex(0);
+	}
+	
+	/**
+	 * TODO: this method does not yet take 'filtered' hit numbers into account
+	 *
+	 * @param listContainer
+	 */
+	private void createPageControls(ListContainer listContainer) {
+
+		pageBar.removeAllComponents();
+		enPageBar.removeAllComponents();
+
+		enPageBar.setWidth("100%");
+
+		// entries per page label and buttons
+		createPageEntriesBar(listContainer);
+
+		// buttons for selecting pages
+		createPageButtons(listContainer);
+
+		pageBar.addStyleName("max-width-full");
+		pageBar.setResponsive(true);
+	}
+	
+	private Label currentStatusLabel = new Label();
+	
+	private void createPageEntriesBar(ListContainer listContainer) {
+		long totalHits = listContainer.getTotalHits();
+
+		HorizontalLayout entriesLayout = new HorizontalLayout();
+		entriesLayout.addStyleName("max-width-full");
+
+		Label entriesLabel = new Label(getMessage("entries_per_page") + ":");
+		entriesLabel.addStyleName("page-entries-label");
+
+		entriesLayout.addComponent(entriesLabel);
+		entriesLayout.setComponentAlignment(entriesLabel, Alignment.MIDDLE_LEFT);
+
+		int[] pageSizes = { 5, 10, 25, 50, 100 };
+		for (int ps : pageSizes) {
+			Button pageButton = new Button(new Integer(ps).toString().trim());
+			pageButton.addClickListener(e -> pageSizeSelector(e));
+
+			if (listContainer.getPageSize() == ps) {
+				pageButton.addStyleName(CURRENT_PAGE_SIZE_STYLE);
+			} else {
+				pageButton.addStyleName(PAGE_BUTTON_STYLE);
+			}
+
+			entriesLayout.addComponent(pageButton);
+			entriesLayout.setComponentAlignment(pageButton, Alignment.MIDDLE_LEFT);
+
+			// Only give a page size range that is sensible
+			// relative to the total number of pages
+			if (totalHits < ps)
+				break;
+		}
+
+		// the page/entry status label
+		String[] range = listContainer.getEntryRange();
+		String labelContent = "Showing " + range[0] + " to " + range[1] + " of " + totalHits + " entries";
+
+		currentStatusLabel.setValue(labelContent);
+		currentStatusLabel.addStyleName(PAGE_STATUS_LABEL_STYLE);
+
+		enPageBar.addComponents(currentStatusLabel, entriesLayout);
+
+		enPageBar.setComponentAlignment(currentStatusLabel, Alignment.MIDDLE_LEFT);
+		enPageBar.setComponentAlignment(entriesLayout, Alignment.MIDDLE_RIGHT);
+
+		enPageBar.setExpandRatio(currentStatusLabel, 4);
+		enPageBar.setExpandRatio(entriesLayout, 7);
+	}
+	
+	private void createPageButtons(ListContainer listContainer) {
+		//TODO: DEC 15 2018
+//		int totalPages = listContainer.getPageCount();
+		int totalPages = 100;
+
+		if (totalPages == 0) {
+			return;
+		}
+
+		int offset = ListContainer.PAGE_WINDOW_OFFSET;
+
+		int currentPageIndex = listContainer.getCurrentPageIndex();
+		int finalPageIndex = totalPages - 1;
+
+		int windowStartIndex = currentPageIndex - offset;
+		int windowEndIndex = currentPageIndex + offset;
+
+		// clip the window
+		if (windowStartIndex < 0) {
+			windowStartIndex = 0;
+			windowEndIndex = ListContainer.PAGE_WINDOW_SIZE - 1;
+		} else if (windowEndIndex >= totalPages) {
+			windowStartIndex = totalPages - ListContainer.PAGE_WINDOW_SIZE;
+			windowEndIndex = totalPages - 1;
+		}
+
+		// display one more button if the window is at one of the end
+		if (windowStartIndex == 0) {
+			windowEndIndex++;
+		} else if (windowEndIndex == finalPageIndex) {
+			windowStartIndex--;
+		}
+
+		// update window end index if there are few pages
+		if (totalPages <= ListContainer.PAGE_WINDOW_SIZE) {
+			windowStartIndex = 0;
+			windowEndIndex = finalPageIndex;
+		}
+
+		// set up the Previous button
+		Button previousBtn = new Button(getMessage("button_previous"));
+
+		previousBtn.setEnabled(false);
+		previousBtn.addStyleName(PAGE_CONTROL_BUTTON_STYLE);
+
+		previousBtn.addClickListener(e -> {
+			int pageIndex = listContainer.getCurrentPageIndex() - 1;
+			gotoPageIndex(pageIndex);
+		});
+
+		// set up the Next button
+		Button nextBtn = new Button(getMessage("button_next"));
+
+		nextBtn.setEnabled(false);
+		nextBtn.addStyleName(PAGE_CONTROL_BUTTON_STYLE);
+
+		nextBtn.addClickListener(e -> {
+			int pageIndex = listContainer.getCurrentPageIndex() + 1;
+			gotoPageIndex(pageIndex);
+		});
+
+		if (currentPageIndex > 0) {
+			previousBtn.setEnabled(true);
+		}
+
+		if (currentPageIndex < (totalPages - 1)) {
+			nextBtn.setEnabled(true);
+		}
+
+		pageBar.addComponent(previousBtn);
+
+		// create the first page button, and ellipsis if applicable (before the
+		// window)
+		if (windowStartIndex >= 1) {
+			Button firstPageBtn = new Button("1");
+			firstPageBtn.addStyleName(PAGE_BUTTON_STYLE);
+			firstPageBtn.addClickListener(e -> {
+				gotoPageIndex(0);
+			});
+
+			pageBar.addComponent(firstPageBtn);
+
+			if (windowStartIndex >= ELLIPSIS_INDEX_OFFSET) {
+				Label ellipsisLabel = new Label("...");
+				ellipsisLabel.addStyleName("page-ellipsis-label");
+
+				pageBar.addComponent(ellipsisLabel);
+				pageBar.setComponentAlignment(ellipsisLabel, Alignment.MIDDLE_CENTER);
+			}
+		}
+
+		// create the buttons within the window's range
+		for (int i = windowStartIndex; i <= windowEndIndex; i++) {
+			Button pageBtn = new Button(Integer.toString(i + 1));
+			pageBtn.addStyleName(PAGE_BUTTON_STYLE);
+			pageBtn.addClickListener(e -> {
+				int pageIndex = Integer.parseInt(e.getButton().getCaption()) - 1;
+				gotoPageIndex(pageIndex);
+			});
+
+			pageBar.addComponent(pageBtn);
+		}
+
+		// create the last page button, and ellipsis if applicable (after the
+		// window)
+
+		if (windowEndIndex <= (finalPageIndex - 1)) {
+			Button finalPageBtn = new Button(Integer.toString(finalPageIndex + 1));
+			finalPageBtn.addStyleName(PAGE_BUTTON_STYLE);
+			finalPageBtn.addClickListener(e -> {
+				gotoPageIndex(finalPageIndex);
+			});
+
+			if (windowEndIndex <= (finalPageIndex - ELLIPSIS_INDEX_OFFSET)) {
+				Label ellipsisLabel = new Label("...");
+				ellipsisLabel.addStyleName("page-ellipsis-label");
+
+				pageBar.addComponent(ellipsisLabel);
+				pageBar.setComponentAlignment(ellipsisLabel, Alignment.MIDDLE_CENTER);
+			}
+
+			pageBar.addComponent(finalPageBtn);
+		}
+
+		// set current button style
+		Iterator<Component> iterator = pageBar.iterator();
+
+		while (iterator.hasNext()) {
+			Component component = iterator.next();
+			if (component.getClass().equals(Button.class)) {
+				Button button = (Button) component;
+				String caption = button.getCaption();
+
+				if (caption.equals(Integer.toString(currentPageIndex + 1))) {
+					button.addStyleName(CURRENT_PAGE_BUTTON_STYLE);
+				}
+			}
+		}
+
+		pageBar.addComponent(nextBtn);
 	}
 
 	private HorizontalLayout pageBar = new HorizontalLayout();
@@ -809,7 +1003,7 @@ public class ListView extends BaseView implements Util {
 
 		listContainer.setFirstPage();
 
-//		createPageControls(listContainer);
+		createPageControls(listContainer);
 
 		dataTableLayout.addComponent(pageBar);
 		dataTableLayout.addComponent(enPageBar);
@@ -997,20 +1191,10 @@ public class ListView extends BaseView implements Util {
 	}
 	
 	private VerticalLayout formatGenericTableComponents(String datatype) {
-
-		// use datatype here to possibly get custom list of fields(?)
-		bio.knowledge.grid.Grid.ScrollListener scrollListener = new bio.knowledge.grid.Grid.ScrollListener() {
-
-			@Override
-			public void scrolledToBottom() {
-				if (!listContainer.isLoading()) {
-					listContainer.loadNextPage();
-				}
-			}
-			
-		};
 		
-		dataTable = new bio.knowledge.grid.Grid(scrollListener);
+		//TODO: DEC 15 2018 - Removed custom Grid
+//		dataTable = new bio.knowledge.grid.Grid(scrollListener);
+		dataTable = new Grid();
 		dataTable.setWidth("100%");
 		dataTable.setHeightMode(HeightMode.ROW);
 		dataTable.setHeightByRows(ROWS_TO_DISPLAY);
