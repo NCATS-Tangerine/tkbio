@@ -1257,7 +1257,7 @@ public class ListView extends BaseView implements Util {
 		String type = query.getSemGroupFilterType();
 
 		if (viewName.equals(ViewName.RELATIONS_VIEW)) {
-			if (nullOrEmpty(type)) {
+			if (isNullOrEmpty(type)) {
 				types.setText("Any");
 			} else {
 				types.setText(type);
@@ -1590,7 +1590,7 @@ public class ListView extends BaseView implements Util {
 
 		// TODO: refactor the execution flow. batch-handle
 		// the property value declarations, the event handler declarations
-		if (nullOrEmpty(viewName)) {
+		if (isNullOrEmpty(viewName)) {
 
 			String message = new String("Not sure what type of data you want to list here...");
 			Label label = new Label(message);
