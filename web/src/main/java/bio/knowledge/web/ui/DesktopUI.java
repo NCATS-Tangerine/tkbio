@@ -240,7 +240,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 */
 	public String getMessage(String id) {
 
-		if (nullOrEmpty(id))
+		if (isNullOrEmpty(id))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage id?");
 
 		Locale locale = this.getLocale();
@@ -263,10 +263,10 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 */
 	public String getMessage(String id, String tag) {
 
-		if (nullOrEmpty(id))
+		if (isNullOrEmpty(id))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage id?");
 
-		if (nullOrEmpty(tag))
+		if (isNullOrEmpty(tag))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage tag?");
 
 		Locale locale = getLocale();
@@ -615,7 +615,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	public void displayReference(Annotation annotation) {
 		query.setCurrentAnnotation(annotation);
 		String id = annotation.getId();
-		if(!nullOrEmpty(id))
+		if(!isNullOrEmpty(id))
 			displayReference(id);
 		else
 			ConfirmDialog.show(this,
@@ -1116,7 +1116,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		// RMB: March 1, 2017 - empty queries seem too problematic now
 		// so we ignore them again!
 
-		if (nullOrEmpty(queryText.trim())) {
+		if (isNullOrEmpty(queryText)) {
 			ConfirmDialog.show(this,
 					"<span style='text-align:center;'>Please type in a non-empty query string in the search box</span>",
 					cd -> {
@@ -1127,7 +1127,6 @@ public class DesktopUI extends UI implements MessageService, Util {
 		}
 
 		queryText = queryText.trim();
-
 		query.setCurrentQueryText(queryText);
 
 		if(matchByIdentifier(queryText)) {
@@ -1135,12 +1134,11 @@ public class DesktopUI extends UI implements MessageService, Util {
 			 * Matching by CURIE - resolve the matching concept 
 			 * then go directly to the statements table
 			 */
-			 Optional<Concept> conceptOpt = 
-					 			conceptService.findByIdentifier(queryText);
+			 Optional<Concept> conceptOpt = conceptService.findByIdentifier(queryText);
 			 
 			if (!conceptOpt.isPresent()) {
 				ConfirmDialog.show(this,
-					"<span style='text-align:center;'>Concept identified by '"+queryText+"' could not be resolved?<br/>"
+					"<span style='text-align:center;'>Concept identified by '" + queryText + "' could not be resolved.<br/>"
 							+ "Please check if you have a valid CURIE identifier for your concept of interest!</span>",
 					cd -> {
 					}).setContentMode(ConfirmDialog.ContentMode.HTML);
@@ -1155,7 +1153,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 			
 			gotoStatementsTable();
 			
-		} else { // Klassical Keyword search
+		} else { // Classical Keyword search
 	
 			// Semantic type constraint in Concept-by-text results listing should initial be empty
 			query.setInitialConceptTypes(new HashSet<SemanticGroup>());
@@ -1168,35 +1166,31 @@ public class DesktopUI extends UI implements MessageService, Util {
 			conceptSearchWindow.center();
 			conceptSearchWindow.setModal(true);
 			conceptSearchWindow.setResizable(true);
-	
-			// setWindowSize(conceptSearchWindow);
 			conceptSearchWindow.setWidth(150.0f, Unit.EM);
-	
 			conceptSearchWindow.setContent(currentSearchResults);
-	
+			
 			conceptSearchWindow.addCloseListener(event -> {
 				searchBtn.setEnabled(true);
 				gotoStatementsTable();
 			});
 	
-			// Attempting dynamic resize - not really working
-	
-			// conceptSearchWindow.addResizeListener(
-			// event -> windowSizeHandler(event)
-			// );
-	
 			UI.getCurrent().addWindow(conceptSearchWindow);
 		}
 	}
 
+	/**
+	 * Match the query against the form of A:B where A and B can be
+	 * of any word characters [a-zA-Z_0-9].
+	 * @param queryText
+	 * @return true if the pattern is matched; otherwise false.
+	 */
 	private boolean matchByIdentifier(String queryText) {
-		// looks like a CURIE?
-		if(queryText.indexOf(':')>0) {
+		Matcher matcher = Pattern.compile("(\\w*):(\\w*)").matcher(queryText);
+		if (matcher.matches()) {
 			return true;
 		} else {
 			return false;
 		}
-		//return query.matchByIdentifier();
 	}
 
 	/**

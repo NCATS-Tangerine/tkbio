@@ -35,10 +35,17 @@ import java.util.Collection;
  */
 public interface Util {
 	
-	default public boolean nullOrEmpty(String id) {
-		if(id==null || id.isEmpty()) 
-			return true;
-		return false;
+	/**
+	 * Check to see if the given string is null or empty.
+	 * @param string
+	 * @return true if the given string is null or empty; false otherwise.
+	 */
+	default public boolean isNullOrEmpty(String string) {
+		if(string == null || string.trim().isEmpty()) {
+			return true;			
+		} else {			
+			return false;
+		}
 	}
 	
 	default public boolean nullOrEmpty(Collection<?> list) {
