@@ -321,7 +321,7 @@ public class KnowledgeBeaconService implements Util {
 					for (bio.knowledge.client.model.BeaconConcept response : responses) {
 						SemanticGroup semgroup;
 						try {
-							semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
+							semgroup = SemanticGroup.valueOf(response.getType());
 						} catch (IllegalArgumentException ex) {
 							semgroup = null;
 						}
@@ -418,52 +418,49 @@ public class KnowledgeBeaconService implements Util {
 				List<Concept> concepts = new ArrayList<Concept>();
 				
 				try {
-					List<BeaconConceptWithDetails> responses = 
+					BeaconConceptWithDetails response = 
 							getConceptsApi().getConceptDetails( cliqueId, beacons, sessionId );
-					
-					for (BeaconConceptWithDetails response : responses) {
-						
-						SemanticGroup semgroup;
-						try {
-							
-							semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
-							
-						} catch (IllegalArgumentException e) {
-							semgroup = null;
-						}
-						
-						Concept concept = new ConceptImpl(
-								response.getClique(),
-								response.getClique(),
-								semgroup,
-								response.getName()
-						);
 
-						Set<String> xrefs = concept.getCrossReferences() ;
-						xrefs.addAll(response.getAliases());
-						
-						concept.setSynonyms(String.join(" ", response.getSynonyms()));
-						concept.setDescription(response.getDefinition());
-						
-						// Harvest beacon concept details here?
-						List<BeaconConceptDetail> details = response.getDetails() ;
-						Set<Feature> conceptDetails = concept.getFeatures();
-						for(BeaconConceptDetail entry : details) {
-							Feature detail = new ConceptDetailImpl();
-							OntologyTerm tag = resolveTag(entry.getTag());
-							detail.setTag(tag);
-							detail.setValue(entry.getValue());
-							conceptDetails.add(detail);
-						}
-						
-						concept.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
-						concepts.add(concept);
+					SemanticGroup semgroup;
+					try {
+
+						semgroup = SemanticGroup.valueOf(response.getType());
+
+					} catch (IllegalArgumentException e) {
+						semgroup = null;
 					}
-					
-					return concepts;
-					
-				} catch (Exception e) {
 
+					Concept concept = new ConceptImpl(
+							response.getClique(),
+							response.getClique(),
+							semgroup,
+							response.getName()
+							);
+
+					Set<String> xrefs = concept.getCrossReferences() ;
+					xrefs.addAll(response.getAliases());
+
+					concept.setSynonyms(String.join(" ", response.getSynonyms()));
+					concept.setDescription(response.getDefinition());
+
+					// Harvest beacon concept details here?
+					List<BeaconConceptDetail> details = response.getDetails() ;
+					Set<Feature> conceptDetails = concept.getFeatures();
+					for(BeaconConceptDetail entry : details) {
+						Feature detail = new ConceptDetailImpl();
+						OntologyTerm tag = resolveTag(entry.getTag());
+						detail.setTag(tag);
+						detail.setValue(entry.getValue());
+						conceptDetails.add(detail);
+					}
+
+					concept.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
+					concepts.add(concept);
+
+					return concepts;
+
+				} catch (Exception e) {
+					_logger.error("kbs.getConceptDetails() Exception: "+e.getMessage());
 				}
 				
 				return concepts;
@@ -603,7 +600,7 @@ public class KnowledgeBeaconService implements Util {
 						ConceptImpl subject = new ConceptImpl(
 								statementsSubject.getClique(), 
 								statementsSubject.getId(), 
-								statementsSubject.getSemanticGroup(), 
+								statementsSubject.getType(), 
 								statementsSubject.getName()
 						);
 
@@ -612,7 +609,7 @@ public class KnowledgeBeaconService implements Util {
 						ConceptImpl object = new ConceptImpl(
 								statementsObject.getClique(), 
 								statementsObject.getId(), 
-								statementsObject.getSemanticGroup(), 
+								statementsObject.getType(), 
 								statementsObject.getName()
 						);
 						
