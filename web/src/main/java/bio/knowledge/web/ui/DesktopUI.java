@@ -1041,7 +1041,33 @@ public class DesktopUI extends UI implements MessageService, Util {
 		searchSubjectField.setItemCaption(Concept.class, "name");
 		
 		searchSubjectField.setNullSelectionAllowed(false);
-		searchSubjectField.setNewItemsAllowed(false); // TODO: may have to be set to true for an assorted "more" search to work properly
+		
+		// TODO: Custom Search
+			// Default search behavior in original application is now incorporated as a new item search
+				// (1) Find Entity or Relation by Name
+				// (2) Return out the New Concept
+				// (3) Add it to the ComboBox Container
+				// (4) Select it
+		searchSubjectField.setNewItemsAllowed(true); 
+		searchSubjectField.setNewItemHandler(newItemCaption -> {
+			
+            boolean newItem = autoCompleteEntities.getItemIds().stream()
+            					.noneMatch( data -> ((IdentifiedEntity) data).getName().equalsIgnoreCase(newItemCaption));
+            
+            if (newItem) {
+            	
+            	
+            	
+                // Adds newly discovered option
+//                countriesData.add(newCountryData);
+//                sample.setItems(countriesData);
+//                sample.setSelectedItem(newCountryData);
+            	
+            	// Else the option is neither in the current autocomplete container, or declared as being found in the database
+            	// Clear it
+            }
+            
+		});
 
 		searchSubjectField.setImmediate(true);
 		searchSubjectField.setContainerDataSource(autoCompleteEntities);
@@ -1218,9 +1244,6 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 		String queryText = desktopView.getSearch().getValue();
 
-		// RMB: March 1, 2017 - empty queries seem too problematic now
-		// so we ignore them again!
-
 		if (nullOrEmpty(queryText.trim())) {
 			ConfirmDialog.show(this,
 					"<span style='text-align:center;'>Please type in a non-empty query string in the search box</span>",
@@ -1233,7 +1256,9 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 		queryText = queryText.trim();
 		query.setCurrentQueryText(queryText);
-
+		// Semantic type constraint in Concept-by-text results listing should initial be empty
+		query.setInitialConceptTypes(new HashSet<SemanticGroup>());
+		
 		if(matchByIdentifier(queryText)) {
 			/*
 			 * Matching by CURIE - resolve the matching concept 
@@ -1260,39 +1285,33 @@ public class DesktopUI extends UI implements MessageService, Util {
 			gotoStatementsTable();
 			
 		} else { 
-			// Classical Keyword search
-	
-			// Semantic type constraint in Concept-by-text results listing should initial be empty
-			query.setInitialConceptTypes(new HashSet<SemanticGroup>());
-	
-			// Constructing the search results to be shown in the table
-			ConceptSearchResults currentSearchResults = 
-					new ConceptSearchResults(viewProvider, ViewName.CONCEPTS_VIEW);
-			conceptSearchWindow = new Window();
-			conceptSearchWindow.setCaption("Concepts Matched by Key Words");
-			conceptSearchWindow.addStyleName("concept-search-window");
-			conceptSearchWindow.center();
-			conceptSearchWindow.setModal(true);
-			conceptSearchWindow.setResizable(true);
-	
-			// setWindowSize(conceptSearchWindow);
-			conceptSearchWindow.setWidth(150.0f, Unit.EM);
-	
-			conceptSearchWindow.setContent(currentSearchResults);
-	
-			conceptSearchWindow.addCloseListener(event -> {
-				searchBtn.setEnabled(true);
-				gotoStatementsTable();
-			});
-	
-			// Attempting dynamic resize - not really working
-	
-			// conceptSearchWindow.addResizeListener(
-			// event -> windowSizeHandler(event)
-			// );
-	
-			UI.getCurrent().addWindow(conceptSearchWindow);
+			initConceptSearchResultsWindow();
 		}
+		
+	}
+	
+	private void initConceptSearchResultsWindow() {
+		// Classical Keyword search
+
+		// Constructing the search results to be shown in the table
+		ConceptSearchResults currentSearchResults = 
+				new ConceptSearchResults(viewProvider, ViewName.CONCEPTS_VIEW);
+		conceptSearchWindow = new Window();
+		conceptSearchWindow.setCaption("Concepts Matched by Key Words");
+		conceptSearchWindow.addStyleName("concept-search-window");
+		conceptSearchWindow.center();
+		conceptSearchWindow.setModal(true);
+		conceptSearchWindow.setResizable(true);
+		conceptSearchWindow.setWidth(150.0f, Unit.EM);
+
+		conceptSearchWindow.setContent(currentSearchResults);
+
+		conceptSearchWindow.addCloseListener(event -> {
+			desktopView.getSearchBtn().setEnabled(true);
+			gotoStatementsTable();
+		});
+
+		UI.getCurrent().addWindow(conceptSearchWindow);
 		
 	}
 
