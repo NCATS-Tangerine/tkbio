@@ -26,7 +26,7 @@
 
 package bio.knowledge.datasource;
 
-import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.ConceptType;
 
 /**
  * @author Richard
@@ -36,7 +36,7 @@ public abstract class AbstractDataService
 	extends AbstractDescribed implements DataService {
 	
 	private DataSource dataSource = null ;
-	private SemanticGroup targetSemanticGroup ;
+	private ConceptType targetSemanticGroup ;
 	
 	/**
 	 * 
@@ -46,7 +46,7 @@ public abstract class AbstractDataService
 	protected AbstractDataService( 
 			DataSource dataSource, 
 			String serviceId, 
-			SemanticGroup targetSemanticGroup, 
+			ConceptType targetSemanticGroup, 
 			String name
 	) {
 		super( serviceId, name ) ;
@@ -62,7 +62,7 @@ public abstract class AbstractDataService
 	protected AbstractDataService(  
 			DataSource dataSource, 
 			String serviceId, 
-			SemanticGroup targetSemanticGroup
+			ConceptType targetSemanticGroup
 	) {
 		this( dataSource, serviceId, targetSemanticGroup, "" ) ;
 	}
@@ -80,7 +80,7 @@ public abstract class AbstractDataService
 	 * @see bio.knowledge.datasource.DataService#getTargetSemanticGroup()
 	 */
 	@Override
-	public SemanticGroup getTargetSemanticGroup() {
+	public ConceptType getTargetSemanticGroup() {
 		return targetSemanticGroup;
 	}
 	

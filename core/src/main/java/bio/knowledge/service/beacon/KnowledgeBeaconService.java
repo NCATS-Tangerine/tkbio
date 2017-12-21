@@ -31,24 +31,23 @@ import bio.knowledge.client.api.EvidenceApi;
 import bio.knowledge.client.api.PredicatesApi;
 import bio.knowledge.client.api.StatementsApi;
 import bio.knowledge.client.model.BeaconCliqueIdentifier;
-import bio.knowledge.client.model.BeaconConceptDetail;
 import bio.knowledge.client.model.BeaconConceptWithDetails;
 import bio.knowledge.client.model.BeaconStatementObject;
 import bio.knowledge.client.model.BeaconStatementPredicate;
 import bio.knowledge.client.model.BeaconStatementSubject;
+import bio.knowledge.model.AnnotatedConcept;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.AnnotationImpl;
-import bio.knowledge.model.Concept;
-import bio.knowledge.model.ConceptDetailImpl;
 import bio.knowledge.model.ConceptImpl;
+import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.GeneralStatement;
+import bio.knowledge.model.IdentifiedConcept;
+import bio.knowledge.model.IdentifiedConceptImpl;
 import bio.knowledge.model.OntologyTermImpl;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Predicate.PredicateBeacon;
 import bio.knowledge.model.PredicateImpl;
-import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
-import bio.knowledge.model.core.Feature;
 import bio.knowledge.model.core.OntologyTerm;
 import bio.knowledge.model.util.Util;
 
@@ -287,7 +286,7 @@ public class KnowledgeBeaconService implements Util {
 	 *         knowledge sources in the {@code KnowledgeBeaconRegistry} that
 	 *         satisfy a query with the given parameters.
 	 */
-	public CompletableFuture<List<Concept>> getConcepts(String keywords,
+	public CompletableFuture<List<IdentifiedConcept>> getConcepts(String keywords,
 			String semanticGroups,
 			int pageNumber,
 			int pageSize,
@@ -295,69 +294,69 @@ public class KnowledgeBeaconService implements Util {
 			String sessionId
 			
 	) {
-		CompletableFuture<List<Concept>> future = CompletableFuture.supplyAsync(new Supplier<List<Concept>>() {
-
-			@Override
-			public List<Concept> get() {
+		CompletableFuture<List<IdentifiedConcept>> future = 
 				
-				// Utility time variable for profiling
-				Instant start = Instant.now();
-				
-				List<Concept> concepts = new ArrayList<Concept>();
-				
-				try {
+			CompletableFuture.supplyAsync(
 					
-					_logger.debug("kbs.getConcepts() - before responses");
-					
-					List<bio.knowledge.client.model.BeaconConcept> responses = getConceptsApi(pageSize).getConcepts(
-							keywords,
-							semanticGroups,
-							pageNumber,
-							pageSize,
-							beacons,
-							sessionId
-					);
-
-					for (bio.knowledge.client.model.BeaconConcept response : responses) {
-						SemanticGroup semgroup;
+				new Supplier<List<IdentifiedConcept>>() {
+	
+					@Override
+					public List<IdentifiedConcept> get() {
+						
+						// Utility time variable for profiling
+						Instant start = Instant.now();
+						
+						List<IdentifiedConcept> concepts = new ArrayList<IdentifiedConcept>();
+						
 						try {
-							semgroup = SemanticGroup.valueOf(response.getType());
-						} catch (IllegalArgumentException ex) {
-							semgroup = null;
+							
+							_logger.debug("kbs.getConcepts() - before responses");
+							
+							List<bio.knowledge.client.model.BeaconConcept> responses = getConceptsApi(pageSize).getConcepts(
+									keywords,
+									semanticGroups,
+									pageNumber,
+									pageSize,
+									beacons,
+									sessionId
+							);
+		
+							for (bio.knowledge.client.model.BeaconConcept response : responses) {
+								
+								ConceptType semgroup;
+								try {
+									semgroup = ConceptType.valueOf(response.getType());
+								} catch (IllegalArgumentException ex) {
+									semgroup = null;
+								}
+								
+								IdentifiedConcept concept = new IdentifiedConceptImpl(
+										response.getClique(),
+										response.getName(),
+										semgroup,
+										response.getTaxon()
+								);
+								
+								concepts.add(concept);
+							}
+		
+							_logger.debug("Concept retrieval successfully completed?");
+							
+						} catch (Exception e) {
+							_logger.error("getConcepts() ERROR: "+e.getMessage());
 						}
 						
-						Concept concept = new ConceptImpl(
-								response.getClique(),
-								response.getId(),
-								semgroup,
-								response.getName()
-						);
+						Instant end = Instant.now();
 						
-						Set<String> xrefs = concept.getCrossReferences() ;
-						xrefs.addAll(response.getAliases());
+						// Time of exit either after success or timeout failure
+						long ms = start.until(end, ChronoUnit.MILLIS);
+						_logger.error("getConcepts() ApiClient data processing duration was: "+new Long(ms)+" milliseconds.");
 						
-						concept.setSynonyms(String.join(" ", response.getSynonyms()));
-						concept.setDescription(response.getDefinition());
-						concept.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
-						concepts.add(concept);
+						return concepts;
 					}
-
-					_logger.debug("Concept retrieval successfully completed?");
 					
-				} catch (Exception e) {
-					_logger.error("getConcepts() ERROR: "+e.getMessage());
-				}
-				
-				Instant end = Instant.now();
-				
-				// Time of exit either after success or timeout failure
-				long ms = start.until(end, ChronoUnit.MILLIS);
-				_logger.error("getConcepts() ApiClient data processing duration was: "+new Long(ms)+" milliseconds.");
-				
-				return concepts;
-			}
-			
-		});
+				});
+		
 		return future;
 	}
 	
@@ -406,40 +405,45 @@ public class KnowledgeBeaconService implements Util {
 	 * @param sessionId
 	 * @return
 	 */
-	public CompletableFuture<List<Concept>> getConceptDetails( 
+	public CompletableFuture<AnnotatedConcept> getConceptDetails( 
 			String cliqueId,
 			List<String> beacons,
 			String sessionId
 		) {
-		CompletableFuture<List<Concept>> future = CompletableFuture.supplyAsync(new Supplier<List<Concept>>() {
+		CompletableFuture<AnnotatedConcept> future = 
+				CompletableFuture.supplyAsync(new Supplier<AnnotatedConcept>() {
 
 			@Override
-			public List<Concept> get() {
-				List<Concept> concepts = new ArrayList<Concept>();
+			public AnnotatedConcept get() {
+				
+				AnnotatedConcept concept = null;
 				
 				try {
 					BeaconConceptWithDetails response = 
 							getConceptsApi().getConceptDetails( cliqueId, beacons, sessionId );
 
-					SemanticGroup semgroup;
+					ConceptType type;
 					try {
 
-						semgroup = SemanticGroup.valueOf(response.getType());
+						type = ConceptType.valueOf(response.getType());
 
 					} catch (IllegalArgumentException e) {
-						semgroup = null;
+						type = null;
 					}
 
-					Concept concept = new ConceptImpl(
+					concept = new ConceptImpl(
 							response.getClique(),
 							response.getClique(),
-							semgroup,
+							type,
 							response.getName()
 							);
 
 					Set<String> xrefs = concept.getCrossReferences() ;
 					xrefs.addAll(response.getAliases());
-
+					
+					/*
+					 * RMB TODO - FIX THE DATA LOADING OF AnnotatedConcept FROM BeaconConceptWithDetails
+					 * 
 					concept.setSynonyms(String.join(" ", response.getSynonyms()));
 					concept.setDescription(response.getDefinition());
 
@@ -455,15 +459,13 @@ public class KnowledgeBeaconService implements Util {
 					}
 
 					concept.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
-					concepts.add(concept);
-
-					return concepts;
+					*/
 
 				} catch (Exception e) {
 					_logger.error("kbs.getConceptDetails() Exception: "+e.getMessage());
 				}
 				
-				return concepts;
+				return concept;
 			}
 			
 		});

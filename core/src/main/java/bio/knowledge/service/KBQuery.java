@@ -30,12 +30,12 @@ import java.util.Optional;
 import java.util.Set;
 
 import bio.knowledge.model.Annotation;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
+import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.Evidence;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.Predicate;
-import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 
 /**
@@ -140,7 +140,7 @@ public interface KBQuery {
 	 * 
 	 * @return user's current query Concept
 	 */
-	public Optional<Concept> getCurrentQueryConcept() ;
+	public Optional<IdentifiedConcept> getCurrentQueryConcept() ;
 
 	public enum LibrarySearchMode {
 		NONE, BY_CONCEPT, BY_LIBRARY, BY_PARENTS, HIDDEN ;
@@ -189,13 +189,13 @@ public interface KBQuery {
 	 * 
 	 * @param query user's current query Concept
 	 */
-	public void setCurrentSelectedConcept(Concept query) ;
+	public void setCurrentSelectedConcept(IdentifiedConcept query) ;
 	
 	/**
 	 * 
 	 * @return user's current query Concept
 	 */
-	public Optional<Concept> getCurrentSelectedConcept() ;
+	public Optional<IdentifiedConcept> getCurrentSelectedConcept() ;
 
 	/**
 	 * 
@@ -238,25 +238,25 @@ public interface KBQuery {
 	 * 
 	 * @param typeSet specification on initial search result Set of Concept query constraints 
 	 */
-	public void setInitialConceptTypes( Set<SemanticGroup> typeSet ) ;
+	public void setInitialConceptTypes( Set<ConceptType> typeSet ) ;
 	
 	/**
 	 * 
 	 * @return optional of initial search result Set Concept query constraints
 	 */
-	public Optional< Set<SemanticGroup> > getInitialConceptTypes() ;
+	public Optional< Set<ConceptType> > getInitialConceptTypes() ;
 	
 	/**
 	 * 
 	 * @param typeSet specification of current Set of Concept query constraints in Relations Data Table
 	 */
-	public void setConceptTypes( Set<SemanticGroup> typeSet ) ;
+	public void setConceptTypes( Set<ConceptType> typeSet ) ;
 	
 	/**
 	 * 
 	 * @return optional of current Concept query constraints in Relations Data Table
 	 */
-	public Optional< Set<SemanticGroup> > getConceptTypes() ;
+	public Optional< Set<ConceptType> > getConceptTypes() ;
 	
 	/**
 	 * 
@@ -371,9 +371,9 @@ public interface KBQuery {
 	 */
 	public ConceptSearchMode getConceptSearchMode();
 	
-	public void setLastSelectedConcept(Concept concept);
+	public void setLastSelectedConcept(IdentifiedConcept concept);
 	
-	public Concept getLastSelectedConcept();
+	public IdentifiedConcept getLastSelectedConcept();
 		
 	/* Passing out coordinates of popups when need be */
 	public int tempCoordX();

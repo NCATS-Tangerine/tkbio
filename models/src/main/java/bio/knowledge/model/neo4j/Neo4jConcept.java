@@ -31,9 +31,9 @@ import java.util.Set;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import bio.knowledge.model.Concept;
+import bio.knowledge.model.AnnotatedConcept;
+import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.Library;
-import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.core.neo4j.Neo4jAbstractAnnotatedEntity;
 
 /**
@@ -44,7 +44,7 @@ import bio.knowledge.model.core.neo4j.Neo4jAbstractAnnotatedEntity;
  * 
  */
 @NodeEntity(label="Concept")
-public class Neo4jConcept extends Neo4jAbstractAnnotatedEntity implements Concept {
+public class Neo4jConcept extends Neo4jAbstractAnnotatedEntity implements AnnotatedConcept {
 
 	public static final String SEMGROUP_FIELD_START = "[" ;
 	public static final String SEMGROUP_FIELD_END   = "]" ;
@@ -55,10 +55,10 @@ public class Neo4jConcept extends Neo4jAbstractAnnotatedEntity implements Concep
 
 	private String clique = "";
 	
-    private SemanticGroup semanticGroup;
+    private ConceptType conceptType;
 
     // Counter for the number of times that this 
-    // Concept SemanticGroup is used in Statements.
+    // Concept Semantic Type is used in Statements.
     // This helps the code filter out unproductive SemMedDb concepts
     // from being listed in the "Concept by Text" search results.
     private Long usage = 0L ;
@@ -90,14 +90,14 @@ public class Neo4jConcept extends Neo4jAbstractAnnotatedEntity implements Concep
     	super() ;
     }
     
-    public Neo4jConcept( SemanticGroup semgroup, String name ) {
+    public Neo4jConcept( ConceptType semgroup, String name ) {
     	super(name) ;
-    	this.semanticGroup = semgroup ;
+    	this.conceptType = semgroup ;
     }
 
-    public Neo4jConcept( String accessionId, SemanticGroup semgroup, String name ) {
+    public Neo4jConcept( String accessionId, ConceptType semgroup, String name ) {
     	super(accessionId,name,"") ;
-    	this.semanticGroup = semgroup ;
+    	this.conceptType = semgroup ;
     }
     
 	/*
@@ -141,22 +141,22 @@ public class Neo4jConcept extends Neo4jAbstractAnnotatedEntity implements Concep
 	}
 
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.neo4j.Concept#setSemanticGroup(bio.knowledge.model.SemanticGroup)
+	 * @see bio.knowledge.model.neo4j.Concept#setType(bio.knowledge.model.ConceptType)
 	 */
     @Override
-	public void setSemanticGroup(SemanticGroup semgroup) {
-    	this.semanticGroup = semgroup ;
+	public void setType(ConceptType semgroup) {
+    	this.conceptType = semgroup ;
     }
     
 	/* (non-Javadoc)
-	 * @see bio.knowledge.model.neo4j.Concept#getSemanticGroup()
+	 * @see bio.knowledge.model.neo4j.Concept#getType()
 	 */
     @Override
-	public SemanticGroup getSemanticGroup() {
-    	if(semanticGroup==null) {
-    		return SemanticGroup.OBJC;
+	public ConceptType getType() {
+    	if(conceptType==null) {
+    		return ConceptType.OBJC;
     	}
-    	return semanticGroup ;
+    	return conceptType ;
     }
 
 	/* (non-Javadoc)
@@ -283,4 +283,21 @@ public class Neo4jConcept extends Neo4jAbstractAnnotatedEntity implements Concep
     	return getName() ;
     }
 
+	private String taxon = "";
+
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.IdentifiedConcept#setTaxon(String)
+	 */
+	@Override
+	public void setTaxon(String taxon) {
+		this.taxon = taxon;
+	}
+
+	/* (non-Javadoc)
+	 * @see bio.knowledge.model.IdentifiedConcept#getTaxon()
+	 */
+	@Override
+	public String getTaxon() {
+		return taxon;
+	}
 }

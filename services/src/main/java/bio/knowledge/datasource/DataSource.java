@@ -29,7 +29,7 @@ package bio.knowledge.datasource;
 import java.util.Optional;
 import java.util.Set;
 
-import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.ConceptType;
 
 /**
  * @author Richard
@@ -40,7 +40,7 @@ public interface DataSource extends Described {
 	/**
 	 * @return Set of target concept types against which a query may be applied to the DataSource
 	 */
-	Set<SemanticGroup> getTargetSemanticGroups() ;
+	Set<ConceptType> getTargetSemanticGroups() ;
 	
 	/**
 	 * 
@@ -53,7 +53,7 @@ public interface DataSource extends Described {
 	 * @param type SemanticGroup for which DataServices are of interest
 	 * @return Set of all Data Services exposed by the Data Source for a given target concept type (may be empty)
 	 */
-	Set<DataService> getServicesBySemanticGroup( SemanticGroup type ) ;
+	Set<DataService> getServicesBySemanticGroup( ConceptType type ) ;
 
 	/**
 	 * 

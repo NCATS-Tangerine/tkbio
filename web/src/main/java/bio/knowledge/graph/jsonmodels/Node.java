@@ -31,7 +31,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import bio.knowledge.model.Concept;
+import bio.knowledge.model.IdentifiedConcept;
 
 /**
  * 
@@ -172,7 +172,7 @@ public class Node extends HashMap<String, HashMap<String, Serializable>> impleme
 	 * 
 	 * @param concept
 	 */
-	public Node(Concept concept) {
+	public Node(IdentifiedConcept concept) {
 		this(new NodeData(concept.getId(), concept.getName()));
 	}
 

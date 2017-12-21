@@ -48,7 +48,7 @@ import bio.knowledge.datasource.AbstractDescribed;
 import bio.knowledge.datasource.AbstractSimpleDataService;
 import bio.knowledge.datasource.DataService;
 import bio.knowledge.datasource.DataSource;
-import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
 import bio.knowledge.model.datasource.SimpleResult;
@@ -151,7 +151,7 @@ public class MyGeneInfoDataSource extends AbstractDataSource {
 				String name,
 				Boolean summaryOnly
 		) {
-			super( dataSource, serviceId, SemanticGroup.GENE, name );
+			super( dataSource, serviceId, ConceptType.GENE, name );
 			
 			addGeneralMetaData(this) ;
 			
@@ -272,7 +272,7 @@ public class MyGeneInfoDataSource extends AbstractDataSource {
 				String name,
 				Boolean geneQuery
 		) {
-			super( dataSource, serviceId, SemanticGroup.GENE, name );
+			super( dataSource, serviceId, ConceptType.GENE, name );
 			this.geneQuery = geneQuery ;
 			
 			addGeneralMetaData(this) ;

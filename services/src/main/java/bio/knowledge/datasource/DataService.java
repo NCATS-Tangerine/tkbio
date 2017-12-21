@@ -28,7 +28,7 @@ package bio.knowledge.datasource;
 
 import java.util.concurrent.TimeUnit;
 
-import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.ConceptType;
 
 /**
  * @author Richard
@@ -55,5 +55,5 @@ public interface DataService extends Described {
 	/**
 	 * @return the target SemanticGroup against which a query may be applied to this Data Service
 	 */
-	SemanticGroup getTargetSemanticGroup() ;
+	ConceptType getTargetSemanticGroup() ;
 }

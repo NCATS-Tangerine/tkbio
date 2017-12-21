@@ -95,16 +95,17 @@ import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.authentication.AuthenticationManager;
+import bio.knowledge.model.AnnotatedConcept;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.BeaconResponse;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
+import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.DisplayableStatement;
 import bio.knowledge.model.DomainModelException;
 import bio.knowledge.model.Evidence;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.Predicate;
-import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.OntologyTerm;
@@ -160,6 +161,9 @@ public class ListView extends BaseView implements Util {
 	private static final String PAGE_BUTTON_STYLE = "page-button";
 	private static final String PAGE_CONTROL_BUTTON_STYLE = "pagecontrol-button";
 
+	
+	public static final String SEMGROUP_FIELD_START = "[" ;
+	public static final String SEMGROUP_FIELD_END   = "]" ;
 	
 	/*
 	 *  RMB: Oct 27, 2017: reduced table height to 8 from 11 
@@ -745,9 +749,9 @@ public class ListView extends BaseView implements Util {
 
 			@Override
 			public String getValue(Item item, Object itemId, Object propertyId) {
-				if (itemId instanceof Concept) {
-					Concept concept = (Concept) itemId;
-					return concept.getSemanticGroup().name();
+				if (itemId instanceof IdentifiedConcept) {
+					IdentifiedConcept concept = (IdentifiedConcept) itemId;
+					return concept.getType().name();
 				} else {
 					return "";
 				}
@@ -1063,8 +1067,8 @@ public class ListView extends BaseView implements Util {
 				
 				Statement statement = (Statement) item;
 				
-				Concept subject = statement.getSubject() ;
-				Concept object  = statement.getObject() ;
+				IdentifiedConcept subject = statement.getSubject() ;
+				IdentifiedConcept object  = statement.getObject() ;
 				
 				// Unusual case of missing data (mostly in sample data?)
 				if( subject == null || object == null ) continue ;
@@ -1074,9 +1078,9 @@ public class ListView extends BaseView implements Util {
 				ui.addEdgeToConceptMap(statement);
 				
 				// just in case, reset the currently active highlighted node(?)
-				Optional<Concept> selectedConceptOpt = query.getCurrentSelectedConcept();
+				Optional<IdentifiedConcept> selectedConceptOpt = query.getCurrentSelectedConcept();
 				if (selectedConceptOpt.isPresent()) { 
-					Concept concept = selectedConceptOpt.get();
+					IdentifiedConcept concept = selectedConceptOpt.get();
 					ui.setHighlightedNode(concept) ;
 				}
 			}
@@ -1232,7 +1236,7 @@ public class ListView extends BaseView implements Util {
 
 		// currentQueryConcept might be empty
 		// and/or ignored for some views
-		Optional<Concept> currentQueryConcept = query.getCurrentQueryConcept(); 
+		Optional<IdentifiedConcept> currentQueryConcept = query.getCurrentQueryConcept(); 
 		
 		if (viewName.equals(ViewName.EVIDENCE_VIEW)) {
 
@@ -1289,8 +1293,8 @@ public class ListView extends BaseView implements Util {
 				
 				case BY_CONCEPT:
 			        if( currentQueryConcept.isPresent() ) {
-						Concept concept = currentQueryConcept.get() ;
-			        	target = concept.getName()+" ["+concept.getSemanticGroup().getDescription()+"]" ;
+						IdentifiedConcept concept = currentQueryConcept.get() ;
+			        	target = concept.getName()+" ["+concept.getType().getDescription()+"]" ;
 			        	title += "for Concept" ;
 			        } else
 			        	throw new RuntimeException("DesktopUI.displayLibraryByConceptSemanticType() error: CST not set for LibraryByConceptSearch?") ;
@@ -1333,9 +1337,9 @@ public class ListView extends BaseView implements Util {
 
 				case RELATIONS:
 					if (currentQueryConcept.isPresent()) {
-						Concept concept = currentQueryConcept.get();
+						IdentifiedConcept concept = currentQueryConcept.get();
 						dataTableLabel = formatDataTableLabel("Relations for Concept ",
-								concept.getName() + " (as " + concept.getSemanticGroup().getDescription() + ")");
+								concept.getName() + " (as " + concept.getType().getDescription() + ")");
 					} // else
 						// dataTableLabel = formatDataTableLabel( "No Relations are
 						// (Yet) Available?" );
@@ -1343,9 +1347,9 @@ public class ListView extends BaseView implements Util {
 				case WIKIDATA:
 					// For WikiData retrieval, it is the currently selected concept
 					// that is of interest...
-					Optional<Concept> currentSelectedConcept = query.getCurrentSelectedConcept();
+					Optional<IdentifiedConcept> currentSelectedConcept = query.getCurrentSelectedConcept();
 					if (currentSelectedConcept.isPresent()) {
-						Concept concept = currentSelectedConcept.get();
+						IdentifiedConcept concept = currentSelectedConcept.get();
 	
 						dataTableLabel = formatDataTableLabel("Data Properties for Concept", concept.getName());
 					} else
@@ -1496,17 +1500,17 @@ public class ListView extends BaseView implements Util {
 					query.setSemGroupFilterType(selectedItem.getText());
 				}
 
-				Set<SemanticGroup> typeSet = new HashSet<SemanticGroup>();
-				SemanticGroup type = null;
+				Set<ConceptType> typeSet = new HashSet<ConceptType>();
+				ConceptType type = null;
 
 				if (selectedItem == disorders) {
-					type = SemanticGroup.DISO;
+					type = ConceptType.DISO;
 					
 				} else if (selectedItem == genes) {
-					type = SemanticGroup.GENE;
+					type = ConceptType.GENE;
 					
 				} else if (selectedItem == drugs) {
-					type = SemanticGroup.CHEM;
+					type = ConceptType.CHEM;
 					
 				} else if (selectedItem == any) {
 					type = null;
@@ -1526,7 +1530,7 @@ public class ListView extends BaseView implements Util {
 				}
 			}
 
-			private void setQueryTypes(Set<SemanticGroup> typeSet) {
+			private void setQueryTypes(Set<ConceptType> typeSet) {
 				if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
 					query.setInitialConceptTypes(typeSet);
 				} else if (viewName.equals(ViewName.RELATIONS_VIEW)) {
@@ -1708,16 +1712,16 @@ public class ListView extends BaseView implements Util {
 				}
 			}
 
-			int tfstart = name.lastIndexOf(Concept.SEMGROUP_FIELD_START);
+			int tfstart = name.lastIndexOf(SEMGROUP_FIELD_START);
 			if (tfstart != -1) {
-				int tfend = name.lastIndexOf(Concept.SEMGROUP_FIELD_END);
+				int tfend = name.lastIndexOf(SEMGROUP_FIELD_END);
 				if (tfend != -1) {
 					String semtypeCode = name.substring(tfstart + 1, tfend);
 					description = name.substring(0, tfstart);
 					try {
 						SemanticType semtype = SemanticType.lookUpByCode(semtypeCode);
-						description += " " + Concept.SEMGROUP_FIELD_START + semtype.getDescription()
-								+ Concept.SEMGROUP_FIELD_END;
+						description += " " + SEMGROUP_FIELD_START + semtype.getDescription()
+								+ SEMGROUP_FIELD_END;
 					} catch (DomainModelException dme) {
 						// code not recognized...fail silently
 					}
@@ -1964,7 +1968,7 @@ public class ListView extends BaseView implements Util {
 		SUBJECT, OBJECT;
 	}
 
-	private void selectionContext(DesktopUI ui, PopupWindow conceptDetailsWindow, Concept selectedConcept) {
+	private void selectionContext(DesktopUI ui, PopupWindow conceptDetailsWindow, IdentifiedConcept selectedConcept) {
 		ui.queryUpdate(selectedConcept, RelationSearchMode.RELATIONS);
 		conceptDetailsWindow.close();
 		ui.gotoStatementsTable();
@@ -1981,9 +1985,9 @@ public class ListView extends BaseView implements Util {
 	// Handler for Concept details in various data tables
 	private void onConceptDetailsSelection(RendererClickEvent event, ConceptRole role) {
 		Statement statement = (Statement) event.getItemId();
-		Concept subject = statement.getSubject();
+		IdentifiedConcept subject = statement.getSubject();
 		Predicate predicate = statement.getRelation();
-		Concept object = statement.getObject();
+		IdentifiedConcept object = statement.getObject();
 
 		RelationSearchMode searchMode = query.getRelationSearchMode();
 		if (searchMode.equals(RelationSearchMode.WIKIDATA) && role.equals(ConceptRole.OBJECT)) {
@@ -2017,16 +2021,16 @@ public class ListView extends BaseView implements Util {
 			List<String> beacons = query.getCustomBeacons();
 			String sessionId = query.getUserSessionId();
 			
-			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId,beacons,sessionId);
+			CompletableFuture<AnnotatedConcept> future = kbService.getConceptDetails(conceptId,beacons,sessionId);
 			
-			Concept selectedConcept;
+			IdentifiedConcept selectedConcept;
+			
 			try {
-				List<Concept> concepts = 
+				selectedConcept = 
 						future.get(
 								kbService.weightedTimeout(), 
 								KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
 						);
-				selectedConcept = concepts.get(0);
 			} catch (InterruptedException | ExecutionException | TimeoutException | IndexOutOfBoundsException e1) {
 				selectedConcept = role.equals(ConceptRole.SUBJECT) ? subject : object;
 			}
@@ -2042,7 +2046,7 @@ public class ListView extends BaseView implements Util {
 			//predicateLabel = predicate.getName();
 
 			Button showRelations = new Button("Show Relations");
-			final Concept finallySelectedConcept = selectedConcept;
+			final IdentifiedConcept finallySelectedConcept = selectedConcept;
 			showRelations.addClickListener(e -> selectionContext(ui, conceptDetailsWindow, finallySelectedConcept));
 
 			// RMB: 9 September 2016 - deprecating relation table display of
@@ -2110,7 +2114,7 @@ public class ListView extends BaseView implements Util {
 		// view used for searching while creating a user annotation
 		registry.setMapping(
 				ViewName.ANNOTATIONS_VIEW, 
-				new BeanItemContainer<Concept>(Concept.class),
+				new BeanItemContainer<IdentifiedConcept>(IdentifiedConcept.class),
 				// TODO: use the cache to get the results
 				conceptService, 
 				new String[] { "beaconSource", "name|*", "type" }, 
@@ -2121,7 +2125,7 @@ public class ListView extends BaseView implements Util {
 			ViewName.ANNOTATIONS_VIEW, 
 			"name", 
 			event -> {
-				Concept concept = (Concept) event.getItemId();
+				IdentifiedConcept concept = (IdentifiedConcept) event.getItemId();
 				DesktopUI ui = (DesktopUI) UI.getCurrent();
 	
 				ui.addNodeToConceptMap(concept);
@@ -2154,16 +2158,23 @@ public class ListView extends BaseView implements Util {
 		// concepts view
 		registry.setMapping(
 				ViewName.CONCEPTS_VIEW,
-				new BeanItemContainer<Concept>(Concept.class), 
+				new BeanItemContainer<IdentifiedConcept>(IdentifiedConcept.class), 
 				conceptService,
-				new String[] { "beaconSource", "clique", "id", "name|*", "semanticGroup", "description|*", "synonyms|*"},
+				new String[] { 
+						"clique", 
+						"name|*", 
+						"type" 
+						/*, RMB: adding 'usage' here might be interesting? */
+						/*, OBSOLETE: i.e. only in details now? "description|*", "synonyms|*" */
+						/* TODO - add details button here! */
+				},
 				null, 
 				null);
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "clique",e->{/*NOP*/});
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "name", event -> {
-			Concept concept = (Concept) event.getItemId();
+			IdentifiedConcept concept = (IdentifiedConcept) event.getItemId();
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
 			ui.processConceptSearch(concept);
 			ui.closeConceptSearchWindow();
@@ -2174,7 +2185,7 @@ public class ListView extends BaseView implements Util {
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "description",e->{/*NOP*/});
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "library", event -> {
-			Concept concept = (Concept) event.getItemId();
+			IdentifiedConcept concept = (IdentifiedConcept) event.getItemId();
 
 			// Ignore ConceptSemanticType entries with empty libraries
 			Library library = concept.getLibrary();

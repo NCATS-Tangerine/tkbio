@@ -44,7 +44,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Window;
 
-import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.ConceptType;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.web.design.SemanticFilterDesign;
 
@@ -63,7 +63,7 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 
 	private String viewName = "";
 
-	private Set<SemanticGroup> typeSet;
+	private Set<ConceptType> typeSet;
 	private Collection<Object> itemIds; // stores item ids (including categories)
 	
 
@@ -84,7 +84,7 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 	private void initialize() {
 		removeAllComponents();
 		
-		typeSet = new HashSet<SemanticGroup>();
+		typeSet = new HashSet<ConceptType>();
 		itemIds = new LinkedHashSet<>();
 		
 		setMargin(new MarginInfo(false, true, true, true));
@@ -130,7 +130,7 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 		});
 		
 		// Add semantic type categories as root items in the tree.
-		for (SemanticGroup type : SemanticGroup.values()) {
+		for (ConceptType type : ConceptType.values()) {
 			String typeDesciption = type.getDescription();
 			tree.addItem(typeDesciption);
 			tree.setChildrenAllowed(typeDesciption, false);
@@ -184,7 +184,7 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 				String itemId = (String)iterator.next();
 				
 				if (!tree.hasChildren(itemId)) {
-					SemanticGroup type = SemanticGroup.lookUpByDescription(itemId);
+					ConceptType type = ConceptType.lookUpByDescription(itemId);
 					typeSet.add(type);
 				}
 			}

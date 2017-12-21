@@ -54,7 +54,7 @@ import bio.knowledge.graph.jsonmodels.Layout;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.Nodes;
 import bio.knowledge.model.Annotation;
-import bio.knowledge.model.Concept;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Statement;
 import bio.knowledge.service.ConceptService;
 import bio.knowledge.web.ui.DesktopUI;
@@ -428,14 +428,15 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 	
 	private String resolve(String nodeId) {
 		
-		Optional<Concept> conceptOpt = conceptService.findByIdentifier(nodeId);
+		Optional<IdentifiedConcept> conceptOpt = 
+				conceptService.findByIdentifier(nodeId);
 		
 		if(conceptOpt.isPresent()) {
 			/*
 			 * Use the resolved concept clique id
 			 * instead of archived concept node id
 			 */
-			Concept concept = conceptOpt.get();
+			IdentifiedConcept concept = conceptOpt.get();
 			return concept.getClique();
 		} else
 			// Can't resolve any better than the archived id
@@ -456,17 +457,17 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 		String nodeName  = data.getString("name");
 		String nodeGroup = data.getString("semgroup");
 		
-		Optional<Concept> conceptOpt = conceptService.findByIdentifier(nodeId);
+		Optional<IdentifiedConcept> conceptOpt = conceptService.findByIdentifier(nodeId);
 		
 		if(conceptOpt.isPresent()) {
 			/*
 			 * Use the resolved concept clique concept
 			 * instead of archived concept node details
 			 */
-			Concept concept = conceptOpt.get();
+			IdentifiedConcept concept = conceptOpt.get();
 			nodeId    = concept.getClique();
 			nodeName  = concept.getName();
-			nodeGroup = concept.getSemanticGroup().name();
+			nodeGroup = concept.getType().name();
 		}
 		
 		if(!cmNodeCache.containsKey(nodeId))
@@ -599,12 +600,12 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 	 * 
 	 * @param concept
 	 */
-	public void addNodeToConceptMap(Concept concept) {
+	public void addNodeToConceptMap(IdentifiedConcept concept) {
 	
 		String nodeId = concept.getClique();
 	
 		// create the new node from the passed-in data
-		Node newNode = new Node( nodeId, concept.getName(), concept.getSemanticGroup().name(), "add" );
+		Node newNode = new Node( nodeId, concept.getName(), concept.getType().name(), "add" );
 		
 		this.addNodeToConceptMap(newNode);
 	
@@ -711,7 +712,7 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 		this.addEdgeToConceptMap(statement.getSubject(), statement.getObject(), statement.getRelation().getName(), description, uri, statement.getId());
 	}
 	
-	public void addEdgeToConceptMap(Concept subject, Concept object, String relationLabel, String description, String uri, String statementId) {
+	public void addEdgeToConceptMap(IdentifiedConcept subject, IdentifiedConcept object, String relationLabel, String description, String uri, String statementId) {
 		Edge newEdge = new Edge( subject.getClique(), object.getClique(), relationLabel, description, uri, statementId);
 		// any edge pre-processing would go here.
 		newEdge.getData().setDescription(description);

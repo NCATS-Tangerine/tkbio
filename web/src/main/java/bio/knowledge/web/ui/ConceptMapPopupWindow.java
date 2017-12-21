@@ -56,10 +56,10 @@ import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.NodeData;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Annotation.Type;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.EvidenceCode;
 import bio.knowledge.model.GeneralStatement;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.Reference;
@@ -210,7 +210,7 @@ public class ConceptMapPopupWindow {
 		 *  This search is new beacon "concept details" 
 		 *  search for data... should work in principle
 		 */
-		Concept annotatedConcept = conceptService.searchAllBeacons(cliqueId);
+		IdentifiedConcept annotatedConcept = conceptService.searchAllBeacons(cliqueId);
 		
 		if (annotatedConcept == null) {
 			try {
@@ -229,7 +229,7 @@ public class ConceptMapPopupWindow {
 			}
 		} 
 		
-		final Concept selectedConcept = annotatedConcept;
+		final IdentifiedConcept selectedConcept = annotatedConcept;
 		
 		if( selectedConcept != null ) {
 			
@@ -294,7 +294,7 @@ public class ConceptMapPopupWindow {
 		} else {
 			VerticalLayout conceptdetails = detailshandler.getDetails(selectedConcept);
 			conceptdetails.setWidthUndefined();
-			basicSkeleton(name, selectedConcept.getSemanticGroup().getDescription(), x, y, conceptdetails);
+			basicSkeleton(name, selectedConcept.getType().getDescription(), x, y, conceptdetails);
 		}
 	}
 	
@@ -302,16 +302,16 @@ public class ConceptMapPopupWindow {
 			String uri, String statementId) {
 
 		// Generate popup content from passed data
-		Optional<Concept> sourceOpt = conceptService.getDetailsByCliqueId(sourceId);
+		Optional<IdentifiedConcept> sourceOpt = conceptService.getDetailsByCliqueId(sourceId);
 		if (!sourceOpt.isPresent())
 			return;
-		Concept sourceConcept = sourceOpt.get();
+		IdentifiedConcept sourceConcept = sourceOpt.get();
 		String sourceName = sourceConcept.getName();
 
-		Optional<Concept> targetOpt = conceptService.getDetailsByCliqueId(targetId);
+		Optional<IdentifiedConcept> targetOpt = conceptService.getDetailsByCliqueId(targetId);
 		if (!targetOpt.isPresent())
 			return;
-		Concept targetConcept = targetOpt.get();
+		IdentifiedConcept targetConcept = targetOpt.get();
 		String targetName = targetConcept.getName();
 		
 		addAnno = new Button("Add Annotation", e -> {
@@ -358,7 +358,7 @@ public class ConceptMapPopupWindow {
 
 	}
 
-	public void conceptMapUserAnnotation(Concept selectedConcept, int x, int y) {
+	public void conceptMapUserAnnotation(IdentifiedConcept selectedConcept, int x, int y) {
 		query.tempCoordX(x);
 		query.tempCoordY(y);
 		
@@ -471,14 +471,14 @@ public class ConceptMapPopupWindow {
 			// statement doesn't exist in database
 			if (statement == null) {
 				// find subject
-				Concept subject = conceptService.findByCliqueId(sourceId);
+				IdentifiedConcept subject = conceptService.findByCliqueId(sourceId);
 				if (subject == null) {
 					// subject = new Concept();
 					return;
 				}
 
 				// find object
-				Concept object = conceptService.findByCliqueId(targetId);
+				IdentifiedConcept object = conceptService.findByCliqueId(targetId);
 				if (object == null) {
 					// object = new Concept();
 					return;
@@ -535,8 +535,8 @@ public class ConceptMapPopupWindow {
 				evidence.addAnnotation(annotation);
 				evidenceService.save((Neo4jEvidence) evidence);
 
-				List<Concept> subjects = statement.getSubjects();
-				for (Concept s : subjects) {
+				List<IdentifiedConcept> subjects = statement.getSubjects();
+				for (IdentifiedConcept s : subjects) {
 					s.incrementUsage();
 					/*
 					 * TODO: Don't think that we need to replace subject in
@@ -546,8 +546,8 @@ public class ConceptMapPopupWindow {
 					conceptService.save((Neo4jConcept) s);
 				}
 
-				List<Concept> objects = statement.getObjects();
-				for (Concept o : objects) {
+				List<IdentifiedConcept> objects = statement.getObjects();
+				for (IdentifiedConcept o : objects) {
 					o.incrementUsage();
 					/*
 					 * TODO: Don't think that we need to replace subject in
@@ -581,7 +581,7 @@ public class ConceptMapPopupWindow {
 
 		buttonsLayout.addComponents(okay, cancel);
 
-		basicSkeleton("Annotate Graph", selectedConcept.getSemanticGroup().getDescription(), x, y);
+		basicSkeleton("Annotate Graph", selectedConcept.getType().getDescription(), x, y);
 	};
 
 	private void annotationConceptSearchBox() {
@@ -614,7 +614,7 @@ public class ConceptMapPopupWindow {
 	}
 
 	public void addToGraphNodeContainerFromKBQuery() {
-		Concept lastConcept = query.getLastSelectedConcept();
+		IdentifiedConcept lastConcept = query.getLastSelectedConcept();
 		Node node = new Node(lastConcept);
 		NodeData nd = node.getData();
 		initGraphNodeContainer();
@@ -635,7 +635,7 @@ public class ConceptMapPopupWindow {
 		graphNodeContainer.addBean(moreNodesStub);
 	}
 	
-	public void addConceptToComboBoxes(Concept concept) {
+	public void addConceptToComboBoxes(IdentifiedConcept concept) {
 		Node node = new Node(concept);
 		NodeData nd = node.getData();
 		graphNodeContainer.addBean(nd);

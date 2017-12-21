@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.ConceptType;
 
 /**
  * @author Richard
@@ -41,8 +41,8 @@ import bio.knowledge.model.SemanticGroup;
 public abstract class AbstractDataSource 
 	extends AbstractDescribed implements DataSource {
 	
-	private final Map<SemanticGroup,Set<DataService>> dataServicesBySemanticGroup = 
-			new HashMap<SemanticGroup,Set<DataService>>() ;
+	private final Map<ConceptType,Set<DataService>> dataServicesBySemanticGroup = 
+			new HashMap<ConceptType,Set<DataService>>() ;
 	
 	private final Map<String,DataService> dataServicesByIdentifier = 
 			new HashMap<String,DataService>() ;
@@ -70,8 +70,8 @@ public abstract class AbstractDataSource
 	 * @see bio.knowledge.datasource.DataSource#getTargetSemanticGroups()
 	 */
 	@Override
-	public Set<SemanticGroup> getTargetSemanticGroups() {
-		return new HashSet<SemanticGroup>( dataServicesBySemanticGroup.keySet() );
+	public Set<ConceptType> getTargetSemanticGroups() {
+		return new HashSet<ConceptType>( dataServicesBySemanticGroup.keySet() );
 	}
 	
 	/*
@@ -89,7 +89,7 @@ public abstract class AbstractDataSource
 	 * Concept.SemanticGroup)
 	 */
 	@Override
-	public Set<DataService> getServicesBySemanticGroup( SemanticGroup type ) {
+	public Set<DataService> getServicesBySemanticGroup( ConceptType type ) {
 		Set<DataService> dataServices = new HashSet<DataService>();
 		if(dataServicesBySemanticGroup.containsKey(type)) {
 			dataServices.addAll( dataServicesBySemanticGroup.get( type ) ) ;
@@ -113,7 +113,7 @@ public abstract class AbstractDataSource
 	 * @throws DataSourceException if DataService identifier is duplicated.
 	 */
 	protected void addDataService( DataService dataService ) {
-		SemanticGroup type = dataService.getTargetSemanticGroup() ;
+		ConceptType type = dataService.getTargetSemanticGroup() ;
 		Set<DataService> typedDataServicesSet ;
 		if( dataServicesBySemanticGroup.containsKey(type) )
 			typedDataServicesSet = dataServicesBySemanticGroup.get( type ) ;

@@ -40,7 +40,7 @@ import bio.knowledge.datasource.DataSourceRegistry;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.ConceptDescriptor;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
-import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
 import bio.knowledge.model.neo4j.Neo4jConcept;
@@ -153,6 +153,6 @@ public class WikiDataService
 	
 	public Neo4jConcept createWikiDataItem(ResultSet resultSet) {
 		dumpResults(resultSet) ;
-		return new Neo4jConcept("wd:testconcept",SemanticGroup.PHEN,"dummyConcept") ;
+		return new Neo4jConcept("wd:testconcept",ConceptType.PHEN,"dummyConcept") ;
 	}
 }

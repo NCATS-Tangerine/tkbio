@@ -51,10 +51,10 @@ import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.datasource.DataSourceRegistry;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
-import bio.knowledge.model.Concept;
+import bio.knowledge.model.AnnotatedConcept;
+import bio.knowledge.model.ConceptType;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.RdfUtil;
-import bio.knowledge.model.SemanticGroup;
-import bio.knowledge.model.core.Feature;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
 import bio.knowledge.model.datasource.SimpleResult;
@@ -62,7 +62,7 @@ import bio.knowledge.model.datasource.SimpleResultSet;
 import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.service.Cache.CacheLocation;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
-import bio.knowledge.service.core.FeatureService;
+//import bio.knowledge.service.core.FeatureService;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
 import bio.knowledge.service.core.TableSorter;
 import bio.knowledge.service.wikidata.WikiDataService;
@@ -73,7 +73,7 @@ import bio.knowledge.service.wikidata.WikiDataService;
  */
 @Service
 public class ConceptService 
-	extends IdentifiedEntityServiceImpl<Concept>
+	extends IdentifiedEntityServiceImpl<IdentifiedConcept>
 	implements DataServiceUtility {
 	
 	private Logger _logger = LoggerFactory.getLogger(ConceptService.class);
@@ -90,14 +90,14 @@ public class ConceptService
 	@Autowired
 	WikiDataService wikiDataService ;
 	
-	@Autowired
-	private FeatureService featureService ;
+	//@Autowired
+	//private FeatureService featureService ;
     
     @Autowired
     private KnowledgeBeaconService kbService;
     
     @Override
-    public List<Concept> getDataPage(
+    public List<IdentifiedConcept> getDataPage(
     		int pageIndex,
     		int pageSize,
     		String filter,
@@ -106,11 +106,11 @@ public class ConceptService
     ) {
 		
 		// Capture the Semantic Group filter for use in the concept query
-		Optional< Set<SemanticGroup> > semgroupsOpt = query.getInitialConceptTypes() ;
+		Optional< Set<ConceptType> > semgroupsOpt = query.getInitialConceptTypes() ;
 		String semgroups = "" ;
 		if(semgroupsOpt.isPresent()) {
-			Set<SemanticGroup> semgroupSet = semgroupsOpt.get();
-			for(SemanticGroup sg : semgroupSet) {
+			Set<ConceptType> semgroupSet = semgroupsOpt.get();
+			for(ConceptType sg : semgroupSet) {
 				semgroups += sg.name()+" ";
 			}
 			semgroups = semgroups.trim();
@@ -119,7 +119,7 @@ public class ConceptService
 		List<String> beacons = query.getCustomBeacons();
 		String sessionId = query.getUserSessionId();
 		
-    	CompletableFuture<List<Concept>> future =
+    	CompletableFuture<List<IdentifiedConcept>> future =
     			kbService.getConcepts(filter, semgroups, pageIndex, pageSize,beacons,sessionId);
     	
     	try {
@@ -128,7 +128,7 @@ public class ConceptService
 					KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
 			);
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
-			return new ArrayList<Concept>();
+			return new ArrayList<IdentifiedConcept>();
 		}
     }
     
@@ -138,19 +138,19 @@ public class ConceptService
 	
 	public Neo4jConcept createInstance(Object... args) {
 		if (args.length == 2)
-			if (args[0] instanceof SemanticGroup) {
+			if (args[0] instanceof ConceptType) {
 				return new Neo4jConcept(
-						(SemanticGroup)   args[0], // SemanticGroup
+						(ConceptType)   args[0], // SemanticGroup
 						(String)          args[1]  // Concept.name
 				);
 			} else
 				throw new RuntimeException("Invalid 1st argument to ConceptService.createInstance() ?");
 		
 		else if (args.length == 3)
-			if (args[1] instanceof SemanticGroup) {
+			if (args[1] instanceof ConceptType) {
 				return new Neo4jConcept(
 						(String)        args[0], // Concept.id
-						(SemanticGroup) args[1], // SemanticGroup
+						(ConceptType) args[1], // SemanticGroup
 						(String)        args[2]  // Concept.name
 				);
 			} else
@@ -187,16 +187,16 @@ public class ConceptService
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#getIdentifiers()
 	 */
 	@Override
-	public List<Concept> getIdentifiers() {
+	public List<IdentifiedConcept> getIdentifiers() {
 		//return getConcepts();
-		return new ArrayList<Concept>();
+		return new ArrayList<IdentifiedConcept>();
 	}
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#getIdentifiers(org.springframework.data.domain.Pageable)
 	 */
 	@Override
-	public Page<Concept> getIdentifiers(Pageable pageable) {
+	public Page<IdentifiedConcept> getIdentifiers(Pageable pageable) {
 		throw new RuntimeException("Not implemented in KB 4.0!") ;
 	}
 
@@ -204,7 +204,7 @@ public class ConceptService
 	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#findByNameLike(java.lang.String, org.springframework.data.domain.Pageable)
 	 */
 	@Override
-	public Page<Concept> findByNameLike(String filter, Pageable pageable) {
+	public Page<IdentifiedConcept> findByNameLike(String filter, Pageable pageable) {
 		_logger.trace("Inside ConceptService.findByNameLike()");
 
 		List<String> beacons = query.getCustomBeacons();
@@ -215,24 +215,26 @@ public class ConceptService
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	// TODO: I think this is where the refactoring faltered
-	private Page<Concept> findAllFiltered(
+	private Page<IdentifiedConcept> findAllFiltered(
 			String filter, 
 			Pageable pageable,
 			List<String> beacons,
 			String sessionId
 		) {
 		
-		CompletableFuture<List<Concept>> future = kbService.getConcepts(
-				filter,
-				null,
-				pageable.getPageNumber(),
-				pageable.getPageSize(),
-				beacons,
-				sessionId
-		);
+		CompletableFuture<List<IdentifiedConcept>> future = 
+				kbService.getConcepts(
+						filter,
+						null,
+						pageable.getPageNumber(),
+						pageable.getPageSize(),
+						beacons,
+						sessionId
+				);
 		
 		try {
-			List<Concept> concepts = future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
+			List<IdentifiedConcept> concepts = 
+					future.get(DataService.TIMEOUT_DURATION, DataService.TIMEOUT_UNIT);
 			
 //			String searchString = query.getCurrentQueryText();
 //			if ( 
@@ -316,11 +318,13 @@ public class ConceptService
 //			}
 //			return new PageImpl(searchedConceptResult);		
 			
-			return (Page<Concept>) (Page) new PageImpl(concepts);
+			return (Page<IdentifiedConcept>) (Page) new PageImpl(concepts);
+			
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			future.completeExceptionally(e);
 		}
-		return (Page<Concept>) (Page) new PageImpl(new ArrayList<Concept>());
+		
+		return (Page<IdentifiedConcept>) (Page) new PageImpl(new ArrayList<IdentifiedConcept>());
 	}
 
 	/* (non-Javadoc)
@@ -330,7 +334,7 @@ public class ConceptService
 	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#findAll(org.springframework.data.domain.Pageable)
 	 */
 	@Override
-	public Page<Concept> findAll(Pageable pageable) {
+	public Page<IdentifiedConcept> findAll(Pageable pageable) {
 		_logger.trace("Inside ConceptService.findAll()");
 		/*
 		 *  "findAll()" for the initial concept search is not really "findAll" of all concepts
@@ -408,13 +412,15 @@ public class ConceptService
 	/* Specialized Concept Access Methods */
 	
 	/**
+	 *  DEPRECATED
+	 *
 	 * Method to add a UMLS definition to a concept. Note: any  definition is returned
 	 * @param source authority of the definition (e.g. UMLS SAB)
 	 * @param id of the definition (i.e. UMLS Atom Unique Identifier)
 	 * @param definition of the Concept indexed by the source and id
 	 * @return previous definition if existing, or null
-	 */
-	public Feature addDefinition( Concept concept, String source, String id, String definition ) {
+	 * /
+	public Feature addDefinition( IdentifiedConcept concept, String source, String id, String definition ) {
 		Feature existingDefinition = getDefinition( concept, source ) ;
 		featureService.createFeature( concept, id, source, definition ) ;
 		return existingDefinition ;
@@ -423,12 +429,13 @@ public class ConceptService
 	/**
 	 * @param source Abbreviation of authority
 	 * @return definition Feature of the Concept, associated with the SAB
-	 */
-	public Feature getDefinition( Concept concept, String sab ) {
+	 * /
+	public Feature getDefinition( IdentifiedConcept concept, String sab ) {
 		List<Feature> features = featureService.findFeaturesByTagName( concept, sab ) ;
 		if(features.isEmpty()) return null ;
 		return features.get(0) ;
 	}
+	*/
 
 	/*
 	 *  Version deprecated in KB 3.0
@@ -462,7 +469,7 @@ public class ConceptService
 	 * @param concept
 	 * @return
 	 */
-	public String getCanonicalDescription( Concept concept ) {
+	public String getCanonicalDescription( IdentifiedConcept concept ) {
 		String description = "" ;
 		return description;
 	}
@@ -472,16 +479,16 @@ public class ConceptService
 	 * @parem list of beacons to search against (default: empty list triggers search against all known beacons)
 	 * @return
 	 */
-	public Concept findByCliqueId( String cliqueId, List<String> beacons ) {
+	public AnnotatedConcept findByCliqueId( String cliqueId, List<String> beacons ) {
 		
 		String sessionId = query.getUserSessionId();
 
-    	CompletableFuture<List<Concept>> future = 
+    	CompletableFuture<AnnotatedConcept> future = 
     			kbService.getConceptDetails(cliqueId,beacons,sessionId);
    
     	try {
     		
-			List<Concept> concepts = future.get(
+			AnnotatedConcept concept = future.get(
 					
 					// scale timeout by number of beacons
 					KnowledgeBeaconService.BEACON_TIMEOUT_DURATION * 
@@ -489,29 +496,17 @@ public class ConceptService
 					         
 					KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
 			);
-			
-			/* 
-			 * Concept details for a single clique may now be harvested from 
-			 * many sources, so they should be properly merged, and not just
-			 * one copy taken....
-			 */
-			
-			if(!concepts.isEmpty()) {
-				
-				Concept annotatedConcept = mergeConceptDetails(concepts);
-				return annotatedConcept;
-				
-			} else {
-				return null;
-			}
+			return concept;
 			
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
-			
+			_logger.error("cs.findByCliqueId() error: "+e.getMessage());
 			return null;
 		}
 	}
 	
-	private Concept mergeConceptDetails(List<Concept> concepts) {
+	/* DEPRECATED?
+
+	private IdentifiedConcept mergeConceptDetails(List<IdentifiedConcept> concepts) {
 		
 		/*
 		 *  Blightly assuming that all the concepts records in
@@ -522,43 +517,37 @@ public class ConceptService
 		 *  
 		 *  Need to perhaps merge aliases, synonyms and
 		 *  most certainly, details?
-		 */
-		Concept merged = concepts.get(0);
+		 *      /
+		IdentifiedConcept merged = concepts.get(0);
 		
-		merged.setDescription(merged.getBeaconSource()+":"+merged.getDescription());
-		merged.setSynonyms(merged.getBeaconSource()+":"+merged.getSynonyms());
+		merged.setDescription(merged.getDescription());
+		merged.setSynonyms(merged.getSynonyms());
 		
 		for(int i = 1;i<concepts.size();i++) {
 
-			Concept additional = concepts.get(i);
+			IdentifiedConcept additional = concepts.get(i);
 
-			// Merge beacon sources
-			merged.setBeaconSource(
-					merged.getBeaconSource()+
-					" | "+additional.getBeaconSource()
-			);
-			
 			// Merge other definitions
 			merged.setDescription(
 					merged.getDescription()+
-					" | "+additional.getBeaconSource()+":"+additional.getDescription()
+					" | "+additional.getDescription()
 			);
 
 			// Merge synonyms
 			merged.setSynonyms(
 					merged.getSynonyms()+
-					" | "+additional.getBeaconSource()+":"+additional.getSynonyms()
+					" | "+additional.getSynonyms()
 			);
 			
 			/* 
 			 * More precise semantic type discovered?
 			 * TODO: Need to generalize concepts 
 			 * to handle multiple semantic types?
-			 */
-			if( merged.getSemanticGroup().equals(SemanticGroup.OBJC) &&
-				additional.getSemanticGroup() != null &&
-				! additional.getSemanticGroup().equals(SemanticGroup.OBJC) 
-			) merged.setSemanticGroup(additional.getSemanticGroup());
+			 * /
+			if( merged.getType().equals(ConceptType.OBJC) &&
+				additional.getType() != null &&
+				! additional.getType().equals(ConceptType.OBJC) 
+			) merged.setType(additional.getType());
 			
 			// merge cross-references and terms 
 			merged.getCrossReferences().addAll(additional.getCrossReferences());
@@ -567,19 +556,20 @@ public class ConceptService
 			/*
 			 *  Merge details... may have some duplication
 			 *  in feature objects based on tags?
-			 */
+			 * /
 			merged.getFeatures().addAll(additional.getFeatures());	
 		}
 		
 		return merged;
 	}
+	*/
 
 	/**
 	 * @param CURIE concept identifier of the Concept to match across current session list of beacons
 	 * 
 	 * @return Concept found
 	 */
-	public Concept findByCliqueId( String cliqueId ) {
+	public IdentifiedConcept findByCliqueId( String cliqueId ) {
 		List<String> beacons = query.getCustomBeacons();
 		return findByCliqueId( cliqueId, beacons ) ;
 		
@@ -591,7 +581,7 @@ public class ConceptService
 	 * 
 	 * @return Concept returned with detailed annotation, if found
 	 */
-	public Concept searchAllBeacons( String cliqueId ) {
+	public IdentifiedConcept searchAllBeacons( String cliqueId ) {
 		return findByCliqueId( cliqueId, null ) ;
 		
 	}
@@ -605,14 +595,14 @@ public class ConceptService
 	 * @param identifier CURIE to be resolved to a concept
 	 * @return Optional<Concept> of matching concept
 	 */
-	public Optional<Concept> findByIdentifier( String identifier ) {
+	public Optional<IdentifiedConcept> findByIdentifier( String identifier ) {
 		
 		String sessionId = query.getUserSessionId();
 
     	CompletableFuture<String> future = 
     			kbService.findByIdentifier(identifier,sessionId) ;
     	
-    	Concept concept = null;
+    	IdentifiedConcept concept = null;
     	
     	try {
     		
@@ -644,9 +634,9 @@ public class ConceptService
 	 * @param ConceptId
 	 * @return Concept
 	 */
-	public Optional<Concept> getDetailsByCliqueId( String id ) {
+	public Optional<IdentifiedConcept> getDetailsByCliqueId( String id ) {
 		
-		Concept concept = findByCliqueId(id) ;
+		IdentifiedConcept concept = findByCliqueId(id) ;
 		
 		if(concept==null) {
 			return Optional.empty();
@@ -661,7 +651,7 @@ public class ConceptService
 	 * @param resultSet
 	 * @return
 	 */
-	public Concept processData( String nameSpace, ResultSet resultSet ) {
+	public IdentifiedConcept processData( String nameSpace, ResultSet resultSet ) {
 		return wikiDataService.createWikiDataItem(resultSet) ;
 	}
 	
@@ -669,9 +659,9 @@ public class ConceptService
 	 * Method to retrieve remote data about a 
 	 * node in a Qualified external namespace
 	 */
-	public Concept getQualifiedDataItem(String qualifiedId) {
+	public IdentifiedConcept getQualifiedDataItem(String qualifiedId) {
 		
-		Concept dataItem = null ;
+		IdentifiedConcept dataItem = null ;
 		
 		String[] idPart  = qualifiedId.split("\\:") ;
 		String nameSpace = idPart[0];
@@ -685,7 +675,7 @@ public class ConceptService
 		
 		// Is key present ? then fetch it from cache
 		//Concept cachedResult = (Concept)cache.getEntityCache().get(cacheKey);
-		Concept cachedResult = (Concept)cacheLocation.getEntity();
+		IdentifiedConcept cachedResult = (IdentifiedConcept)cacheLocation.getEntity();
 		
 		if (cachedResult == null) {
 			
@@ -824,14 +814,14 @@ public class ConceptService
 	 */
 	public void getDescription( Function<ResultSet,Void> handler ) throws Exception {
 		
-		Optional<Concept> cscOpt = query.getCurrentSelectedConcept();
+		Optional<IdentifiedConcept> cscOpt = query.getCurrentSelectedConcept();
 		
 		if (!cscOpt.isPresent()) return;
 		
-		Concept concept = cscOpt.get();
+		IdentifiedConcept concept = cscOpt.get();
 		String name = concept.getName();
 		
-		SemanticGroup conceptType = concept.getSemanticGroup() ;
+		ConceptType conceptType = concept.getType() ;
 		
 		// Ready just in case I have a gene...
 		Object geneId = null ;
@@ -869,7 +859,7 @@ public class ConceptService
 					Result result = resultSet.get(0);
 
 					geneId = result.get("entrezgene");
-					if(geneId != null) conceptType = SemanticGroup.GENE ;
+					if(geneId != null) conceptType = ConceptType.GENE ;
 				}
 			} catch (InterruptedException | ExecutionException | TimeoutException e) {
 				futureMyGeneResultSet.completeExceptionally(e);
@@ -947,14 +937,14 @@ public class ConceptService
 	 */
 	public void getFullDetails( Function<ResultSet,Void> handler ) throws Exception {
 		
-		Optional<Concept> optCSC = query.getCurrentSelectedConcept();
+		Optional<IdentifiedConcept> optCSC = query.getCurrentSelectedConcept();
 		if (!optCSC.isPresent()) return;
 		
-		Concept concept = optCSC.get() ;
+		IdentifiedConcept concept = optCSC.get() ;
 		
 		Map<String, Object> args = new HashMap<String, Object>();
 		
-		switch( concept.getSemanticGroup() ) {
+		switch( concept.getType() ) {
 		
 			case GENE:
 				// I assume that that associated Concept CUI 
@@ -1007,7 +997,7 @@ public class ConceptService
 	 * @param concept
 	 */
 	@Deprecated
-	public Concept save(Concept concept) {
+	public IdentifiedConcept save(IdentifiedConcept concept) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	
@@ -1016,7 +1006,7 @@ public class ConceptService
      * @param predicate
      * @return
      */
-    public Concept annotate( String id ) {
+    public IdentifiedConcept annotate( String id ) {
 
     	if(id.isEmpty()) {
     		_logger.warn(
@@ -1031,17 +1021,17 @@ public class ConceptService
 		String nameSpace = idPart[0];
 		String objectId  = idPart[1];
 		
-		Concept concept = null;
+		IdentifiedConcept concept = null;
 		
 		CacheLocation cacheLocation = 
 				cache.searchForEntity( "Concept", nameSpace, new String[] {objectId} );
 		
-		Concept cachedConcept = (Concept) cacheLocation.getEntity();
+		IdentifiedConcept cachedConcept = (IdentifiedConcept) cacheLocation.getEntity();
 		
 		if (cachedConcept == null) {
 
 			// Not cached... then first, attempt to retrieve it from the local database
-			Optional<Concept> databaseConceptOpt = getDetailsByCliqueId(id);
+			Optional<IdentifiedConcept> databaseConceptOpt = getDetailsByCliqueId(id);
 			
 			if(databaseConceptOpt.isPresent()) {
 				concept = databaseConceptOpt.get();
@@ -1054,8 +1044,8 @@ public class ConceptService
 			 */
 			if(	
 					concept==null ||
-					concept.getSemanticGroup()==null ||
-					concept.getSemanticGroup().equals(SemanticGroup.ANY)
+					concept.getType()==null ||
+					concept.getType().equals(ConceptType.ANY)
 			){
 			
 				// Assume that you need to retrieve the Concept description from WikiData
@@ -1084,7 +1074,7 @@ public class ConceptService
 							 * with a default SemanticGroup "Concepts & Ideas"
 							 * and an empty name field 
 							 */
-							concept = createInstance( id, SemanticGroup.CONC, "" );
+							concept = createInstance( id, ConceptType.CONC, "" );
 						}
 						
 						for(Result result:resultSet) {
@@ -1104,9 +1094,9 @@ public class ConceptService
 							if(concept.getName().isEmpty()) concept.setName(nameLiteralPart[0]);
 							
 							// ...then attempt to discover the actual SemanticGroup
-							SemanticGroup group = SemanticGroup.lookUpByWikiClass(valueObjectId);
-							if(group!=null) {
-								concept.setSemanticGroup(group);
+							ConceptType type = ConceptType.lookUpByWikiClass(valueObjectId);
+							if(type!=null) {
+								concept.setType(type);
 								/* 
 								 * mission accomplished? 
 								 * Heuristic is to take first recognized 
