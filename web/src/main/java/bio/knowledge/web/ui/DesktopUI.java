@@ -75,7 +75,6 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -305,8 +304,6 @@ public class DesktopUI extends UI implements MessageService, Util {
 		return desktopView;
 	}
 
-	private ConceptMapDisplay cm = new ConceptMapDisplay();
-
 	@Autowired
 	KnowledgeBeaconRegistry kbRegistry;
 	
@@ -319,7 +316,11 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * 
 	 * @return the current ConceptMapDisplay
 	 */
+	private ConceptMapDisplay cm = null;
+
 	public ConceptMapDisplay getConceptMap() {
+		if(cm == null)
+			cm = new ConceptMapDisplay(conceptService);
 		return cm;
 	}
 
@@ -747,7 +748,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * clear the map
 	 */
 	public void clearMap() {
-		cm.clearGraph();
+		getConceptMap().clearGraph();
 		updateCurrentConceptMapName(null);
 	}
 
@@ -778,7 +779,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		searchField.setImmediate(true);
 
 		// Clear Concept Map too?
-		cm.clearGraph();
+		getConceptMap().clearGraph();
 
 		// Setting Default layout while clearing map
 		desktopView.getCmLayoutSelect().setValue(DEFAULT_CM_LAYOUT);
@@ -869,6 +870,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * initialize the desktop view
 	 */
 	public void initializeDesktopView() {
+		
 		initConceptLabelDescription();
 
 		TextField searchField = desktopView.getSearch();
@@ -890,6 +892,10 @@ public class DesktopUI extends UI implements MessageService, Util {
 		HorizontalLayout viewingConcepts = desktopView.getViewingConcepts();
 		viewingConcepts.setSpacing(true);
 		
+		/*
+		 * Deprecating this checkbox triggered version of matchByIdentifier
+		 * Try to directly infer presence of a CURIE in the queryText (below)
+		 
 		// Choice of matching either by CURIE or by keywords
 		CheckBox matchByIdCb = new CheckBox("Match By Identifier");
 		matchByIdCb.setValue(query.matchByIdentifier());
@@ -897,7 +903,8 @@ public class DesktopUI extends UI implements MessageService, Util {
 				event -> query.setMatchingMode(matchByIdCb.getValue())
 		);
 		viewingConcepts.addComponent(matchByIdCb);
-
+        */
+		
 		// Button to reinitialize the query and map
 		desktopView.getClearMapBtn().addClickListener(e -> newQueryConfirmation(e));
 
@@ -941,7 +948,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 			} else if ("Light".equals(e.getProperty().getValue())) {
 				desktopView.getCmPanel().setId("cm-panel-light");
 			}
-			cm.setStyleColor(((String) e.getProperty().getValue()).toLowerCase());
+			getConceptMap().setStyleColor(((String) e.getProperty().getValue()).toLowerCase());
 		});
 
 		desktopView.getColorSelect().setValue(DEFAULT_CM_COLOR);
@@ -977,7 +984,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 		// align the map to center
 		desktopView.getCenterBtn().addClickListener(e -> {
-			cm.alignToCenter();
+			getConceptMap().alignToCenter();
 		});
 
 		// set zoom for map using a slider
@@ -994,7 +1001,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 			public void valueChange(ValueChangeEvent event) {
 				if (zoomEnabled) {
 					double value = (Double) zoomSlider.getValue();
-					cm.setZoom(value);
+					getConceptMap().setZoom(value);
 				}
 			}
 		});
@@ -1123,7 +1130,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 		query.setCurrentQueryText(queryText);
 
-		if(query.matchByIdentifier()) {
+		if(matchByIdentifier(queryText)) {
 			/*
 			 * Matching by CURIE - resolve the matching concept 
 			 * then go directly to the statements table
@@ -1182,6 +1189,16 @@ public class DesktopUI extends UI implements MessageService, Util {
 		}
 	}
 
+	private boolean matchByIdentifier(String queryText) {
+		// looks like a CURIE?
+		if(queryText.indexOf(':')>0) {
+			return true;
+		} else {
+			return false;
+		}
+		//return query.matchByIdentifier();
+	}
+
 	/**
 	 * 
 	 */
@@ -1202,7 +1219,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		// implicitly known?
 
 		// Clear Concept Map too?
-		cm.resizeGraphCanvas();
+		getConceptMap().resizeGraphCanvas();
 
 	}
 
@@ -1216,7 +1233,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		desktopView.getCmLayoutSelect().addItems((Object[]) layoutOptions);
 		desktopView.getCmLayoutSelect().addValueChangeListener(e -> {
 			String name = e.getProperty().getValue().toString().replaceAll("\\s+", "").toLowerCase();
-			cm.setLayout(new Layout(name));
+			getConceptMap().setLayout(new Layout(name));
 		});
 		desktopView.getCmLayoutSelect().setValue(DEFAULT_CM_LAYOUT);
 		desktopView.getCmPanel().addComponent(cm);
@@ -1343,11 +1360,11 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 	/**
 	 * @author Chandan Mishra (cmishra@sfu.ca) Starting load functionality
-	 * @param content
+	 * @param cm_json_content
 	 */
-	public void loadMap(String content) {
+	public void loadMap(String cm_json_content) {
 
-		Matcher version_matcher = REGEX_version_Pattern.matcher(content);
+		Matcher version_matcher = REGEX_version_Pattern.matcher(cm_json_content);
 
 		if (version_matcher.find()) {
 			String id = version_matcher.group(1);
@@ -1363,10 +1380,10 @@ public class DesktopUI extends UI implements MessageService, Util {
 			return;
 		}
 
-		Matcher cst_matcher = REGEX_CST_Id_Pattern.matcher(content);
+		Matcher cst_matcher = REGEX_CST_Id_Pattern.matcher(cm_json_content);
 		if (cst_matcher.find()) {
 			// calling import concept map
-			cm.importConceptMap(content);
+			getConceptMap().importConceptMap(cm_json_content);
 
 			String id = cst_matcher.group(1);
 			String conceptId = id.replaceAll(",", "");
