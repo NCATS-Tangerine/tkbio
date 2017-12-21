@@ -13,7 +13,7 @@
 
 package bio.knowledge.client;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-12-20T20:09:45.790-08:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-12-20T20:18:11.941-08:00")
 public class Pair {
     private String name = "";
     private String value = "";

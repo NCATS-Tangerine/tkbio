@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * BeaconLogEntry
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-12-20T20:09:45.790-08:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-12-20T20:18:11.941-08:00")
 public class BeaconLogEntry {
   @SerializedName("timestamp")
   private String timestamp = null;
