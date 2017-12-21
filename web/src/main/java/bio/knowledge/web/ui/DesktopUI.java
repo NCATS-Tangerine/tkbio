@@ -1041,6 +1041,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		searchSubjectField.setItemCaption(Concept.class, "name");
 		
 		searchSubjectField.setNullSelectionAllowed(false);
+		searchSubjectField.setContainerDataSource(autoCompleteEntities);
 		
 		// TODO: Custom Search
 			// Default search behavior in original application is now incorporated as a new item search
@@ -1056,8 +1057,6 @@ public class DesktopUI extends UI implements MessageService, Util {
             
             if (newItem) {
             	
-            	
-            	
                 // Adds newly discovered option
 //                countriesData.add(newCountryData);
 //                sample.setItems(countriesData);
@@ -1069,9 +1068,6 @@ public class DesktopUI extends UI implements MessageService, Util {
             
 		});
 
-		searchSubjectField.setImmediate(true);
-		searchSubjectField.setContainerDataSource(autoCompleteEntities);
-		
 		searchSubjectField.addFocusListener(e -> {
 			desktopView.getSearchBtn().setClickShortcut(KeyCode.ENTER);
 		});
@@ -1079,11 +1075,34 @@ public class DesktopUI extends UI implements MessageService, Util {
 		searchSubjectField.addBlurListener(e -> {
 			desktopView.getSearchBtn().removeClickShortcut();
 		});
+
+		searchSubjectField.addValueChangeListener( e -> {
+			// on value change
+				// a menu entity has a NONE semantic type and a name of a menu entity
+					// menu entity 1: "More"
+					// menu entity 2.1 (spacer): "Concept"
+					// menu entity 2.2 (spacer): "Semantic Type"
+				// if a menu entity, then 
+					// try a menu entity behavior determined by name, AND
+					// reset the value
+				// if not a menu entity, then must be a concept entity
+					// if a concept entity then 
+							// modify statement query to include this concept, AND
+							// set the ComboBox to that value (do not reset it to any other value)
+			
+			Notification.show("Value changed:",
+	                String.valueOf(e.getProperty().getValue()),
+	                Type.TRAY_NOTIFICATION);
+			
+		});
 		
 		desktopView.getSearchBtn().addClickListener(e -> {
 			searchBtnOnClick(searchSubjectField, e);
 		});
 		
+		searchSubjectField.setImmediate(true);
+		searchSubjectField.setStyleName("no-picker");
+
 		viewingConceptsLayout.addComponent(searchSubjectField);
 		
 //		ComboBox searchRelationField = new ComboBox("Relation");
