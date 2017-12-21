@@ -58,7 +58,7 @@ No authorization required
 
 <a name="getConceptDetails"></a>
 # **getConceptDetails**
-> List&lt;BeaconConceptWithDetails&gt; getConceptDetails(cliqueId, beacons, sessionId)
+> BeaconConceptWithDetails getConceptDetails(cliqueId, beacons, sessionId)
 
 
 
@@ -76,7 +76,7 @@ String cliqueId = "cliqueId_example"; // String | a [CURIE-encoded](https://www.
 List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of aggregator indices of beacons to be used as knowledge sources for the query 
 String sessionId = "sessionId_example"; // String | client-defined session identifier 
 try {
-    List<BeaconConceptWithDetails> result = apiInstance.getConceptDetails(cliqueId, beacons, sessionId);
+    BeaconConceptWithDetails result = apiInstance.getConceptDetails(cliqueId, beacons, sessionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConceptsApi#getConceptDetails");
@@ -94,7 +94,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;BeaconConceptWithDetails&gt;**](BeaconConceptWithDetails.md)
+[**BeaconConceptWithDetails**](BeaconConceptWithDetails.md)
 
 ### Authorization
 
@@ -107,7 +107,7 @@ No authorization required
 
 <a name="getConcepts"></a>
 # **getConcepts**
-> List&lt;BeaconConcept&gt; getConcepts(keywords, semanticGroups, pageNumber, pageSize, beacons, sessionId)
+> List&lt;BeaconConcept&gt; getConcepts(keywords, types, pageNumber, pageSize, beacons, sessionId)
 
 
 
@@ -122,13 +122,13 @@ Retrieves a (paged) list of concepts in the system
 
 ConceptsApi apiInstance = new ConceptsApi();
 String keywords = "keywords_example"; // String | a (urlencoded) space delimited set of keywords or substrings against which to match concept names and synonyms, e.g. diabetes.
-String semanticGroups = "semanticGroups_example"; // String | a (url-encoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [semantic groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes) 
+String types = "types_example"; // String | a (url-encoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [semantic groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes) 
 Integer pageNumber = 56; // Integer | (1-based) number of the page to be returned in a paged set of query results 
 Integer pageSize = 56; // Integer | number of concepts per page to be returned in a paged set of query results 
 List<String> beacons = Arrays.asList("beacons_example"); // List<String> | set of aggregator indices of beacons to be used as knowledge sources for the query 
 String sessionId = "sessionId_example"; // String | client-defined session identifier 
 try {
-    List<BeaconConcept> result = apiInstance.getConcepts(keywords, semanticGroups, pageNumber, pageSize, beacons, sessionId);
+    List<BeaconConcept> result = apiInstance.getConcepts(keywords, types, pageNumber, pageSize, beacons, sessionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConceptsApi#getConcepts");
@@ -141,7 +141,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **keywords** | **String**| a (urlencoded) space delimited set of keywords or substrings against which to match concept names and synonyms, e.g. diabetes. |
- **semanticGroups** | **String**| a (url-encoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [semantic groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)  | [optional]
+ **types** | **String**| a (url-encoded) space-delimited set of semantic groups (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched by the main keyword search (see [semantic groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes)  | [optional]
  **pageNumber** | **Integer**| (1-based) number of the page to be returned in a paged set of query results  | [optional]
  **pageSize** | **Integer**| number of concepts per page to be returned in a paged set of query results  | [optional]
  **beacons** | [**List&lt;String&gt;**](String.md)| set of aggregator indices of beacons to be used as knowledge sources for the query  | [optional]
