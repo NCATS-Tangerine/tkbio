@@ -5,7 +5,7 @@ import java.util.Set;
 
 import bio.knowledge.model.core.Feature;
 
-public class ConceptImpl extends IdentifiedConceptImpl implements AnnotatedConcept {
+public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements AnnotatedConcept {
 
 	public static final String SEMGROUP_FIELD_START = "[" ;
 	public static final String SEMGROUP_FIELD_END   = "]" ;
@@ -32,15 +32,15 @@ public class ConceptImpl extends IdentifiedConceptImpl implements AnnotatedConce
     
 	private String accessionId;
     
-    protected ConceptImpl() {
+    protected AnnotatedConceptImpl() {
     	super() ;
     }
-    public ConceptImpl( String clique, String id, ConceptType type, String name ) {
+    public AnnotatedConceptImpl( String clique, String id, ConceptType type, String name ) {
     	super(clique,name,type,"") ;
     	this.setAccessionId(id);
     }
     
-    public ConceptImpl( String clique, String id, String type, String name ) {
+    public AnnotatedConceptImpl( String clique, String id, String type, String name ) {
     	super(clique,name,type,"") ;
     	this.setAccessionId(id);
     }

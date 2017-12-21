@@ -38,7 +38,7 @@ import bio.knowledge.client.model.BeaconStatementSubject;
 import bio.knowledge.model.AnnotatedConcept;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.AnnotationImpl;
-import bio.knowledge.model.ConceptImpl;
+import bio.knowledge.model.AnnotatedConceptImpl;
 import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.IdentifiedConcept;
@@ -431,7 +431,7 @@ public class KnowledgeBeaconService implements Util {
 						type = null;
 					}
 
-					concept = new ConceptImpl(
+					concept = new AnnotatedConceptImpl(
 							response.getClique(),
 							response.getClique(),
 							type,
@@ -599,7 +599,7 @@ public class KnowledgeBeaconService implements Util {
 						BeaconStatementPredicate statementsPredicate = response.getPredicate();
 						BeaconStatementObject statementsObject = response.getObject();
 
-						ConceptImpl subject = new ConceptImpl(
+						AnnotatedConceptImpl subject = new AnnotatedConceptImpl(
 								statementsSubject.getClique(), 
 								statementsSubject.getId(), 
 								statementsSubject.getType(), 
@@ -608,7 +608,7 @@ public class KnowledgeBeaconService implements Util {
 
 						PredicateImpl predicate = new PredicateImpl(statementsPredicate.getName());
 
-						ConceptImpl object = new ConceptImpl(
+						AnnotatedConceptImpl object = new AnnotatedConceptImpl(
 								statementsObject.getClique(), 
 								statementsObject.getId(), 
 								statementsObject.getType(), 
