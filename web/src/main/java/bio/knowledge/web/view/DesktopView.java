@@ -25,6 +25,8 @@
  */
 package bio.knowledge.web.view;
 
+import org.vaadin.tokenfield.TokenField;
+
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;

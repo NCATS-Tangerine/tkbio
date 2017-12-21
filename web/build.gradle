@@ -16,6 +16,7 @@ buildscript {
         mavenCentral()
         maven { url "https://repo.spring.io/libs-release" }
         maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://maven.vaadin.com/vaadin-addons" }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion") 
@@ -57,6 +58,8 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.vaadin.addons/googleanalyticstracker
 	compile 'org.vaadin.addons:googleanalyticstracker:2.1.0'
 	
+	// https://vaadin.com/directory/component/tokenfield
+	compile 'org.vaadin.addons:tokenfield:7.0.1'
 }
 
 jar {

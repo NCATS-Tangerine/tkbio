@@ -338,7 +338,7 @@ public class ListView extends BaseView implements Util {
 			try {
 				String filter;
 				if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
-					filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+					filter = (String) ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
 				} else {
 					filter = "";
 				}

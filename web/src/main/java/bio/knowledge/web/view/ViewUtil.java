@@ -106,7 +106,7 @@ public class ViewUtil {
 		
 		Grid.Column column = grid.getColumn(columnId);
 		
-		String searchPhrase = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
+		String searchPhrase = (String) ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
 		
 		Renderer<String> renderer;
 

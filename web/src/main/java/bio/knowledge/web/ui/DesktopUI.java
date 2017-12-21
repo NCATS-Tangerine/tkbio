@@ -75,6 +75,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -89,6 +90,8 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
+
+import org.vaadin.tokenfield.*;
 
 import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.graph.ConceptMapDisplay;
@@ -775,6 +778,8 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 		TextField searchField = desktopView.getSearch();
 		searchField.clear();
+		
+		// TODO: i18n, label
 		searchField.setInputPrompt("Search Concepts");
 		searchField.setImmediate(true);
 
@@ -869,44 +874,13 @@ public class DesktopUI extends UI implements MessageService, Util {
 	/**
 	 * initialize the desktop view
 	 */
-	public void initializeDesktopView() {
-		
-		initConceptLabelDescription();
-
-		TextField searchField = desktopView.getSearch();
-
-		searchField.addStyleName("concept-search-field");
-
-		searchField.addFocusListener(e -> {
-			desktopView.getSearchBtn().setClickShortcut(KeyCode.ENTER);
-		});
-
-		searchField.addBlurListener(e -> {
-			desktopView.getSearchBtn().removeClickShortcut();
-		});
-
-		desktopView.getSearchBtn().addClickListener(e -> {
-			searchBtnClickListener(searchField, e);
-		});
+	public void initDesktopView() {
 		
 		HorizontalLayout viewingConcepts = desktopView.getViewingConcepts();
 		viewingConcepts.setSpacing(true);
 		
-		/*
-		 * Deprecating this checkbox triggered version of matchByIdentifier
-		 * Try to directly infer presence of a CURIE in the queryText (below)
-		 
-		// Choice of matching either by CURIE or by keywords
-		CheckBox matchByIdCb = new CheckBox("Match By Identifier");
-		matchByIdCb.setValue(query.matchByIdentifier());
-		matchByIdCb.addValueChangeListener(
-				event -> query.setMatchingMode(matchByIdCb.getValue())
-		);
-		viewingConcepts.addComponent(matchByIdCb);
-        */
-		
-		// Button to reinitialize the query and map
-		desktopView.getClearMapBtn().addClickListener(e -> newQueryConfirmation(e));
+		initConceptLabelDescription();
+		initSearchFields();		
 
 		desktopView.getDataTabSheet().addSelectedTabChangeListener(e -> {
 			// Find the tabsheet
@@ -1004,8 +978,61 @@ public class DesktopUI extends UI implements MessageService, Util {
 					getConceptMap().setZoom(value);
 				}
 			}
+		
 		});
 
+		// RMB: August 15, 2016
+		// New landing page doesn't need the old intro tooltip
+		// initIntroTooltip();
+
+		initConceptMap();
+	}
+	
+	public void initSearchFields() {
+		HorizontalLayout viewingConcepts = desktopView.getViewingConcepts();
+		
+		
+		TextField searchField = desktopView.getSearch();
+
+		searchField.addStyleName("concept-search-field");
+
+		searchField.addFocusListener(e -> {
+			desktopView.getSearchBtn().setClickShortcut(KeyCode.ENTER);
+		});
+
+		searchField.addBlurListener(e -> {
+			desktopView.getSearchBtn().removeClickShortcut();
+		});
+
+		desktopView.getSearchBtn().addClickListener(e -> {
+			searchBtnClickListener(searchField, e);
+		});
+		
+		TokenField searchTokenField = new TokenField("Token ComboBox");
+		searchTokenField.setInputPrompt("Enter contact name or new email address");
+		searchTokenField.setWidth(1000, Unit.PIXELS);
+		searchTokenField.setInputWidth(1000, Unit.PIXELS);
+		viewingConcepts.addComponent(searchTokenField);
+
+		ComboBox searchSubjectField = new ComboBox("Regular ComboBox");
+		viewingConcepts.addComponent(searchSubjectField);
+		
+//		ComboBox searchRelationField = new ComboBox("Search Concepts");
+//		viewingConcepts.addComponent(searchRelationField);
+//		
+//		ComboBox searchObjectField = new ComboBox("Search for an entity");
+//		viewingConcepts.addComponent(searchObjectField);
+		
+	}
+	
+	/**
+	 * 
+	 */
+	private void initConceptLabelDescription() {
+		setConceptLabelDescription(null);
+	}
+	
+	private void initConceptMapLegend() {
 		// display the legend in a pop up window
 		desktopView.getShowLegendBtn().addClickListener(e -> {
 			// if there is no legend pop up window already opened
@@ -1061,13 +1088,40 @@ public class DesktopUI extends UI implements MessageService, Util {
 				legend = null;
 			}
 		});
-
-		// RMB: August 15, 2016
-		// New landing page doesn't need the old intro tooltip
-		// initIntroTooltip();
-
-		initConceptMap();
 	}
+
+	/**
+	 * 
+	 */
+	private void initConceptMap() {
+		String[] layoutOptions = { MANUAL_CM_LAYOUT, "Breadth First", "Grid", "Circle", "Cola", "Spread", "Dagre" };
+
+		desktopView.getCmLayoutSelect().setNullSelectionAllowed(false);
+		desktopView.getCmLayoutSelect().addItems((Object[]) layoutOptions);
+		desktopView.getCmLayoutSelect().addValueChangeListener(e -> {
+			String name = e.getProperty().getValue().toString().replaceAll("\\s+", "").toLowerCase();
+			getConceptMap().setLayout(new Layout(name));
+		});
+		desktopView.getCmLayoutSelect().setValue(DEFAULT_CM_LAYOUT);
+		desktopView.getCmPanel().addComponent(cm);
+
+		VerticalSplitPanel splitPanel = desktopView.getDesktopSplitPanel();
+
+		// March 26, 2017 - Ben want's his resizable pane back...
+		// He's willing to accept the UI consequences!
+		// splitPanel.setLocked(true);
+		splitPanel.setLocked(false);
+
+		splitPanel.addStyleName("main-splitpanel");
+		splitPanel.addSplitPositionChangeListener(e -> desktopSplitPanelPositionHandler(e));
+		
+		// Button to reinitialize the query and map
+		desktopView.getClearMapBtn().addClickListener(e -> newQueryConfirmation(e));
+
+		initConceptMapLegend();
+
+	}
+
 	
 	public void setZoomEnabled(boolean zoomEnabled) {
 		this.zoomEnabled = zoomEnabled;
@@ -1201,13 +1255,6 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 	/**
 	 * 
-	 */
-	private void initConceptLabelDescription() {
-		setConceptLabelDescription(null);
-	}
-
-	/**
-	 * 
 	 * @param event
 	 */
 	private void desktopSplitPanelPositionHandler(SplitPositionChangeEvent event) {
@@ -1222,34 +1269,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		getConceptMap().resizeGraphCanvas();
 
 	}
-
-	/**
-	 * 
-	 */
-	private void initConceptMap() {
-		String[] layoutOptions = { MANUAL_CM_LAYOUT, "Breadth First", "Grid", "Circle", "Cola", "Spread", "Dagre" };
-
-		desktopView.getCmLayoutSelect().setNullSelectionAllowed(false);
-		desktopView.getCmLayoutSelect().addItems((Object[]) layoutOptions);
-		desktopView.getCmLayoutSelect().addValueChangeListener(e -> {
-			String name = e.getProperty().getValue().toString().replaceAll("\\s+", "").toLowerCase();
-			getConceptMap().setLayout(new Layout(name));
-		});
-		desktopView.getCmLayoutSelect().setValue(DEFAULT_CM_LAYOUT);
-		desktopView.getCmPanel().addComponent(cm);
-
-		VerticalSplitPanel splitPanel = desktopView.getDesktopSplitPanel();
-
-		// March 26, 2017 - Ben want's his resizable pane back...
-		// He's willing to accept the UI consequences!
-		// splitPanel.setLocked(true);
-		splitPanel.setLocked(false);
-
-		splitPanel.addStyleName("main-splitpanel");
-		splitPanel.addSplitPositionChangeListener(e -> desktopSplitPanelPositionHandler(e));
-
-	}
-
+	
 	/**
 	 * 
 	 * @param name
@@ -1620,7 +1640,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		 */
 		VaadinSession.getCurrent().getSession().setMaxInactiveInterval(-1);
 
-		initializeDesktopView();
+		initDesktopView();
 
 		ApplicationLayout applicationLayout = new ApplicationLayout(authenticationManager);
 
