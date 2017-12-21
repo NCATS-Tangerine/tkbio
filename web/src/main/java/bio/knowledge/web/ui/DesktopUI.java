@@ -59,6 +59,8 @@ import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -102,9 +104,11 @@ import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.NodeData;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
+import bio.knowledge.model.ConceptImpl;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
+import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.user.User;
 import bio.knowledge.model.util.Util;
 import bio.knowledge.service.AuthenticationState;
@@ -989,40 +993,87 @@ public class DesktopUI extends UI implements MessageService, Util {
 	}
 	
 	public void initSearchFields() {
-		HorizontalLayout viewingConcepts = desktopView.getViewingConcepts();
+		HorizontalLayout viewingConceptsLayout = desktopView.getViewingConcepts();		
+	
+//		TextField searchField = desktopView.getSearch();
+//
+//		searchField.addStyleName("concept-search-field");
+//
+//		searchField.addFocusListener(e -> {
+//			desktopView.getSearchBtn().setClickShortcut(KeyCode.ENTER);
+//		});
+//
+//		searchField.addBlurListener(e -> {
+//			desktopView.getSearchBtn().removeClickShortcut();
+//		});
+//
+//		desktopView.getSearchBtn().addClickListener(e -> {
+//			searchBtnOnClick(searchField, e);
+//		});
 		
+		viewingConceptsLayout.removeAllComponents();
+		viewingConceptsLayout.setSpacing(true);
 		
-		TextField searchField = desktopView.getSearch();
+//		TokenField searchTokenField = new TokenField("Token ComboBox");
+//		searchTokenField.setInputPrompt("Enter contact name or new email address");
+//		searchTokenField.setWidth(1000, Unit.PIXELS);
+//		searchTokenField.setInputWidth(1000, Unit.PIXELS);
+//		viewingConcepts.addComponent(searchTokenField);
 
-		searchField.addStyleName("concept-search-field");
+		
+		// TODO: AutoCompleteEntities
+			// Must feature the list of entities coming from the autocomplete cache
+				//
+			// Must feature an element acting as a separator pointing to "more" page
+			// Must feature query-by-semtype
+		BeanItemContainer autoCompleteEntities = new BeanItemContainer(Concept.class);
+		autoCompleteEntities.addItem(new ConceptImpl("", SemanticGroup.NONE, "Hello"));
+		
+//		Object more;
+//		autoCompleteEntities.addItemAt(autoCompleteEntities.size() - 1, more);
+		
+		// TODO: AutoCompleteRelations
+			// Must feature the list of relations coming from the autocomplete cache
+			// Must feature an element acting as a separator pointing to "more" page
+			// Must feature query-by-semtype
+//		BeanItemContainer autoCompleteRelations = new BeanItemContainer();
+		ComboBox searchSubjectField = new ComboBox("Entity");
+		searchSubjectField.setItemCaption(Concept.class, "name");
+		
+		searchSubjectField.setNullSelectionAllowed(false);
+		searchSubjectField.setNewItemsAllowed(false); // TODO: may have to be set to true for an assorted "more" search to work properly
 
-		searchField.addFocusListener(e -> {
+		searchSubjectField.setImmediate(true);
+		searchSubjectField.setContainerDataSource(autoCompleteEntities);
+		
+		searchSubjectField.addFocusListener(e -> {
 			desktopView.getSearchBtn().setClickShortcut(KeyCode.ENTER);
 		});
 
-		searchField.addBlurListener(e -> {
+		searchSubjectField.addBlurListener(e -> {
 			desktopView.getSearchBtn().removeClickShortcut();
 		});
-
+		
 		desktopView.getSearchBtn().addClickListener(e -> {
-			searchBtnClickListener(searchField, e);
+			searchBtnOnClick(searchSubjectField, e);
 		});
 		
-		TokenField searchTokenField = new TokenField("Token ComboBox");
-		searchTokenField.setInputPrompt("Enter contact name or new email address");
-		searchTokenField.setWidth(1000, Unit.PIXELS);
-		searchTokenField.setInputWidth(1000, Unit.PIXELS);
-		viewingConcepts.addComponent(searchTokenField);
-
-		ComboBox searchSubjectField = new ComboBox("Regular ComboBox");
-		viewingConcepts.addComponent(searchSubjectField);
+		viewingConceptsLayout.addComponent(searchSubjectField);
 		
-//		ComboBox searchRelationField = new ComboBox("Search Concepts");
-//		viewingConcepts.addComponent(searchRelationField);
+//		ComboBox searchRelationField = new ComboBox("Relation");
+//		searchRelationField.setNullSelectionAllowed(true);
+//		searchRelationField.setImmediate(true);
+//		searchRelationField.setContainerDataSource(autoCompleteRelations);
+//		viewingConceptsLayout.addComponent(searchRelationField);
 //		
 //		ComboBox searchObjectField = new ComboBox("Search for an entity");
-//		viewingConcepts.addComponent(searchObjectField);
+//		searchObjectField.setNullSelectionAllowed(true);
+//		searchObjectField.setImmediate(true);
+//		searchObjectField.setContainerDataSource(autoCompleteEntities);
+//		viewingConceptsLayout.addComponent(searchObjectField);
 		
+		viewingConceptsLayout.addComponent(desktopView.getSearchBtn());
+
 	}
 	
 	/**
@@ -1157,10 +1208,10 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 	/**
 	 * 
-	 * @param searchField
+	 * @param searchSubjectField
 	 * @param e
 	 */
-	private void searchBtnClickListener(TextField searchField, ClickEvent e) {
+	private void searchBtnOnClick(ComboBox searchSubjectField, ClickEvent e) {
 		// only allows the user to click once
 		Button searchBtn = e.getButton();
 		searchBtn.setEnabled(false);
@@ -1181,7 +1232,6 @@ public class DesktopUI extends UI implements MessageService, Util {
 		}
 
 		queryText = queryText.trim();
-
 		query.setCurrentQueryText(queryText);
 
 		if(matchByIdentifier(queryText)) {
@@ -1209,11 +1259,13 @@ public class DesktopUI extends UI implements MessageService, Util {
 			
 			gotoStatementsTable();
 			
-		} else { // Klassical Keyword search
+		} else { 
+			// Classical Keyword search
 	
 			// Semantic type constraint in Concept-by-text results listing should initial be empty
 			query.setInitialConceptTypes(new HashSet<SemanticGroup>());
 	
+			// Constructing the search results to be shown in the table
 			ConceptSearchResults currentSearchResults = 
 					new ConceptSearchResults(viewProvider, ViewName.CONCEPTS_VIEW);
 			conceptSearchWindow = new Window();
@@ -1241,6 +1293,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	
 			UI.getCurrent().addWindow(conceptSearchWindow);
 		}
+		
 	}
 
 	private boolean matchByIdentifier(String queryText) {

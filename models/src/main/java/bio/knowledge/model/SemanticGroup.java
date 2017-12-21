@@ -38,6 +38,10 @@ import org.slf4j.LoggerFactory;
  *
  */
 public enum SemanticGroup {
+	NONE(
+			"",
+			new String[]{}
+	), 
 	ANY(
 			"Any Semantic Type",
 			new String[]{}
