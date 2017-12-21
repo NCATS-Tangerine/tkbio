@@ -240,7 +240,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 */
 	public String getMessage(String id) {
 
-		if (isNullOrEmpty(id))
+		if (nullOrEmpty(id))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage id?");
 
 		Locale locale = this.getLocale();
@@ -263,10 +263,10 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 */
 	public String getMessage(String id, String tag) {
 
-		if (isNullOrEmpty(id))
+		if (nullOrEmpty(id))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage id?");
 
-		if (isNullOrEmpty(tag))
+		if (nullOrEmpty(tag))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage tag?");
 
 		Locale locale = getLocale();
@@ -615,7 +615,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	public void displayReference(Annotation annotation) {
 		query.setCurrentAnnotation(annotation);
 		String id = annotation.getId();
-		if(!isNullOrEmpty(id))
+		if(!nullOrEmpty(id))
 			displayReference(id);
 		else
 			ConfirmDialog.show(this,
@@ -1116,7 +1116,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		// RMB: March 1, 2017 - empty queries seem too problematic now
 		// so we ignore them again!
 
-		if (isNullOrEmpty(queryText)) {
+		if (nullOrEmpty(queryText)) {
 			ConfirmDialog.show(this,
 					"<span style='text-align:center;'>Please type in a non-empty query string in the search box</span>",
 					cd -> {

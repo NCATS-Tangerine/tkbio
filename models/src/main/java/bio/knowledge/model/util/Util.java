@@ -40,17 +40,11 @@ public interface Util {
 	 * @param string
 	 * @return true if the given string is null or empty; false otherwise.
 	 */
-	default public boolean isNullOrEmpty(String string) {
-		if(string == null || string.trim().isEmpty()) {
-			return true;			
-		} else {			
-			return false;
-		}
+	default public boolean nullOrEmpty(String string) {
+		return (string == null || string.trim().isEmpty()) ;
 	}
 	
 	default public boolean nullOrEmpty(Collection<?> list) {
-		if(list==null || list.isEmpty()) 
-			return true;
-		return false;
+		return (list==null || list.isEmpty()); 
 	}
 }

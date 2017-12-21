@@ -94,7 +94,7 @@ public class PredicateFilterView extends PredicateFilterDesign implements View, 
 		
 		searchField.addValueChangeListener( e -> {
 			String queryText = searchField.getValue();
-			if (nullOrEmpty(queryText.trim())) {
+			if (nullOrEmpty(queryText)) {
 				return;
 			}
 			queryText = queryText.trim();
