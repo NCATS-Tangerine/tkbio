@@ -25,7 +25,7 @@ import java.util.List;
  * A single record of a given concept clique with details 
  */
 @ApiModel(description = "A single record of a given concept clique with details ")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-12-20T20:06:18.404-08:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-12-20T20:09:45.790-08:00")
 public class BeaconConceptWithDetails {
   @SerializedName("clique")
   private String clique = null;

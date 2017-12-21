@@ -742,7 +742,7 @@ paths:
           schema:
             type: array
             items:
-              title: BeaconKnowledgeBeacon
+              title: BeaconMetadata
               type: object
               properties:
                 id:
