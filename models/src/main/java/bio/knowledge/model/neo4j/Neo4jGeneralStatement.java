@@ -27,7 +27,7 @@ package bio.knowledge.model.neo4j;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 
-import bio.knowledge.model.Concept;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Predicate;
 
 /**
@@ -57,9 +57,9 @@ public class Neo4jGeneralStatement extends Neo4jAbstractStatement {
 	   
 	public Neo4jGeneralStatement(
     		String accessionId,
-    		Concept subject,
+    		IdentifiedConcept subject,
     		Predicate predicate,
-    		Concept object
+    		IdentifiedConcept object
     ) {
     	super(accessionId, subject, predicate, object) ;
     }

@@ -46,7 +46,7 @@ public class UserStatement extends AbstractStatement {
 		setUserId(userId);	
 	}
 
-	public UserStatement(String accessionId, Concept subject, PredicateImpl predicate, Concept object, String userId) {
+	public UserStatement(String accessionId, IdentifiedConcept subject, PredicateImpl predicate, IdentifiedConcept object, String userId) {
 		super(accessionId, subject, predicate, object);
 		setUserId(userId);	
 	}

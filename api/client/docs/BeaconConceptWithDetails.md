@@ -5,14 +5,11 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **clique** | **String** | CURIE identifying the equivalent concept clique to which the concept belongs.  |  [optional]
-**id** | **String** | CURIE identifying the specific beacon source concept being described.  |  [optional]
+**name** | **String** | Canonical human readable name of the key concept of the clique  |  [optional]
+**type** | **String** | Concept semantic type as a CURIE into a data type ontology  |  [optional]
+**taxon** | **String** | NCBI identifier of Taxon associated the concept (if applicable)  |  [optional]
 **aliases** | **List&lt;String&gt;** | set of alias CURIES in the equivalent concept clique of the concept  |  [optional]
-**name** | **String** | canonical human readable name of the concept  |  [optional]
-**semanticGroup** | **String** | concept semantic type  |  [optional]
-**synonyms** | **List&lt;String&gt;** | list of synonyms for concept  |  [optional]
-**definition** | **String** | concept definition  |  [optional]
-**details** | [**List&lt;BeaconConceptDetail&gt;**](BeaconConceptDetail.md) |  |  [optional]
-**beacon** | **String** | beacon ID  |  [optional]
+**entries** | [**List&lt;BeaconConceptBeaconEntry&gt;**](BeaconConceptBeaconEntry.md) | List of details specifically harvested from beacons, indexed by beacon  |  [optional]
 
 
 

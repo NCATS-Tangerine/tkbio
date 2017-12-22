@@ -103,11 +103,11 @@ import bio.knowledge.graph.jsonmodels.EdgeData;
 import bio.knowledge.graph.jsonmodels.Layout;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.NodeData;
+import bio.knowledge.model.AnnotatedConcept;
 import bio.knowledge.model.Annotation;
-import bio.knowledge.model.Concept;
-import bio.knowledge.model.ConceptImpl;
 import bio.knowledge.model.ConceptMapArchive;
-import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.ConceptType;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.user.User;
@@ -292,13 +292,13 @@ public class DesktopUI extends UI implements MessageService, Util {
 		return msg;
 	}
 
-	private Optional<Concept> currentConcept;
+	private Optional<IdentifiedConcept> currentConcept;
 
 	/**
 	 * 
 	 * @return
 	 */
-	public Concept getCurrentConcept() {
+	public IdentifiedConcept getCurrentConcept() {
 		return currentConcept.get();
 	}
 
@@ -348,7 +348,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * 
 	 * @param concept
 	 */
-	public void addNodeToConceptMap(Concept concept) {
+	public void addNodeToConceptMap(IdentifiedConcept concept) {
 		getConceptMap().addNodeToConceptMap(concept);
 	}
 
@@ -401,7 +401,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		}
 	}
 	
-	public void processConceptSearch(Concept concept) {
+	public void processConceptSearch(IdentifiedConcept concept) {
 		
 		addNodeToConceptMap(concept);
 
@@ -521,7 +521,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * 
 	 * @param currentConcept
 	 */
-	public void setHighlightedNode(Concept currentConcept) {
+	public void setHighlightedNode(IdentifiedConcept currentConcept) {
 		// Removing highlights from previous concept node
 		if (lastHighlightNodeId != null) {
 			highlightNode(HighlightStatus.NO);
@@ -541,7 +541,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * 
 	 * @param currentConcept
 	 */
-	private void setConceptInSession(Concept currentConcept) {
+	private void setConceptInSession(IdentifiedConcept currentConcept) {
 		setCurrentConceptTitle(currentConcept.getName());
 		setHighlightedNode(currentConcept);
 	}
@@ -661,7 +661,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * @param concept
 	 * @param mode
 	 */
-	public void queryUpdate(Concept concept, RelationSearchMode mode) {
+	public void queryUpdate(IdentifiedConcept concept, RelationSearchMode mode) {
 
 		String conceptName = concept.getName();
 
@@ -696,7 +696,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	@Autowired
 	ConceptDetailsHandler detailsHandler;
 
-	private String getCurrentConceptTitle(Concept concept) {
+	private String getCurrentConceptTitle(IdentifiedConcept concept) {
 		String cct = concept.getName()+" ("+concept.getClique()+")";
 		return cct;
 	}
@@ -705,7 +705,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * 
 	 * @param concept
 	 */
-	private void setConceptLabelDescription(Concept concept) {
+	private void setConceptLabelDescription(IdentifiedConcept concept) {
 
 		HorizontalLayout popupLayout = getDesktop().getPopUpLayout();
 
@@ -886,6 +886,21 @@ public class DesktopUI extends UI implements MessageService, Util {
 		
 		initConceptLabelDescription();
 		initSearchFields();		
+		/*
+		 * Deprecating this checkbox triggered version of matchByIdentifier
+		 * Try to directly infer presence of a CURIE in the queryText (below)
+		 
+		// Choice of matching either by CURIE or by keywords
+		CheckBox matchByIdCb = new CheckBox("Match By Identifier");
+		matchByIdCb.setValue(query.matchByIdentifier());
+		matchByIdCb.addValueChangeListener(
+				event -> query.setMatchingMode(matchByIdCb.getValue())
+		);
+		viewingConcepts.addComponent(matchByIdCb);
+        */
+		
+		// Button to reinitialize the query and map
+		desktopView.getClearMapBtn().addClickListener(e -> newQueryConfirmation(e));
 
 		desktopView.getDataTabSheet().addSelectedTabChangeListener(e -> {
 			// Find the tabsheet
@@ -983,7 +998,6 @@ public class DesktopUI extends UI implements MessageService, Util {
 					getConceptMap().setZoom(value);
 				}
 			}
-		
 		});
 
 		// RMB: August 15, 2016
@@ -1315,7 +1329,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 	/**
 	 * 
-	 * @param searchSubjectField
+	 * @param searchField
 	 * @param e
 	 */
 	private void searchBtnOnClick(ComboBox searchSubjectField, ClickEvent e) {
@@ -1325,7 +1339,10 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 		String queryText = desktopView.getSearch().getValue();
 
-		if (nullOrEmpty(queryText.trim())) {
+		// RMB: March 1, 2017 - empty queries seem too problematic now
+		// so we ignore them again!
+
+		if (nullOrEmpty(queryText)) {
 			ConfirmDialog.show(this,
 					"<span style='text-align:center;'>Please type in a non-empty query string in the search box</span>",
 					cd -> {
@@ -1345,12 +1362,11 @@ public class DesktopUI extends UI implements MessageService, Util {
 			 * Matching by CURIE - resolve the matching concept 
 			 * then go directly to the statements table
 			 */
-			 Optional<Concept> conceptOpt = 
-					 			conceptService.findByIdentifier(queryText);
+			 Optional<IdentifiedConcept> conceptOpt = conceptService.findByIdentifier(queryText);
 			 
 			if (!conceptOpt.isPresent()) {
 				ConfirmDialog.show(this,
-					"<span style='text-align:center;'>Concept identified by '"+queryText+"' could not be resolved?<br/>"
+					"<span style='text-align:center;'>Concept identified by '" + queryText + "' could not be resolved.<br/>"
 							+ "Please check if you have a valid CURIE identifier for your concept of interest!</span>",
 					cd -> {
 					}).setContentMode(ConfirmDialog.ContentMode.HTML);
@@ -1358,7 +1374,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 				return;
 			}
 			
-			Concept concept = conceptOpt.get();
+			IdentifiedConcept concept = conceptOpt.get();
 			processConceptSearch(concept);
 
 			searchBtn.setEnabled(true);
@@ -1397,13 +1413,12 @@ public class DesktopUI extends UI implements MessageService, Util {
 	}
 
 	private boolean matchByIdentifier(String queryText) {
-		// looks like a CURIE?
-		if(queryText.indexOf(':')>0) {
+		Matcher matcher = Pattern.compile("(\\w*):(\\w*)").matcher(queryText);
+		if (matcher.matches()) {
 			return true;
 		} else {
 			return false;
 		}
-		//return query.matchByIdentifier();
 	}
 
 	/**
@@ -1567,19 +1582,21 @@ public class DesktopUI extends UI implements MessageService, Util {
 			List<String> beacons = query.getCustomBeacons();
 			String sessionId = query.getUserSessionId();
 			
-			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId,beacons,sessionId);
+			CompletableFuture<AnnotatedConcept> future = 
+					kbService.getConceptDetails(conceptId,beacons,sessionId);
 			
 			try {
-				List<Concept> concepts = future.get(
+				AnnotatedConcept concept = future.get(
 						kbService.weightedTimeout(), 
 						KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
 				);
-				Concept concept = concepts.get(0);
+				
 				query.setCurrentQueryConceptById(concept.getId());
 				setCurrentConceptTitle(concept.getName());
 				
 			} catch (InterruptedException | ExecutionException | TimeoutException | IndexOutOfBoundsException e) {
-//				e.printStackTrace();
+				// e.printStackTrace();
+				_logger.error("DesktopUI.loadMap() error: "+e.getMessage()); 
 			}
 			
 			DesktopUI.getCurrent().getConceptMap().alignToCenter();

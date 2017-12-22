@@ -29,7 +29,7 @@ package bio.knowledge.datasource;
 import java.util.HashMap;
 import java.util.Map;
 
-import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.ConceptType;
 
 /**
  * @author Richard
@@ -44,7 +44,7 @@ public abstract class AbstractComplexDataService
 	protected AbstractComplexDataService( 
 			DataSource dataSource, 
 			String serviceId,
-			SemanticGroup targetConceptType, 
+			ConceptType targetConceptType, 
 			String name 
 	) {
 		super( dataSource, serviceId, targetConceptType, name );
@@ -56,7 +56,7 @@ public abstract class AbstractComplexDataService
 	protected AbstractComplexDataService( 
 			DataSource dataSource, 
 			String serviceId,
-			SemanticGroup targetConceptType 
+			ConceptType targetConceptType 
 	) {
 		this( dataSource, serviceId, targetConceptType, "");
 	}

@@ -98,4 +98,22 @@ public class PredicateImpl extends AbstractIdentifiedEntity implements Predicate
 	public void addBeacon(PredicateBeacon beacon) {
 		beacons.add(beacon);
 	}
+	
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+    	
+       if (!(obj instanceof PredicateImpl))
+            return false;
+       
+        if (obj == this)
+            return true;
+
+        PredicateImpl p = (PredicateImpl) obj;
+        return getName().equals(p.getName());
+    }
 }

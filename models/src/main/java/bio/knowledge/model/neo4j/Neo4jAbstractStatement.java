@@ -31,21 +31,21 @@ import java.util.List;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
 
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.Evidence;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.neo4j.Neo4jAbstractIdentifiedEntity;
 
 public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEntity implements Statement {
 	@Relationship( type="SUBJECT" )
-    private List<Concept> subjects = new ArrayList<Concept>() ;
+    private List<IdentifiedConcept> subjects = new ArrayList<IdentifiedConcept>() ;
     
 	@Relationship( type="RELATION" )
     private Predicate relation ;
 
 	@Relationship( type="OBJECT" )
-    private List<Concept> objects = new ArrayList<Concept>() ;
+    private List<IdentifiedConcept> objects = new ArrayList<IdentifiedConcept>() ;
 	
 	/*
 	 *  The Transient subject and object attributes here
@@ -54,10 +54,10 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 */
 	
 	@Transient
-	private Concept subject ;
+	private IdentifiedConcept subject ;
 	
 	@Transient
-	private Concept object ;
+	private IdentifiedConcept object ;
 
     @Relationship( type="EVIDENCE" )
 	protected Evidence evidence ;
@@ -100,9 +100,9 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
      */
     protected Neo4jAbstractStatement(
     		String accessionId,
-    		Concept subject,
+    		IdentifiedConcept subject,
     		Predicate predicate,
-    		Concept object
+    		IdentifiedConcept object
     ) {
     	super(accessionId,subject.getName()+" - "+predicate.getName()+" -> "+object.getName(),"") ;
     	setSubject(subject);
@@ -130,9 +130,9 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 * @see bio.knowledge.model.Statement#addSubject(bio.knowledge.model.neo4j.Neo4jConcept)
 	 */
 	@Override
-	public void addSubject(Concept subject) {
+	public void addSubject(IdentifiedConcept subject) {
 		if(subjects==null)
-			subjects = new ArrayList<Concept>() ;
+			subjects = new ArrayList<IdentifiedConcept>() ;
 		subjects.add(subject);
 	}
 	
@@ -140,7 +140,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 * @see bio.knowledge.model.Statement#setSubjects(java.util.List)
 	 */
 	@Override
-	public void setSubjects(List<Concept> subjects) {
+	public void setSubjects(List<IdentifiedConcept> subjects) {
 		this.subjects = subjects;
 	}
 
@@ -148,7 +148,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 * @see bio.knowledge.model.Statement#getSubjects()
 	 */
 	@Override
-	public List<Concept> getSubjects() {
+	public List<IdentifiedConcept> getSubjects() {
 		return subjects;
 	}
 	
@@ -156,7 +156,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 * @see bio.knowledge.model.Statement#setSubject(bio.knowledge.model.neo4j.Neo4jConcept)
 	 */
 	@Override
-	public  void setSubject(Concept subject) {
+	public  void setSubject(IdentifiedConcept subject) {
 		addSubject(subject);
 		this.subject = subject ;
 	}
@@ -165,7 +165,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 * @see bio.knowledge.model.Statement#getSubject()
 	 */
 	@Override
-	public Concept getSubject() {
+	public IdentifiedConcept getSubject() {
 		return subject ;
 	}
 
@@ -188,9 +188,9 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 * @see bio.knowledge.model.Statement#addObject(bio.knowledge.model.neo4j.Neo4jConcept)
 	 */
 	@Override
-	public void addObject(Concept object) {
+	public void addObject(IdentifiedConcept object) {
 		if(objects==null)
-			objects = new ArrayList<Concept>() ;
+			objects = new ArrayList<IdentifiedConcept>() ;
 		objects.add(object);
 	}
 	
@@ -198,7 +198,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 * @see bio.knowledge.model.Statement#setObjects(java.util.List)
 	 */
 	@Override
-	public void setObjects(List<Concept> objects) {
+	public void setObjects(List<IdentifiedConcept> objects) {
 		this.objects = objects;
 	}
 
@@ -206,7 +206,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 * @see bio.knowledge.model.Statement#getObjects()
 	 */
 	@Override
-	public List<Concept> getObjects() {
+	public List<IdentifiedConcept> getObjects() {
 		return objects;
 	}
 	
@@ -214,7 +214,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 * @see bio.knowledge.model.Statement#setObject(bio.knowledge.model.neo4j.Neo4jConcept)
 	 */
 	@Override
-	public void setObject(Concept object) {
+	public void setObject(IdentifiedConcept object) {
 		addObject(object);
 		this.object = object ;
 	}
@@ -223,7 +223,7 @@ public abstract class Neo4jAbstractStatement extends Neo4jAbstractIdentifiedEnti
 	 * @see bio.knowledge.model.Statement#getObject()
 	 */
 	@Override
-	public Concept getObject() {
+	public IdentifiedConcept getObject() {
 		return object ;
 	}
 	

@@ -50,8 +50,8 @@ import com.vaadin.ui.VerticalLayout;
 
 import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.datasource.wikidata.ConceptDescriptor;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.GeneralStatement;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.RdfUtil;
@@ -86,9 +86,14 @@ public class ConceptDetailsHandler {
 	@Autowired
 	private WikiDataService wikiDataService;
 
-	public VerticalLayout getDetails(Concept selectedConcept) {
+	public VerticalLayout getDetails(IdentifiedConcept selectedConcept) {
 		
 		query.setCurrentSelectedConcept(selectedConcept);
+		
+		/*
+		 * TODO - WE NEED TO RETRIEVE THE NEW 
+		 * CONCEPT DETAILS HERE, FOR DISPLAY
+		 */
 		
 		try {
 			// resetting descriptionBuilder
@@ -119,9 +124,11 @@ public class ConceptDetailsHandler {
 			cliqueLabel.setValue(selectedConcept.getClique());
 			accessionLabel.setValue(selectedConcept.getId());
 			nameLabel.setValue(selectedConcept.getName());
-			typeLabel.setValue(selectedConcept.getSemanticGroup().getDescription());
+			typeLabel.setValue(selectedConcept.getType().getDescription());
 			aliasesLabel.setContentMode(ContentMode.HTML);
-			aliasesLabel.setValue(String.join("<br/>", selectedConcept.getCrossReferences()));
+			
+			// TODO - RMB Dec 2017 We need to upgrade our presentation of aliases here!
+			//aliasesLabel.setValue(String.join("<br/>", selectedConcept.getCrossReferences()));
 		} else {
 			// For some reason, for some concepts, selectedConcept may be
 			// null?
@@ -255,7 +262,7 @@ public class ConceptDetailsHandler {
 	 *            embedded meta-data)
 	 * @return the full Vaadin component to be displayed as the descriptor value
 	 */
-	private Component formatDisplayValue(Concept currentConcept, ConceptDescriptor descriptor, String rawValue) {
+	private Component formatDisplayValue(IdentifiedConcept currentConcept, ConceptDescriptor descriptor, String rawValue) {
 		String fieldId = descriptor.getQualifiedId();
 		Boolean isRetrievable = descriptor.isRetrievable();
 
@@ -344,7 +351,7 @@ public class ConceptDetailsHandler {
 						addToMap.setStyleName("concept-detail-button");
 						
 						addToMap.addClickListener(e -> {
-							Concept object = conceptService.annotate("wd:" + valueObjectId);
+							IdentifiedConcept object = conceptService.annotate("wd:" + valueObjectId);
 							if(object==null) return;
 							
 							// If annotated 'object' concept exists, add it to the concept map!
@@ -378,7 +385,7 @@ public class ConceptDetailsHandler {
 		}
 	}
 
-	private void addWikiDataItemToMapFromList(Concept subject, String relation, ComboBox source, Map<String, String> itemMap) {
+	private void addWikiDataItemToMapFromList(IdentifiedConcept subject, String relation, ComboBox source, Map<String, String> itemMap) {
 		
 		String id = (String) source.getValue();
 		if (itemMap.containsKey(id)) {
@@ -387,7 +394,7 @@ public class ConceptDetailsHandler {
 			 * WikiData id's are often clique id's, but perhaps not always... 
 			 * this 'annotate' call may occasionally fail?
 			 */
-			Concept object = conceptService.annotate("wd:" + itemMap.get(id));
+			IdentifiedConcept object = conceptService.annotate("wd:" + itemMap.get(id));
 			
 			if(object==null) return;
 			

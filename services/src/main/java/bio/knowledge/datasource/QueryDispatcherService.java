@@ -30,7 +30,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.springframework.stereotype.Service;
 
-import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.datasource.ResultSet;
 
 /**
@@ -48,7 +48,7 @@ public class QueryDispatcherService {
 	 */
 	CompletableFuture< ResultSet > searchByCUI( 
 			String cui, 
-			SemanticGroup type 
+			ConceptType type 
 	) throws IllegalArgumentException {
 		
 		throw new IllegalArgumentException("QueryDispatcherService.search() not yet implemented!") ;

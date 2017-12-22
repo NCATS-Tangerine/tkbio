@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Translator Knowledge Beacon Aggregator API
-  version: 1.0.6
+  version: 1.0.7
   contact:
     url: 'http://starinformatics.com'
     email: richard@starinformatics.com
@@ -110,7 +110,7 @@ paths:
             which to match concept names and synonyms, e.g. diabetes.
           required: true
           type: string
-        - name: semanticGroups
+        - name: types
           in: query
           description: >
             a (url-encoded) space-delimited set of semantic groups (specified as
@@ -164,126 +164,39 @@ paths:
                     CURIE identifying the inferred equivalent concept clique to
                     which the concept belongs. This is assigned by an identifier
                     precedence heuristic by the beacon-aggregator
-                id:
-                  type: string
-                  description: |
-                    CURIE for the concept in the specified knowledge beacon
-                aliases:
-                  type: array
-                  description: >
-                    set of alias CURIES in the equivalent concept clique of the
-                    concept
-                  items:
-                    type: string
                 name:
                   type: string
                   description: |
-                    canonical human readable name of the concept
-                semanticGroup:
+                    Canonical human readable name of the concept
+                type:
                   type: string
                   description: |
-                    concept semantic type
-                synonyms:
-                  type: array
-                  description: |
-                    list of synonyms for concept
-                  items:
-                    type: string
-                definition:
+                    Concept semantic type as a CURIE into a data type ontology
+                taxon:
                   type: string
-                  description: |
-                    concept definition
-                beacon:
-                  type: string
-                  description: |
-                    beacon ID
+                  description: >
+                    NCBI identifier of Taxon associated the concept (if
+                    applicable)
           description: |
             Successful response with concept list returned
           examples:
             application/json:
-              - clique: 'WD:Q6591532'
-                id: 'wd:Q6591532'
-                aliases:
-                  - 'wd:Q6591532'
+              - clique: 'UNIPROT:Q14191'
                 name: 'WRN protein, human'
-                semanticGroup: CHEM
-                synonyms:
-                  - RecQ3
-                  - Werner Syndrome ATP-Dependent Helicase
-                  - 'RECQL2 protein, human'
-                  - EC 3.1.-.-
-                  - 'WRN protein, human'
-                  - WRN
-                  - Exonuclease WRN
-                  - Werner Syndrome Protein
-                  - RecQ Protein-Like 2
-                  - EC 3.6.4.12
-                  - 'RECQ3 protein, human'
-                  - 'Werner syndrome helicase, human'
-                  - WRN Protein
-                  - 'DNA Helicase, RecQ-Like Type 3'
-                definition: >-
-                  Werner syndrome ATP-dependent helicase (1432 aa, ~162 kDa) is
-                  encoded by the human WRN gene. This protein plays a role in
-                  both magnesium and ATP-dependent DNA-helicase activity and
-                  3\'->5\' exonuclease activity towards double-stranded DNA with
-                  a 5\'-overhang.
-                beacon: '3'
-              - id: 'wd:Q18042562'
+                type: 'umls_sg:CHEM'
+                taxon: '9606'
+              - clique: 'NCBIGENE:56897'
                 name: WRNIP1
-                semanticGroup: GENE
-                synonyms:
-                  - WHIP
-                  - Werner helicase interacting protein 1
-                  - WRNIP1
-                  - bA420G6.2
-                definition: human gene
-                beacon: '4'
-              - id: 'wd:Q14883734'
+                type: 'umls_sg:GENE'
+                taxon: '9606'
+              - clique: 'NCBIGENE:7486'
                 name: WRN
-                semanticGroup: GENE
-                synonyms:
-                  - RECQ3
-                  - RECQL3
-                  - Werner syndrome RecQ like helicase
-                  - RECQL2
-                definition: human gene
-                beacon: '4'
-              - id: 'wd:Q1154619'
+                type: 'umls_sg:GENE'
+                taxon: '9606'
+              - clique: 'DOID:5686'
                 name: Werner Syndrome
-                semanticGroup: DISO
-                synonyms:
-                  - Werner Syndrome
-                  - Pangeria
-                  - 'Syndrome, Werner'
-                  - 'Progeria, Adult'
-                  - 'Werner Syndrome [Disease/Finding]'
-                  - Werner syndrome (disorder)
-                  - adult progeria
-                  - Werner
-                  - syndromes werner
-                  - 'Syndrome, Werner\''s'
-                  - WRN
-                  - Werner\'s syndrome
-                  - adults progeria
-                  - Werner syndrome (adult progeria) (diagnosis)
-                  - Werner syndrome (adult progeria)
-                  - 'Syndrome, Werners'
-                  - Adult premature aging syndrome
-                  - syndromes werner\'s
-                  - Werners Syndrome
-                  - syndrome werner
-                  - Progeria of the adult
-                  - WS
-                  - syndromes werners
-                  - Adult premature ageing syndrome
-                definition: >-
-                  autosomal recessive disorder that causes premature aging in
-                  adults, characterized by sclerodermal skin changes, cataracts,
-                  subcutaneous calcifications, muscular atrophy, a tendency to
-                  diabetes mellitus, aged appearance of the face, baldness, and
-                  a high incidence of neoplastic disease.
-                beacon: '3'
+                type: 'umls_sg:DISO'
+                taxon: '9606'
   '/clique/{identifier}':
     get:
       description: >
@@ -360,78 +273,130 @@ paths:
       responses:
         '200':
           schema:
-            type: array
-            items:
-              title: BeaconConceptWithDetails
-              type: object
-              properties:
-                clique:
+            title: BeaconConceptWithDetails
+            type: object
+            description: |
+              A single record of a given concept clique with details
+            properties:
+              clique:
+                type: string
+                description: >
+                  CURIE identifying the equivalent concept clique to which the
+                  concept belongs.
+              name:
+                type: string
+                description: |
+                  Canonical human readable name of the key concept of the clique
+              type:
+                type: string
+                description: |
+                  Concept semantic type as a CURIE into a data type ontology
+              taxon:
+                type: string
+                description: >
+                  NCBI identifier of Taxon associated the concept (if
+                  applicable)
+              aliases:
+                type: array
+                description: >
+                  set of alias CURIES in the equivalent concept clique of the
+                  concept
+                items:
                   type: string
-                  description: >
-                    CURIE identifying the equivalent concept clique to which the
-                    concept belongs.
-                id:
-                  type: string
-                  description: >
-                    CURIE identifying the specific beacon source concept being
-                    described.
-                aliases:
-                  type: array
-                  description: >
-                    set of alias CURIES in the equivalent concept clique of the
-                    concept
-                  items:
-                    type: string
-                name:
-                  type: string
-                  description: |
-                    canonical human readable name of the concept
-                semanticGroup:
-                  type: string
-                  description: |
-                    concept semantic type
-                synonyms:
-                  type: array
-                  description: |
-                    list of synonyms for concept
-                  items:
-                    type: string
-                definition:
-                  type: string
-                  description: |
-                    concept definition
-                details:
-                  type: array
-                  items:
-                    title: BeaconConceptDetail
-                    type: object
-                    properties:
-                      tag:
+              entries:
+                type: array
+                description: >
+                  List of details specifically harvested from beacons, indexed
+                  by beacon
+                items:
+                  title: BeaconConceptBeaconEntry
+                  type: object
+                  properties:
+                    beacon:
+                      type: string
+                      description: |
+                        Index number of beacon providing these concept details
+                    id:
+                      type: string
+                      description: >
+                        CURIE identifying the specific beacon source concept
+                        being described.
+                    synonyms:
+                      type: array
+                      description: |
+                        List of synonymous names or identifiers for the concept
+                      items:
                         type: string
+                    definition:
+                      type: string
+                      description: |
+                        Concept definition provided by a given beacon
+                    details:
+                      type: array
+                      items:
+                        title: BeaconConceptDetail
+                        type: object
                         description: |
-                          property name
-                      value:
-                        type: string
-                        description: |
-                          property value
-                beacon:
-                  type: string
-                  description: |
-                    beacon ID
+                          Additional attributes associated with a concept
+                        properties:
+                          tag:
+                            type: string
+                            description: |
+                              Attribute name
+                          value:
+                            type: string
+                            description: |
+                              Attribute value
           description: |
-            Successful response with clique concept details returned
+            Successful response with details of a clique concept returned
           examples:
             application/json:
-              - clique: 'wd:Q14883734'
-                aliases:
-                  - 'wd:Q14883734'
-                  - 'OMIM:277700'
-                name: WRN
-                semanticGroup: GENE
-                synonyms: []
-                definition: Werner Syndrome Gene
-                details: []
-                beacon: '3'
+              clique: 'wd:Q14883734'
+              name: Werner Syndrome
+              type: 'umls_sg:DISO'
+              taxon: '9606'
+              aliases:
+                - 'wd:Q14883734'
+                - 'OMIM:277700'
+              entries:
+                - beacon: '3'
+                  id: 'OMIM:277700'
+                  synonyms:
+                    - Werner Syndrome
+                    - Pangeria
+                    - 'Syndrome, Werner'
+                    - 'Progeria, Adult'
+                    - 'Werner Syndrome [Disease/Finding]'
+                    - Werner syndrome (disorder)
+                    - adult progeria
+                    - Werner
+                    - syndromes werner
+                    - 'Syndrome, Werner\''s'
+                    - WRN
+                    - Werner\'s syndrome
+                    - adults progeria
+                    - Werner syndrome (adult progeria) (diagnosis)
+                    - Werner syndrome (adult progeria)
+                    - 'Syndrome, Werners'
+                    - Adult premature aging syndrome
+                    - syndromes werner\'s
+                    - Werners Syndrome
+                    - syndrome werner
+                    - Progeria of the adult
+                    - WS
+                    - syndromes werners
+                    - Adult premature ageing syndrome
+                  definition: >-
+                    autosomal recessive disorder that causes premature aging in
+                    adults, characterized by sclerodermal skin changes,
+                    cataracts, subcutaneous calcifications, muscular atrophy, a
+                    tendency to diabetes mellitus, aged appearance of the face,
+                    baldness, and a high incidence of neoplastic disease.
+                  details:
+                    - tag: Symptom
+                      value: Premature greying of hair
+                    - tag: Symptom
+                      value: Muscular atrophy
   /predicates:
     get:
       description: >
@@ -457,7 +422,7 @@ paths:
                   description: >
                     list of metadata for beacons that support the use of this
                     predicate relation
-                  items: 
+                  items:
                     title: BeaconPredicateRecord
                     type: object
                     properties:
@@ -536,15 +501,13 @@ paths:
             the set of concept-relations matched by the 'source' concepts.
           required: false
           type: string
-        - name: semanticGroups
+        - name: types
           in: query
           description: >
-            a (url-encoded, space-delimited) string of semantic groups
-            (specified as codes CHEM, GENE, ANAT, etc.) to which to constrain
-            'target' concepts associated with the given 'source' concept  (see
-            [Semantic
-            Groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the
-            full list of codes)
+            a (url-encoded, space-delimited) string of concept semantic types
+            (specified as CURIEs of Translator ontology data type terms) to
+            which to constrain 'target' concepts associated with the given
+            'source' concept.
           required: false
           type: string
         - name: pageNumber
@@ -610,13 +573,11 @@ paths:
                     name:
                       type: string
                       description: human readable label of subject concept
-                    semanticGroup:
+                    type:
                       type: string
                       description: >
-                        a semantic group for the subject concept (specified as a
-                        code CHEM, GENE, etc. - see [Semantic
-                        Groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt)
-                        for the full list of codes)
+                        a semantic group for the subject concept (specified  as
+                        a CURIE of a Translator data type ontology term)
                 predicate:
                   title: BeaconStatementPredicate
                   type: object
@@ -644,13 +605,11 @@ paths:
                     name:
                       type: string
                       description: human readable label of object concept
-                    semanticGroup:
+                    type:
                       type: string
                       description: >
-                        a semantic group for the subject concept (specified as a
-                        code CHEM, GENE, etc. - see [Semantic
-                        Groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt)
-                        for the full list of codes)
+                        a semantic group for the object concept (specified  as a
+                        CURIE of a Translator data type ontology term)
                 beacon:
                   type: string
                   description: |
@@ -663,7 +622,7 @@ paths:
                   id:
                     - 'wd:Q14912054'
                   name: KCNJ11
-                  semanticGroup: GENE
+                  type: 'umls_sg:GENE'
                 predicate:
                   id:
                     - 'kbp:10'
@@ -672,7 +631,7 @@ paths:
                   id:
                     - 'wd:Q2898645'
                   name: Neonatal diabetes mellitus
-                  semanticGroup: DISO
+                  type: 'umls_sg:DISO'
                 beacon: '1'
   '/evidence/{statementId}':
     get:
