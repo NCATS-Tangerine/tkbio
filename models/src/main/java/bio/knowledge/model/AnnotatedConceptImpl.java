@@ -9,42 +9,35 @@ public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements Annot
 
 	public static final String SEMGROUP_FIELD_START = "[" ;
 	public static final String SEMGROUP_FIELD_END   = "]" ;
-	
+
 	private String beaconSource = "";
 
-    // Cross-reference to the 
-    // Genetic Home References identifier 
-    // for genes and disorders
-    private String ghr ;
-    
-	// Human Metabolome Database identifier
-	// i.e. to use to access record at
-	// http://www.hmdb.ca/metabolites/HMDB06408
-	private String hmdbId ; 
-	
-    // Cross-reference to the 
-    // Chemical Entities of Biological Interest (ChEBI)
-    private String chebi ;
-    
-    private Set<String> dbLinks = new HashSet<String>() ;
-    
-    private Set<String> terms = new HashSet<String>() ;
-    
+	private Set<String> dbLinks = new HashSet<String>() ;
+
+	private Set<String> terms = new HashSet<String>() ;
+
 	private String accessionId;
-    
-    protected AnnotatedConceptImpl() {
-    	super() ;
-    }
-    public AnnotatedConceptImpl( String clique, String id, ConceptType type, String name ) {
-    	super(clique,name,type,"") ;
-    	this.setAccessionId(id);
-    }
-    
-    public AnnotatedConceptImpl( String clique, String id, String type, String name ) {
-    	super(clique,name,type,"") ;
-    	this.setAccessionId(id);
-    }
-    
+
+	protected AnnotatedConceptImpl() {
+		super() ;
+	}
+	public AnnotatedConceptImpl( String clique, String id, ConceptType type, String name ) {
+		super(clique,name,type,"") ;
+		this.setAccessionId(id);
+	}
+
+	public AnnotatedConceptImpl( String clique, String id, String type, String name ) {
+		super(clique,name,type,"") ;
+		this.setAccessionId(id);
+	}
+
+	public String getAccessionId() {
+		return accessionId;
+	}
+	public void setAccessionId(String accessionId) {
+		this.accessionId = accessionId;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see bio.knowledge.model.Concept#setBeaconSource(java.lang.String)
@@ -62,81 +55,33 @@ public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements Annot
 	public String getBeaconSource() {
 		return beaconSource;
 	}
-	
-    /* (non-Javadoc)
-	 * @see bio.knowledge.model.neo4j.Concept#getGhr()
-	 */
-	@Override
-	public String getGhr() {
-		return ghr;
-	}
-
-	/* (non-Javadoc)
-	 * @see bio.knowledge.model.neo4j.Concept#setGhr(java.lang.String)
-	 */
-	@Override
-	public void setGhr(String ghr) {
-		this.ghr = ghr;
-	}
-	
-	/* (non-Javadoc)
-	 * @see bio.knowledge.model.neo4j.Concept#getHmdbId()
-	 */
-	@Override
-	public String getHmdbId() {
-		return hmdbId ;
-	}
-	
-	/* (non-Javadoc)
-	 * @see bio.knowledge.model.neo4j.Concept#setHmdbId(java.lang.String)
-	 */
-	@Override
-	public void setHmdbId(String hmdbId) {
-		this.hmdbId = hmdbId;
-	}	
-
-	/* (non-Javadoc)
-	 * @see bio.knowledge.model.neo4j.Concept#getChebi()
-	 */
-	@Override
-	public String getChebi() {
-		return chebi;
-	}
-
-	/* (non-Javadoc)
-	 * @see bio.knowledge.model.neo4j.Concept#setChebi(java.lang.String)
-	 */
-	@Override
-	public void setChebi(String chebi) {
-		this.chebi = chebi;
-	}
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.neo4j.Concept#getCrossReferences()
 	 */
-    @Override
+	@Override
 	public Set<String> getCrossReferences() {
-    	return dbLinks ;
-    }
-    
+		return dbLinks ;
+	}
+
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.neo4j.Concept#getTerms()
 	 */
-    @Override
+	@Override
 	public Set<String> getTerms() {
-    	return terms ;
-    }
+		return terms ;
+	}
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.neo4j.Concept#toString()
 	 */
 	@Override
-    public String toString() {
-    	return getName() ;
-    }
-	
+	public String toString() {
+		return getName() ;
+	}
+
 	Set<Feature> features = new HashSet<Feature>();
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see bio.knowledge.model.AnnotatedConcept#setFeatures(java.util.Set)
@@ -151,11 +96,5 @@ public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements Annot
 	 */
 	public Set<Feature> getFeatures() {
 		return features;
-	}
-	public String getAccessionId() {
-		return accessionId;
-	}
-	public void setAccessionId(String accessionId) {
-		this.accessionId = accessionId;
 	}
 }
