@@ -32,6 +32,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -993,6 +994,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	}
 	
 	public void initSearchFields() {
+		
 		HorizontalLayout viewingConceptsLayout = desktopView.getViewingConcepts();		
 	
 //		TextField searchField = desktopView.getSearch();
@@ -1026,8 +1028,30 @@ public class DesktopUI extends UI implements MessageService, Util {
 				//
 			// Must feature an element acting as a separator pointing to "more" page
 			// Must feature query-by-semtype
-		BeanItemContainer autoCompleteEntities = new BeanItemContainer(Concept.class);
-		autoCompleteEntities.addItem(new ConceptImpl("", SemanticGroup.NONE, "Hello"));
+		BeanItemContainer autoCompleteEntities = new BeanItemContainer(IdentifiedEntity.class);
+		
+		// TODO: add menu stuff
+		// these values constitute names of menu items, that must seem like concepts within the restricted scope of the ComboBox, 
+		// but must not be seen as valid values for a query
+		String[] menuItems = {"Concepts","Semantic Types", "Find More"};
+		IdentifiedEntity conceptMenuItem = new ConceptImpl("", null, menuItems[0]);
+		IdentifiedEntity semtypeMenuItem = new ConceptImpl("", null, menuItems[1]);
+		IdentifiedEntity findMoreMenutItem = new ConceptImpl("", null, menuItems[2]);
+
+		autoCompleteEntities.addItem(conceptMenuItem);
+		autoCompleteEntities.addItem(semtypeMenuItem);
+		autoCompleteEntities.addItem(findMoreMenutItem);
+
+		// TODO: add concept stuff from autocomplete
+
+		// TODO: add semgroup stuff
+		for ( SemanticGroup sg : EnumSet.allOf(SemanticGroup.class)) {
+			IdentifiedEntity semtypeItem = new ConceptImpl("", null, sg.name());
+			autoCompleteEntities.addItemAfter(semtypeMenuItem, semtypeItem);
+		}
+		
+		// "Find More" must be the final element after all is said and done
+		assert(menuItems[menuItems.length - 1] == "Find More");
 		
 //		Object more;
 //		autoCompleteEntities.addItemAt(autoCompleteEntities.size() - 1, more);
@@ -1056,14 +1080,19 @@ public class DesktopUI extends UI implements MessageService, Util {
             					.noneMatch( data -> ((IdentifiedEntity) data).getName().equalsIgnoreCase(newItemCaption));
             
             if (newItem) {
-            	
+            	// Search for a new option
+            		// TODO: see the searchBtnOnClick callback for what this behavior currently looks like?
+            	initConceptSearchResultsWindow();
+
                 // Adds newly discovered option
+            	
 //                countriesData.add(newCountryData);
 //                sample.setItems(countriesData);
 //                sample.setSelectedItem(newCountryData);
             	
             	// Else the option is neither in the current autocomplete container, or declared as being found in the database
             	// Clear it
+            	
             }
             
 		});
@@ -1089,6 +1118,37 @@ public class DesktopUI extends UI implements MessageService, Util {
 					// if a concept entity then 
 							// modify statement query to include this concept, AND
 							// set the ComboBox to that value (do not reset it to any other value)
+			boolean isMenuItem = false;
+			for (int i = 0; i < menuItems.length; i++) {
+				if (String.valueOf(e.getProperty().getValue()) == menuItems[i]) { 
+					isMenuItem = true; 
+					break; 
+				};
+			}
+			
+			if (isMenuItem) {
+				String menuItemName = String.valueOf(e.getProperty().getValue());
+				// first, deny the item
+				searchSubjectField.clear();
+				
+				// check the action needed against a switch case
+				switch (menuItemName) {
+					// case "Concepts":
+						// do nothing
+					// break;
+					// case "Semantic Types":
+						// do nothing
+					// break;
+					case "Find More":
+						// Go into the modal menu for adding items, but blank initial search 
+						initConceptSearchResultsWindow();
+						break;
+					default:
+						break;
+				}
+			} else {
+				// set the query
+			}
 			
 			Notification.show("Value changed:",
 	                String.valueOf(e.getProperty().getValue()),
