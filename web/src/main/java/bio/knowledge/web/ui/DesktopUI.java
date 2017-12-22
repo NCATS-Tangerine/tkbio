@@ -1162,6 +1162,8 @@ public class DesktopUI extends UI implements MessageService, Util {
 		
 		searchSubjectField.setImmediate(true);
 		searchSubjectField.setStyleName("no-picker");
+		// set the size of the autocomplete popup to the size of the dataset, for now.
+		searchSubjectField.setPageLength(autoCompleteEntities.size()); 
 
 		viewingConceptsLayout.addComponent(searchSubjectField);
 		
