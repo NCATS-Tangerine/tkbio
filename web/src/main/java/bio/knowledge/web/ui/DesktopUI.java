@@ -1181,12 +1181,12 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 	/**
 	 * Match the query against the form of A:B where A and B can be
-	 * of any word characters [a-zA-Z_0-9].
+	 * of any non-whitespace characters.
 	 * @param queryText
 	 * @return true if the pattern is matched; otherwise false.
 	 */
 	private boolean matchByIdentifier(String queryText) {
-		Matcher matcher = Pattern.compile("(\\w*):(\\w*)").matcher(queryText);
+		Matcher matcher = Pattern.compile("(\\S*):(\\S*)").matcher(queryText);
 		if (matcher.matches()) {
 			return true;
 		} else {

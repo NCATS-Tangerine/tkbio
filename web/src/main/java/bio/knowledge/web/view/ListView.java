@@ -41,6 +41,7 @@ import java.util.concurrent.TimeoutException;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.jena.riot.adapters.AdapterRDFWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +90,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
+import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.renderers.ClickableRenderer.RendererClickEvent;
 import com.vaadin.ui.renderers.ClickableRenderer.RendererClickListener;
 import com.vaadin.ui.renderers.ImageRenderer;
@@ -150,6 +152,7 @@ public class ListView extends BaseView implements Util {
 	private static final String COL_ID_RELATION  = "relation";
 	private static final String COL_ID_OBJECT    = "object";
 	private static final String COL_ID_SUBJECT   = "subject";
+	private static final String COL_ID_DETAILS  = "details";
 	private static final String COL_ID_REFERENCE = "reference";
 	private static final String COL_ID_PUBLICATION_DATE = "publicationDate";
 
@@ -182,7 +185,7 @@ public class ListView extends BaseView implements Util {
 	private GeneratedPropertyContainer gpcontainer;
 
 	// Identification/Unique Keys
-	private Grid dataTable = null;
+	private Grid dataGrid = null;
 
 	// view's name
 	private String viewName = "";
@@ -397,8 +400,8 @@ public class ListView extends BaseView implements Util {
 		
 		public void sortDataTable() {
 			
-			for (SortOrder order : dataTable.getSortOrder()) {
-				dataTable.sort(order.getPropertyId(), order.getDirection());
+			for (SortOrder order : dataGrid.getSortOrder()) {
+				dataGrid.sort(order.getPropertyId(), order.getDirection());
 			}
 		}
 
@@ -864,6 +867,21 @@ public class ListView extends BaseView implements Util {
 			
 		});
 
+		gpcontainer.addGeneratedProperty(COL_ID_DETAILS, new PropertyValueGenerator<String>() {
+			
+			private static final long serialVersionUID = 8058294339364614146L;
+			
+			@Override
+			public String getValue(Item item, Object itemId, Object propertyId) {
+				return "show";
+			}
+			
+			@Override
+			public Class<String> getType() {
+				return String.class;
+			}
+		});
+		
 		// Create a header row to hold column filters
 		// HeaderRow filterRow = dataTable.appendHeaderRow();
 
@@ -886,8 +904,8 @@ public class ListView extends BaseView implements Util {
 			detailsPane.addStyleName("outlined");
 			detailsPane.setSizeFull();
 
-			dataTable.addColumn("show", Resource.class).setRenderer(new ImageRenderer());
-			dataTable.getHeaderRow(0).getCell("show").setStyleName(ViewUtil.HEADER_STYLENAME);
+			dataGrid.addColumn("show", Resource.class).setRenderer(new ImageRenderer());
+			dataGrid.getHeaderRow(0).getCell("show").setStyleName(ViewUtil.HEADER_STYLENAME);
 
 			gpcontainer.addGeneratedProperty("show", new PropertyValueGenerator<Resource>() {
 				private static final long serialVersionUID = 3271937727404606863L;
@@ -904,7 +922,7 @@ public class ListView extends BaseView implements Util {
 
 			});
 
-			ViewUtil.makeIconButton(dataTable, "show", e -> onShowDetails(e));
+			ViewUtil.makeIconButton(dataGrid, "show", e -> onShowDetails(e));
 
 			HorizontalSplitPanel listAndDetailsSplitPanel = new HorizontalSplitPanel();
 			listAndDetailsSplitPanel.setSizeFull();
@@ -953,11 +971,11 @@ public class ListView extends BaseView implements Util {
 					
 				});
 
-		addChildColumns(dataTable, gpcontainer);
+		addChildColumns(dataGrid, gpcontainer);
 
-		dataTable.setContainerDataSource(gpcontainer);
+		dataGrid.setContainerDataSource(gpcontainer);
 		
-		for (Column column : dataTable.getColumns()) {
+		for (Column column : dataGrid.getColumns()) {
 			String columnID = (String) column.getPropertyId();
 			column.setSortable(
 					columnID.equals(COL_ID_SUBJECT) ||
@@ -977,7 +995,7 @@ public class ListView extends BaseView implements Util {
 
 			@Override
 			public int compare(Object a, Object b) {
-				List<SortOrder> sortOrders = dataTable.getSortOrder();
+				List<SortOrder> sortOrders = dataGrid.getSortOrder();
 				if (sortOrders.isEmpty()) {
 					return 0;
 				} else {
@@ -1059,7 +1077,7 @@ public class ListView extends BaseView implements Util {
 
 		Button addToGraphButton = new Button("Add to Map", e -> {
 			
-			Collection<Object> items = dataTable.getSelectionModel().getSelectedRows();
+			Collection<Object> items = dataGrid.getSelectionModel().getSelectedRows();
 			
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
 			
@@ -1085,7 +1103,7 @@ public class ListView extends BaseView implements Util {
 				}
 			}
 			// https://dev.vaadin.com/ticket/16345
-			((SelectionModel.Multi) dataTable.getSelectionModel()).deselectAll();
+			((SelectionModel.Multi) dataGrid.getSelectionModel()).deselectAll();
 		});
 
 		addToGraphButton.setEnabled(false);
@@ -1093,7 +1111,7 @@ public class ListView extends BaseView implements Util {
 		addToGraphButton.setStyleName("add-to-map-button");
 
 		// add selection listener for the grid
-		dataTable.addSelectionListener(selection -> {
+		dataGrid.addSelectionListener(selection -> {
 			boolean isEmpty = selection.getSelected().isEmpty();
 
 			addToGraphButton.setEnabled(isEmpty ? false : true);
@@ -1143,11 +1161,15 @@ public class ListView extends BaseView implements Util {
 			break;
 
 		case COL_ID_RELATION:
-			styleName = "relation-cell" ;
+			styleName = "relation-cell";
 			break ;
 			
-		case COL_ID_EVIDENCE:
-			styleName = "evidence-cell" ;
+//		case COL_ID_EVIDENCE:
+//			styleName = "evidence-cell";
+//			break ;
+
+		case COL_ID_DETAILS:
+			styleName = "evidence-cell";
 			break ;
 			
 		case "library":
@@ -1198,26 +1220,26 @@ public class ListView extends BaseView implements Util {
 		
 		//TODO: DEC 15 2018 - Removed custom Grid
 //		dataTable = new bio.knowledge.grid.Grid(scrollListener);
-		dataTable = new Grid();
-		dataTable.setWidth("100%");
-		dataTable.setHeightMode(HeightMode.ROW);
-		dataTable.setHeightByRows(ROWS_TO_DISPLAY);
-		dataTable.setImmediate(true);
+		dataGrid = new Grid();
+		dataGrid.setWidth("100%");
+		dataGrid.setHeightMode(HeightMode.ROW);
+		dataGrid.setHeightByRows(ROWS_TO_DISPLAY);
+		dataGrid.setImmediate(true);
 
 		// create a style name for the grid
-		dataTable.addStyleName("results-grid");
+		dataGrid.addStyleName("results-grid");
 
 		// set custom style names for the cells in particular columns
-		dataTable.setCellStyleGenerator(cellRef -> getStyle(cellRef));
+		dataGrid.setCellStyleGenerator(cellRef -> getStyle(cellRef));
 
 		// activate multi selection mode if it is relations table view
 		if (datatype.equals(ViewName.RELATIONS_VIEW))
-			dataTable.setSelectionMode(SelectionMode.MULTI);
+			dataGrid.setSelectionMode(SelectionMode.MULTI);
 
 		// the panel will give it scrollbars.
 		//Panel dataPanel = new Panel(getMessage("global_menu_list", getMessage(datatype + "_plural")));
 		Panel dataPanel = new Panel("Data Table");
-		dataPanel.setContent(dataTable);
+		dataPanel.setContent(dataGrid);
 		dataPanel.setSizeFull();
 
 		VerticalLayout dataTableLayout = new VerticalLayout();
@@ -1741,16 +1763,16 @@ public class ListView extends BaseView implements Util {
 			String[] colspec = column.split("\\|");
 			if (colspec.length == 1) {
 				columns.add(column);
-				dataTable.addColumn(column);
+				dataGrid.addColumn(column);
 
 				// Different views will have the dataTable be different sizes,
 				// requiring slightly different maximum widths for each column.
 				// I've arrived at these numbers through experimentation. They
 				// should probably be made into constants.
 				if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
-					dataTable.getColumn(column).setMaximumWidth(200);
+					dataGrid.getColumn(column).setMaximumWidth(200);
 				} else {
-					dataTable.getColumn(column).setMaximumWidth(150);
+					dataGrid.getColumn(column).setMaximumWidth(150);
 				}
 
 			} else {
@@ -1759,7 +1781,7 @@ public class ListView extends BaseView implements Util {
 				String columnName = colspec[0].trim();
 				columns.add(columnName);
 				RendererClickListener handler = selectionHandlers.get(columnName);
-				dataTable.addColumn(columnName);
+				dataGrid.addColumn(columnName);
 				
 				// Different views will have the dataTable be different sizes,
 				// requiring slightly different maximum widths for each column.
@@ -1767,32 +1789,32 @@ public class ListView extends BaseView implements Util {
 				// should probably be made into constants.
 				switch(viewName) {
 					case ViewName.CONCEPTS_VIEW: // name and description field
-						dataTable.getColumn(columnName).setMaximumWidth(200);
+						dataGrid.getColumn(columnName).setMaximumWidth(200);
 						break;
 					case ViewName.EVIDENCE_VIEW: // supportingText field
-						dataTable.getColumn(columnName).setMaximumWidth(400);
+						dataGrid.getColumn(columnName).setMaximumWidth(400);
 						break;
 					default:
-						dataTable.getColumn(columnName).setMaximumWidth(150);
+						dataGrid.getColumn(columnName).setMaximumWidth(150);
 				}
 				
 				if (selectionHandlers.containsKey(columnName))
-					ViewUtil.makeButton(dataTable, columnName, handler::click, viewName);
+					ViewUtil.makeButton(dataGrid, columnName, handler::click, viewName);
 			}
 		}
 
-		ViewUtil.formatGrid(this, dataTable, columns.toArray(new String[] {}));
+		ViewUtil.formatGrid(this, dataGrid, columns.toArray(new String[] {}));
 
 		detailFields = mapping.getDetailFields();
 
-		dataTable.addSortListener(e -> {
+		dataGrid.addSortListener(e -> {
 			if (e.isUserOriginated()) {
 				listContainer.sortDataTable();
 			}
 		});
 
 		// tooltip for cells
-		dataTable.setCellDescriptionGenerator(cell -> getCellDescription(cell));
+		dataGrid.setCellDescriptionGenerator(cell -> getCellDescription(cell));
 
 		// the container is of the BeanItemContainer type
 		listContainer.setContainer(mapping.getContainer());
@@ -1805,10 +1827,10 @@ public class ListView extends BaseView implements Util {
 	private void formatDefaultTable() {
 
 		// As default use Identification interface name and description
-		dataTable.addColumn("name", String.class);
-		dataTable.addColumn("description", String.class);
+		dataGrid.addColumn("name", String.class);
+		dataGrid.addColumn("description", String.class);
 
-		ViewUtil.formatGrid(this, dataTable, new String[] { "name", "description" });
+		ViewUtil.formatGrid(this, dataGrid, new String[] { "name", "description" });
 
 		detailFields = new ArrayList<String>();
 		detailFields.add("name");
@@ -1854,7 +1876,32 @@ public class ListView extends BaseView implements Util {
 				formatDefaultTable();
 
 			loadDataTable(dataTableLayout);
+			
+			dataGrid.getColumn(COL_ID_DETAILS)
+				.setRenderer(new ButtonRenderer(e -> {
+					showDetails(e);
+				}));
 		}
+	}
+
+	/**
+	 * Used by the 'Details' column in the concept search result grid.
+	 * Click it to show the concept details in a subWindow.
+	 * @param e
+	 */
+	private void showDetails(RendererClickEvent e) {
+		System.out.println("clicked!");
+		
+		Window subWindow = new Window("Concept Details");
+		VerticalLayout subContent = new VerticalLayout();
+		subContent.setMargin(true);
+		subWindow.setContent(subContent);
+		
+		subContent.addComponent(new Label(e.getItemId().toString()));
+		
+		subWindow.center();
+		subWindow.setModal(true);
+		UI.getCurrent().addWindow(subWindow);
 	}
 
 	private void onShowDetails(RendererClickEvent event) {
@@ -2163,10 +2210,10 @@ public class ListView extends BaseView implements Util {
 				new String[] { 
 						"clique", 
 						"name|*", 
-						"type" 
+						"type",
+						COL_ID_DETAILS + "|*"
 						/*, RMB: adding 'usage' here might be interesting? */
 						/*, OBSOLETE: i.e. only in details now? "description|*", "synonyms|*" */
-						/* TODO - add details button here! */
 				},
 				null, 
 				null);
@@ -2187,6 +2234,9 @@ public class ListView extends BaseView implements Util {
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "library", event -> {
 			IdentifiedConcept concept = (IdentifiedConcept) event.getItemId();
 
+		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, COL_ID_DETAILS, e -> {
+			System.out.println("clicked!");
+		});
 			// Ignore ConceptSemanticType entries with empty libraries
 			Library library = concept.getLibrary();
 			if (library.isEmpty())
