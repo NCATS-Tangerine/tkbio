@@ -1,8 +1,11 @@
 package bio.knowledge.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import bio.knowledge.model.AnnotatedConcept;
 import bio.knowledge.model.core.Feature;
 
 public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements AnnotatedConcept {
@@ -14,28 +17,14 @@ public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements Annot
 
 	private Set<String> dbLinks = new HashSet<String>() ;
 
-	private Set<String> terms = new HashSet<String>() ;
-
-	private String accessionId;
-
-	protected AnnotatedConceptImpl() {
-		super() ;
-	}
-	public AnnotatedConceptImpl( String clique, String id, ConceptType type, String name ) {
-		super(clique,name,type,"") ;
-		this.setAccessionId(id);
+	protected AnnotatedConceptImpl() { }
+	
+	public AnnotatedConceptImpl( String clique, String name, ConceptType type, String taxon ) {
+		super( clique, name, type,taxon ) ;
 	}
 
-	public AnnotatedConceptImpl( String clique, String id, String type, String name ) {
-		super(clique,name,type,"") ;
-		this.setAccessionId(id);
-	}
-
-	public String getAccessionId() {
-		return accessionId;
-	}
-	public void setAccessionId(String accessionId) {
-		this.accessionId = accessionId;
+	public AnnotatedConceptImpl( String clique, String name, String type, String taxon ) {
+		super( clique, name, type, taxon ) ;
 	}
 
 	/*
@@ -60,16 +49,8 @@ public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements Annot
 	 * @see bio.knowledge.model.neo4j.Concept#getCrossReferences()
 	 */
 	@Override
-	public Set<String> getCrossReferences() {
+	public Set<String> getAliases() {
 		return dbLinks ;
-	}
-
-	/* (non-Javadoc)
-	 * @see bio.knowledge.model.neo4j.Concept#getTerms()
-	 */
-	@Override
-	public Set<String> getTerms() {
-		return terms ;
 	}
 
 	/* (non-Javadoc)
@@ -80,21 +61,60 @@ public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements Annot
 		return getName() ;
 	}
 
-	Set<Feature> features = new HashSet<Feature>();
+	public class ConceptBeaconEntry implements BeaconEntry {
+		
+		private final String beaconId;
+		private final String id;
+		private Set<String> synonyms = new HashSet<String>();
+		private String definition="";
+		private Set<Feature> details = new HashSet<Feature>();
 
-	/*
-	 * (non-Javadoc)
-	 * @see bio.knowledge.model.AnnotatedConcept#setFeatures(java.util.Set)
-	 */
-	public void setFeatures(Set<Feature> features) {
-		this.features.addAll(features) ;
+		public ConceptBeaconEntry(String beaconId, String id) {
+			this.beaconId = beaconId;
+			this.id = id;
+		}
+
+		@Override
+		public String getBeacon() {
+			return beaconId;
+		}
+
+		@Override
+		public String getId() {
+			return id;
+		}
+
+		@Override
+		public Set<String> getSynonyms() {
+			return synonyms;
+		}
+
+		@Override
+		public void setDefinition(String definition) {
+			this.definition = definition;
+		}
+
+		@Override
+		public String getDefinition() {
+			return definition;
+		}
+
+		@Override
+		public Set<Feature> getDetails() {
+			return details;
+		}
+		
 	}
-
+	
+	
+	private List<BeaconEntry> entries = new ArrayList<BeaconEntry>();
+	
 	/*
 	 * (non-Javadoc)
-	 * @see bio.knowledge.model.AnnotatedConcept#getFeatures()
+	 * @see bio.knowledge.model.AnnotatedConcept#getEntries()
 	 */
-	public Set<Feature> getFeatures() {
-		return features;
+	@Override
+	public List<BeaconEntry> getEntries() {
+		return entries;
 	}
 }

@@ -476,7 +476,7 @@ public class ConceptService
 		String sessionId = query.getUserSessionId();
 
     	CompletableFuture<AnnotatedConcept> future = 
-    			kbService.getConceptDetails(cliqueId,beacons,sessionId);
+    			kbService.getConceptWithDetails(cliqueId,beacons,sessionId);
    
     	try {
     		

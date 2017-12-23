@@ -437,7 +437,7 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 			 * instead of archived concept node id
 			 */
 			IdentifiedConcept concept = conceptOpt.get();
-			return concept.getClique();
+			return concept.getCliqueId();
 		} else
 			// Can't resolve any better than the archived id
 			return nodeId; 
@@ -465,7 +465,7 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 			 * instead of archived concept node details
 			 */
 			IdentifiedConcept concept = conceptOpt.get();
-			nodeId    = concept.getClique();
+			nodeId    = concept.getCliqueId();
 			nodeName  = concept.getName();
 			nodeGroup = concept.getType().name();
 		}
@@ -602,7 +602,7 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 	 */
 	public void addNodeToConceptMap(IdentifiedConcept concept) {
 	
-		String nodeId = concept.getClique();
+		String nodeId = concept.getCliqueId();
 	
 		// create the new node from the passed-in data
 		Node newNode = new Node( nodeId, concept.getName(), concept.getType().name(), "add" );
@@ -713,7 +713,7 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 	}
 	
 	public void addEdgeToConceptMap(IdentifiedConcept subject, IdentifiedConcept object, String relationLabel, String description, String uri, String statementId) {
-		Edge newEdge = new Edge( subject.getClique(), object.getClique(), relationLabel, description, uri, statementId);
+		Edge newEdge = new Edge( subject.getCliqueId(), object.getCliqueId(), relationLabel, description, uri, statementId);
 		// any edge pre-processing would go here.
 		newEdge.getData().setDescription(description);
 		newEdge.getData().setUri(uri);

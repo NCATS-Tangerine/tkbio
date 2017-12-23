@@ -65,7 +65,7 @@ public class Neo4jIdentifiedConceptImpl
 	 * @see bio.knowledge.model.neo4j.Concept#setClique(String cliqueId)
 	 */
     @Override
-	public void setClique(String cliqueId) {
+	public void setCliqueId(String cliqueId) {
 		this.clique = cliqueId;
 	}
 
@@ -73,7 +73,7 @@ public class Neo4jIdentifiedConceptImpl
 	 * @see bio.knowledge.model.neo4j.Concept#getClique()
 	 */
 	@Override
-	public String getClique() {
+	public String getCliqueId() {
 		if(clique==null||clique.isEmpty())
 			throw new RuntimeException("TRAPPING Empty concept clique identifier!");
 		return clique;

@@ -3,67 +3,78 @@ package bio.knowledge.model;
 import bio.knowledge.model.core.AbstractIdentifiedEntity;
 
 public class IdentifiedConceptImpl 
-	extends AbstractIdentifiedEntity 
-	implements IdentifiedConcept {
+extends AbstractIdentifiedEntity 
+implements IdentifiedConcept {
 
 	private String clique = "";
-	
-	private String name = "" ;
-	
-    private ConceptType conceptType = null;
+
+	private ConceptType conceptType = null;
 
 	private String taxon = "";
 
-    // Counter for the number of times that this 
-    // Concept SemanticGroup is used in Statements.
-    // This helps the code filter out unproductive SemMedDb concepts
-    // from being listed in the "Concept by Text" search results.
-    private Long usage = 0L ;
+	// Counter for the number of times that this 
+	// Concept SemanticGroup is used in Statements.
+	// This helps the code filter out unproductive SemMedDb concepts
+	// from being listed in the "Concept by Text" search results.
+	private Long usage = 0L ;
 
-    // The Library class is an indirect wrapper class for
-    // the set of associated ConceptMap's related to the included Concept nodes
-    private Library library = new Library();
+	// The Library class is an indirect wrapper class for
+	// the set of associated ConceptMap's related to the included Concept nodes
+	private Library library = new Library();
 
-    protected IdentifiedConceptImpl() { }
-    
-    /**
-     * 
-     * @param clique
-     * @param name
-     * @param type
-     * @param taxon
-     */
-    public IdentifiedConceptImpl(  String clique, String name, ConceptType type, String taxon ) {
-    	this.clique = clique ;
-    	this.name = name ;
-    	this.conceptType = type;
-    	this.taxon = taxon;
-    }
-    
-    /**
-     * 
-     * @param clique
-     * @param name
-     * @param type
-     * @param taxon
-     */
-    public IdentifiedConceptImpl(  String clique, String name, String type, String taxon ) {
-    	
-    	this.clique = clique ;
-    	this.name = name ;
-    	if( type==null || type.isEmpty() )
-    		this.conceptType = ConceptType.OBJC;
-    	else
-    		this.conceptType = ConceptType.valueOf(type,ConceptType.OBJC) ;
-    	this.taxon = taxon;
-    	
-    }
+	protected IdentifiedConceptImpl() { }
 
+	/**
+	 * 
+	 * @param clique
+	 * @param name
+	 * @param type
+	 * @param taxon
+	 */
+	public IdentifiedConceptImpl(  String clique, String name, ConceptType type, String taxon ) {
+		super( "", name, name+" in taxon "+taxon );
+		this.clique = clique ;
+		this.conceptType = type;
+		this.taxon = taxon;
+	}
+
+	/**
+	 * 
+	 * @param clique
+	 * @param name
+	 * @param type
+	 * @param taxon
+	 */
+	public IdentifiedConceptImpl(  String clique, String name, String type, String taxon ) {
+		this( clique, "", name, type, taxon) ;
+	}
+
+	/**
+	 * 
+	 * @param clique
+	 * @param id
+	 * @param name
+	 * @param type
+	 * @param taxon
+	 */
+	public IdentifiedConceptImpl( String clique, String id, String name, String type, String taxon ) {
+		super( id, name, name+" in taxon "+taxon );
+
+		this.clique = clique ;
+
+		if( type==null || type.isEmpty() )
+			this.conceptType = ConceptType.OBJC;
+		else
+			this.conceptType = ConceptType.valueOf(type,ConceptType.OBJC) ;
+		
+		this.taxon = taxon;
+	}
+	
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.neo4j.Concept#setClique(String cliqueId)
 	 */
-    @Override
-	public void setClique(String cliqueId) {
+	@Override
+	public void setCliqueId(String cliqueId) {
 		this.clique = cliqueId;
 	}
 
@@ -71,48 +82,30 @@ public class IdentifiedConceptImpl
 	 * @see bio.knowledge.model.neo4j.Concept#getClique()
 	 */
 	@Override
-	public String getClique() {
+	public String getCliqueId() {
 		if(clique==null||clique.isEmpty())
 			throw new RuntimeException("TRAPPING Empty concept clique identifier!");
 		return clique;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see bio.knowledge.model.IdentifiedConcept#setName(java.lang.String)
-	 */
-	@Override
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see bio.knowledge.model.IdentifiedConcept#getName()
-	 */
-	@Override
-	public String getName() {
-		return name;
-	}
-
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.IdentifiedConcept#setType(bio.knowledge.model.ConceptType)
 	 */
-    @Override
+	@Override
 	public void setType(ConceptType type) {
-    	this.conceptType = type ;
-    }
-    
+		this.conceptType = type ;
+	}
+
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.IdentifiedConcept#getType()
 	 */
-    @Override
+	@Override
 	public ConceptType getType() {
-    	if(conceptType==null) {
-    		return ConceptType.OBJC;
-    	}
-    	return conceptType ;
-    }
+		if(conceptType==null) {
+			return ConceptType.OBJC;
+		}
+		return conceptType ;
+	}
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.IdentifiedConcept#setTaxon(String)
@@ -150,7 +143,7 @@ public class IdentifiedConceptImpl
 	public void setUsage(Long usage) {
 		this.usage = usage;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.neo4j.Concept#incrementUsage(java.lang.Long)
 	 */
@@ -158,7 +151,7 @@ public class IdentifiedConceptImpl
 	public void incrementUsage(Long increment) {
 		this.usage += increment;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.neo4j.Concept#incrementUsage()
 	 */
@@ -166,7 +159,7 @@ public class IdentifiedConceptImpl
 	public void incrementUsage() {
 		this.usage += 1;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.neo4j.Concept#setLibrary(bio.knowledge.model.Library)
 	 */
@@ -182,9 +175,9 @@ public class IdentifiedConceptImpl
 	public Library getLibrary() {
 		return library;
 	}
-	
+
 	@Override
-    public String toString() {
-    	return getName() ;
-    }
+	public String toString() {
+		return getName() ;
+	}
 }

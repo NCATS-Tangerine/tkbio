@@ -25,14 +25,15 @@
  */
 package bio.knowledge.model.neo4j;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 
 import bio.knowledge.model.AnnotatedConcept;
 import bio.knowledge.model.ConceptType;
-import bio.knowledge.model.core.Feature;
 
 /**
  * @author Richard Bruskiewich
@@ -50,8 +51,6 @@ public class Neo4jAnnotatedConcept extends Neo4jIdentifiedConceptImpl implements
 	private String beaconSource = "";
 
 	private Set<String> dbLinks = new HashSet<String>() ;
-
-	private Set<String> terms = new HashSet<String>() ;
 
 	protected Neo4jAnnotatedConcept() {	super() ; }
 
@@ -99,16 +98,8 @@ public class Neo4jAnnotatedConcept extends Neo4jIdentifiedConceptImpl implements
 	 * @see bio.knowledge.model.neo4j.Concept#getCrossReferences()
 	 */
 	@Override
-	public Set<String> getCrossReferences() {
+	public Set<String> getAliases() {
 		return dbLinks ;
-	}
-
-	/* (non-Javadoc)
-	 * @see bio.knowledge.model.neo4j.Concept#getTerms()
-	 */
-	@Override
-	public Set<String> getTerms() {
-		return terms ;
 	}
 
 	/*
@@ -141,15 +132,14 @@ public class Neo4jAnnotatedConcept extends Neo4jIdentifiedConceptImpl implements
 		return taxon;
 	}
 
+	private List<BeaconEntry> entries = new ArrayList<BeaconEntry>();
+	
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.AnnotatedConcept#getEntries()
+	 */
 	@Override
-	public void setFeatures(Set<Feature> features) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Set<Feature> getFeatures() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<BeaconEntry> getEntries() {
+		return entries;
 	}
 }
