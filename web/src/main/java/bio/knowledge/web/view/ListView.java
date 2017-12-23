@@ -2161,7 +2161,7 @@ public class ListView extends BaseView implements Util {
 				new BeanItemContainer<IdentifiedConcept>(IdentifiedConcept.class), 
 				conceptService,
 				new String[] { 
-						"clique", 
+						"cliqueId", 
 						"name|*", 
 						"type" 
 						/*, RMB: adding 'usage' here might be interesting? */
@@ -2171,7 +2171,7 @@ public class ListView extends BaseView implements Util {
 				null, 
 				null);
 
-		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "clique",e->{/*NOP*/});
+		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "cliqueId",e->{/*NOP*/});
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "name", event -> {
 			IdentifiedConcept concept = (IdentifiedConcept) event.getItemId();
