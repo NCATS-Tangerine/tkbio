@@ -625,18 +625,20 @@ $color-green: #5cb85c;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		overflow: hidden;
-		&.type-cell, &.library-cell, &.evidence-cell {
-			text-align: center;
-			.v-nativebutton {
-				@include native-square-button;
-				&:hover {
-					background-color: $color-grey;
-				}
-			}
-		}
-		&.relation-cell,  &.publication-date-cell {
-			text-align: center;
-		}		
+		text-align: center;
+// 		&.type-cell, &.library-cell, &.evidence-cell, &.relation-cell,  &.publication-date-cell {
+// 			text-align: center;
+// 			.v-nativebutton {
+// 				@include native-square-button;
+// 				&:hover {
+// 					background-color: $color-grey;
+// 					cursor: pointer;
+// 				}
+// 			}
+// 		}
+// 		&.relation-cell,  &.publication-date-cell {
+// 			text-align: center;
+// 		}		
 	}
 	
 	.grid-margin-left {
@@ -644,18 +646,18 @@ $color-green: #5cb85c;
 	}
 
 	.grid-button-style {
-		/* This makes the button look like a Vaadin NativeButton, even though its not */
-		background: none !important;
-		border: none;
-		padding: 0 !important;
-		color: #008080;
-		cursor: pointer;
-		text-align: center;
-
-		/* This makes the button have ellipsis */
-		overflow: hidden !important;
-		white-space: nowrap !important;
-		text-overflow: ellipsis !important;
+		background-color: transparent;
+		border-style: none;
+		color: $color-teal;
+		font-weight: bold;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		&:hover {
+			@include valo-gradient($color: $control-button-background-color);
+			cursor: pointer;
+			color: $color-black;
+		}
 	}
 
 //--Tabsheet--//

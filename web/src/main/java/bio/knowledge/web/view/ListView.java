@@ -1167,10 +1167,10 @@ public class ListView extends BaseView implements Util {
 //		case COL_ID_EVIDENCE:
 //			styleName = "evidence-cell";
 //			break ;
-
-		case COL_ID_DETAILS:
-			styleName = "evidence-cell";
-			break ;
+//
+//		case COL_ID_DETAILS:
+//			styleName = "evidence-cell";
+//			break ;
 			
 		case "library":
 		case "parents":
@@ -1791,11 +1791,11 @@ public class ListView extends BaseView implements Util {
 					case ViewName.CONCEPTS_VIEW: // name and description field
 						dataGrid.getColumn(columnName).setMaximumWidth(200);
 						break;
-					case ViewName.EVIDENCE_VIEW: // supportingText field
-						dataGrid.getColumn(columnName).setMaximumWidth(400);
-						break;
-					default:
-						dataGrid.getColumn(columnName).setMaximumWidth(150);
+//					case ViewName.EVIDENCE_VIEW: // supportingText field
+//						dataGrid.getColumn(columnName).setMaximumWidth(400);
+//						break;
+//					default:
+//						dataGrid.getColumn(columnName).setMaximumWidth(150);
 				}
 				
 				if (selectionHandlers.containsKey(columnName))
@@ -1877,10 +1877,12 @@ public class ListView extends BaseView implements Util {
 
 			loadDataTable(dataTableLayout);
 			
-			dataGrid.getColumn(COL_ID_DETAILS)
-				.setRenderer(new ButtonRenderer(e -> {
+			Column col = dataGrid.getColumn(COL_ID_DETAILS);
+			if (col != null) {				
+				col.setRenderer(new ButtonRenderer(e -> {
 					showDetails(e);
 				}));
+			}
 		}
 	}
 
@@ -1890,8 +1892,6 @@ public class ListView extends BaseView implements Util {
 	 * @param e
 	 */
 	private void showDetails(RendererClickEvent e) {
-		System.out.println("clicked!");
-		
 		Window subWindow = new Window("Concept Details");
 		VerticalLayout subContent = new VerticalLayout();
 		subContent.setMargin(true);

@@ -27,12 +27,14 @@
 	
 	// native buttons
 	.v-nativebutton {
-		border: 0px;
+		border-style: none;
 		background-color: transparent;
 		color: $color-teal;
 		font-weight: bold;
 		&:hover {
+			cursor: pointer;
 			color: $color-black;
+			@include valo-gradient($color: $control-button-background-color);
 		}
 	}
 	
