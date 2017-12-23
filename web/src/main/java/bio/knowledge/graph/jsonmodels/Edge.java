@@ -83,8 +83,8 @@ public class Edge extends AbstractElement implements ParameterizedType {
 	
 	public Edge(Statement statement) {
 		this(
-				statement.getSubject().getClique(),
-				statement.getObject().getClique(),
+				statement.getSubject().getCliqueId(),
+				statement.getObject().getCliqueId(),
 				statement.getRelation().getName(),
 				statement.getDescription(),
 				statement.getUri(),

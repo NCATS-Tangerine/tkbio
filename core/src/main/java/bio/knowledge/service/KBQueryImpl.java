@@ -306,7 +306,7 @@ public class KBQueryImpl implements KBQuery {
 			selectedConcept = Optional.empty() ;
 		else {
 			// the concept is pulled in by clique
-			String identifier = query.getClique();
+			String identifier = query.getCliqueId();
 			selectedConcept = conceptService.getDetailsByCliqueId(identifier) ;
 		}
 	}

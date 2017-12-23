@@ -26,7 +26,7 @@
 package bio.knowledge.model.annotation;
 
 import bio.knowledge.model.Evidence;
-import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.neo4j.Neo4jAnnotatedConcept;
 import bio.knowledge.model.neo4j.Neo4jEvidence;
 import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
@@ -36,8 +36,8 @@ public class UserStatement extends Neo4jGeneralStatement {
 	private String description;
 	private String uriEvidence;
 
-	public UserStatement(String statementId, Neo4jConcept subject, Neo4jPredicate predicate,
-			Neo4jConcept object, String description, String uriEvidence) {
+	public UserStatement(String statementId, Neo4jAnnotatedConcept subject, Neo4jPredicate predicate,
+			Neo4jAnnotatedConcept object, String description, String uriEvidence) {
 		super(statementId, subject, predicate, object);
 		setSubject(subject);
 		setObject(object);

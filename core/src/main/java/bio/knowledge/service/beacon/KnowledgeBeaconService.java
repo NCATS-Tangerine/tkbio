@@ -31,14 +31,18 @@ import bio.knowledge.client.api.EvidenceApi;
 import bio.knowledge.client.api.PredicatesApi;
 import bio.knowledge.client.api.StatementsApi;
 import bio.knowledge.client.model.BeaconCliqueIdentifier;
+import bio.knowledge.client.model.BeaconConceptBeaconEntry;
+import bio.knowledge.client.model.BeaconConceptDetail;
 import bio.knowledge.client.model.BeaconConceptWithDetails;
 import bio.knowledge.client.model.BeaconStatementObject;
 import bio.knowledge.client.model.BeaconStatementPredicate;
 import bio.knowledge.client.model.BeaconStatementSubject;
 import bio.knowledge.model.AnnotatedConcept;
+import bio.knowledge.model.AnnotatedConcept.BeaconEntry;
+import bio.knowledge.model.AnnotatedConceptImpl;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.AnnotationImpl;
-import bio.knowledge.model.AnnotatedConceptImpl;
+import bio.knowledge.model.ConceptDetailImpl;
 import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.IdentifiedConcept;
@@ -48,6 +52,7 @@ import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Predicate.PredicateBeacon;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.Statement;
+import bio.knowledge.model.core.Feature;
 import bio.knowledge.model.core.OntologyTerm;
 import bio.knowledge.model.util.Util;
 
@@ -405,7 +410,7 @@ public class KnowledgeBeaconService implements Util {
 	 * @param sessionId
 	 * @return
 	 */
-	public CompletableFuture<AnnotatedConcept> getConceptDetails( 
+	public CompletableFuture<AnnotatedConcept> getConceptWithDetails( 
 			String cliqueId,
 			List<String> beacons,
 			String sessionId
@@ -416,7 +421,7 @@ public class KnowledgeBeaconService implements Util {
 			@Override
 			public AnnotatedConcept get() {
 				
-				AnnotatedConcept concept = null;
+				AnnotatedConceptImpl concept = null;
 				
 				try {
 					BeaconConceptWithDetails response = 
@@ -433,33 +438,45 @@ public class KnowledgeBeaconService implements Util {
 
 					concept = new AnnotatedConceptImpl(
 							response.getClique(),
-							response.getClique(),
+							response.getName(),
 							type,
-							response.getName()
+							response.getTaxon()
 							);
 
-					Set<String> xrefs = concept.getCrossReferences() ;
+					Set<String> xrefs = concept.getAliases() ;
 					xrefs.addAll(response.getAliases());
 					
-					/*
-					 * RMB TODO - FIX THE DATA LOADING OF AnnotatedConcept FROM BeaconConceptWithDetails
-					 * 
-					concept.setSynonyms(String.join(" ", response.getSynonyms()));
-					concept.setDescription(response.getDefinition());
+					List<BeaconConceptBeaconEntry> beaconEntries = response.getEntries() ;
+					List<BeaconEntry> conceptBeaconEntries = concept.getEntries();
+					
+					for(BeaconConceptBeaconEntry entry : beaconEntries) {
 
-					// Harvest beacon concept details here?
-					List<BeaconConceptDetail> details = response.getDetails() ;
-					Set<Feature> conceptDetails = concept.getFeatures();
-					for(BeaconConceptDetail entry : details) {
-						Feature detail = new ConceptDetailImpl();
-						OntologyTerm tag = resolveTag(entry.getTag());
-						detail.setTag(tag);
-						detail.setValue(entry.getValue());
-						conceptDetails.add(detail);
+						String beacon = entry.getBeacon();
+						String id = entry.getId();
+						
+						BeaconEntry beaconEntry = 
+								concept.new ConceptBeaconEntry(beacon,id);
+								
+						List<String> synonyms = entry.getSynonyms();
+						beaconEntry.getSynonyms().addAll(synonyms);
+						
+						String definition = entry.getDefinition();
+						beaconEntry.setDefinition(definition);
+						
+						List<BeaconConceptDetail> beaconDetails = entry.getDetails();
+						Set<Feature> conceptDetails = beaconEntry.getDetails();
+						
+						for(BeaconConceptDetail detail : beaconDetails) {
+							Feature feature = new ConceptDetailImpl();
+							OntologyTerm tag = resolveTag(detail.getTag());
+							feature.setTag(tag);
+							feature.setValue(detail.getValue());
+							conceptDetails.add(feature);
+						}
+						
+						conceptBeaconEntries.add(beaconEntry);
 					}
 
-					concept.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
-					*/
 
 				} catch (Exception e) {
 					_logger.error("kbs.getConceptDetails() Exception: "+e.getMessage());
@@ -599,20 +616,23 @@ public class KnowledgeBeaconService implements Util {
 						BeaconStatementPredicate statementsPredicate = response.getPredicate();
 						BeaconStatementObject statementsObject = response.getObject();
 
-						AnnotatedConceptImpl subject = new AnnotatedConceptImpl(
+						IdentifiedConceptImpl subject = new IdentifiedConceptImpl(
 								statementsSubject.getClique(), 
-								statementsSubject.getId(), 
+								statementsSubject.getId(),
+								statementsSubject.getName(), 
 								statementsSubject.getType(), 
-								statementsSubject.getName()
+								"" // TODO - sort out statementsSubject.getTaxon() or get from Clique
 						);
+						subject.setId(sessionId);
 
 						PredicateImpl predicate = new PredicateImpl(statementsPredicate.getName());
 
-						AnnotatedConceptImpl object = new AnnotatedConceptImpl(
+						IdentifiedConceptImpl object = new IdentifiedConceptImpl(
 								statementsObject.getClique(), 
 								statementsObject.getId(), 
+								statementsObject.getName(),
 								statementsObject.getType(), 
-								statementsObject.getName()
+								"" // TODO - sort out statementsObject.getTaxon() or get from Clique
 						);
 						
 						Statement statement = new GeneralStatement(id, subject, predicate, object);

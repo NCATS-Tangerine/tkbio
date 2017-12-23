@@ -61,7 +61,7 @@ import bio.knowledge.model.RdfUtil;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
-import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.neo4j.Neo4jAnnotatedConcept;
 import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
 import bio.knowledge.model.wikidata.WikiDataPropertySemanticType;
@@ -496,20 +496,21 @@ public class StatementService
 				String propValueId = RdfUtil.getObjectId(propValue) ;
 				String qualifiedPropValueId = wikiDataType.getDefaultQualifier()+propValueId ;
 
-				Optional<Class<? extends Neo4jConcept>> nodeTypeOpt = 
+				Optional<Class<? extends Neo4jAnnotatedConcept>> nodeTypeOpt = 
 						wikiDataType.getNodeType() ;
 				
-				Neo4jConcept wikiItem ;
+				Neo4jAnnotatedConcept wikiItem ;
 				if(nodeTypeOpt.isPresent()) {
-					Class<? extends Neo4jConcept> nodeType = nodeTypeOpt.get() ;
+					Class<? extends Neo4jAnnotatedConcept> nodeType = nodeTypeOpt.get() ;
 					wikiItem = nodeType.newInstance() ;
 					wikiItem.setName(propValueId);
 				} else
 					wikiItem = 
-						new Neo4jConcept( 
+						new Neo4jAnnotatedConcept( 
 								qualifiedPropValueId,
+								propValueId,
 								ConceptType.PHEN,
-								propValueId 
+								"Unknown Taxon"
 						) ;
 				
 				wikiItem.setId(qualifiedPropValueId);
@@ -588,7 +589,7 @@ public class StatementService
 					final List<Statement> newStatements = new ArrayList<>();
 					runQuery( 
 							WikiDataDataSource.WD_CDS_3_ID, 
-							(Neo4jConcept) concept,
+							(Neo4jAnnotatedConcept) concept,
 							filter,
 							pageable,
 							(rs)->loadWikiDataResults(rs, (IdentifiedConcept) concept,newStatements) 

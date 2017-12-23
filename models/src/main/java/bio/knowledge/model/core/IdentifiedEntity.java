@@ -33,13 +33,6 @@ package bio.knowledge.model.core;
 public interface IdentifiedEntity 
 	extends DatabaseEntity, Comparable<IdentifiedEntity> {
 
-	//
-	// Do we need UUID's in Knowledge.Bio?
-	//
-	// https://en.wikipedia.org/wiki/Universally_unique_identifier
-	//
-	// String getUuid() ;
-	
 	/**
 	 * 
 	 * @return a machine readable Uniform Resource Identifier of the identified entity
