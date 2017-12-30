@@ -121,7 +121,7 @@ public class ConceptDetailsHandler {
 		aliasesLabel.setCaption("Aliases:");
 
 		if (selectedConcept != null) {
-			cliqueLabel.setValue(selectedConcept.getClique());
+			cliqueLabel.setValue(selectedConcept.getCliqueId());
 			accessionLabel.setValue(selectedConcept.getId());
 			nameLabel.setValue(selectedConcept.getName());
 			typeLabel.setValue(selectedConcept.getType().getDescription());
@@ -359,7 +359,7 @@ public class ConceptDetailsHandler {
 							ui.addNodeToConceptMap(currentConcept);
 							ui.addNodeToConceptMap(object);
 							Predicate relation  = new PredicateImpl(descriptor.getKey());
-							String accId = "wds:"+currentConcept.getClique()+"_"+descriptor.name()+"_"+object.getClique();
+							String accId = "wds:"+currentConcept.getCliqueId()+"_"+descriptor.name()+"_"+object.getCliqueId();
 							Statement statement = new GeneralStatement(accId,currentConcept,relation,object);
 							ui.addEdgeToConceptMap(statement);
 						});

@@ -815,7 +815,7 @@ public class ListView extends BaseView implements Util {
 			public String getValue(Item item, Object object, Object propertyId) {
 				if (object instanceof DisplayableStatement) {
 					DisplayableStatement c = (DisplayableStatement) object;
-					return c.getSubject().getClique();
+					return c.getSubject().getCliqueId();
 				}
 				return "";
 			}
@@ -855,7 +855,7 @@ public class ListView extends BaseView implements Util {
 			public String getValue(Item item, Object object, Object propertyId) {
 				if (object instanceof DisplayableStatement) {
 					DisplayableStatement c = (DisplayableStatement) object;
-					return c.getObject().getClique();
+					return c.getObject().getCliqueId();
 				}
 				return "";
 			}
@@ -2068,7 +2068,7 @@ public class ListView extends BaseView implements Util {
 			List<String> beacons = query.getCustomBeacons();
 			String sessionId = query.getUserSessionId();
 			
-			CompletableFuture<AnnotatedConcept> future = kbService.getConceptDetails(conceptId,beacons,sessionId);
+			CompletableFuture<AnnotatedConcept> future = kbService.getConceptWithDetails(conceptId,beacons,sessionId);
 			
 			IdentifiedConcept selectedConcept;
 			

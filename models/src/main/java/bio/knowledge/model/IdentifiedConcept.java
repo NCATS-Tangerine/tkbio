@@ -8,13 +8,13 @@ public interface IdentifiedConcept extends IdentifiedEntity {
 	 * @param the Identifier Equivalent Concept Clique of the Concept
 	 * Should generally be set at node creation, but sometimes not?
 	 */
-	void setClique(String cliqueId);
+	void setCliqueId(String cliqueId);
 
 	/**
 	 * 
 	 * @return the Identifier Equivalent Concept Clique of the Concept
 	 */
-	String getClique();
+	String getCliqueId();
 	
 	/**
 	 * 
