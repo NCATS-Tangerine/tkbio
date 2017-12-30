@@ -815,7 +815,7 @@ public class ListView extends BaseView implements Util {
 			public String getValue(Item item, Object object, Object propertyId) {
 				if (object instanceof DisplayableStatement) {
 					DisplayableStatement c = (DisplayableStatement) object;
-					return c.getSubject().getClique();
+					return c.getSubject().getCliqueId();
 				}
 				return "";
 			}
@@ -855,7 +855,7 @@ public class ListView extends BaseView implements Util {
 			public String getValue(Item item, Object object, Object propertyId) {
 				if (object instanceof DisplayableStatement) {
 					DisplayableStatement c = (DisplayableStatement) object;
-					return c.getObject().getClique();
+					return c.getObject().getCliqueId();
 				}
 				return "";
 			}
@@ -2068,7 +2068,7 @@ public class ListView extends BaseView implements Util {
 			List<String> beacons = query.getCustomBeacons();
 			String sessionId = query.getUserSessionId();
 			
-			CompletableFuture<AnnotatedConcept> future = kbService.getConceptDetails(conceptId,beacons,sessionId);
+			CompletableFuture<AnnotatedConcept> future = kbService.getConceptWithDetails(conceptId,beacons,sessionId);
 			
 			IdentifiedConcept selectedConcept;
 			
@@ -2208,7 +2208,7 @@ public class ListView extends BaseView implements Util {
 				new BeanItemContainer<IdentifiedConcept>(IdentifiedConcept.class), 
 				conceptService,
 				new String[] { 
-						"clique", 
+						"cliqueId", 
 						"name|*", 
 						"type",
 						COL_ID_DETAILS + "|*"
@@ -2218,7 +2218,7 @@ public class ListView extends BaseView implements Util {
 				null, 
 				null);
 
-		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "clique",e->{/*NOP*/});
+		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "cliqueId",e->{/*NOP*/});
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "name", event -> {
 			IdentifiedConcept concept = (IdentifiedConcept) event.getItemId();

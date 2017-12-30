@@ -64,8 +64,8 @@ import bio.knowledge.model.Predicate;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.Reference;
 import bio.knowledge.model.Statement;
+import bio.knowledge.model.neo4j.Neo4jAnnotatedConcept;
 import bio.knowledge.model.neo4j.Neo4jAnnotation;
-import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.neo4j.Neo4jEvidence;
 import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 import bio.knowledge.model.neo4j.Neo4jReference;
@@ -543,7 +543,7 @@ public class ConceptMapPopupWindow {
 					 * statement subjects list, but may be worthwhile to double
 					 * check this
 					 */
-					conceptService.save((Neo4jConcept) s);
+					conceptService.save((Neo4jAnnotatedConcept) s);
 				}
 
 				List<IdentifiedConcept> objects = statement.getObjects();
@@ -554,7 +554,7 @@ public class ConceptMapPopupWindow {
 					 * statement subjects list, but may be worthwhile to double
 					 * check this
 					 */
-					conceptService.save((Neo4jConcept) o);
+					conceptService.save((Neo4jAnnotatedConcept) o);
 				}
 
 				// Save the whole updated statement?

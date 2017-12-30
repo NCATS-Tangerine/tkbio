@@ -59,7 +59,7 @@ import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
 import bio.knowledge.model.datasource.SimpleResult;
 import bio.knowledge.model.datasource.SimpleResultSet;
-import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.neo4j.Neo4jAnnotatedConcept;
 import bio.knowledge.service.Cache.CacheLocation;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 //import bio.knowledge.service.core.FeatureService;
@@ -136,22 +136,14 @@ public class ConceptService
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.Object[])
 	 */
 	
-	public Neo4jConcept createInstance(Object... args) {
-		if (args.length == 2)
-			if (args[0] instanceof ConceptType) {
-				return new Neo4jConcept(
-						(ConceptType)   args[0], // SemanticGroup
-						(String)          args[1]  // Concept.name
-				);
-			} else
-				throw new RuntimeException("Invalid 1st argument to ConceptService.createInstance() ?");
-		
-		else if (args.length == 3)
+	public Neo4jAnnotatedConcept createInstance(Object... args) {
+		if (args.length == 4)
 			if (args[1] instanceof ConceptType) {
-				return new Neo4jConcept(
-						(String)        args[0], // Concept.id
-						(ConceptType) args[1], // SemanticGroup
-						(String)        args[2]  // Concept.name
+				return new Neo4jAnnotatedConcept(
+						(String)      args[0], // Concept Clique Identifier
+						(String)      args[1], // Concept Name
+						(ConceptType) args[2], // Concept Type
+						(String)      args[3]  // Concept Taxon
 				);
 			} else
 				throw new RuntimeException("Invalid 2nd argument to ConceptService.createInstance() ?");
@@ -484,7 +476,7 @@ public class ConceptService
 		String sessionId = query.getUserSessionId();
 
     	CompletableFuture<AnnotatedConcept> future = 
-    			kbService.getConceptDetails(cliqueId,beacons,sessionId);
+    			kbService.getConceptWithDetails(cliqueId,beacons,sessionId);
    
     	try {
     		

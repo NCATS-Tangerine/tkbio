@@ -524,7 +524,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		// point
 
 		// Highlighting new current concept node - identified by Clique name
-		lastHighlightNodeId = currentConcept.getClique();
+		lastHighlightNodeId = currentConcept.getCliqueId();
 		highlightNode(HighlightStatus.YES);
 	}
 
@@ -668,7 +668,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		// RelationSearchModes?
 		switch (mode) {
 		case RELATIONS:
-			query.setCurrentQueryConceptById(concept.getClique()); 
+			query.setCurrentQueryConceptById(concept.getCliqueId()); 
 			break;
 		default:
 			// do nothing?
@@ -690,7 +690,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	ConceptDetailsHandler detailsHandler;
 
 	private String getCurrentConceptTitle(IdentifiedConcept concept) {
-		String cct = concept.getName()+" ("+concept.getClique()+")";
+		String cct = concept.getName()+" ("+concept.getCliqueId()+")";
 		return cct;
 	}
 	
@@ -1390,7 +1390,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 			String sessionId = query.getUserSessionId();
 			
 			CompletableFuture<AnnotatedConcept> future = 
-					kbService.getConceptDetails(conceptId,beacons,sessionId);
+					kbService.getConceptWithDetails(conceptId,beacons,sessionId);
 			
 			try {
 				AnnotatedConcept concept = future.get(
