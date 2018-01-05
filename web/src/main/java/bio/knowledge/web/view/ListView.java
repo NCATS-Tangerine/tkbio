@@ -61,6 +61,7 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
@@ -70,6 +71,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.CellReference;
 import com.vaadin.ui.Grid.Column;
@@ -98,6 +100,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.model.AnnotatedConcept;
+import bio.knowledge.model.AnnotatedConceptImpl;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.BeaconResponse;
 import bio.knowledge.model.ConceptMapArchive;
@@ -106,6 +109,7 @@ import bio.knowledge.model.DisplayableStatement;
 import bio.knowledge.model.DomainModelException;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.IdentifiedConcept;
+import bio.knowledge.model.IdentifiedConceptImpl;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Statement;
@@ -1888,20 +1892,37 @@ public class ListView extends BaseView implements Util {
 
 	/**
 	 * Used by the 'Details' column in the concept search result grid.
-	 * Click it to show the concept details in a subWindow.
+	 * Click it to show the concept details in a new Window.
 	 * @param e
 	 */
 	private void showDetails(RendererClickEvent e) {
-		Window subWindow = new Window("Concept Details");
-		VerticalLayout subContent = new VerticalLayout();
-		subContent.setMargin(true);
-		subWindow.setContent(subContent);
+		Window conceptDetailsWindow = new Window("Concept Details");
+		VerticalLayout detailsContent = new VerticalLayout();
+		detailsContent.setSpacing(true);
+		conceptDetailsWindow.setContent(detailsContent);
 		
-		subContent.addComponent(new Label(e.getItemId().toString()));
+		conceptDetailsWindow.setStyleName("concept-details-window");
+		conceptDetailsWindow.center();
+		conceptDetailsWindow.setWidth(50, Unit.EM);
+		conceptDetailsWindow.setHeightUndefined();
+		conceptDetailsWindow.setResizable(true);
 		
-		subWindow.center();
-		subWindow.setModal(true);
-		UI.getCurrent().addWindow(subWindow);
+		IdentifiedConcept concept = (IdentifiedConcept) e.getItemId();
+		CompletableFuture<AnnotatedConcept> future = getConceptWithDetails(concept.getCliqueId());
+
+		try {
+			concept = future.get(kbService.weightedTimeout(), KnowledgeBeaconService.BEACON_TIMEOUT_UNIT);
+		} catch (InterruptedException | ExecutionException | TimeoutException | IndexOutOfBoundsException exception) {
+			// should do something useful here
+			concept = new AnnotatedConceptImpl(concept.getCliqueId(), concept.getName(), concept.getType(), concept.getTaxon());
+			_logger.error("Error retrieving concept details from the search result table");
+		}
+		
+		VerticalLayout details = detailshandler.getDetails(concept);
+		detailsContent.addComponent(details);
+		detailsContent.addComponent(new Label("&nbsp;", ContentMode.HTML));
+		
+		UI.getCurrent().addWindow(conceptDetailsWindow);
 	}
 
 	private void onShowDetails(RendererClickEvent event) {
@@ -2049,26 +2070,21 @@ public class ListView extends BaseView implements Util {
 			PopupWindow conceptDetailsWindow = new PopupWindow();
 			conceptDetailsWindow.addStyleName("concept-details-window");
 			conceptDetailsWindow.center();
-			conceptDetailsWindow.setSizeUndefined();
+			conceptDetailsWindow.setWidth(50, Unit.EM);
+			conceptDetailsWindow.setHeightUndefined();
 			conceptDetailsWindow.setResizable(true);
-
-			// int x = 100, y = 400 ;
 
 			//String predicateLabel;
 			
-			String conceptId;
+			String cliqueId;
 			if (role.equals(ConceptRole.SUBJECT)) {				
-				conceptId = subject.getId();
+				cliqueId = subject.getId();
 			} else if (role.equals(ConceptRole.OBJECT)) {
-				conceptId = object.getId();
-				// x+=400 ;
+				cliqueId = object.getId();
 			} else
 				throw new RuntimeException("Unsupported Relationship Concept Role?");
 
-			List<String> beacons = query.getCustomBeacons();
-			String sessionId = query.getUserSessionId();
-			
-			CompletableFuture<AnnotatedConcept> future = kbService.getConceptWithDetails(conceptId,beacons,sessionId);
+			CompletableFuture<AnnotatedConcept> future = getConceptWithDetails(cliqueId);
 			
 			IdentifiedConcept selectedConcept;
 			
@@ -2092,9 +2108,9 @@ public class ListView extends BaseView implements Util {
 
 			//predicateLabel = predicate.getName();
 
-			Button showRelations = new Button("Show Relations");
+			Button showRelationsBtn = new Button("Show Relations");
 			final IdentifiedConcept finallySelectedConcept = selectedConcept;
-			showRelations.addClickListener(e -> selectionContext(ui, conceptDetailsWindow, finallySelectedConcept));
+			showRelationsBtn.addClickListener(e -> selectionContext(ui, conceptDetailsWindow, finallySelectedConcept));
 
 			// RMB: 9 September 2016 - deprecating relation table display of
 			// WikiData
@@ -2120,7 +2136,7 @@ public class ListView extends BaseView implements Util {
 			});
 
 			HorizontalLayout operationsLayout = new HorizontalLayout();
-			operationsLayout.addComponent(showRelations);
+			operationsLayout.addComponent(showRelationsBtn);
 
 			// RMB: 9 September 2016 - deprecating relation table display of
 			// WikiData
@@ -2133,21 +2149,30 @@ public class ListView extends BaseView implements Util {
 			buttonsLayout.addComponents(operationsLayout, closeButton);
 
 			buttonsLayout.setSpacing(true);
-			buttonsLayout.setMargin(true);
 			buttonsLayout.setWidth("100%");
 
 			buttonsLayout.setComponentAlignment(operationsLayout, Alignment.MIDDLE_LEFT);
 			buttonsLayout.setComponentAlignment(closeButton, Alignment.MIDDLE_RIGHT);
 
 			VerticalLayout wd_details = detailshandler.getDetails(selectedConcept);
-			wd_details.addComponent(buttonsLayout);
+
+			VerticalLayout windowContent = new VerticalLayout();
+			windowContent.setSpacing(true);
+			windowContent.addComponent(wd_details);
+			windowContent.addComponent(buttonsLayout);
 
 			conceptDetailsWindow.setCaption(conceptName);
-			conceptDetailsWindow.setId("introPanel");
-			conceptDetailsWindow.setContent(wd_details);
+			conceptDetailsWindow.setContent(windowContent);
 
 			ui.addWindow(conceptDetailsWindow);
 		}
+	}
+
+	private CompletableFuture<AnnotatedConcept> getConceptWithDetails(String cliqueId) {
+		List<String> beacons = query.getCustomBeacons();
+		String sessionId = query.getUserSessionId();
+		CompletableFuture<AnnotatedConcept> future = kbService.getConceptWithDetails(cliqueId,beacons,sessionId);
+		return future;
 	}
 
 	

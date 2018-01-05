@@ -33,7 +33,7 @@
 // Example variants can be copy/pasted from https://vaadin.com/wiki/-/wiki/Main/Valo+Examples
 
 // Overrides global variables for the Valo theme
-$v-font-size: 9.5px;
+$v-font-size: 10px;
 
 $v-border-radius: 2px;
 
@@ -423,7 +423,6 @@ $color-green: #5cb85c;
 	.alert-window-label {
 		font-size: 13px;
 		text-align: center;
-//		font-weight: bold;
 	}
 	
 //--Textfields--//
@@ -626,19 +625,6 @@ $color-green: #5cb85c;
 		white-space: nowrap;
 		overflow: hidden;
 		text-align: center;
-// 		&.type-cell, &.library-cell, &.evidence-cell, &.relation-cell,  &.publication-date-cell {
-// 			text-align: center;
-// 			.v-nativebutton {
-// 				@include native-square-button;
-// 				&:hover {
-// 					background-color: $color-grey;
-// 					cursor: pointer;
-// 				}
-// 			}
-// 		}
-// 		&.relation-cell,  &.publication-date-cell {
-// 			text-align: center;
-// 		}		
 	}
 	
 	.grid-margin-left {
@@ -686,7 +672,7 @@ $color-green: #5cb85c;
 	
 //--Window and panels--//
 	.concept-details-window {
-		max-width: 30%;
+		min-width: 30%;
 	}
  	
  	.moreInfoWindow{

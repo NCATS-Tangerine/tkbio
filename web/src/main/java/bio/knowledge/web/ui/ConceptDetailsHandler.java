@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeoutException;
 
@@ -38,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -45,11 +47,14 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.datasource.wikidata.ConceptDescriptor;
+import bio.knowledge.model.AnnotatedConcept;
 import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Predicate;
@@ -90,10 +95,7 @@ public class ConceptDetailsHandler {
 		
 		query.setCurrentSelectedConcept(selectedConcept);
 		
-		/*
-		 * TODO - WE NEED TO RETRIEVE THE NEW 
-		 * CONCEPT DETAILS HERE, FOR DISPLAY
-		 */
+		AnnotatedConcept annotatedConcept = (AnnotatedConcept) selectedConcept;
 		
 		try {
 			// resetting descriptionBuilder
@@ -107,44 +109,67 @@ public class ConceptDetailsHandler {
 			_logger.error(e.getMessage());
 		}
 
-		// set up the common labels
-		Label cliqueLabel    = new Label();
-		Label accessionLabel = new Label();
-		Label nameLabel      = new Label();
-		Label typeLabel      = new Label();
-		Label aliasesLabel   = new Label();
-
-		cliqueLabel.setCaption("Clique Id:");
-		accessionLabel.setCaption("Accession Id:");
-		nameLabel.setCaption("Name:");
-		typeLabel.setCaption("Semantic Group:");
-		aliasesLabel.setCaption("Aliases:");
-
-		if (selectedConcept != null) {
-			cliqueLabel.setValue(selectedConcept.getCliqueId());
-			accessionLabel.setValue(selectedConcept.getId());
-			nameLabel.setValue(selectedConcept.getName());
-			typeLabel.setValue(selectedConcept.getType().getDescription());
-			aliasesLabel.setContentMode(ContentMode.HTML);
-			
-			// TODO - RMB Dec 2017 We need to upgrade our presentation of aliases here!
-			//aliasesLabel.setValue(String.join("<br/>", selectedConcept.getCrossReferences()));
-		} else {
-			// For some reason, for some concepts, selectedConcept may be
-			// null?
-			accessionLabel.setValue("Not Available?");
-			nameLabel.setValue("Not Available?");
-			typeLabel.setValue("Not Available?");
-			cliqueLabel.setValue("Not Available?");
-			aliasesLabel.setValue("Not Available?");
-		}
-		
 		FormLayout labelsLayout = new FormLayout();
 		labelsLayout.setMargin(false);
 		labelsLayout.setSpacing(false);
-		labelsLayout.setWidth("100%");
+		labelsLayout.setWidth(100, Unit.PERCENTAGE);
+
+		// set up the common labels
+		Label cliqueLabel = new Label();
+		cliqueLabel.setCaption("Clique Id:");
+		cliqueLabel.setValue(annotatedConcept.getCliqueId());
 		
-		labelsLayout.addComponents(cliqueLabel, accessionLabel, nameLabel, typeLabel, aliasesLabel);
+		Label accessionLabel = new Label();
+		accessionLabel.setCaption("Accession Id:");
+		accessionLabel.setValue(annotatedConcept.getId());
+		
+		Label nameLabel = new Label();
+		nameLabel.setCaption("Name:");
+		nameLabel.setValue(annotatedConcept.getName());
+		
+		Label typeLabel = new Label();
+		typeLabel.setCaption("Semantic Group:");
+		typeLabel.setValue(annotatedConcept.getType().toString());
+
+		Label taxonLabel = new Label();
+		taxonLabel.setCaption("Taxon:");
+		taxonLabel.setValue(annotatedConcept.getTaxon());
+		
+		// set up aliases
+		VerticalLayout aliasesLayout = new VerticalLayout();
+		Panel aliasesContentPanel = new Panel();
+		aliasesLayout.addComponent(aliasesContentPanel);
+		
+		VerticalLayout aliasesContent = new VerticalLayout();
+		aliasesContentPanel.setContent(aliasesContent);
+
+		aliasesLayout.setCaption("Aliases:");
+		aliasesContentPanel.setHeight(25, Unit.EM);
+		
+		Set<String> aliases = annotatedConcept.getAliases();
+		for (String alias : aliases) {
+			Label aliasLabel = new Label(alias);
+			aliasLabel.setWidthUndefined();
+			aliasesContent.addComponent(aliasLabel);
+		}
+		
+		labelsLayout.addComponents(nameLabel, cliqueLabel, accessionLabel, typeLabel, taxonLabel, aliasesLayout);
+		
+//		if (selectedConcept != null) {
+//			cliqueLabel.setValue(selectedConcept.getCliqueId());
+//			accessionLabel.setValue(selectedConcept.getId());
+//			nameLabel.setValue(selectedConcept.getName());
+//			typeLabel.setValue(selectedConcept.getType().getDescription());
+//			aliasesLabel.setContentMode(ContentMode.HTML);
+//		} else {
+//			// For some reason, for some concepts, selectedConcept may be
+//			// null?
+//			accessionLabel.setValue("Not Available?");
+//			nameLabel.setValue("Not Available?");
+//			typeLabel.setValue("Not Available?");
+//			cliqueLabel.setValue("Not Available?");
+//			aliasesLabel.setValue("Not Available?");
+//		}
 		
 		boolean wiki_article_available = 
 				descriptionBuilder != null && 
@@ -192,14 +217,9 @@ public class ConceptDetailsHandler {
 			labelsLayout.addComponent(field);
 		}
 
-		VerticalLayout fieldsLayout = new VerticalLayout();
-		fieldsLayout.setSpacing(true);
-
 		VerticalLayout details = new VerticalLayout();
-		details.setMargin(true);
-
-		details.addComponents(labelsLayout, fieldsLayout);
-
+		details.addComponent(labelsLayout);
+		
 		return details;
 	}
 
