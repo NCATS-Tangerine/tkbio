@@ -104,10 +104,12 @@ import bio.knowledge.graph.jsonmodels.Layout;
 import bio.knowledge.graph.jsonmodels.Node;
 import bio.knowledge.graph.jsonmodels.NodeData;
 import bio.knowledge.model.AnnotatedConcept;
+import bio.knowledge.model.AnnotatedConceptImpl;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.ConceptMapArchive;
 import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.IdentifiedConcept;
+import bio.knowledge.model.IdentifiedConceptImpl;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.user.User;
@@ -126,7 +128,7 @@ import bio.knowledge.service.user.UserService;
 import bio.knowledge.web.KBUploader;
 import bio.knowledge.web.view.AboutView;
 import bio.knowledge.web.view.ApplicationLayout;
-import bio.knowledge.web.view.ConceptSearchResults;
+import bio.knowledge.web.view.EntitySearchResultsView;
 import bio.knowledge.web.view.ContactView;
 import bio.knowledge.web.view.DesktopView;
 import bio.knowledge.web.view.FaqView;
@@ -1042,15 +1044,16 @@ public class DesktopUI extends UI implements MessageService, Util {
 				//
 			// Must feature an element acting as a separator pointing to "more" page
 			// Must feature query-by-semtype
-		BeanItemContainer autoCompleteEntities = new BeanItemContainer(IdentifiedEntity.class);
+		BeanItemContainer autoCompleteEntities = new BeanItemContainer(IdentifiedConcept.class);
 		
 		// TODO: add menu stuff
 		// these values constitute names of menu items, that must seem like concepts within the restricted scope of the ComboBox, 
 		// but must not be seen as valid values for a query
-		String[] menuItems = {"Concepts","Semantic Types", "Find More"};
-		IdentifiedEntity conceptMenuItem = new ConceptImpl("", null, menuItems[0]);
-		IdentifiedEntity semtypeMenuItem = new ConceptImpl("", null, menuItems[1]);
-		IdentifiedEntity findMoreMenutItem = new ConceptImpl("", null, menuItems[2]);
+		String[] menuItems = {"Concepts","Concept Types", "Find More"};
+
+		IdentifiedConcept conceptMenuItem = new IdentifiedConceptImpl("", menuItems[0], ConceptType.NONE, "");
+		IdentifiedConcept semtypeMenuItem = new IdentifiedConceptImpl("", menuItems[1],  ConceptType.NONE, "");
+		IdentifiedConcept findMoreMenutItem = new IdentifiedConceptImpl("", menuItems[2], ConceptType.NONE, "");
 
 		autoCompleteEntities.addItem(conceptMenuItem);
 		autoCompleteEntities.addItem(semtypeMenuItem);
@@ -1059,8 +1062,8 @@ public class DesktopUI extends UI implements MessageService, Util {
 		// TODO: add concept stuff from autocomplete
 
 		// TODO: add semgroup stuff
-		for ( SemanticGroup sg : EnumSet.allOf(SemanticGroup.class)) {
-			IdentifiedEntity semtypeItem = new ConceptImpl("", null, sg.name());
+		for ( ConceptType ct : EnumSet.allOf(ConceptType.class)) {
+			IdentifiedConcept semtypeItem = new IdentifiedConceptImpl("", ct.name(), ConceptType.NONE, "");
 			autoCompleteEntities.addItemAfter(semtypeMenuItem, semtypeItem);
 		}
 		
@@ -1076,7 +1079,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 			// Must feature query-by-semtype
 //		BeanItemContainer autoCompleteRelations = new BeanItemContainer();
 		ComboBox searchSubjectField = new ComboBox("Entity");
-		searchSubjectField.setItemCaption(Concept.class, "name");
+		searchSubjectField.setItemCaption(IdentifiedConcept.class, "name");
 		
 		searchSubjectField.setNullSelectionAllowed(false);
 		searchSubjectField.setContainerDataSource(autoCompleteEntities);
@@ -1355,7 +1358,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		queryText = queryText.trim();
 		query.setCurrentQueryText(queryText);
 		// Semantic type constraint in Concept-by-text results listing should initial be empty
-		query.setInitialConceptTypes(new HashSet<SemanticGroup>());
+		query.setInitialConceptTypes(new HashSet<ConceptType>());
 		
 		if(matchByIdentifier(queryText)) {
 			/*
@@ -1391,8 +1394,8 @@ public class DesktopUI extends UI implements MessageService, Util {
 		// Classical Keyword search
 
 		// Constructing the search results to be shown in the table
-		ConceptSearchResults currentSearchResults = 
-				new ConceptSearchResults(viewProvider, ViewName.CONCEPTS_VIEW);
+		EntitySearchResultsView currentSearchResults = 
+				new EntitySearchResultsView(viewProvider, ViewName.CONCEPTS_VIEW);
 		conceptSearchWindow = new Window();
 		conceptSearchWindow.setCaption("Concepts Matched by Key Words");
 		conceptSearchWindow.addStyleName("concept-search-window");

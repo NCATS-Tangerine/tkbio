@@ -37,15 +37,12 @@ import org.slf4j.LoggerFactory;
  * @author Richard
  *
  */
-<<<<<<< HEAD:models/src/main/java/bio/knowledge/model/SemanticGroup.java
-public enum SemanticGroup {
-//	NONE(
-//			"",
-//			new String[]{}
-//	), 
-=======
+
 public enum ConceptType {
->>>>>>> tkbio_ui_5.0:models/src/main/java/bio/knowledge/model/ConceptType.java
+	NONE(
+			"",
+			new String[]{}
+	), 
 	ANY(
 			"Any Semantic Type",
 			new String[]{}

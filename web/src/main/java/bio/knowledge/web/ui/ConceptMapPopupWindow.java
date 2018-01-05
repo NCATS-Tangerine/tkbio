@@ -79,7 +79,7 @@ import bio.knowledge.service.PredicateService;
 import bio.knowledge.service.ReferenceService;
 import bio.knowledge.service.StatementService;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
-import bio.knowledge.web.view.ConceptSearchResults;
+import bio.knowledge.web.view.EntitySearchResultsView;
 import bio.knowledge.web.view.ViewName;
 
 /**
@@ -591,8 +591,8 @@ public class ConceptMapPopupWindow {
 		
 		query.setCurrentQueryText(queryText);
 
-		ConceptSearchResults currentSearchResults = 
-				new ConceptSearchResults( 
+		EntitySearchResultsView currentSearchResults = 
+				new EntitySearchResultsView( 
 						((DesktopUI) UI.getCurrent()).getViewProvider(), 
 						ViewName.ANNOTATIONS_VIEW);
 		Window conceptSearchWindow = new Window();

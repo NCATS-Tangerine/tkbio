@@ -3,6 +3,7 @@ package bio.knowledge.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.core.Feature;
 
 public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements AnnotatedConcept {

@@ -45,11 +45,11 @@ import bio.knowledge.web.design.SearchDesign;
  * This file may be used to program the functionality of the application
  * @author farzi_000
  */
-public class ConceptSearchResults extends SearchDesign {
+public class EntitySearchResultsView extends SearchDesign {
 
 	private static final long serialVersionUID = 2386789095220639495L;
 	
-	private Logger _logger = LoggerFactory.getLogger(ConceptSearchResults.class);
+	private Logger _logger = LoggerFactory.getLogger(EntitySearchResultsView.class);
 	
 	private SpringViewProvider viewProvider ;
 
@@ -78,7 +78,7 @@ public class ConceptSearchResults extends SearchDesign {
 		
 	}
 
-    public ConceptSearchResults( SpringViewProvider provider, String targetSubView) {
+    public EntitySearchResultsView( SpringViewProvider provider, String targetSubView) {
     	setTargetListView(targetSubView) ;
         viewProvider = provider ;
         initialize() ;
