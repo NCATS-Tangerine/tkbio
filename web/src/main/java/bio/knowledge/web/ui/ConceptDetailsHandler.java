@@ -39,7 +39,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 
+import com.vaadin.client.ui.layout.Margins;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -112,20 +114,23 @@ public class ConceptDetailsHandler {
 		FormLayout labelsLayout = new FormLayout();
 		labelsLayout.setMargin(false);
 		labelsLayout.setSpacing(false);
-		labelsLayout.setWidth(100, Unit.PERCENTAGE);
+		labelsLayout.setWidthUndefined();
 
 		// set up the common labels
 		Label cliqueLabel = new Label();
 		cliqueLabel.setCaption("Clique Id:");
 		cliqueLabel.setValue(annotatedConcept.getCliqueId());
+		cliqueLabel.setWidthUndefined();
 		
 		Label accessionLabel = new Label();
 		accessionLabel.setCaption("Accession Id:");
 		accessionLabel.setValue(annotatedConcept.getId());
+		accessionLabel.setWidthUndefined();
 		
 		Label nameLabel = new Label();
 		nameLabel.setCaption("Name:");
 		nameLabel.setValue(annotatedConcept.getName());
+		nameLabel.setWidthUndefined();
 		
 		Label typeLabel = new Label();
 		typeLabel.setCaption("Semantic Group:");
@@ -137,14 +142,17 @@ public class ConceptDetailsHandler {
 		
 		// set up aliases
 		VerticalLayout aliasesLayout = new VerticalLayout();
+		aliasesLayout.setCaption("Aliases:");
+		aliasesLayout.setWidthUndefined();
 		Panel aliasesContentPanel = new Panel();
 		aliasesContentPanel.setStyleName("aliases-panel");
 		aliasesLayout.addComponent(aliasesContentPanel);
 		
 		VerticalLayout aliasesContent = new VerticalLayout();
+		aliasesContent.setWidthUndefined();
+		aliasesContent.setMargin(new MarginInfo(false, true, false, false));
 		aliasesContentPanel.setContent(aliasesContent);
-
-		aliasesLayout.setCaption("Aliases:");
+		aliasesContentPanel.setWidthUndefined();
 		
 		Set<String> aliases = annotatedConcept.getAliases();
 		for (String alias : aliases) {
@@ -224,6 +232,7 @@ public class ConceptDetailsHandler {
 		}
 
 		VerticalLayout details = new VerticalLayout();
+		details.setWidthUndefined();
 		details.setStyleName("concept-details-layout");
 		details.addComponent(labelsLayout);
 		

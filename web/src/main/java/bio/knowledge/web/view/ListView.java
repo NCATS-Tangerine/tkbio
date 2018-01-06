@@ -1903,9 +1903,9 @@ public class ListView extends BaseView implements Util {
 		
 		conceptDetailsWindow.setStyleName("concept-details-window");
 		conceptDetailsWindow.center();
-		conceptDetailsWindow.setWidth(50, Unit.EM);
+		conceptDetailsWindow.setWidthUndefined();
 		conceptDetailsWindow.setHeightUndefined();
-		conceptDetailsWindow.setResizable(true);
+		conceptDetailsWindow.setResizable(false);
 		
 		IdentifiedConcept concept = (IdentifiedConcept) e.getItemId();
 		CompletableFuture<AnnotatedConcept> future = getConceptWithDetails(concept.getCliqueId());
@@ -2070,9 +2070,7 @@ public class ListView extends BaseView implements Util {
 			PopupWindow conceptDetailsWindow = new PopupWindow();
 			conceptDetailsWindow.addStyleName("concept-details-window");
 			conceptDetailsWindow.center();
-			conceptDetailsWindow.setWidth(50, Unit.EM);
-			conceptDetailsWindow.setHeightUndefined();
-			conceptDetailsWindow.setResizable(true);
+			conceptDetailsWindow.setSizeUndefined();
 
 			//String predicateLabel;
 			
