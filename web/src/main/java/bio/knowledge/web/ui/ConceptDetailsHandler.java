@@ -94,10 +94,86 @@ public class ConceptDetailsHandler {
 	private WikiDataService wikiDataService;
 
 	public VerticalLayout getDetails(IdentifiedConcept selectedConcept) {
+		FormLayout labelsLayout = new FormLayout();
+		labelsLayout.setMargin(false);
+		labelsLayout.setSpacing(false);
+		labelsLayout.setWidthUndefined();
+
+		// set up clique label
+		Label cliqueLabel = new Label();
+		cliqueLabel.setCaption("Clique Id:");
+		cliqueLabel.setWidthUndefined();
+
+		// set up accession label
+		Label accessionLabel = new Label();
+		accessionLabel.setCaption("Accession Id:");
+		accessionLabel.setWidthUndefined();
+
+		// set up name label
+		Label nameLabel = new Label();
+		nameLabel.setCaption("Name:");
+		nameLabel.setWidthUndefined();
 		
+		// set up type label
+		Label typeLabel = new Label();
+		typeLabel.setCaption("Semantic Group:");
+
+		// set up taxon label
+		Label taxonLabel = new Label();
+		taxonLabel.setCaption("Taxon:");
+
+		// set up aliases
+		VerticalLayout aliasesLayout = new VerticalLayout();
+		aliasesLayout.setCaption("Aliases:");
+		aliasesLayout.setWidthUndefined();
+		
+		Panel aliasesContentPanel = new Panel();
+		aliasesContentPanel.setStyleName("aliases-panel");
+		aliasesLayout.addComponent(aliasesContentPanel);
+				
+		VerticalLayout aliasesContent = new VerticalLayout();
+		aliasesContent.setWidthUndefined();
+		aliasesContent.setMargin(new MarginInfo(false, true, false, false));
+		aliasesContentPanel.setContent(aliasesContent);
+		aliasesContentPanel.setWidthUndefined();
+		
+		labelsLayout.addComponents(nameLabel, cliqueLabel, accessionLabel, typeLabel, taxonLabel, aliasesLayout);
+
+		VerticalLayout details = new VerticalLayout();
+		details.setWidthUndefined();
+		details.setStyleName("concept-details-layout");
+		details.addComponent(labelsLayout);
+
+		// return a skeleton layout if the selected concept is null
+		if (selectedConcept == null) {
+			return details;
+		}
+		
+		/**
+		 * Fill in the details layouts with data
+		 */
 		query.setCurrentSelectedConcept(selectedConcept);
-		
 		AnnotatedConcept annotatedConcept = (AnnotatedConcept) selectedConcept;
+
+		// fill in labels
+		cliqueLabel.setValue(annotatedConcept.getCliqueId());
+		accessionLabel.setValue(annotatedConcept.getId());
+		nameLabel.setValue(annotatedConcept.getName());
+		typeLabel.setValue(annotatedConcept.getType().toString());
+		taxonLabel.setValue(annotatedConcept.getTaxon());
+		
+		// fill in aliases
+		Set<String> aliases = annotatedConcept.getAliases();
+		for (String alias : aliases) {
+			Label aliasLabel = new Label(alias);
+			aliasLabel.setWidthUndefined();
+			aliasesContent.addComponent(aliasLabel);
+		}
+		if (aliases.size() <= 10) {
+			aliasesContentPanel.setHeight(12, Unit.EM);
+		} else {
+			aliasesContentPanel.setHeight(25, Unit.EM);
+		}
 		
 		try {
 			// resetting descriptionBuilder
@@ -110,80 +186,6 @@ public class ConceptDetailsHandler {
 		} catch (Exception e) {
 			_logger.error(e.getMessage());
 		}
-
-		FormLayout labelsLayout = new FormLayout();
-		labelsLayout.setMargin(false);
-		labelsLayout.setSpacing(false);
-		labelsLayout.setWidthUndefined();
-
-		// set up the common labels
-		Label cliqueLabel = new Label();
-		cliqueLabel.setCaption("Clique Id:");
-		cliqueLabel.setValue(annotatedConcept.getCliqueId());
-		cliqueLabel.setWidthUndefined();
-		
-		Label accessionLabel = new Label();
-		accessionLabel.setCaption("Accession Id:");
-		accessionLabel.setValue(annotatedConcept.getId());
-		accessionLabel.setWidthUndefined();
-		
-		Label nameLabel = new Label();
-		nameLabel.setCaption("Name:");
-		nameLabel.setValue(annotatedConcept.getName());
-		nameLabel.setWidthUndefined();
-		
-		Label typeLabel = new Label();
-		typeLabel.setCaption("Semantic Group:");
-		typeLabel.setValue(annotatedConcept.getType().toString());
-
-		Label taxonLabel = new Label();
-		taxonLabel.setCaption("Taxon:");
-		taxonLabel.setValue(annotatedConcept.getTaxon());
-		
-		// set up aliases
-		VerticalLayout aliasesLayout = new VerticalLayout();
-		aliasesLayout.setCaption("Aliases:");
-		aliasesLayout.setWidthUndefined();
-		Panel aliasesContentPanel = new Panel();
-		aliasesContentPanel.setStyleName("aliases-panel");
-		aliasesLayout.addComponent(aliasesContentPanel);
-		
-		VerticalLayout aliasesContent = new VerticalLayout();
-		aliasesContent.setWidthUndefined();
-		aliasesContent.setMargin(new MarginInfo(false, true, false, false));
-		aliasesContentPanel.setContent(aliasesContent);
-		aliasesContentPanel.setWidthUndefined();
-		
-		Set<String> aliases = annotatedConcept.getAliases();
-		for (String alias : aliases) {
-			Label aliasLabel = new Label(alias);
-			aliasLabel.setWidthUndefined();
-			aliasesContent.addComponent(aliasLabel);
-		}
-		
-		if (aliases.size() <= 10) {
-			aliasesContentPanel.setHeight(12, Unit.EM);
-		} else {
-			aliasesContentPanel.setHeight(25, Unit.EM);
-		}
-		
-		labelsLayout.addComponents(nameLabel, cliqueLabel, accessionLabel, typeLabel, taxonLabel, aliasesLayout);
-		
-//		if (selectedConcept != null) {
-//			cliqueLabel.setValue(selectedConcept.getCliqueId());
-//			accessionLabel.setValue(selectedConcept.getId());
-//			nameLabel.setValue(selectedConcept.getName());
-//			typeLabel.setValue(selectedConcept.getType().getDescription());
-//			aliasesLabel.setContentMode(ContentMode.HTML);
-//		} else {
-//			// For some reason, for some concepts, selectedConcept may be
-//			// null?
-//			accessionLabel.setValue("Not Available?");
-//			nameLabel.setValue("Not Available?");
-//			typeLabel.setValue("Not Available?");
-//			cliqueLabel.setValue("Not Available?");
-//			aliasesLabel.setValue("Not Available?");
-//		}
 		
 		boolean wiki_article_available = 
 				descriptionBuilder != null && 
@@ -230,12 +232,6 @@ public class ConceptDetailsHandler {
 			Component field = sordidDetails.get(byOrder);
 			labelsLayout.addComponent(field);
 		}
-
-		VerticalLayout details = new VerticalLayout();
-		details.setWidthUndefined();
-		details.setStyleName("concept-details-layout");
-		details.addComponent(labelsLayout);
-		
 		return details;
 	}
 
