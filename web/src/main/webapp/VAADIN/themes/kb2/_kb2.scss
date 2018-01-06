@@ -607,6 +607,9 @@ $color-green: #5cb85c;
 		text-align: center;
 	}
 
+	.concept-details-layout {
+	}
+
 //--Grid--//
 	.v-grid-row-selected .v-grid-cell {
 		background-color: #e1e1e1 !important;
@@ -698,6 +701,13 @@ $color-green: #5cb85c;
   		margin: 2px;
   		padding: 0px;
   		background-color: #474747;
+	}
+
+	.aliases-panel {
+		min-width: 15em;	
+	}
+	
+	.node-popup-window {
 	}
 	
 	//--images--//

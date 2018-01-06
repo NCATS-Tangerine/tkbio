@@ -758,7 +758,7 @@ public class ListView extends BaseView implements Util {
 			public String getValue(Item item, Object itemId, Object propertyId) {
 				if (itemId instanceof IdentifiedConcept) {
 					IdentifiedConcept concept = (IdentifiedConcept) itemId;
-					return concept.getType().name();
+					return concept.getType().toString();
 				} else {
 					return "";
 				}
@@ -2258,10 +2258,7 @@ public class ListView extends BaseView implements Util {
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "library", event -> {
 			IdentifiedConcept concept = (IdentifiedConcept) event.getItemId();
-
-		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, COL_ID_DETAILS, e -> {
-			System.out.println("clicked!");
-		});
+			
 			// Ignore ConceptSemanticType entries with empty libraries
 			Library library = concept.getLibrary();
 			if (library.isEmpty())

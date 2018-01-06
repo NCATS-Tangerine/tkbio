@@ -1130,7 +1130,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		queryText = queryText.trim();
 		query.setCurrentQueryText(queryText);
 
-		if(matchByIdentifier(queryText)) {
+		if(matchByCurie(queryText)) {
 			/*
 			 * Matching by CURIE - resolve the matching concept 
 			 * then go directly to the statements table
@@ -1185,7 +1185,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * @param queryText
 	 * @return true if the pattern is matched; otherwise false.
 	 */
-	private boolean matchByIdentifier(String queryText) {
+	private boolean matchByCurie(String queryText) {
 		Matcher matcher = Pattern.compile("(\\S*):(\\S*)").matcher(queryText);
 		if (matcher.matches()) {
 			return true;

@@ -138,19 +138,25 @@ public class ConceptDetailsHandler {
 		// set up aliases
 		VerticalLayout aliasesLayout = new VerticalLayout();
 		Panel aliasesContentPanel = new Panel();
+		aliasesContentPanel.setStyleName("aliases-panel");
 		aliasesLayout.addComponent(aliasesContentPanel);
 		
 		VerticalLayout aliasesContent = new VerticalLayout();
 		aliasesContentPanel.setContent(aliasesContent);
 
 		aliasesLayout.setCaption("Aliases:");
-		aliasesContentPanel.setHeight(25, Unit.EM);
 		
 		Set<String> aliases = annotatedConcept.getAliases();
 		for (String alias : aliases) {
 			Label aliasLabel = new Label(alias);
 			aliasLabel.setWidthUndefined();
 			aliasesContent.addComponent(aliasLabel);
+		}
+		
+		if (aliases.size() <= 10) {
+			aliasesContentPanel.setHeight(12, Unit.EM);
+		} else {
+			aliasesContentPanel.setHeight(25, Unit.EM);
 		}
 		
 		labelsLayout.addComponents(nameLabel, cliqueLabel, accessionLabel, typeLabel, taxonLabel, aliasesLayout);
@@ -218,6 +224,7 @@ public class ConceptDetailsHandler {
 		}
 
 		VerticalLayout details = new VerticalLayout();
+		details.setStyleName("concept-details-layout");
 		details.addComponent(labelsLayout);
 		
 		return details;
