@@ -1113,6 +1113,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		searchBtn.setEnabled(false);
 
 		String queryText = desktopView.getSearch().getValue();
+		queryText = queryText.trim();
 
 		// RMB: March 1, 2017 - empty queries seem too problematic now
 		// so we ignore them again!
@@ -1127,7 +1128,6 @@ public class DesktopUI extends UI implements MessageService, Util {
 			return;
 		}
 
-		queryText = queryText.trim();
 		query.setCurrentQueryText(queryText);
 
 		if(matchByCurie(queryText)) {

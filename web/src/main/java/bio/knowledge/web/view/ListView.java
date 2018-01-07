@@ -2103,13 +2103,6 @@ public class ListView extends BaseView implements Util {
 			if (selectedConcept != null) {
 				conceptName = selectedConcept.getName();
 			} else {
-//				if (role.equals(ConceptRole.SUBJECT)) {				
-//					selectedConcept = subject;
-//				} else if (role.equals(ConceptRole.OBJECT)) {
-//					selectedConcept = object;
-//				} else {
-//					throw new RuntimeException("Unsupported Relationship Concept Role?");
-//				}
 				conceptName = "Unknown concept";
 			}
 

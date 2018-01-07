@@ -330,7 +330,15 @@ public class KnowledgeBeaconService implements Util {
 								
 								ConceptType semgroup;
 								try {
-									semgroup = ConceptType.valueOf(response.getType());
+									String type = response.getType();
+									if (type.contains(":")) {
+										// type might be a string combined from multiple types separated by spaces
+										if (type.contains(" ")) {
+											type = type.split("\\s")[0];
+										}
+										type = type.split(":", 2)[1].toUpperCase();
+									}
+									semgroup = ConceptType.valueOf(type);
 								} catch (IllegalArgumentException ex) {
 									semgroup = null;
 								}
@@ -427,19 +435,26 @@ public class KnowledgeBeaconService implements Util {
 					BeaconConceptWithDetails response = 
 							getConceptsApi().getConceptDetails( cliqueId, beacons, sessionId );
 
-					ConceptType type;
+					ConceptType semgroup;
 					try {
-
-						type = ConceptType.valueOf(response.getType());
+						String type = response.getType();
+						if (type.contains(":")) {
+							// type might be a string combined from multiple types separated by spaces
+							if (type.contains(" ")) {
+								type = type.split("\\s")[0];
+							}
+							type = type.split(":", 2)[1].toUpperCase();
+						}
+						semgroup = ConceptType.valueOf(type);
 
 					} catch (IllegalArgumentException e) {
-						type = null;
+						semgroup = null;
 					}
 
 					concept = new AnnotatedConceptImpl(
 							response.getClique(),
 							response.getName(),
-							type,
+							semgroup,
 							response.getTaxon()
 							);
 
