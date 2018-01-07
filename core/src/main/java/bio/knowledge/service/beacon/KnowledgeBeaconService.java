@@ -331,7 +331,7 @@ public class KnowledgeBeaconService implements Util {
 								ConceptType semgroup;
 								try {
 									semgroup = ConceptType.valueOf(response.getType());
-								} catch (IllegalArgumentException ex) {
+								} catch (Exception ex) {
 									semgroup = null;
 								}
 								
