@@ -61,22 +61,22 @@ Please follow the [installation](#installation) instruction and execute the foll
 import bio.knowledge.client.*;
 import bio.knowledge.client.auth.*;
 import bio.knowledge.client.model.*;
-import bio.knowledge.client.api.AggregatorApi;
+import bio.knowledge.client.api.ConceptsApi;
 
 import java.io.File;
 import java.util.*;
 
-public class AggregatorApiExample {
+public class ConceptsApiExample {
 
     public static void main(String[] args) {
         
-        AggregatorApi apiInstance = new AggregatorApi();
-        String sessionId = "sessionId_example"; // String | identifier to be used for tagging session data 
+        ConceptsApi apiInstance = new ConceptsApi();
+        String identifier = "identifier_example"; // String | a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of interest to be resolved to a concept clique
         try {
-            List<KnowledgeBeacon> result = apiInstance.getBeacons(sessionId);
+            ServerCliqueIdentifier result = apiInstance.getClique(identifier);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling AggregatorApi#getBeacons");
+            System.err.println("Exception when calling ConceptsApi#getClique");
             e.printStackTrace();
         }
     }
@@ -86,32 +86,59 @@ public class AggregatorApiExample {
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://kba.ncats.io*
+All URIs are relative to *https://kba.ncats.io/*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*AggregatorApi* | [**getBeacons**](docs/AggregatorApi.md#getBeacons) | **GET** /beacons | 
-*AggregatorApi* | [**getErrors**](docs/AggregatorApi.md#getErrors) | **GET** /errorlog | 
-*ConceptsApi* | [**getConceptDetails**](docs/ConceptsApi.md#getConceptDetails) | **GET** /concepts/{conceptId} | 
-*ConceptsApi* | [**getConcepts**](docs/ConceptsApi.md#getConcepts) | **GET** /concepts | 
-*EvidenceApi* | [**getEvidence**](docs/EvidenceApi.md#getEvidence) | **GET** /evidence/{statementId} | 
-*StatementsApi* | [**getStatements**](docs/StatementsApi.md#getStatements) | **GET** /statements | 
-*SummaryApi* | [**linkedTypes**](docs/SummaryApi.md#linkedTypes) | **GET** /types | 
+*ConceptsApi* | [**getClique**](docs/ConceptsApi.md#getClique) | **GET** /clique/{identifier} | 
+*ConceptsApi* | [**getConceptDetails**](docs/ConceptsApi.md#getConceptDetails) | **GET** /concepts/details/{cliqueId} | 
+*ConceptsApi* | [**getConcepts**](docs/ConceptsApi.md#getConcepts) | **GET** /concepts/data/{queryId} | 
+*ConceptsApi* | [**getConceptsQueryStatus**](docs/ConceptsApi.md#getConceptsQueryStatus) | **GET** /concepts/status/{queryId} | 
+*ConceptsApi* | [**postConceptsQuery**](docs/ConceptsApi.md#postConceptsQuery) | **POST** /concepts | 
+*MetadataApi* | [**getBeacons**](docs/MetadataApi.md#getBeacons) | **GET** /beacons | 
+*MetadataApi* | [**getConceptTypes**](docs/MetadataApi.md#getConceptTypes) | **GET** /types | 
+*MetadataApi* | [**getErrors**](docs/MetadataApi.md#getErrors) | **GET** /errorlog | 
+*MetadataApi* | [**getKnowledgeMap**](docs/MetadataApi.md#getKnowledgeMap) | **GET** /kmap | 
+*MetadataApi* | [**getPredicates**](docs/MetadataApi.md#getPredicates) | **GET** /predicates | 
+*StatementsApi* | [**getEvidence**](docs/StatementsApi.md#getEvidence) | **GET** /evidence/{statementId} | 
+*StatementsApi* | [**getStatementsQuery**](docs/StatementsApi.md#getStatementsQuery) | **GET** /statements/data/{queryId} | 
+*StatementsApi* | [**getStatementsQueryStatus**](docs/StatementsApi.md#getStatementsQueryStatus) | **GET** /statements/status/{queryId} | 
+*StatementsApi* | [**postStatementsQuery**](docs/StatementsApi.md#postStatementsQuery) | **POST** /statements | 
 
 
 ## Documentation for Models
 
- - [Annotation](docs/Annotation.md)
- - [Concept](docs/Concept.md)
- - [ConceptDetail](docs/ConceptDetail.md)
- - [Detail](docs/Detail.md)
- - [KnowledgeBeacon](docs/KnowledgeBeacon.md)
- - [LogEntry](docs/LogEntry.md)
- - [Statement](docs/Statement.md)
- - [StatementsObject](docs/StatementsObject.md)
- - [StatementsPredicate](docs/StatementsPredicate.md)
- - [Subject](docs/Subject.md)
- - [Summary](docs/Summary.md)
+ - [ServerAnnotation](docs/ServerAnnotation.md)
+ - [ServerBeaconConceptType](docs/ServerBeaconConceptType.md)
+ - [ServerBeaconPredicate](docs/ServerBeaconPredicate.md)
+ - [ServerCliqueIdentifier](docs/ServerCliqueIdentifier.md)
+ - [ServerConcept](docs/ServerConcept.md)
+ - [ServerConceptDetail](docs/ServerConceptDetail.md)
+ - [ServerConceptTypes](docs/ServerConceptTypes.md)
+ - [ServerConceptTypesByBeacon](docs/ServerConceptTypesByBeacon.md)
+ - [ServerConceptWithDetails](docs/ServerConceptWithDetails.md)
+ - [ServerConceptWithDetailsBeaconEntry](docs/ServerConceptWithDetailsBeaconEntry.md)
+ - [ServerConceptsQuery](docs/ServerConceptsQuery.md)
+ - [ServerConceptsQueryBeaconStatus](docs/ServerConceptsQueryBeaconStatus.md)
+ - [ServerConceptsQueryResult](docs/ServerConceptsQueryResult.md)
+ - [ServerConceptsQueryStatus](docs/ServerConceptsQueryStatus.md)
+ - [ServerKnowledgeBeacon](docs/ServerKnowledgeBeacon.md)
+ - [ServerKnowledgeMap](docs/ServerKnowledgeMap.md)
+ - [ServerKnowledgeMapObject](docs/ServerKnowledgeMapObject.md)
+ - [ServerKnowledgeMapPredicate](docs/ServerKnowledgeMapPredicate.md)
+ - [ServerKnowledgeMapStatement](docs/ServerKnowledgeMapStatement.md)
+ - [ServerKnowledgeMapSubject](docs/ServerKnowledgeMapSubject.md)
+ - [ServerLogEntry](docs/ServerLogEntry.md)
+ - [ServerPredicates](docs/ServerPredicates.md)
+ - [ServerPredicatesByBeacon](docs/ServerPredicatesByBeacon.md)
+ - [ServerStatement](docs/ServerStatement.md)
+ - [ServerStatementObject](docs/ServerStatementObject.md)
+ - [ServerStatementPredicate](docs/ServerStatementPredicate.md)
+ - [ServerStatementSubject](docs/ServerStatementSubject.md)
+ - [ServerStatementsQuery](docs/ServerStatementsQuery.md)
+ - [ServerStatementsQueryBeaconStatus](docs/ServerStatementsQueryBeaconStatus.md)
+ - [ServerStatementsQueryResult](docs/ServerStatementsQueryResult.md)
+ - [ServerStatementsQueryStatus](docs/ServerStatementsQueryStatus.md)
 
 
 ## Documentation for Authorization
