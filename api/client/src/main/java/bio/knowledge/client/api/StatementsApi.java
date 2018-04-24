@@ -27,10 +27,10 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 
 
-import bio.knowledge.client.model.ServerAnnotation;
-import bio.knowledge.client.model.ServerStatementsQuery;
-import bio.knowledge.client.model.ServerStatementsQueryResult;
-import bio.knowledge.client.model.ServerStatementsQueryStatus;
+import bio.knowledge.client.model.BeaconAnnotation;
+import bio.knowledge.client.model.BeaconStatementsQuery;
+import bio.knowledge.client.model.BeaconStatementsQueryResult;
+import bio.knowledge.client.model.BeaconStatementsQueryStatus;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -133,11 +133,11 @@ public class StatementsApi {
      * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
      * @param pageSize number of cited references per page to be returned in a paged set of query results  (optional)
      * @param beacons set of aggregator indices of beacons to be used as knowledge sources for the query  (optional)
-     * @return List&lt;ServerAnnotation&gt;
+     * @return List&lt;BeaconAnnotation&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<ServerAnnotation> getEvidence(String statementId, String keywords, Integer pageNumber, Integer pageSize, List<Integer> beacons) throws ApiException {
-        ApiResponse<List<ServerAnnotation>> resp = getEvidenceWithHttpInfo(statementId, keywords, pageNumber, pageSize, beacons);
+    public List<BeaconAnnotation> getEvidence(String statementId, String keywords, Integer pageNumber, Integer pageSize, List<Integer> beacons) throws ApiException {
+        ApiResponse<List<BeaconAnnotation>> resp = getEvidenceWithHttpInfo(statementId, keywords, pageNumber, pageSize, beacons);
         return resp.getData();
     }
 
@@ -149,12 +149,12 @@ public class StatementsApi {
      * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
      * @param pageSize number of cited references per page to be returned in a paged set of query results  (optional)
      * @param beacons set of aggregator indices of beacons to be used as knowledge sources for the query  (optional)
-     * @return ApiResponse&lt;List&lt;ServerAnnotation&gt;&gt;
+     * @return ApiResponse&lt;List&lt;BeaconAnnotation&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<ServerAnnotation>> getEvidenceWithHttpInfo(String statementId, String keywords, Integer pageNumber, Integer pageSize, List<Integer> beacons) throws ApiException {
+    public ApiResponse<List<BeaconAnnotation>> getEvidenceWithHttpInfo(String statementId, String keywords, Integer pageNumber, Integer pageSize, List<Integer> beacons) throws ApiException {
         com.squareup.okhttp.Call call = getEvidenceValidateBeforeCall(statementId, keywords, pageNumber, pageSize, beacons, null, null);
-        Type localVarReturnType = new TypeToken<List<ServerAnnotation>>(){}.getType();
+        Type localVarReturnType = new TypeToken<List<BeaconAnnotation>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
@@ -170,7 +170,7 @@ public class StatementsApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getEvidenceAsync(String statementId, String keywords, Integer pageNumber, Integer pageSize, List<Integer> beacons, final ApiCallback<List<ServerAnnotation>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getEvidenceAsync(String statementId, String keywords, Integer pageNumber, Integer pageSize, List<Integer> beacons, final ApiCallback<List<BeaconAnnotation>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -192,7 +192,7 @@ public class StatementsApi {
         }
 
         com.squareup.okhttp.Call call = getEvidenceValidateBeforeCall(statementId, keywords, pageNumber, pageSize, beacons, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<List<ServerAnnotation>>(){}.getType();
+        Type localVarReturnType = new TypeToken<List<BeaconAnnotation>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
@@ -269,11 +269,11 @@ public class StatementsApi {
      * @param beacons subset of aggregator indices of beacons whose statements are to be retrieved  (optional)
      * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
      * @param pageSize number of concepts per page to be returned in a paged set of query results  (optional)
-     * @return ServerStatementsQueryResult
+     * @return BeaconStatementsQueryResult
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ServerStatementsQueryResult getStatementsQuery(String queryId, List<Integer> beacons, Integer pageNumber, Integer pageSize) throws ApiException {
-        ApiResponse<ServerStatementsQueryResult> resp = getStatementsQueryWithHttpInfo(queryId, beacons, pageNumber, pageSize);
+    public BeaconStatementsQueryResult getStatementsQuery(String queryId, List<Integer> beacons, Integer pageNumber, Integer pageSize) throws ApiException {
+        ApiResponse<BeaconStatementsQueryResult> resp = getStatementsQueryWithHttpInfo(queryId, beacons, pageNumber, pageSize);
         return resp.getData();
     }
 
@@ -284,12 +284,12 @@ public class StatementsApi {
      * @param beacons subset of aggregator indices of beacons whose statements are to be retrieved  (optional)
      * @param pageNumber (1-based) number of the page to be returned in a paged set of query results  (optional)
      * @param pageSize number of concepts per page to be returned in a paged set of query results  (optional)
-     * @return ApiResponse&lt;ServerStatementsQueryResult&gt;
+     * @return ApiResponse&lt;BeaconStatementsQueryResult&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<ServerStatementsQueryResult> getStatementsQueryWithHttpInfo(String queryId, List<Integer> beacons, Integer pageNumber, Integer pageSize) throws ApiException {
+    public ApiResponse<BeaconStatementsQueryResult> getStatementsQueryWithHttpInfo(String queryId, List<Integer> beacons, Integer pageNumber, Integer pageSize) throws ApiException {
         com.squareup.okhttp.Call call = getStatementsQueryValidateBeforeCall(queryId, beacons, pageNumber, pageSize, null, null);
-        Type localVarReturnType = new TypeToken<ServerStatementsQueryResult>(){}.getType();
+        Type localVarReturnType = new TypeToken<BeaconStatementsQueryResult>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
@@ -304,7 +304,7 @@ public class StatementsApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getStatementsQueryAsync(String queryId, List<Integer> beacons, Integer pageNumber, Integer pageSize, final ApiCallback<ServerStatementsQueryResult> callback) throws ApiException {
+    public com.squareup.okhttp.Call getStatementsQueryAsync(String queryId, List<Integer> beacons, Integer pageNumber, Integer pageSize, final ApiCallback<BeaconStatementsQueryResult> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -326,7 +326,7 @@ public class StatementsApi {
         }
 
         com.squareup.okhttp.Call call = getStatementsQueryValidateBeforeCall(queryId, beacons, pageNumber, pageSize, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<ServerStatementsQueryResult>(){}.getType();
+        Type localVarReturnType = new TypeToken<BeaconStatementsQueryResult>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
@@ -397,11 +397,11 @@ public class StatementsApi {
      * Retrieves the status of a given query about the statements in the system 
      * @param queryId an active query identifier as returned by a POST of statements  query parameters. (required)
      * @param beacons subset of aggregator indices of beacons whose status is being polled (if omitted, then the status of all beacons from the query are returned)  (optional)
-     * @return ServerStatementsQueryStatus
+     * @return BeaconStatementsQueryStatus
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ServerStatementsQueryStatus getStatementsQueryStatus(String queryId, List<Integer> beacons) throws ApiException {
-        ApiResponse<ServerStatementsQueryStatus> resp = getStatementsQueryStatusWithHttpInfo(queryId, beacons);
+    public BeaconStatementsQueryStatus getStatementsQueryStatus(String queryId, List<Integer> beacons) throws ApiException {
+        ApiResponse<BeaconStatementsQueryStatus> resp = getStatementsQueryStatusWithHttpInfo(queryId, beacons);
         return resp.getData();
     }
 
@@ -410,12 +410,12 @@ public class StatementsApi {
      * Retrieves the status of a given query about the statements in the system 
      * @param queryId an active query identifier as returned by a POST of statements  query parameters. (required)
      * @param beacons subset of aggregator indices of beacons whose status is being polled (if omitted, then the status of all beacons from the query are returned)  (optional)
-     * @return ApiResponse&lt;ServerStatementsQueryStatus&gt;
+     * @return ApiResponse&lt;BeaconStatementsQueryStatus&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<ServerStatementsQueryStatus> getStatementsQueryStatusWithHttpInfo(String queryId, List<Integer> beacons) throws ApiException {
+    public ApiResponse<BeaconStatementsQueryStatus> getStatementsQueryStatusWithHttpInfo(String queryId, List<Integer> beacons) throws ApiException {
         com.squareup.okhttp.Call call = getStatementsQueryStatusValidateBeforeCall(queryId, beacons, null, null);
-        Type localVarReturnType = new TypeToken<ServerStatementsQueryStatus>(){}.getType();
+        Type localVarReturnType = new TypeToken<BeaconStatementsQueryStatus>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
@@ -428,7 +428,7 @@ public class StatementsApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getStatementsQueryStatusAsync(String queryId, List<Integer> beacons, final ApiCallback<ServerStatementsQueryStatus> callback) throws ApiException {
+    public com.squareup.okhttp.Call getStatementsQueryStatusAsync(String queryId, List<Integer> beacons, final ApiCallback<BeaconStatementsQueryStatus> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -450,7 +450,7 @@ public class StatementsApi {
         }
 
         com.squareup.okhttp.Call call = getStatementsQueryStatusValidateBeforeCall(queryId, beacons, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<ServerStatementsQueryStatus>(){}.getType();
+        Type localVarReturnType = new TypeToken<BeaconStatementsQueryStatus>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
@@ -534,11 +534,11 @@ public class StatementsApi {
      * @param keywords a (url-encoded, space-delimited) string of keywords or substrings against which to match the &#39;target&#39; concept or &#39;predicate&#39; names of the set of concept-relations matched by the &#39;source&#39; concepts.  (optional)
      * @param types a subset (array) of identifiers of concept types to which to constrain &#39;target&#39; concepts associated with the given &#39;source&#39; concept ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes).  (optional)
      * @param beacons set of aggregator indices of beacons to be used as knowledge sources for the query  (optional)
-     * @return ServerStatementsQuery
+     * @return BeaconStatementsQuery
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ServerStatementsQuery postStatementsQuery(String source, List<String> relations, String target, String keywords, List<String> types, List<Integer> beacons) throws ApiException {
-        ApiResponse<ServerStatementsQuery> resp = postStatementsQueryWithHttpInfo(source, relations, target, keywords, types, beacons);
+    public BeaconStatementsQuery postStatementsQuery(String source, List<String> relations, String target, String keywords, List<String> types, List<Integer> beacons) throws ApiException {
+        ApiResponse<BeaconStatementsQuery> resp = postStatementsQueryWithHttpInfo(source, relations, target, keywords, types, beacons);
         return resp.getData();
     }
 
@@ -551,12 +551,12 @@ public class StatementsApi {
      * @param keywords a (url-encoded, space-delimited) string of keywords or substrings against which to match the &#39;target&#39; concept or &#39;predicate&#39; names of the set of concept-relations matched by the &#39;source&#39; concepts.  (optional)
      * @param types a subset (array) of identifiers of concept types to which to constrain &#39;target&#39; concepts associated with the given &#39;source&#39; concept ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes).  (optional)
      * @param beacons set of aggregator indices of beacons to be used as knowledge sources for the query  (optional)
-     * @return ApiResponse&lt;ServerStatementsQuery&gt;
+     * @return ApiResponse&lt;BeaconStatementsQuery&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<ServerStatementsQuery> postStatementsQueryWithHttpInfo(String source, List<String> relations, String target, String keywords, List<String> types, List<Integer> beacons) throws ApiException {
+    public ApiResponse<BeaconStatementsQuery> postStatementsQueryWithHttpInfo(String source, List<String> relations, String target, String keywords, List<String> types, List<Integer> beacons) throws ApiException {
         com.squareup.okhttp.Call call = postStatementsQueryValidateBeforeCall(source, relations, target, keywords, types, beacons, null, null);
-        Type localVarReturnType = new TypeToken<ServerStatementsQuery>(){}.getType();
+        Type localVarReturnType = new TypeToken<BeaconStatementsQuery>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
@@ -573,7 +573,7 @@ public class StatementsApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call postStatementsQueryAsync(String source, List<String> relations, String target, String keywords, List<String> types, List<Integer> beacons, final ApiCallback<ServerStatementsQuery> callback) throws ApiException {
+    public com.squareup.okhttp.Call postStatementsQueryAsync(String source, List<String> relations, String target, String keywords, List<String> types, List<Integer> beacons, final ApiCallback<BeaconStatementsQuery> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -595,7 +595,7 @@ public class StatementsApi {
         }
 
         com.squareup.okhttp.Call call = postStatementsQueryValidateBeforeCall(source, relations, target, keywords, types, beacons, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<ServerStatementsQuery>(){}.getType();
+        Type localVarReturnType = new TypeToken<BeaconStatementsQuery>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }

@@ -13,7 +13,7 @@ Method | HTTP request | Description
 
 <a name="getClique"></a>
 # **getClique**
-> ServerCliqueIdentifier getClique(identifier)
+> BeaconCliqueIdentifier getClique(identifier)
 
 
 
@@ -29,7 +29,7 @@ Retrieves the beacon aggregator assigned clique of equivalent concepts that incl
 ConceptsApi apiInstance = new ConceptsApi();
 String identifier = "identifier_example"; // String | a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of interest to be resolved to a concept clique
 try {
-    ServerCliqueIdentifier result = apiInstance.getClique(identifier);
+    BeaconCliqueIdentifier result = apiInstance.getClique(identifier);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConceptsApi#getClique");
@@ -45,7 +45,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ServerCliqueIdentifier**](ServerCliqueIdentifier.md)
+[**BeaconCliqueIdentifier**](BeaconCliqueIdentifier.md)
 
 ### Authorization
 
@@ -58,7 +58,7 @@ No authorization required
 
 <a name="getConceptDetails"></a>
 # **getConceptDetails**
-> ServerConceptWithDetails getConceptDetails(cliqueId, beacons)
+> BeaconConceptWithDetails getConceptDetails(cliqueId, beacons)
 
 
 
@@ -75,7 +75,7 @@ ConceptsApi apiInstance = new ConceptsApi();
 String cliqueId = "cliqueId_example"; // String | a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier, as returned  by any other endpoint of the beacon aggregator API, of an exactly matching  concept clique of interest.
 List<Integer> beacons = Arrays.asList(56); // List<Integer> | set of aggregator indices of beacons to be used as knowledge sources for the query 
 try {
-    ServerConceptWithDetails result = apiInstance.getConceptDetails(cliqueId, beacons);
+    BeaconConceptWithDetails result = apiInstance.getConceptDetails(cliqueId, beacons);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConceptsApi#getConceptDetails");
@@ -92,7 +92,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ServerConceptWithDetails**](ServerConceptWithDetails.md)
+[**BeaconConceptWithDetails**](BeaconConceptWithDetails.md)
 
 ### Authorization
 
@@ -105,7 +105,7 @@ No authorization required
 
 <a name="getConcepts"></a>
 # **getConcepts**
-> ServerConceptsQueryResult getConcepts(queryId, beacons, pageNumber, pageSize)
+> BeaconConceptsQueryResult getConcepts(queryId, beacons, pageNumber, pageSize)
 
 
 
@@ -124,7 +124,7 @@ List<Integer> beacons = Arrays.asList(56); // List<Integer> | set of aggregator 
 Integer pageNumber = 56; // Integer | (1-based) number of the page to be returned in a paged set of query results 
 Integer pageSize = 56; // Integer | number of concepts per page to be returned in a paged set of query results 
 try {
-    ServerConceptsQueryResult result = apiInstance.getConcepts(queryId, beacons, pageNumber, pageSize);
+    BeaconConceptsQueryResult result = apiInstance.getConcepts(queryId, beacons, pageNumber, pageSize);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConceptsApi#getConcepts");
@@ -143,7 +143,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ServerConceptsQueryResult**](ServerConceptsQueryResult.md)
+[**BeaconConceptsQueryResult**](BeaconConceptsQueryResult.md)
 
 ### Authorization
 
@@ -156,7 +156,7 @@ No authorization required
 
 <a name="getConceptsQueryStatus"></a>
 # **getConceptsQueryStatus**
-> ServerConceptsQueryStatus getConceptsQueryStatus(queryId, beacons)
+> BeaconConceptsQueryStatus getConceptsQueryStatus(queryId, beacons)
 
 
 
@@ -173,7 +173,7 @@ ConceptsApi apiInstance = new ConceptsApi();
 String queryId = "queryId_example"; // String | an active query identifier as returned by a POST of concept query parameters.
 List<Integer> beacons = Arrays.asList(56); // List<Integer> | subset of aggregator indices of beacons whose status is being polled (if omitted, then the status of all beacons from the query are returned) 
 try {
-    ServerConceptsQueryStatus result = apiInstance.getConceptsQueryStatus(queryId, beacons);
+    BeaconConceptsQueryStatus result = apiInstance.getConceptsQueryStatus(queryId, beacons);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConceptsApi#getConceptsQueryStatus");
@@ -190,7 +190,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ServerConceptsQueryStatus**](ServerConceptsQueryStatus.md)
+[**BeaconConceptsQueryStatus**](BeaconConceptsQueryStatus.md)
 
 ### Authorization
 
@@ -203,7 +203,7 @@ No authorization required
 
 <a name="postConceptsQuery"></a>
 # **postConceptsQuery**
-> ServerConceptsQuery postConceptsQuery(keywords, types, beacons)
+> BeaconConceptsQuery postConceptsQuery(keywords, types, beacons)
 
 
 
@@ -221,7 +221,7 @@ String keywords = "keywords_example"; // String | a (urlencoded) space delimited
 List<String> types = Arrays.asList("types_example"); // List<String> | a subset array of concept types (specified as codes gene, pathway, etc.) to which to constrain concepts matched by the main keyword search (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes) 
 List<Integer> beacons = Arrays.asList(56); // List<Integer> | subset of aggregator indices of beacons to be used as knowledge sources for the query (if omitted, then the all beacons are queried) 
 try {
-    ServerConceptsQuery result = apiInstance.postConceptsQuery(keywords, types, beacons);
+    BeaconConceptsQuery result = apiInstance.postConceptsQuery(keywords, types, beacons);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConceptsApi#postConceptsQuery");
@@ -239,7 +239,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ServerConceptsQuery**](ServerConceptsQuery.md)
+[**BeaconConceptsQuery**](BeaconConceptsQuery.md)
 
 ### Authorization
 
