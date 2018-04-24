@@ -90,13 +90,13 @@ public interface KBQuery {
 	 * 
 	 * @param customBeacons
 	 */
-	void setCustomBeacons(List<String> customBeacons);
+	void setCustomBeacons(List<Integer> customBeacons);
 
 	/**
 	 * 
 	 * @return
 	 */
-	List<String> getCustomBeacons();
+	List<Integer> getCustomBeacons();
 
 	/**
 	 * Clears the list of custom beacons

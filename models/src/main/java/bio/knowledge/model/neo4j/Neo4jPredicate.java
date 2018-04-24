@@ -56,12 +56,12 @@ public class Neo4jPredicate extends Neo4jAbstractIdentifiedEntity implements Pre
 	
 	public class Neo4jPredicateBeacon implements Predicate.PredicateBeacon {
 
-		private String beaconId;
+		private Integer beaconId;
 		private String predicateId;
 		private String definition;
 		
 		public Neo4jPredicateBeacon(
-				String beaconId,
+				Integer beaconId,
 				String predicateId,
 				String definition
 			) {
@@ -72,7 +72,7 @@ public class Neo4jPredicate extends Neo4jAbstractIdentifiedEntity implements Pre
 		}
 		
 		@Override
-		public String getBeacon() {
+		public Integer getBeacon() {
 			return beaconId;
 		}
 

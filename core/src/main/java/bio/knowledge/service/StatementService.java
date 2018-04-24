@@ -96,7 +96,7 @@ public class StatementService
 	public List<Statement> getDataPage(
 			int pageIndex, 
 			int pageSize, 
-			String filter, 
+			String queryId, 
 			TableSorter sorter, 
 			boolean isAscending
 	) {
@@ -106,9 +106,6 @@ public class StatementService
 		 */
 		String extraFilter   = query.getSimpleTextFilter();
 		String sourceClique  = query.getCurrentQueryConceptId();
-		
-		// TODO: implement the targetClique specification in TKBIO
-		String targetClique  = "";
 		
 		// Sometimes this function gets call without any conceptId's (e.g. during table refresh)
 		if(sourceClique==null) return new ArrayList<Statement>();
@@ -134,11 +131,10 @@ public class StatementService
 			predicateFilter = optionalPredicateFilter.get();
 		}
 
-		List<String> beacons = query.getCustomBeacons();
-		String sessionId = query.getUserSessionId();
+		List<Integer> beacons = query.getCustomBeacons();
 		
 		CompletableFuture<List<Statement>> future = 
-				kbService.getStatements( sourceClique, predicateFilter, targetClique, extraFilter, semgroups, pageIndex, pageSize,beacons,sessionId);
+				kbService.getStatements(queryId, predicateFilter, extraFilter, beacons, pageIndex, pageSize);
 		
 		try {
 			List<Statement> statements = 

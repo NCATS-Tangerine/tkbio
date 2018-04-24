@@ -52,22 +52,18 @@ public class PredicateImpl extends AbstractIdentifiedEntity implements Predicate
 	
 	public class PredicateBeaconImpl implements PredicateBeacon {
 
-		private String beaconId;
+		private Integer beaconId;
 		private String predicateId;
 		private String definition;
 		
 		public PredicateBeaconImpl(
-				String beaconId,
-				String predicateId,
-				String definition
+				Integer beaconId
 			) {
 			this.beaconId = beaconId;
-			this.predicateId = predicateId;
-			this.definition = definition;
 		}
 		
 		@Override
-		public String getBeacon() {
+		public Integer getBeacon() {
 			return beaconId;
 		}
 

@@ -100,7 +100,7 @@ public class ConceptService
     public List<IdentifiedConcept> getDataPage(
     		int pageIndex,
     		int pageSize,
-    		String filter,
+    		String queryId,
     		TableSorter sorter,
     		boolean isAscending
     ) {
@@ -116,11 +116,10 @@ public class ConceptService
 			semgroups = semgroups.trim();
 		}
 		
-		List<String> beacons = query.getCustomBeacons();
-		String sessionId = query.getUserSessionId();
+		List<Integer> beacons = query.getCustomBeacons();
 		
     	CompletableFuture<List<IdentifiedConcept>> future =
-    			kbService.getConcepts(filter, semgroups, pageIndex, pageSize,beacons,sessionId);
+    			kbService.getConcepts(queryId, beacons, pageIndex, pageSize);
     	
     	try {
 			return future.get(
@@ -199,29 +198,25 @@ public class ConceptService
 	public Page<IdentifiedConcept> findByNameLike(String filter, Pageable pageable) {
 		_logger.trace("Inside ConceptService.findByNameLike()");
 
-		List<String> beacons = query.getCustomBeacons();
-		String sessionId = query.getUserSessionId();
+		List<Integer> beacons = query.getCustomBeacons();
 		
-		return findAllFiltered(filter,pageable,beacons,sessionId);
+		return findAllFiltered(filter,pageable,beacons);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	// TODO: I think this is where the refactoring faltered
 	private Page<IdentifiedConcept> findAllFiltered(
-			String filter, 
+			String queryId, 
 			Pageable pageable,
-			List<String> beacons,
-			String sessionId
+			List<Integer> beacons
 		) {
 		
 		CompletableFuture<List<IdentifiedConcept>> future = 
 				kbService.getConcepts(
-						filter,
-						null,
-						pageable.getPageNumber(),
-						pageable.getPageSize(),
+						queryId,
 						beacons,
-						sessionId
+						new Integer(pageable.getPageNumber()),
+						new Integer(pageable.getPageSize())
 				);
 		
 		try {
@@ -335,10 +330,9 @@ public class ConceptService
 		 *  secondary text filtering on the resulting table of data?
 		 */
 
-		List<String> beacons = query.getCustomBeacons();
-		String sessionId = query.getUserSessionId();
+		List<Integer> beacons = query.getCustomBeacons();
 		
-		return findAllFiltered("",pageable,beacons,sessionId);
+		return findAllFiltered("",pageable,beacons);
 	}
 	
 	/* (non-Javadoc)
@@ -471,12 +465,10 @@ public class ConceptService
 	 * @parem list of beacons to search against (default: empty list triggers search against all known beacons)
 	 * @return
 	 */
-	public AnnotatedConcept findByCliqueId( String cliqueId, List<String> beacons ) {
-		
-		String sessionId = query.getUserSessionId();
+	public AnnotatedConcept findByCliqueId( String cliqueId, List<Integer> beacons ) {
 
     	CompletableFuture<AnnotatedConcept> future = 
-    			kbService.getConceptWithDetails(cliqueId,beacons,sessionId);
+    			kbService.getConceptWithDetails(cliqueId, beacons);
    
     	try {
     		
@@ -562,9 +554,7 @@ public class ConceptService
 	 * @return Concept found
 	 */
 	public IdentifiedConcept findByCliqueId( String cliqueId ) {
-		List<String> beacons = query.getCustomBeacons();
-		return findByCliqueId( cliqueId, beacons ) ;
-		
+		return findByCliqueId(cliqueId, query.getCustomBeacons()) ;
 	}
 	
 	/**
