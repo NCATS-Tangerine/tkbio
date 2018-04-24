@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Translator Knowledge Beacon Aggregator API
-  version: 1.0.7
+  version: 1.0.10
   contact:
     url: 'http://starinformatics.com'
     email: richard@starinformatics.com
@@ -24,82 +24,501 @@ schemes:
 produces:
   - application/json
 tags:
-  - name: summary
-    description: Summary statistics about the knowledge source
+  - name: metadata
+    description: Queries about global characteristics of the knowledge beacon network
   - name: concepts
-    description: Queries for concepts
-  - name: predicates
-    description: Queries for predicates
+    description: Queries relating to concepts
   - name: statements
-    description: Queries for concept-relationship statements
-  - name: evidence
-    description: Queries for references cited as evidence for statements
-  - name: aggregator
-    description: Queries for aggregation information
+    description: Queries relating to concept-relationship statements and their evidence
 paths:
+  /beacons:
+    get:
+      description: |
+        Get a list of all of the knowledge beacons that the aggregator can query
+      tags:
+        - metadata
+      operationId: getBeacons
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              title: ServerKnowledgeBeacon
+              type: object
+              properties:
+                beacon:
+                  type: integer
+                  description: |
+                    aggregator assigned beacon index identifier
+                name:
+                  type: string
+                  description: |
+                    beacon name
+                url:
+                  type: string
+                  description: |
+                    URL used to execute API calls on the beacon
+                description:
+                  type: string
+                  description: |
+                    beacon description
+                contact:
+                  type: string
+                  description: |
+                    name of the person responsible for this beacon
+                wraps:
+                  type: string
+                  description: |
+                    URL of this beacon's data source
+                repo:
+                  type: string
+                  description: |
+                    URL of this beacon's repository
+          description: |
+            Successful response with beacons
+          examples:
+            application/json:
+              - id: 1
+                name: SemMedDB
+                url: 'https://rkb.ncats.io'
+                description: |
+                  Reference Knowledge Beacon implementation indexed by Wikidata
   /types:
     get:
       description: >
         Get a list of types and number of instances in the knowledge source, and
         a link to the API call for the list of equivalent terminology
       tags:
-        - summary
+        - metadata
       parameters:
         - name: beacons
           in: query
-          description: >
-            set of aggregator indices of beacons to be used as knowledge sources
-            for the query
+          description: |
+            set of aggregator indices of beacons to constrain types returned
           required: false
           type: array
           items:
-            type: string
-        - name: sessionId
-          in: query
-          description: |
-            client-defined session identifier
-          required: false
-          type: string
-      operationId: linkedTypes
+            type: integer
+      operationId: getConceptTypes
       responses:
         '200':
           schema:
             type: array
             items:
-              title: BeaconSummary
+              title: ServerConceptTypes
               type: object
               properties:
                 id:
                   type: string
-                  description: |
-                    the concept type (semantic group)
-                idmap:
+                  description: >-
+                    the CURIE of the concept type (see [Biolink
+                    Model](https://biolink.github.io/biolink-model)
+                iri:
                   type: string
-                  description: The URL to execute the exactmatches API call on the id
-                frequency:
-                  type: integer
-                  description: |
-                    the number of instances of the specified type
-                beacon:
+                  description: >-
+                    the IRI of the concept type (see [Biolink
+                    Model](https://biolink.github.io/biolink-model) for the full
+                    list of IRI)
+                label:
                   type: string
-                  description: |
-                    beacon ID
+                  description: >
+                    the human readable label of the concept type (see [Biolink
+                    Model](https://biolink.github.io/biolink-model) for the full
+                    list of concept type names)
+                description:
+                  type: string
+                  description: >
+                    human readable definition assigned by the beacon for the
+                    specified concept type
+                beacons:
+                  type: array
+                  description: >
+                    list of metadata for beacons that support the use of this
+                    concept type
+                  items:
+                    title: ServerConceptTypesByBeacon
+                    type: object
+                    properties:
+                      beacon:
+                        type: integer
+                        description: |
+                          aggregator index identifier of the given beacon
+                      types:
+                        type: array
+                        items:
+                          title: ServerBeaconConceptType
+                          type: object
+                          description: |
+                            Single local concept type term from a given beacon
+                          properties:
+                            id:
+                              type: string
+                              description: >
+                                the 'local' CURIE-encoded identifier of the
+                                given concept type, as published by the given
+                                beacon
+                            iri:
+                              type: string
+                              description: >
+                                the 'local' IRI of the given concept type, as
+                                published by the given beacon
+                            label:
+                              type: string
+                              description: >
+                                the 'local' human readable of the given concept
+                                type, as published by the given beacon
+                            frequency:
+                              type: integer
+                              description: >
+                                the number of instances of the specified concept
+                                type is used in statements within the given
+                                beacon
           description: |
             Successful response with types and frequency returned
           examples:
             application/json:
-              - id: CHEM
-                frequency: 12355
-                idmap: 'http://myservice.net/api/v1/exactmatches/CHEM'
-                beacon: '2'
-              - id: ANAT
-                frequency: 1234
-                idmap: 'http://myservice.net/api/v1/exactmatches/ANAT'
-                beacon: '2'
-  /concepts:
+              - id: 'BLM:Gene'
+                iri: 'http://bioentity.io/vocab/Gene'
+                label: gene
+                description: >
+                  A region (or regions) that includes all of the sequence
+                  elements necessary to encode a functional transcript. A gene
+                  may include regulatory regions, transcribed regions and/or
+                  other functional sequence regions.
+                beacons:
+                  - beacon: 1
+                    types:
+                      - id: 'UMLSSG:GENE'
+                        iri: 'https://metamap.nlm.nih.gov/Docs/SemGroups_2013#GENE'
+                        label: GENE
+                    frequency: 1234
+                  - beacon: 5
+                    types:
+                      - id: 'SO:0000704'
+                        iri: 'http://www.sequenceontology.org/0000704'
+                        label: gene
+                        frequency: 5678
+  /predicates:
+    get:
+      description: >
+        Get a list of predicates used in statements issued by the knowledge
+        source
+      tags:
+        - metadata
+      parameters:
+        - name: beacons
+          in: query
+          description: >
+            set of aggregator indices of beacons to constrain predicates
+            returned
+          required: false
+          type: array
+          items:
+            type: integer
+      operationId: getPredicates
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              title: ServerPredicates
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: >-
+                    the CURIE of the predicate relation (see [Biolink
+                    Model](https://biolink.github.io/biolink-model)
+                iri:
+                  type: string
+                  description: >-
+                    the IRI of the predicate relation (see [Biolink
+                    Model](https://biolink.github.io/biolink-model) for the full
+                    list of IRI)
+                label:
+                  type: string
+                  description: >-
+                    the human readable label of the prediccate relation (see
+                    [Biolink Model](https://biolink.github.io/biolink-model) for
+                    the full list of predicates)
+                description:
+                  type: string
+                  description: >
+                    human readable definition assigned by the beacon for the
+                    predicate relation
+                beacons:
+                  type: array
+                  description: >
+                    list of metadata for beacons that support the use of this
+                    predicate relation
+                  items:
+                    title: ServerPredicatesByBeacon
+                    type: object
+                    properties:
+                      beacon:
+                        type: integer
+                        description: |
+                          aggregator index of the given beacon
+                      predicates:
+                        type: array
+                        items:
+                          title: ServerBeaconPredicate
+                          type: object
+                          description: |
+                            Single local predicate term from a given beacon
+                          properties:
+                            id:
+                              type: string
+                              description: >
+                                the 'local' CURIE-encoded identifier of the
+                                given predicate, as published by the given
+                                beacon
+                            iri:
+                              type: string
+                              description: >
+                                the 'local' CURIE-encoded identifier of the
+                                given predicate, as published by the given
+                                beacon
+                            label:
+                              type: string
+                              description: >
+                                the 'local' human readable of the given
+                                predicate, as published by the given beacon
+                            frequency:
+                              type: integer
+                              description: >
+                                the number of instances of the specified
+                                predicate relation is used in statements within
+                                the given beacon
+          description: >
+            Successful response with predicates with CURIE and definitions
+            indexed by beacons which support the relation
+          examples:
+            application/json:
+              - id: 'BLM:GeneToDiseaseAssociation'
+                iri: 'http://bioentity.io/vocab/GeneToDiseaseAssociation'
+                label: gene to disease association
+                description: |
+                  gene in which variation is correlated with the disease - 
+                  may be protective or causative or associative, or as a model
+                beacons:
+                  - beacon: 5
+                    predicates:
+                      - id: 'RO:0003302'
+                        iri: 'http://purl.obolibrary.org/obo/RO_0003302'
+                        label: causes or contributes to condition
+                        frequency: 123
+                  - beacon: 2
+                    predicates:
+                      - id: 'SIO:000983'
+                        iri: 'http://semanticscience.org/resource/SIO_000983'
+                        label: gene-disease association
+                        frequency: 321
+  /kmap:
+    get:
+      description: >
+        Get a high level knowledge map of the all the beacons specified by
+        triplets of subject concept type, relationship predicate and concept
+        object type
+      tags:
+        - metadata
+      parameters:
+        - name: beacons
+          in: query
+          description: >
+            set of aggregator indices of beacons constraining knowledge maps
+            returned 
+          required: false
+          type: array
+          items:
+            type: integer
+      operationId: getKnowledgeMap
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              title: ServerKnowledgeMap
+              type: object
+              properties:
+                beacon:
+                  type: integer
+                  description: |
+                    aggregator assigned beacon index identifier
+                statements:
+                  type: array
+                  items:
+                    title: ServerKnowledgeMapStatement
+                    type: object
+                    properties:
+                      subject:
+                        title: ServerKnowledgeMapSubject
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            description: |
+                              the CURIE designating the concept type of a 
+                              statement subject
+                          label:
+                            type: string
+                            description: |
+                              the human readable label of the concept type of a
+                              statement subject
+                          prefixes:
+                            type: array
+                            items:
+                              type: string
+                              description: >
+                                the prefix of the namespace of statement subject
+                                concept identifiers which may conceivably be
+                                bound to the given relationship
+                      predicate:
+                        title: ServerKnowledgeMapPredicate
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            description: >-
+                              the CURIE of the predicate of the given
+                              relationship
+                          label:
+                            type: string
+                            description: >-
+                              the human readable label of the  predicate ofthe
+                              given relationship
+                      object:
+                        title: ServerKnowledgeMapObject
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            description: |
+                              the CURIE designating the concept type of a 
+                              statement object
+                          label:
+                            type: string
+                            description: |
+                              the human readable label of the concept type of a
+                              statement object
+                          prefixes:
+                            type: array
+                            items:
+                              type: string
+                              description: >
+                                the prefix of the namespace of statement object
+                                concept identifiers which may conceivably be
+                                bound to the given relationship
+                      frequency:
+                        type: integer
+                        description: >
+                          the frequency of statements of the specified
+                          relationship within the given beacon
+                      description:
+                        type: string
+                        description: |
+                          a description of the nature of the relationship
+          description: |
+            Successful response with types and frequency returned
+          examples:
+            application/json:
+              - beacon: 1
+                statements:
+                  - subject:
+                      id: 'BLM:Gene'
+                      label: gene
+                      prefixes:
+                        - DRUGBANK
+                        - CHEMBL
+                        - UNIPROT
+                    predicate:
+                      id: 'RO:0002606'
+                      label: is substance that treats
+                    object:
+                      id: 'BLM:DiseaseOrPhenotypicFeature'
+                      label: disease or phenotypic feature
+                      prefixes:
+                        - MP
+                        - HP
+                        - DOID
+                    count: 500
+                    description: >
+                      a small molecule or compound that is capable of some
+                      activity that negative regulates or decreases the
+                      magnitude of a pathological process, phenotype or disease
+                  - subject:
+                      id: 'BLM:Drug'
+                      label: drug
+                      prefixes:
+                        - DRUGBANK
+                        - CHEMBL
+                    predicate:
+                      id: 'SIO:001250'
+                      label: chemical to pathway association
+                    object:
+                      id: 'BLM:Pathway'
+                      label: pathway
+                      prefixes:
+                        - KEGG
+                    count: 100
+                    description: |
+                      Drug interacts with a given protein
+  /errorlog:
     get:
       description: |
-        Retrieves a (paged) list of concepts in the system
+        Get a log of the system errors associated with a specified query
+      tags:
+        - metadata
+      parameters:
+        - name: queryId
+          in: query
+          description: |
+            query identifier returned from a POSTed query
+          required: true
+          type: string
+      operationId: getErrors
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              title: ServerLogEntry
+              type: object
+              properties:
+                queryId:
+                  type: string
+                  description: |
+                    session identifier of initiated query
+                timestamp:
+                  type: string
+                  description: |
+                    timestamp
+                beacon:
+                  type: integer
+                  description: |
+                    aggregator assigned beacon index identifier
+                query:
+                  type: string
+                  description: |
+                    URL of the API call executed by the aggregator
+                message:
+                  type: string
+                  description: |
+                    error message
+          description: |
+            Successful response with most recent errors
+          examples:
+            application/json:
+              - queryId: AB123
+                timestamp: '2018-12-31 15:09:24.614'
+                beacon: 2
+                query: 'https://wikidata.ncats.io/concepts?keywords=WRN'
+                message: Bad Gateway
+  /concepts:
+    post:
+      description: |
+        Posts the query parameters to retrieves a (paged) list of 
+        concepts from the system
       tags:
         - concepts
       parameters:
@@ -113,13 +532,156 @@ paths:
         - name: types
           in: query
           description: >
-            a (url-encoded) space-delimited set of semantic groups (specified as
-            codes CHEM, GENE, ANAT, etc.) to which to constrain concepts matched
-            by the main keyword search (see [semantic
-            groups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the
-            full list of codes)
+            a subset array of concept types (specified as codes gene, pathway,
+            etc.) to which to constrain concepts matched by the main keyword
+            search (see [Biolink Model](https://biolink.github.io/biolink-model)
+            for the full list of codes)
           required: false
+          type: array
+          items:
+            type: string
+        - name: beacons
+          in: query
+          description: >
+            subset of aggregator indices of beacons to be used as knowledge
+            sources for the query (if omitted, then the all beacons are queried)
+          required: false
+          type: array
+          items:
+            type: integer
+      operationId: postConceptsQuery
+      responses:
+        '200':
+          schema:
+            title: ServerConceptsQuery
+            type: object
+            properties:
+              queryId:
+                type: string
+                description: |
+                  session identifier of initiated query
+              keywords:
+                type: string
+                description: |
+                  'keywords' string parameter to call, echoed back
+              types:
+                type: array
+                items:
+                  type: string
+                description: |
+                  'types' string parameter to call, echoed back
+          description: >
+            Successful concept query initialization, with initial query status
+            returned
+          examples:
+            application/json:
+              queryId: AB123
+              keywords: WRN
+              type: gene chem disease
+  '/concepts/status/{queryId}':
+    get:
+      description: |
+        Retrieves the status of a given query about the concepts in the system
+      tags:
+        - concepts
+      parameters:
+        - name: queryId
+          in: path
+          description: >-
+            an active query identifier as returned by a POST of concept query
+            parameters.
+          required: true
           type: string
+        - name: beacons
+          in: query
+          description: >
+            subset of aggregator indices of beacons whose status is being polled
+            (if omitted, then the status of all beacons from the query are
+            returned)
+          required: false
+          type: array
+          items:
+            type: integer
+      operationId: getConceptsQueryStatus
+      responses:
+        '200':
+          schema:
+            title: ServerConceptsQueryStatus
+            type: object
+            properties:
+              queryId:
+                type: string
+                description: >
+                  session identifier of a query previously initiated by
+                  /concepts
+              status:
+                type: array
+                description: |
+                  array of beacon-specific query status reports
+                items:
+                  title: ServerConceptsQueryBeaconStatus
+                  type: object
+                  properties:
+                    beacon:
+                      type: integer
+                      description: |
+                        Index number of beacon providing these concept details
+                    status:
+                      type: integer
+                      description: >
+                        Http code status of beacon API - 200 means 'data ready',
+                        102 means 'query in progress', other codes (e.g. 500)
+                        are server errors. Once a beacon has a '200' success
+                        code, then the /concepts/data  endpoint may be used to
+                        retrieve it.
+                    count:
+                      type: integer
+                      description: >
+                        When a 200 status code is returned, this integer
+                        designates  the number of concepts matched by the query
+                        for the given beacon.
+          description: |
+            Current query status returned
+          examples:
+            application/json:
+              queryId: AB123
+              keywords: WRN
+              type: gene chem disease
+              status:
+                - beacon: 1
+                  status: 200
+                  count: 3
+                - beacon: 2
+                  status: 500
+                  count: null
+                - beacon: 5
+                  status: 102
+                  count: null
+  '/concepts/data/{queryId}':
+    get:
+      description: >
+        Retrieves a (paged) simple list of concepts from beacons with status
+
+        'data ready' from a previously /concepts posted query parameter
+        submission
+      tags:
+        - concepts
+      parameters:
+        - name: queryId
+          in: path
+          description: >-
+            the query identifier of a concepts query previously posted by the
+            /concepts endpoint
+          required: true
+          type: string
+        - name: beacons
+          in: query
+          description: |
+            set of aggregator indices of beacons whose data are to be retrieved
+          required: false
+          type: array
+          items:
+            type: integer
         - name: pageNumber
           in: query
           description: |
@@ -134,69 +696,75 @@ paths:
             results
           required: false
           type: integer
-        - name: beacons
-          in: query
-          description: >
-            set of aggregator indices of beacons to be used as knowledge sources
-            for the query
-          required: false
-          type: array
-          items:
-            type: string
-        - name: sessionId
-          in: query
-          description: |
-            client-defined session identifier
-          required: false
-          type: string
       operationId: getConcepts
       responses:
         '200':
           schema:
-            type: array
-            items:
-              title: BeaconConcept
-              type: object
-              properties:
-                clique:
-                  type: string
+            title: ServerConceptsQueryResult
+            type: object
+            properties:
+              queryId:
+                type: string
+                description: |
+                  session identifier of the query returning the results
+              beacons:
+                type: array
+                items:
+                  type: integer
                   description: >
-                    CURIE identifying the inferred equivalent concept clique to
-                    which the concept belongs. This is assigned by an identifier
-                    precedence heuristic by the beacon-aggregator
-                name:
-                  type: string
-                  description: |
-                    Canonical human readable name of the concept
-                type:
-                  type: string
-                  description: |
-                    Concept semantic type as a CURIE into a data type ontology
-                taxon:
-                  type: string
-                  description: >
-                    NCBI identifier of Taxon associated the concept (if
-                    applicable)
+                    subset of aggregator indices of beacons whose concepts  are
+                    to be retrieved
+              pageNumber:
+                type: integer
+                description: |
+                  session identifier of the query returning the results
+              pageSize:
+                type: integer
+                description: |
+                  session identifier of the query returning the results
+              results:
+                type: array
+                items:
+                  title: ServerConcept
+                  type: object
+                  properties:
+                    clique:
+                      type: string
+                      description: >
+                        CURIE identifying the inferred equivalent concept clique
+                        to which the concept belongs. This is assigned by an
+                        identifier precedence heuristic by the beacon-aggregator
+                    name:
+                      type: string
+                      description: |
+                        Canonical human readable name of the concept
+                    type:
+                      type: string
+                      description: >
+                        Concept semantic type as a CURIE into a data type
+                        ontology
           description: |
             Successful response with concept list returned
           examples:
             application/json:
-              - clique: 'UNIPROT:Q14191'
-                name: 'WRN protein, human'
-                type: 'umls_sg:CHEM'
-                taxon: '9606'
-              - clique: 'NCBIGENE:56897'
-                name: WRNIP1
-                type: 'umls_sg:GENE'
-                taxon: '9606'
-              - clique: 'NCBIGENE:7486'
-                name: WRN
-                type: 'umls_sg:GENE'
-                taxon: '9606'
-              - clique: 'DOID:5686'
-                name: Werner Syndrome
-                type: 'umls_sg:DISO'
-                taxon: '9606'
+              queryId: AB123
+              beacons:
+                - 1
+              pageNumber: 1
+              pageSize: 4
+              results:
+                - clique: 'UNIPROT:Q14191'
+                  name: 'WRN protein, human'
+                  type: 'UMLSSG:CHEM'
+                - clique: 'NCBIGENE:56897'
+                  name: WRNIP1
+                  type: 'UMLSSG:GENE'
+                - clique: 'NCBIGENE:7486'
+                  name: WRN
+                  type: 'UMLSSG:GENE'
+                - clique: 'DOID:5686'
+                  name: Werner Syndrome
+                  type: 'UMLSSG:DISO'
   '/clique/{identifier}':
     get:
       description: >
@@ -214,17 +782,11 @@ paths:
             interest to be resolved to a concept clique
           required: true
           type: string
-        - name: sessionId
-          in: query
-          description: |
-            client-defined session identifier
-          required: false
-          type: string
       operationId: getClique
       responses:
         '200':
           schema:
-            title: BeaconCliqueIdentifier
+            title: ServerCliqueIdentifier
             type: object
             properties:
               cliqueId:
@@ -237,7 +799,7 @@ paths:
           examples:
             application/json:
               cliqueId: 'NCBIGENE:2176'
-  '/concepts/{cliqueId}':
+  '/concepts/details/{cliqueId}':
     get:
       description: >
         Retrieves details for a specified clique of equivalent concepts in the
@@ -262,18 +824,12 @@ paths:
           required: false
           type: array
           items:
-            type: string
-        - name: sessionId
-          in: query
-          description: |
-            client-defined session identifier
-          required: false
-          type: string
+            type: integer
       operationId: getConceptDetails
       responses:
         '200':
           schema:
-            title: BeaconConceptWithDetails
+            title: ServerConceptWithDetails
             type: object
             description: |
               A single record of a given concept clique with details
@@ -291,11 +847,6 @@ paths:
                 type: string
                 description: |
                   Concept semantic type as a CURIE into a data type ontology
-              taxon:
-                type: string
-                description: >
-                  NCBI identifier of Taxon associated the concept (if
-                  applicable)
               aliases:
                 type: array
                 description: >
@@ -309,11 +860,11 @@ paths:
                   List of details specifically harvested from beacons, indexed
                   by beacon
                 items:
-                  title: BeaconConceptBeaconEntry
+                  title: ServerConceptWithDetailsBeaconEntry
                   type: object
                   properties:
                     beacon:
-                      type: string
+                      type: integer
                       description: |
                         Index number of beacon providing these concept details
                     id:
@@ -334,7 +885,7 @@ paths:
                     details:
                       type: array
                       items:
-                        title: BeaconConceptDetail
+                        title: ServerConceptDetail
                         type: object
                         description: |
                           Additional attributes associated with a concept
@@ -353,13 +904,12 @@ paths:
             application/json:
               clique: 'wd:Q14883734'
               name: Werner Syndrome
-              type: 'umls_sg:DISO'
-              taxon: '9606'
+              type: 'UMLSSG:DISO'
               aliases:
                 - 'wd:Q14883734'
                 - 'OMIM:277700'
               entries:
-                - beacon: '3'
+                - beacon: 3
                   id: 'OMIM:277700'
                   synonyms:
                     - Werner Syndrome
@@ -397,73 +947,17 @@ paths:
                       value: Premature greying of hair
                     - tag: Symptom
                       value: Muscular atrophy
-  /predicates:
-    get:
-      description: >
-        Get a list of predicates used in statements issued by the knowledge
-        source
-      tags:
-        - predicates
-      operationId: getPredicates
-      responses:
-        '200':
-          schema:
-            type: array
-            items:
-              title: BeaconPredicate
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: |
-                    exact unique human readable name of predicate relation
-                beacons:
-                  type: array
-                  description: >
-                    list of metadata for beacons that support the use of this
-                    predicate relation
-                  items:
-                    title: BeaconPredicateRecord
-                    type: object
-                    properties:
-                      beacon:
-                        type: string
-                        description: |
-                          aggregator index of the given beacon
-                      id:
-                        type: string
-                        description: >
-                          unique CURIE-encoded identifier of predicate
-                          aggregator indices of beacons in the given beacon
-                      definition:
-                        type: string
-                        description: >
-                          human readable definition assigned by the beacon for
-                          the predicate relation
-          description: >
-            Successful response with predicates with CURIE and definitions
-            indexed by beacons which support the relation
-          examples:
-            application/json:
-              - name: interacts with
-                beacons:
-                  - beacon: 1
-                    id: 'wd:P123'
-                    definition: influences in some manner
-                  - beacon: 3
-                    id: 'mybeacon:P456'
-                    definition: has a physical connection with
   /statements:
-    get:
+    post:
       description: >
-        Given a specification [CURIE-encoded](https://www.w3.org/TR/curie/) a
-        'source' clique identifier for a set of exactly matching concepts, 
-        retrieves a paged list of concept-relations where either the subject or
-        object concept matches the 'source' clique identifier.  Optionally, a
-        'target' clique identifier may also be given, in which case the 'target'
-        clique identifier should match the concept clique opposing the 'source',
-        that is, if the 'source' matches a subject, then the  'target' should
-        match the object of a given statement (or vice versa).
+        Posts a query to retrieve concept-relations where either the subject or
+        object concept matches a [CURIE-encoded
+        'source'](https://www.w3.org/TR/curie/) clique identifier designating a
+        set of exactly matching concepts. A 'target' clique identifier may
+        optionally be given, in which case the 'target' clique identifier should
+        match the concept clique opposing the 'source', that is, if the 'source'
+        matches a subject, then the  'target' should match the object of a given
+        statement (or vice versa).
       tags:
         - statements
       parameters:
@@ -478,13 +972,14 @@ paths:
         - name: relations
           in: query
           description: >
-            a (url-encoded, space-delimited) string of predicate relation
-            identifiers with which to constrain the statement relations
-            retrieved  for the given query seed concept. The predicate ids sent
-            should  be as published by the beacon-aggregator by the /predicates
-            API endpoint.
+            a subset (array) of identifiers of predicate relation identifiers
+            with which to constrain the statement relations retrieved  for the
+            given query seed concept. The predicate ids sent should  be as
+            published by the beacon-aggregator by the /predicates API endpoint.
           required: false
-          type: string
+          type: array
+          items:
+            type: string
         - name: target
           in: query
           description: >
@@ -504,12 +999,177 @@ paths:
         - name: types
           in: query
           description: >
-            a (url-encoded, space-delimited) string of concept semantic types
-            (specified as CURIEs of Translator ontology data type terms) to
-            which to constrain 'target' concepts associated with the given
-            'source' concept.
+            a subset (array) of identifiers of concept types to which to
+            constrain 'target' concepts associated with the given 'source'
+            concept ((see [Biolink
+            Model](https://biolink.github.io/biolink-model) for the full list of
+            codes).
           required: false
+          type: array
+          items:
+            type: string
+        - name: beacons
+          in: query
+          description: >
+            set of aggregator indices of beacons to be used as knowledge sources
+            for the query
+          required: false
+          type: array
+          items:
+            type: integer
+      operationId: postStatementsQuery
+      responses:
+        '200':
+          schema:
+            title: ServerStatementsQuery
+            type: object
+            properties:
+              queryId:
+                type: string
+                description: |
+                  session identifier of initiated query
+              source:
+                type: string
+                description: |
+                  'source' string parameter to call, echoed back
+              relations:
+                type: array
+                items:
+                  type: string
+                description: |
+                  'relations' string parameter to call, echoed back
+              target:
+                type: string
+                description: |
+                  'target' string parameter to call, echoed back
+              keywords:
+                type: string
+                description: |
+                  'keywords' string parameter to call, echoed back
+              types:
+                type: array
+                items:
+                  type: string
+                description: |
+                  'types' string parameter to call, echoed back
+          description: >
+            Successful concept query initialization, with initial query status
+            returned
+          examples:
+            application/json:
+              queryId: XY456
+              source: 'NCBIGENE:7486'
+              relations: 'SIO:000983'
+              target: ''
+              keywords: ''
+              type: disease
+  '/statements/status/{queryId}':
+    get:
+      description: |
+        Retrieves the status of a given query about the statements in the system
+      tags:
+        - statements
+      parameters:
+        - name: queryId
+          in: path
+          description: >-
+            an active query identifier as returned by a POST of statements 
+            query parameters.
+          required: true
           type: string
+        - name: beacons
+          in: query
+          description: >
+            subset of aggregator indices of beacons whose status is being polled
+            (if omitted, then the status of all beacons from the query are
+            returned)
+          required: false
+          type: array
+          items:
+            type: integer
+      operationId: getStatementsQueryStatus
+      responses:
+        '200':
+          schema:
+            title: ServerStatementsQueryStatus
+            type: object
+            properties:
+              queryId:
+                type: string
+                description: |
+                  session identifier of initiated query
+              status:
+                type: array
+                description: |
+                  array of beacon-specific query status reports
+                items:
+                  title: ServerStatementsQueryBeaconStatus
+                  type: object
+                  properties:
+                    beacon:
+                      type: integer
+                      description: |
+                        Index number of beacon providing these statements
+                    status:
+                      type: integer
+                      description: >
+                        Http code status of beacon API - 200 means 'data
+                        ready',  102 means 'query in progress', other codes
+                        (e.g. 500) are  server errors. Once a beacon has a '200'
+                        success code,  then the /statements/data endpoint may be
+                        used to retrieve it.
+                    count:
+                      type: integer
+                      description: >
+                        When a 200 status code is returned, this integer
+                        designates  the number of statements matched by the
+                        query for the  given beacon.
+          description: >
+            Successful concept query initialization, with initial query status
+            returned
+          examples:
+            application/json:
+              queryId: XY456
+              status:
+                - beacon: 1
+                  status: 200
+                  count: 25
+                - beacon: 2
+                  status: 500
+                  count: null
+                - beacon: 5
+                  status: 102
+                  count: null
+  '/statements/data/{queryId}':
+    get:
+      description: >
+        Given a specification [CURIE-encoded](https://www.w3.org/TR/curie/) a
+        'source' clique identifier for a set of exactly matching concepts, 
+        retrieves a paged list of concept-relations where either the subject or
+        object concept matches the 'source' clique identifier.  Optionally, a
+        'target' clique identifier may also be given, in which case the 'target'
+        clique identifier should match the concept clique opposing the 'source',
+        that is, if the 'source' matches a subject, then the  'target' should
+        match the object of a given statement (or vice versa).
+      tags:
+        - statements
+      parameters:
+        - name: queryId
+          in: path
+          description: >-
+            an active query identifier as returned by a POST of statement query
+            parameters.
+          required: true
+          type: string
+        - name: beacons
+          in: query
+          description: >
+            subset of aggregator indices of beacons whose statements are to be
+            retrieved
+          required: false
+          type: array
+          items:
+            type: integer
         - name: pageNumber
           in: query
           description: |
@@ -524,22 +1184,7 @@ paths:
             results
           required: false
           type: integer
-        - name: beacons
-          in: query
-          description: >
-            set of aggregator indices of beacons to be used as knowledge sources
-            for the query
-          required: false
-          type: array
-          items:
-            type: string
-        - name: sessionId
-          in: query
-          description: |
-            client-defined session identifier
-          required: false
-          type: string
-      operationId: getStatements
+      operationId: getStatementsQuery
       responses:
         '200':
           description: >
@@ -547,99 +1192,128 @@ paths:
             is an exact match of an input concept identifier either to the
             subject or object concepts of the statement
           schema:
-            type: array
-            items:
-              title: BeaconStatement
-              type: object
-              properties:
-                id:
-                  type: string
-                  description: >-
-                    CURIE-encoded identifier for statement (can be used to
-                    retrieve associated evidence)
-                subject:
-                  title: BeaconStatementSubject
-                  type: object
-                  properties:
-                    clique:
-                      type: string
-                      description: >
-                        CURIE-encoded canonical identifier of "equivalent
-                        concepts clique"
-                    id:
-                      type: string
-                      description: |
-                        CURIE-encoded identifier of concept
-                    name:
-                      type: string
-                      description: human readable label of subject concept
-                    type:
-                      type: string
-                      description: >
-                        a semantic group for the subject concept (specified  as
-                        a CURIE of a Translator data type ontology term)
-                predicate:
-                  title: BeaconStatementPredicate
+            title: ServerStatementsQueryResult
+            type: object
+            properties:
+              queryId:
+                type: string
+                description: |
+                  session identifier of the query returning the results
+              beacons:
+                type: array
+                items:
+                  type: integer
+                  description: >
+                    set of aggregator indices of beacons whose data were
+                    retrieved
+              pageNumber:
+                type: integer
+                description: |
+                  session identifier of the query returning the results
+              pageSize:
+                type: integer
+                description: |
+                  session identifier of the query returning the results
+              results:
+                type: array
+                items:
+                  title: ServerStatement
                   type: object
                   properties:
                     id:
                       type: string
+                      description: >-
+                        CURIE-encoded identifier for statement (can be used to
+                        retrieve associated evidence)
+                    subject:
+                      title: ServerStatementSubject
+                      type: object
+                      properties:
+                        clique:
+                          type: string
+                          description: >
+                            CURIE-encoded canonical identifier of "equivalent
+                            concepts clique"
+                        id:
+                          type: string
+                          description: |
+                            CURIE-encoded identifier of concept
+                        name:
+                          type: string
+                          description: human readable label of subject concept
+                        type:
+                          type: string
+                          description: >
+                            a semantic group for the subject concept (specified 
+                            as a CURIE of a Translator data type ontology term)
+                    predicate:
+                      title: ServerStatementPredicate
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: |
+                            CURIE-encoded identifier of predicate resource
+                        name:
+                          type: string
+                          description: human readable label of concept
+                    object:
+                      title: ServerStatementObject
+                      type: object
+                      properties:
+                        clique:
+                          type: string
+                          description: >
+                            CURIE-encoded canonical identifier of "equivalent
+                            concepts clique"
+                        id:
+                          type: string
+                          description: |
+                            CURIE-encoded identifier of object concept
+                        name:
+                          type: string
+                          description: human readable label of object concept
+                        type:
+                          type: string
+                          description: >
+                            a semantic group for the object concept (specified 
+                            as a CURIE of a Translator data type ontology term)
+                    beacon:
+                      type: integer
                       description: |
-                        CURIE-encoded identifier of predicate resource
-                    name:
-                      type: string
-                      description: human readable label of concept
-                object:
-                  title: BeaconStatementObject
-                  type: object
-                  properties:
-                    clique:
-                      type: string
-                      description: >
-                        CURIE-encoded canonical identifier of "equivalent
-                        concepts clique"
-                    id:
-                      type: string
-                      description: |
-                        CURIE-encoded identifier of object concept
-                    name:
-                      type: string
-                      description: human readable label of object concept
-                    type:
-                      type: string
-                      description: >
-                        a semantic group for the object concept (specified  as a
-                        CURIE of a Translator data type ontology term)
-                beacon:
-                  type: string
-                  description: |
-                    beacon ID
+                        aggregator assigned beacon index number
           examples:
             application/json:
-              - source: semmeddb
-                id: 'kb:12345'
-                subject:
-                  id:
-                    - 'wd:Q14912054'
-                  name: KCNJ11
-                  type: 'umls_sg:GENE'
-                predicate:
-                  id:
-                    - 'kbp:10'
-                  name: Causes
-                object:
-                  id:
-                    - 'wd:Q2898645'
-                  name: Neonatal diabetes mellitus
-                  type: 'umls_sg:DISO'
-                beacon: '1'
+              queryId: XYZ456
+              beacons:
+                - 1
+              pageNumber: 1
+              pageSize: 1
+              results:
+                - source: semmeddb
+                  id: 'kb:12345'
+                  subject:
+                    id:
+                      - 'wd:Q14912054'
+                    name: KCNJ11
+                    type: 'UMLSSG:GENE'
+                  predicate:
+                    id:
+                      - 'kbp:10'
+                    name: Causes
+                  object:
+                    id:
+                      - 'wd:Q2898645'
+                    name: Neonatal diabetes mellitus
+                    type: 'UMLSSG:DISO'
+                  beacon: '1'
   '/evidence/{statementId}':
     get:
       description: >
         Retrieves a (paged) list of annotations cited as evidence for a
         specified concept-relationship statement
       tags:
-        - evidence
+        - statements
       parameters:
         - name: statementId
           in: path
@@ -678,13 +1352,7 @@ paths:
           required: false
           type: array
           items:
-            type: string
-        - name: sessionId
-          in: query
-          description: |
-            client-defined session identifier
-          required: false
-          type: string
+            type: integer
       operationId: getEvidence
       responses:
         '200':
@@ -693,7 +1361,7 @@ paths:
           schema:
             type: array
             items:
-              title: BeaconAnnotation
+              title: ServerAnnotation
               type: object
               properties:
                 id:
@@ -717,114 +1385,15 @@ paths:
                     publication date of annotation (generally of format
                     'yyyy-mm-dd')
                 beacon:
-                  type: string
+                  type: integer
                   description: |
-                    beacon ID
+                    aggregator assigned beacon index identifier
           examples:
             application/json:
-              - id:
-                  - 'pmid:22781086'
+              - id: 'pmid:22781086'
                 label: >-
                   Neonatal diabetes mellitus and congenital diaphragmatic hernia
                   coincidence or concurrent etiology?
                 type: TAS
                 date: 2012-07-10T00:00:00.000Z
-                beacon: '1'
-  /beacons:
-    get:
-      description: |
-        Get a list of all of the knowledge beacons that the aggregator can query
-      tags:
-        - aggregator
-      operationId: getBeacons
-      responses:
-        '200':
-          schema:
-            type: array
-            items:
-              title: BeaconMetadata
-              type: object
-              properties:
-                id:
-                  type: string
-                  description: |
-                    beacon ID
-                name:
-                  type: string
-                  description: |
-                    beacon name
-                url:
-                  type: string
-                  description: |
-                    URL used to execute API calls on the beacon
-                description:
-                  type: string
-                  description: |
-                    beacon description
-                contact:
-                  type: string
-                  description: |
-                    name of the person responsible for this beacon
-                wraps:
-                  type: string
-                  description: |
-                    URL of this beacon's data source
-                repo:
-                  type: string
-                  description: |
-                    URL of this beacon's repository
-          description: |
-            Successful response with beacons
-          examples:
-            application/json:
-              - id: '1'
-                name: SemMedDB
-                url: 'http://rkb.ncats.io'
-                description: |
-                  Reference Knowledge Beacon implementation indexed by Wikidata
-  /errorlog:
-    get:
-      description: |
-        Get a log of the most recent errors in this session
-      tags:
-        - aggregator
-      parameters:
-        - name: sessionId
-          in: query
-          description: |
-            client-defined session identifier
-          required: true
-          type: string
-      operationId: getErrors
-      responses:
-        '200':
-          schema:
-            type: array
-            items:
-              title: BeaconLogEntry
-              type: object
-              properties:
-                timestamp:
-                  type: string
-                  description: |
-                    timestamp
-                beacon:
-                  type: string
-                  description: |
-                    beacon ID
-                query:
-                  type: string
-                  description: |
-                    URL of the API call executed by the aggregator
-                message:
-                  type: string
-                  description: |
-                    error message
-          description: |
-            Successful response with most recent errors
-          examples:
-            application/json:
-              - timestamp: '2016-12-31 15:09:24.614'
-                beacon: '1'
-                query: 'http://rkb.ncats.io/concepts?keywords=cancer'
-                message: Bad Gateway
+                beacon: 1
