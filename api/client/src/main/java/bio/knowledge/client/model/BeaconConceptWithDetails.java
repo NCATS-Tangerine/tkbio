@@ -25,7 +25,7 @@ import java.util.List;
  * A single record of a given concept clique with details 
  */
 @ApiModel(description = "A single record of a given concept clique with details ")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-12-20T20:18:11.941-08:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-04-23T21:23:14.609-07:00")
 public class BeaconConceptWithDetails {
   @SerializedName("clique")
   private String clique = null;
@@ -162,6 +162,7 @@ public class BeaconConceptWithDetails {
   public void setEntries(List<BeaconConceptBeaconEntry> entries) {
     this.entries = entries;
   }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
