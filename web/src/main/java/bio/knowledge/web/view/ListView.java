@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -40,6 +41,7 @@ import java.util.concurrent.TimeoutException;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.jena.riot.adapters.AdapterRDFWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,14 +61,17 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.CellReference;
 import com.vaadin.ui.Grid.Column;
@@ -87,23 +92,26 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
+import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.renderers.ClickableRenderer.RendererClickEvent;
 import com.vaadin.ui.renderers.ClickableRenderer.RendererClickListener;
 import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.authentication.AuthenticationManager;
+import bio.knowledge.model.AnnotatedConcept;
+import bio.knowledge.model.AnnotatedConceptImpl;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.BeaconResponse;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
+import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.DisplayableStatement;
 import bio.knowledge.model.DomainModelException;
 import bio.knowledge.model.Evidence;
+import bio.knowledge.model.IdentifiedConcept;
+import bio.knowledge.model.IdentifiedConceptImpl;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.Predicate;
-import bio.knowledge.model.PredicateImpl;
-import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.OntologyTerm;
@@ -130,7 +138,7 @@ import bio.knowledge.web.ui.PopupWindow;
 
 /**
  * @author Richard
- * @author Yinglun Colin Qiao
+ * @author Yinglun(Colin) Qiao
  *
  */
 @SpringView(name = ListView.NAME)
@@ -148,9 +156,22 @@ public class ListView extends BaseView implements Util {
 	private static final String COL_ID_RELATION  = "relation";
 	private static final String COL_ID_OBJECT    = "object";
 	private static final String COL_ID_SUBJECT   = "subject";
+	private static final String COL_ID_DETAILS  = "details";
 	private static final String COL_ID_REFERENCE = "reference";
 	private static final String COL_ID_PUBLICATION_DATE = "publicationDate";
 
+	private static final int ELLIPSIS_INDEX_OFFSET = 2;
+	// style names
+	private static final String PAGE_STATUS_LABEL_STYLE = "page-status-label";
+	private static final String CURRENT_PAGE_BUTTON_STYLE = "current-page-button";
+	private static final String CURRENT_PAGE_SIZE_STYLE = "current-page-size";
+	private static final String PAGE_BUTTON_STYLE = "page-button";
+	private static final String PAGE_CONTROL_BUTTON_STYLE = "pagecontrol-button";
+
+	
+	public static final String SEMGROUP_FIELD_START = "[" ;
+	public static final String SEMGROUP_FIELD_END   = "]" ;
+	
 	/*
 	 *  RMB: Oct 27, 2017: reduced table height to 8 from 11 
 	 *  when data table moved to 100% width of bottom pane
@@ -168,7 +189,7 @@ public class ListView extends BaseView implements Util {
 	private GeneratedPropertyContainer gpcontainer;
 
 	// Identification/Unique Keys
-	private Grid dataTable = null;
+	private Grid dataGrid = null;
 
 	// view's name
 	private String viewName = "";
@@ -213,6 +234,8 @@ public class ListView extends BaseView implements Util {
 		private static final long serialVersionUID = -1922666185642169173L;
 
 		public final static int PAGE_WINDOW_SIZE = 5;
+		
+		private static final int PAGE_WINDOW_OFFSET = PAGE_WINDOW_SIZE / 2;
 
 		private static final int DEFAULT_PAGE_SIZE = 15;
 		private static final int DEFAULT_CURRENT_PAGE_INDEX = 0;
@@ -334,53 +357,19 @@ public class ListView extends BaseView implements Util {
 			return kbService.getKnowledgeBeaconCount(beacons);
 		}
 		
-		private int loadDataPage(int pageNumber) {
-			try {
-				String filter;
-				if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
-					filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
-				} else {
-					filter = "";
-				}
-
-				if(!simpleTextFilter.isEmpty()) {
-					filter += " " + simpleTextFilter ;
-				}
-				
-				// We always want to fill the table with enough rows so that the scroll bar shows.
-				
-				int rows = (int) dataTable.getHeightByRows();
-				int beacons = countKnowledgeBeacons();
-				int pageSize = (int) (rows * 2 / beacons) + 1;
-				List<? extends IdentifiedEntity> data;
-				String previousId = null;
-				int gatheredDataCount = 0;
-				
-				do {
-					data = pager.getDataPage(pageNumber, pageSize, filter != null ? filter.trim() : null, sorter, isAscending);
-					
-					if (!data.isEmpty()) {
-						if (previousId != null) {
-							if (previousId.equals(data.get(0).getId())) {
-								// In this case paging is broken, and we want to break out of the loop
-								// without adding anymore data.
-								break;
-							}
-						} else {
-							previousId = data.get(0).getId();
-						}
-					}
-					
-					pageNumber += 1;
-					gatheredDataCount += data.size();
-					container.addAll(data);
-				} while(data.size() != 0 && gatheredDataCount < dataTable.getHeightByRows() * 2);
-				
-				loadedAllData = data.size() == 0;
-				return pageNumber;
-			} catch (Exception e) {
-				throw new RuntimeException(e);
+		public String makeFilter() {
+			String filter;
+			if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
+				filter = DesktopUI.getCurrent().getDesktop().getSearch().getValue();
+			} else {
+				filter = "";
 			}
+			
+			if(!simpleTextFilter.isEmpty()) {
+				filter += " " + simpleTextFilter ;
+			}
+			
+			return filter;
 		}
 
 		public void refresh() {
@@ -397,43 +386,27 @@ public class ListView extends BaseView implements Util {
 						authenticationState.setState(null, null);
 					}
 					
-					nextPageNumber = loadDataPage(1);
+					String filter = makeFilter();
+					int pageNumber = currentPageIndex + 1;
+					if (filter.isEmpty() && viewName.equals(ViewName.CONCEPTS_VIEW)){
+						// We don't want to initiate an empty search when we load the CONCEPTS_VIEW page
+					} else {
+						container.addAll(pager.getDataPage(pageNumber, pageSize, filter, sorter, isAscending));
+					}
 					
-					sortDataTable();
+					//TODO: DEC 15 2018
+//					sortDataTable();
 				}
 			}
+			
+			createPageControls(listContainer);
 		}
 		
 		public void sortDataTable() {
 			
-			for (SortOrder order : dataTable.getSortOrder()) {
-				dataTable.sort(order.getPropertyId(), order.getDirection());
+			for (SortOrder order : dataGrid.getSortOrder()) {
+				dataGrid.sort(order.getPropertyId(), order.getDirection());
 			}
-		}
-		
-		private boolean loadedAllData = false;
-		private boolean loadingDataPage = false;
-		private int nextPageNumber;
-		public void loadNextPage() {
-			if (pager != null && !loadedAllData) {
-				//int pageSize = (int) (dataTable.getHeightByRows() * 2 / kbService.getKnowledgeBeaconCount());
-				loadingDataPage = true;
-				//String filter = ((DesktopUI) UI.getCurrent()).getDesktop().getSearch().getValue();
-				
-				// Simplistic addition of text filtering to tables which can use it
-				// Won't really work so well in StatementService, I suspect...
-				//if(!simpleTextFilter.isEmpty()) filter += " "+ simpleTextFilter ;
-				
-				nextPageNumber = loadDataPage(nextPageNumber);
-				
-				loadingDataPage = false;
-			}
-			
-			sortDataTable();
-		}
-		
-		public boolean isLoading() {
-			return loadingDataPage;
 		}
 
 		/**
@@ -451,7 +424,9 @@ public class ListView extends BaseView implements Util {
 		 *         table
 		 */
 		public long getTotalHits() {
-			return hitCounter != null ? hitCounter.countHits(simpleTextFilter) : 0;
+			return 1000;
+			//TODO: DEC 15 2018 commented this line out
+//			return hitCounter != null ? hitCounter.countHits(simpleTextFilter) : 0;
 		}
 
 		/**
@@ -533,7 +508,236 @@ public class ListView extends BaseView implements Util {
 		listContainer.refresh();
 
 		// refresh page controls
-//		createPageControls(listContainer);
+		createPageControls(listContainer);
+	}
+	
+	private void pageSizeSelector(ClickEvent e) {
+
+		String value = e.getButton().getCaption();
+
+		int pageSize = 10;
+		try {
+			pageSize = Integer.parseInt(value);
+		} catch (NumberFormatException nfe) {
+			pageSize = 10;
+		}
+		listContainer.setPageSize(pageSize);
+
+		gotoPageIndex(0);
+	}
+	
+	/**
+	 * TODO: this method does not yet take 'filtered' hit numbers into account
+	 *
+	 * @param listContainer
+	 */
+	private void createPageControls(ListContainer listContainer) {
+
+		pageBar.removeAllComponents();
+		enPageBar.removeAllComponents();
+
+		enPageBar.setWidth("100%");
+
+		// entries per page label and buttons
+		createPageEntriesBar(listContainer);
+
+		// buttons for selecting pages
+		createPageButtons(listContainer);
+
+		pageBar.addStyleName("max-width-full");
+		pageBar.setResponsive(true);
+	}
+	
+	private Label currentStatusLabel = new Label();
+	
+	private void createPageEntriesBar(ListContainer listContainer) {
+		long totalHits = listContainer.getTotalHits();
+
+		HorizontalLayout entriesLayout = new HorizontalLayout();
+		entriesLayout.addStyleName("max-width-full");
+
+		Label entriesLabel = new Label(getMessage("entries_per_page") + ":");
+		entriesLabel.addStyleName("page-entries-label");
+
+		entriesLayout.addComponent(entriesLabel);
+		entriesLayout.setComponentAlignment(entriesLabel, Alignment.MIDDLE_LEFT);
+
+		int[] pageSizes = { 5, 10, 25, 50, 100 };
+		for (int ps : pageSizes) {
+			Button pageButton = new Button(new Integer(ps).toString().trim());
+			pageButton.addClickListener(e -> pageSizeSelector(e));
+
+			if (listContainer.getPageSize() == ps) {
+				pageButton.addStyleName(CURRENT_PAGE_SIZE_STYLE);
+			} else {
+				pageButton.addStyleName(PAGE_BUTTON_STYLE);
+			}
+
+			entriesLayout.addComponent(pageButton);
+			entriesLayout.setComponentAlignment(pageButton, Alignment.MIDDLE_LEFT);
+
+			// Only give a page size range that is sensible
+			// relative to the total number of pages
+			if (totalHits < ps)
+				break;
+		}
+
+		// the page/entry status label
+		String[] range = listContainer.getEntryRange();
+		String labelContent = "Showing " + range[0] + " to " + range[1] + " of " + totalHits + " entries";
+
+		currentStatusLabel.setValue(labelContent);
+		currentStatusLabel.addStyleName(PAGE_STATUS_LABEL_STYLE);
+
+		enPageBar.addComponents(currentStatusLabel, entriesLayout);
+
+		enPageBar.setComponentAlignment(currentStatusLabel, Alignment.MIDDLE_LEFT);
+		enPageBar.setComponentAlignment(entriesLayout, Alignment.MIDDLE_RIGHT);
+
+		enPageBar.setExpandRatio(currentStatusLabel, 4);
+		enPageBar.setExpandRatio(entriesLayout, 7);
+	}
+	
+	private void createPageButtons(ListContainer listContainer) {
+		//TODO: DEC 15 2018
+//		int totalPages = listContainer.getPageCount();
+		int totalPages = 100;
+
+		if (totalPages == 0) {
+			return;
+		}
+
+		int offset = ListContainer.PAGE_WINDOW_OFFSET;
+
+		int currentPageIndex = listContainer.getCurrentPageIndex();
+		int finalPageIndex = totalPages - 1;
+
+		int windowStartIndex = currentPageIndex - offset;
+		int windowEndIndex = currentPageIndex + offset;
+
+		// clip the window
+		if (windowStartIndex < 0) {
+			windowStartIndex = 0;
+			windowEndIndex = ListContainer.PAGE_WINDOW_SIZE - 1;
+		} else if (windowEndIndex >= totalPages) {
+			windowStartIndex = totalPages - ListContainer.PAGE_WINDOW_SIZE;
+			windowEndIndex = totalPages - 1;
+		}
+
+		// display one more button if the window is at one of the end
+		if (windowStartIndex == 0) {
+			windowEndIndex++;
+		} else if (windowEndIndex == finalPageIndex) {
+			windowStartIndex--;
+		}
+
+		// update window end index if there are few pages
+		if (totalPages <= ListContainer.PAGE_WINDOW_SIZE) {
+			windowStartIndex = 0;
+			windowEndIndex = finalPageIndex;
+		}
+
+		// set up the Previous button
+		Button previousBtn = new Button(getMessage("button_previous"));
+
+		previousBtn.setEnabled(false);
+		previousBtn.addStyleName(PAGE_CONTROL_BUTTON_STYLE);
+
+		previousBtn.addClickListener(e -> {
+			int pageIndex = listContainer.getCurrentPageIndex() - 1;
+			gotoPageIndex(pageIndex);
+		});
+
+		// set up the Next button
+		Button nextBtn = new Button(getMessage("button_next"));
+
+		nextBtn.setEnabled(false);
+		nextBtn.addStyleName(PAGE_CONTROL_BUTTON_STYLE);
+
+		nextBtn.addClickListener(e -> {
+			int pageIndex = listContainer.getCurrentPageIndex() + 1;
+			gotoPageIndex(pageIndex);
+		});
+
+		if (currentPageIndex > 0) {
+			previousBtn.setEnabled(true);
+		}
+
+		if (currentPageIndex < (totalPages - 1)) {
+			nextBtn.setEnabled(true);
+		}
+
+		pageBar.addComponent(previousBtn);
+
+		// create the first page button, and ellipsis if applicable (before the
+		// window)
+		if (windowStartIndex >= 1) {
+			Button firstPageBtn = new Button("1");
+			firstPageBtn.addStyleName(PAGE_BUTTON_STYLE);
+			firstPageBtn.addClickListener(e -> {
+				gotoPageIndex(0);
+			});
+
+			pageBar.addComponent(firstPageBtn);
+
+			if (windowStartIndex >= ELLIPSIS_INDEX_OFFSET) {
+				Label ellipsisLabel = new Label("...");
+				ellipsisLabel.addStyleName("page-ellipsis-label");
+
+				pageBar.addComponent(ellipsisLabel);
+				pageBar.setComponentAlignment(ellipsisLabel, Alignment.MIDDLE_CENTER);
+			}
+		}
+
+		// create the buttons within the window's range
+		for (int i = windowStartIndex; i <= windowEndIndex; i++) {
+			Button pageBtn = new Button(Integer.toString(i + 1));
+			pageBtn.addStyleName(PAGE_BUTTON_STYLE);
+			pageBtn.addClickListener(e -> {
+				int pageIndex = Integer.parseInt(e.getButton().getCaption()) - 1;
+				gotoPageIndex(pageIndex);
+			});
+
+			pageBar.addComponent(pageBtn);
+		}
+
+		// create the last page button, and ellipsis if applicable (after the
+		// window)
+
+		if (windowEndIndex <= (finalPageIndex - 1)) {
+			Button finalPageBtn = new Button(Integer.toString(finalPageIndex + 1));
+			finalPageBtn.addStyleName(PAGE_BUTTON_STYLE);
+			finalPageBtn.addClickListener(e -> {
+				gotoPageIndex(finalPageIndex);
+			});
+
+			if (windowEndIndex <= (finalPageIndex - ELLIPSIS_INDEX_OFFSET)) {
+				Label ellipsisLabel = new Label("...");
+				ellipsisLabel.addStyleName("page-ellipsis-label");
+
+				pageBar.addComponent(ellipsisLabel);
+				pageBar.setComponentAlignment(ellipsisLabel, Alignment.MIDDLE_CENTER);
+			}
+
+			pageBar.addComponent(finalPageBtn);
+		}
+
+		// set current button style
+		Iterator<Component> iterator = pageBar.iterator();
+
+		while (iterator.hasNext()) {
+			Component component = iterator.next();
+			if (component.getClass().equals(Button.class)) {
+				Button button = (Button) component;
+				String caption = button.getCaption();
+
+				if (caption.equals(Integer.toString(currentPageIndex + 1))) {
+					button.addStyleName(CURRENT_PAGE_BUTTON_STYLE);
+				}
+			}
+		}
+
+		pageBar.addComponent(nextBtn);
 	}
 
 	private HorizontalLayout pageBar = new HorizontalLayout();
@@ -552,9 +756,9 @@ public class ListView extends BaseView implements Util {
 
 			@Override
 			public String getValue(Item item, Object itemId, Object propertyId) {
-				if (itemId instanceof Concept) {
-					Concept concept = (Concept) itemId;
-					return concept.getSemanticGroup().name();
+				if (itemId instanceof IdentifiedConcept) {
+					IdentifiedConcept concept = (IdentifiedConcept) itemId;
+					return concept.getType().toString();
 				} else {
 					return "";
 				}
@@ -615,7 +819,7 @@ public class ListView extends BaseView implements Util {
 			public String getValue(Item item, Object object, Object propertyId) {
 				if (object instanceof DisplayableStatement) {
 					DisplayableStatement c = (DisplayableStatement) object;
-					return c.getSubject().getClique();
+					return c.getSubject().getCliqueId();
 				}
 				return "";
 			}
@@ -655,7 +859,7 @@ public class ListView extends BaseView implements Util {
 			public String getValue(Item item, Object object, Object propertyId) {
 				if (object instanceof DisplayableStatement) {
 					DisplayableStatement c = (DisplayableStatement) object;
-					return c.getObject().getClique();
+					return c.getObject().getCliqueId();
 				}
 				return "";
 			}
@@ -667,6 +871,21 @@ public class ListView extends BaseView implements Util {
 			
 		});
 
+		gpcontainer.addGeneratedProperty(COL_ID_DETAILS, new PropertyValueGenerator<String>() {
+			
+			private static final long serialVersionUID = 8058294339364614146L;
+			
+			@Override
+			public String getValue(Item item, Object itemId, Object propertyId) {
+				return "show";
+			}
+			
+			@Override
+			public Class<String> getType() {
+				return String.class;
+			}
+		});
+		
 		// Create a header row to hold column filters
 		// HeaderRow filterRow = dataTable.appendHeaderRow();
 
@@ -689,8 +908,8 @@ public class ListView extends BaseView implements Util {
 			detailsPane.addStyleName("outlined");
 			detailsPane.setSizeFull();
 
-			dataTable.addColumn("show", Resource.class).setRenderer(new ImageRenderer());
-			dataTable.getHeaderRow(0).getCell("show").setStyleName(ViewUtil.HEADER_STYLENAME);
+			dataGrid.addColumn("show", Resource.class).setRenderer(new ImageRenderer());
+			dataGrid.getHeaderRow(0).getCell("show").setStyleName(ViewUtil.HEADER_STYLENAME);
 
 			gpcontainer.addGeneratedProperty("show", new PropertyValueGenerator<Resource>() {
 				private static final long serialVersionUID = 3271937727404606863L;
@@ -707,7 +926,7 @@ public class ListView extends BaseView implements Util {
 
 			});
 
-			ViewUtil.makeIconButton(dataTable, "show", e -> onShowDetails(e));
+			ViewUtil.makeIconButton(dataGrid, "show", e -> onShowDetails(e));
 
 			HorizontalSplitPanel listAndDetailsSplitPanel = new HorizontalSplitPanel();
 			listAndDetailsSplitPanel.setSizeFull();
@@ -756,11 +975,11 @@ public class ListView extends BaseView implements Util {
 					
 				});
 
-		addChildColumns(dataTable, gpcontainer);
+		addChildColumns(dataGrid, gpcontainer);
 
-		dataTable.setContainerDataSource(gpcontainer);
+		dataGrid.setContainerDataSource(gpcontainer);
 		
-		for (Column column : dataTable.getColumns()) {
+		for (Column column : dataGrid.getColumns()) {
 			String columnID = (String) column.getPropertyId();
 			column.setSortable(
 					columnID.equals(COL_ID_SUBJECT) ||
@@ -780,7 +999,7 @@ public class ListView extends BaseView implements Util {
 
 			@Override
 			public int compare(Object a, Object b) {
-				List<SortOrder> sortOrders = dataTable.getSortOrder();
+				List<SortOrder> sortOrders = dataGrid.getSortOrder();
 				if (sortOrders.isEmpty()) {
 					return 0;
 				} else {
@@ -810,7 +1029,7 @@ public class ListView extends BaseView implements Util {
 
 		listContainer.setFirstPage();
 
-//		createPageControls(listContainer);
+		createPageControls(listContainer);
 
 		dataTableLayout.addComponent(pageBar);
 		dataTableLayout.addComponent(enPageBar);
@@ -862,7 +1081,7 @@ public class ListView extends BaseView implements Util {
 
 		Button addToGraphButton = new Button("Add to Map", e -> {
 			
-			Collection<Object> items = dataTable.getSelectionModel().getSelectedRows();
+			Collection<Object> items = dataGrid.getSelectionModel().getSelectedRows();
 			
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
 			
@@ -870,8 +1089,8 @@ public class ListView extends BaseView implements Util {
 				
 				Statement statement = (Statement) item;
 				
-				Concept subject = statement.getSubject() ;
-				Concept object  = statement.getObject() ;
+				IdentifiedConcept subject = statement.getSubject() ;
+				IdentifiedConcept object  = statement.getObject() ;
 				
 				// Unusual case of missing data (mostly in sample data?)
 				if( subject == null || object == null ) continue ;
@@ -881,14 +1100,14 @@ public class ListView extends BaseView implements Util {
 				ui.addEdgeToConceptMap(statement);
 				
 				// just in case, reset the currently active highlighted node(?)
-				Optional<Concept> selectedConceptOpt = query.getCurrentSelectedConcept();
+				Optional<IdentifiedConcept> selectedConceptOpt = query.getCurrentSelectedConcept();
 				if (selectedConceptOpt.isPresent()) { 
-					Concept concept = selectedConceptOpt.get();
+					IdentifiedConcept concept = selectedConceptOpt.get();
 					ui.setHighlightedNode(concept) ;
 				}
 			}
 			// https://dev.vaadin.com/ticket/16345
-			((SelectionModel.Multi) dataTable.getSelectionModel()).deselectAll();
+			((SelectionModel.Multi) dataGrid.getSelectionModel()).deselectAll();
 		});
 
 		addToGraphButton.setEnabled(false);
@@ -896,7 +1115,7 @@ public class ListView extends BaseView implements Util {
 		addToGraphButton.setStyleName("add-to-map-button");
 
 		// add selection listener for the grid
-		dataTable.addSelectionListener(selection -> {
+		dataGrid.addSelectionListener(selection -> {
 			boolean isEmpty = selection.getSelected().isEmpty();
 
 			addToGraphButton.setEnabled(isEmpty ? false : true);
@@ -946,12 +1165,16 @@ public class ListView extends BaseView implements Util {
 			break;
 
 		case COL_ID_RELATION:
-			styleName = "relation-cell" ;
+			styleName = "relation-cell";
 			break ;
 			
-		case COL_ID_EVIDENCE:
-			styleName = "evidence-cell" ;
-			break ;
+//		case COL_ID_EVIDENCE:
+//			styleName = "evidence-cell";
+//			break ;
+//
+//		case COL_ID_DETAILS:
+//			styleName = "evidence-cell";
+//			break ;
 			
 		case "library":
 		case "parents":
@@ -998,39 +1221,29 @@ public class ListView extends BaseView implements Util {
 	}
 	
 	private VerticalLayout formatGenericTableComponents(String datatype) {
-
-		// use datatype here to possibly get custom list of fields(?)
-		bio.knowledge.grid.Grid.ScrollListener scrollListener = new bio.knowledge.grid.Grid.ScrollListener() {
-
-			@Override
-			public void scrolledToBottom() {
-				if (!listContainer.isLoading()) {
-					listContainer.loadNextPage();
-				}
-			}
-			
-		};
 		
-		dataTable = new bio.knowledge.grid.Grid(scrollListener);
-		dataTable.setWidth("100%");
-		dataTable.setHeightMode(HeightMode.ROW);
-		dataTable.setHeightByRows(ROWS_TO_DISPLAY);
-		dataTable.setImmediate(true);
+		//TODO: DEC 15 2018 - Removed custom Grid
+//		dataTable = new bio.knowledge.grid.Grid(scrollListener);
+		dataGrid = new Grid();
+		dataGrid.setWidth("100%");
+		dataGrid.setHeightMode(HeightMode.ROW);
+		dataGrid.setHeightByRows(ROWS_TO_DISPLAY);
+		dataGrid.setImmediate(true);
 
 		// create a style name for the grid
-		dataTable.addStyleName("results-grid");
+		dataGrid.addStyleName("results-grid");
 
 		// set custom style names for the cells in particular columns
-		dataTable.setCellStyleGenerator(cellRef -> getStyle(cellRef));
+		dataGrid.setCellStyleGenerator(cellRef -> getStyle(cellRef));
 
 		// activate multi selection mode if it is relations table view
 		if (datatype.equals(ViewName.RELATIONS_VIEW))
-			dataTable.setSelectionMode(SelectionMode.MULTI);
+			dataGrid.setSelectionMode(SelectionMode.MULTI);
 
 		// the panel will give it scrollbars.
 		//Panel dataPanel = new Panel(getMessage("global_menu_list", getMessage(datatype + "_plural")));
 		Panel dataPanel = new Panel("Data Table");
-		dataPanel.setContent(dataTable);
+		dataPanel.setContent(dataGrid);
 		dataPanel.setSizeFull();
 
 		VerticalLayout dataTableLayout = new VerticalLayout();
@@ -1049,7 +1262,7 @@ public class ListView extends BaseView implements Util {
 
 		// currentQueryConcept might be empty
 		// and/or ignored for some views
-		Optional<Concept> currentQueryConcept = query.getCurrentQueryConcept(); 
+		Optional<IdentifiedConcept> currentQueryConcept = query.getCurrentQueryConcept(); 
 		
 		if (viewName.equals(ViewName.EVIDENCE_VIEW)) {
 
@@ -1106,8 +1319,8 @@ public class ListView extends BaseView implements Util {
 				
 				case BY_CONCEPT:
 			        if( currentQueryConcept.isPresent() ) {
-						Concept concept = currentQueryConcept.get() ;
-			        	target = concept.getName()+" ["+concept.getSemanticGroup().getDescription()+"]" ;
+						IdentifiedConcept concept = currentQueryConcept.get() ;
+			        	target = concept.getName()+" ["+concept.getType().getDescription()+"]" ;
 			        	title += "for Concept" ;
 			        } else
 			        	throw new RuntimeException("DesktopUI.displayLibraryByConceptSemanticType() error: CST not set for LibraryByConceptSearch?") ;
@@ -1150,9 +1363,9 @@ public class ListView extends BaseView implements Util {
 
 				case RELATIONS:
 					if (currentQueryConcept.isPresent()) {
-						Concept concept = currentQueryConcept.get();
+						IdentifiedConcept concept = currentQueryConcept.get();
 						dataTableLabel = formatDataTableLabel("Relations for Concept ",
-								concept.getName() + " (as " + concept.getSemanticGroup().getDescription() + ")");
+								concept.getName() + " (as " + concept.getType().getDescription() + ")");
 					} // else
 						// dataTableLabel = formatDataTableLabel( "No Relations are
 						// (Yet) Available?" );
@@ -1160,9 +1373,9 @@ public class ListView extends BaseView implements Util {
 				case WIKIDATA:
 					// For WikiData retrieval, it is the currently selected concept
 					// that is of interest...
-					Optional<Concept> currentSelectedConcept = query.getCurrentSelectedConcept();
+					Optional<IdentifiedConcept> currentSelectedConcept = query.getCurrentSelectedConcept();
 					if (currentSelectedConcept.isPresent()) {
-						Concept concept = currentSelectedConcept.get();
+						IdentifiedConcept concept = currentSelectedConcept.get();
 	
 						dataTableLabel = formatDataTableLabel("Data Properties for Concept", concept.getName());
 					} else
@@ -1232,6 +1445,43 @@ public class ListView extends BaseView implements Util {
 		gotoPageIndex(0);
 	}
 
+	// Popup Window for "Other..." Semantic Group selection
+	private void otherSemanticGroupSelectionWindow() {
+		
+		Window conceptSemanticWindow = new Window("Others...");
+		
+		conceptSemanticWindow.addStyleName("semanticfilter-window");
+		conceptSemanticWindow.setModal(true);
+		conceptSemanticWindow.center();
+
+		SemanticFilterView filterView = new SemanticFilterView(conceptSemanticWindow, viewName, query);
+
+		conceptSemanticWindow.setContent(filterView);
+		conceptSemanticWindow.setWidth("23%");
+		conceptSemanticWindow.setHeight(450, Unit.PIXELS);
+
+		conceptSemanticWindow.addCloseListener(new CloseListener() {
+			private static final long serialVersionUID = -4799904881921178600L;
+
+			@Override
+			public void windowClose(CloseEvent e) {
+
+				// save the values selected so that it can be
+				// displayed next time when the window is opened
+				if (!viewName.equals(ViewName.CONCEPTS_VIEW)) {
+					Object treeValue = filterView.getTree().getValue();
+					query.setOtherSemGroupFilterValue(treeValue);
+				}
+
+				if (filterView.shouldRefresh()) {
+					updateCurrentTable();
+				}
+			}
+		});
+
+		UI.getCurrent().addWindow(conceptSemanticWindow);
+	}
+	
 	private void setSemGroupFilter(HorizontalLayout filterMenuBar) {
 
 		if (!(
@@ -1276,50 +1526,23 @@ public class ListView extends BaseView implements Util {
 					query.setSemGroupFilterType(selectedItem.getText());
 				}
 
-				Set<SemanticGroup> typeSet = new HashSet<SemanticGroup>();
-				SemanticGroup type = null;
+				Set<ConceptType> typeSet = new HashSet<ConceptType>();
+				ConceptType type = null;
 
 				if (selectedItem == disorders) {
-					type = SemanticGroup.DISO;
+					type = ConceptType.DISO;
+					
 				} else if (selectedItem == genes) {
-					type = SemanticGroup.GENE;
+					type = ConceptType.GENE;
+					
 				} else if (selectedItem == drugs) {
-					type = SemanticGroup.CHEM;
+					type = ConceptType.CHEM;
+					
 				} else if (selectedItem == any) {
 					type = null;
+					
 				} else if (selectedItem == others) {
-					Window conceptSemanticWindow = new Window("Others...");
-					conceptSemanticWindow.addStyleName("semanticfilter-window");
-					conceptSemanticWindow.setModal(true);
-					conceptSemanticWindow.center();
-
-					SemanticFilterView filterView = new SemanticFilterView(conceptSemanticWindow, viewName, query);
-
-					conceptSemanticWindow.setContent(filterView);
-					conceptSemanticWindow.setWidth("23%");
-					conceptSemanticWindow.setHeight(450, Unit.PIXELS);
-
-					conceptSemanticWindow.addCloseListener(new CloseListener() {
-						private static final long serialVersionUID = -4799904881921178600L;
-
-						@Override
-						public void windowClose(CloseEvent e) {
-
-							// save the values selected so that it can be
-							// displayed
-							// next time when the window is opened
-							if (!viewName.equals(ViewName.CONCEPTS_VIEW)) {
-								Object treeValue = filterView.getTree().getValue();
-								query.setOtherSemGroupFilterValue(treeValue);
-							}
-
-							if (filterView.shouldRefresh()) {
-								updateCurrentTable();
-							}
-						}
-					});
-
-					UI.getCurrent().addWindow(conceptSemanticWindow);
+					otherSemanticGroupSelectionWindow() ;
 				}
 
 				if (type != null) {
@@ -1333,7 +1556,7 @@ public class ListView extends BaseView implements Util {
 				}
 			}
 
-			private void setQueryTypes(Set<SemanticGroup> typeSet) {
+			private void setQueryTypes(Set<ConceptType> typeSet) {
 				if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
 					query.setInitialConceptTypes(typeSet);
 				} else if (viewName.equals(ViewName.RELATIONS_VIEW)) {
@@ -1352,19 +1575,64 @@ public class ListView extends BaseView implements Util {
 		filterMenuBar.addComponent(semGrpLayout);
 		filterMenuBar.setComponentAlignment(semGrpLayout, Alignment.MIDDLE_LEFT);
 	}
-	
-	private static Predicate ANY_RELATION = new PredicateImpl("Any");
-	
+
+	private void displayPredicateFilter(ComboBox selectedRelations) {
+			
+		Window predicateFilterWindow = new Window("Predicate Filter");
+		
+		predicateFilterWindow.addStyleName("predicatefilter-window");
+		predicateFilterWindow.setModal(true);
+		predicateFilterWindow.center();
+		
+		PredicateFilterView predicateFilterView = 
+				new PredicateFilterView(predicateService, predicateFilterWindow);
+
+		predicateFilterWindow.setContent(predicateFilterView);
+		predicateFilterWindow.setWidth("23%");
+		predicateFilterWindow.setHeight(450, Unit.PIXELS);
+
+		predicateFilterWindow.addCloseListener(new CloseListener() {
+			private static final long serialVersionUID = -4799904881921178600L;
+
+			@Override
+			public void windowClose(CloseEvent e) {
+
+				if (viewName.equals(ViewName.RELATIONS_VIEW)) {
+					Set<Predicate> selections = 
+							predicateFilterView.getSelectedPredicates();
+					query.setPredicateFilterValue(selections);
+					selectedRelations.addItems(selections);
+					if (predicateFilterView.shouldRefresh()) {
+						updateCurrentTable();
+					}
+				}
+			}
+		});
+
+		UI.getCurrent().addWindow(predicateFilterWindow);
+	}
 	private void setPredicateFilter(HorizontalLayout filterMenuBar) {
 		
 		if (! viewName.equals(ViewName.RELATIONS_VIEW) ) {
 			return;
 		}
+				
+		Button showRelationFilter = new Button("Relation Filter");
+		showRelationFilter.setStyleName("relation-filter");
 		
-		// Create the predicate selection component
-		List<Predicate> predicates = predicateService.findAllPredicates() ;
-		predicates.add(ANY_RELATION);
+		ComboBox selectedRelations = new ComboBox("Selected Relations");
 		
+		showRelationFilter.addClickListener(e -> {
+			displayPredicateFilter(selectedRelations);
+		});
+		
+		filterMenuBar.addComponent(showRelationFilter);
+		filterMenuBar.setComponentAlignment(showRelationFilter, Alignment.BOTTOM_CENTER);
+	
+		filterMenuBar.addComponent(selectedRelations);
+		filterMenuBar.setComponentAlignment(selectedRelations, Alignment.BOTTOM_CENTER);
+		
+		/*
 		ComboBox predicateFilterSelector = new ComboBox("Relation",predicates);
 		predicateFilterSelector.setNullSelectionItemId(ANY_RELATION);
 		
@@ -1395,6 +1663,8 @@ public class ListView extends BaseView implements Util {
 		
 		filterMenuBar.addComponent(predicateFilterSelector);
 		filterMenuBar.setComponentAlignment(predicateFilterSelector, Alignment.MIDDLE_CENTER);
+		*/
+		
 	}
 	
 	private void setUpTextFilter(HorizontalLayout filterMenuBar) {
@@ -1468,16 +1738,16 @@ public class ListView extends BaseView implements Util {
 				}
 			}
 
-			int tfstart = name.lastIndexOf(Concept.SEMGROUP_FIELD_START);
+			int tfstart = name.lastIndexOf(SEMGROUP_FIELD_START);
 			if (tfstart != -1) {
-				int tfend = name.lastIndexOf(Concept.SEMGROUP_FIELD_END);
+				int tfend = name.lastIndexOf(SEMGROUP_FIELD_END);
 				if (tfend != -1) {
 					String semtypeCode = name.substring(tfstart + 1, tfend);
 					description = name.substring(0, tfstart);
 					try {
 						SemanticType semtype = SemanticType.lookUpByCode(semtypeCode);
-						description += " " + Concept.SEMGROUP_FIELD_START + semtype.getDescription()
-								+ Concept.SEMGROUP_FIELD_END;
+						description += " " + SEMGROUP_FIELD_START + semtype.getDescription()
+								+ SEMGROUP_FIELD_END;
 					} catch (DomainModelException dme) {
 						// code not recognized...fail silently
 					}
@@ -1497,16 +1767,16 @@ public class ListView extends BaseView implements Util {
 			String[] colspec = column.split("\\|");
 			if (colspec.length == 1) {
 				columns.add(column);
-				dataTable.addColumn(column);
+				dataGrid.addColumn(column);
 
 				// Different views will have the dataTable be different sizes,
 				// requiring slightly different maximum widths for each column.
 				// I've arrived at these numbers through experimentation. They
 				// should probably be made into constants.
 				if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
-					dataTable.getColumn(column).setMaximumWidth(200);
+					dataGrid.getColumn(column).setMaximumWidth(200);
 				} else {
-					dataTable.getColumn(column).setMaximumWidth(150);
+					dataGrid.getColumn(column).setMaximumWidth(150);
 				}
 
 			} else {
@@ -1515,7 +1785,7 @@ public class ListView extends BaseView implements Util {
 				String columnName = colspec[0].trim();
 				columns.add(columnName);
 				RendererClickListener handler = selectionHandlers.get(columnName);
-				dataTable.addColumn(columnName);
+				dataGrid.addColumn(columnName);
 				
 				// Different views will have the dataTable be different sizes,
 				// requiring slightly different maximum widths for each column.
@@ -1523,32 +1793,32 @@ public class ListView extends BaseView implements Util {
 				// should probably be made into constants.
 				switch(viewName) {
 					case ViewName.CONCEPTS_VIEW: // name and description field
-						dataTable.getColumn(columnName).setMaximumWidth(200);
+						dataGrid.getColumn(columnName).setMaximumWidth(200);
 						break;
-					case ViewName.EVIDENCE_VIEW: // supportingText field
-						dataTable.getColumn(columnName).setMaximumWidth(400);
-						break;
-					default:
-						dataTable.getColumn(columnName).setMaximumWidth(150);
+//					case ViewName.EVIDENCE_VIEW: // supportingText field
+//						dataGrid.getColumn(columnName).setMaximumWidth(400);
+//						break;
+//					default:
+//						dataGrid.getColumn(columnName).setMaximumWidth(150);
 				}
 				
 				if (selectionHandlers.containsKey(columnName))
-					ViewUtil.makeButton(dataTable, columnName, handler::click, viewName);
+					ViewUtil.makeButton(dataGrid, columnName, handler::click, viewName);
 			}
 		}
 
-		ViewUtil.formatGrid(this, dataTable, columns.toArray(new String[] {}));
+		ViewUtil.formatGrid(this, dataGrid, columns.toArray(new String[] {}));
 
 		detailFields = mapping.getDetailFields();
 
-		dataTable.addSortListener(e -> {
+		dataGrid.addSortListener(e -> {
 			if (e.isUserOriginated()) {
 				listContainer.sortDataTable();
 			}
 		});
 
 		// tooltip for cells
-		dataTable.setCellDescriptionGenerator(cell -> getCellDescription(cell));
+		dataGrid.setCellDescriptionGenerator(cell -> getCellDescription(cell));
 
 		// the container is of the BeanItemContainer type
 		listContainer.setContainer(mapping.getContainer());
@@ -1561,10 +1831,10 @@ public class ListView extends BaseView implements Util {
 	private void formatDefaultTable() {
 
 		// As default use Identification interface name and description
-		dataTable.addColumn("name", String.class);
-		dataTable.addColumn("description", String.class);
+		dataGrid.addColumn("name", String.class);
+		dataGrid.addColumn("description", String.class);
 
-		ViewUtil.formatGrid(this, dataTable, new String[] { "name", "description" });
+		ViewUtil.formatGrid(this, dataGrid, new String[] { "name", "description" });
 
 		detailFields = new ArrayList<String>();
 		detailFields.add("name");
@@ -1610,7 +1880,49 @@ public class ListView extends BaseView implements Util {
 				formatDefaultTable();
 
 			loadDataTable(dataTableLayout);
+			
+			Column col = dataGrid.getColumn(COL_ID_DETAILS);
+			if (col != null) {				
+				col.setRenderer(new ButtonRenderer(e -> {
+					showDetails(e);
+				}));
+			}
 		}
+	}
+
+	/**
+	 * Used by the 'Details' column in the concept search result grid.
+	 * Click it to show the concept details in a new Window.
+	 * @param e
+	 */
+	private void showDetails(RendererClickEvent e) {
+		Window conceptDetailsWindow = new Window("Concept Details");
+		VerticalLayout detailsContent = new VerticalLayout();
+		detailsContent.setSpacing(true);
+		conceptDetailsWindow.setContent(detailsContent);
+		
+		conceptDetailsWindow.setStyleName("concept-details-window");
+		conceptDetailsWindow.center();
+		conceptDetailsWindow.setWidthUndefined();
+		conceptDetailsWindow.setHeightUndefined();
+		conceptDetailsWindow.setResizable(false);
+		
+		IdentifiedConcept concept = (IdentifiedConcept) e.getItemId();
+		CompletableFuture<AnnotatedConcept> future = getConceptWithDetails(concept.getCliqueId());
+
+		try {
+			concept = future.get(kbService.weightedTimeout(), KnowledgeBeaconService.BEACON_TIMEOUT_UNIT);
+		} catch (InterruptedException | ExecutionException | TimeoutException | IndexOutOfBoundsException exception) {
+			// should do something useful here
+			concept = new AnnotatedConceptImpl(concept.getCliqueId(), concept.getName(), concept.getType(), concept.getTaxon());
+			_logger.error("Error retrieving concept details from the search result table");
+		}
+		
+		VerticalLayout details = detailshandler.getDetails(concept);
+		detailsContent.addComponent(details);
+		detailsContent.addComponent(new Label("&nbsp;", ContentMode.HTML));
+		
+		UI.getCurrent().addWindow(conceptDetailsWindow);
 	}
 
 	private void onShowDetails(RendererClickEvent event) {
@@ -1724,7 +2036,7 @@ public class ListView extends BaseView implements Util {
 		SUBJECT, OBJECT;
 	}
 
-	private void selectionContext(DesktopUI ui, PopupWindow conceptDetailsWindow, Concept selectedConcept) {
+	private void selectionContext(DesktopUI ui, PopupWindow conceptDetailsWindow, IdentifiedConcept selectedConcept) {
 		ui.queryUpdate(selectedConcept, RelationSearchMode.RELATIONS);
 		conceptDetailsWindow.close();
 		ui.gotoStatementsTable();
@@ -1741,9 +2053,9 @@ public class ListView extends BaseView implements Util {
 	// Handler for Concept details in various data tables
 	private void onConceptDetailsSelection(RendererClickEvent event, ConceptRole role) {
 		Statement statement = (Statement) event.getItemId();
-		Concept subject = statement.getSubject();
+		IdentifiedConcept subject = statement.getSubject();
 		Predicate predicate = statement.getRelation();
-		Concept object = statement.getObject();
+		IdentifiedConcept object = statement.getObject();
 
 		RelationSearchMode searchMode = query.getRelationSearchMode();
 		if (searchMode.equals(RelationSearchMode.WIKIDATA) && role.equals(ConceptRole.OBJECT)) {
@@ -1759,34 +2071,29 @@ public class ListView extends BaseView implements Util {
 			conceptDetailsWindow.addStyleName("concept-details-window");
 			conceptDetailsWindow.center();
 			conceptDetailsWindow.setSizeUndefined();
-			conceptDetailsWindow.setResizable(true);
-
-			// int x = 100, y = 400 ;
 
 			//String predicateLabel;
 			
-			String conceptId;
+			String cliqueId;
 			if (role.equals(ConceptRole.SUBJECT)) {				
-				conceptId = subject.getId();
+//				cliqueId = subject.getId();
+				cliqueId = subject.getCliqueId();
 			} else if (role.equals(ConceptRole.OBJECT)) {
-				conceptId = object.getId();
-				// x+=400 ;
+//				cliqueId = object.getId();
+				cliqueId = object.getCliqueId();
 			} else
 				throw new RuntimeException("Unsupported Relationship Concept Role?");
 
-			List<String> beacons = query.getCustomBeacons();
-			String sessionId = query.getUserSessionId();
+			CompletableFuture<AnnotatedConcept> future = getConceptWithDetails(cliqueId);
 			
-			CompletableFuture<List<Concept>> future = kbService.getConceptDetails(conceptId,beacons,sessionId);
+			IdentifiedConcept selectedConcept;
 			
-			Concept selectedConcept;
 			try {
-				List<Concept> concepts = 
+				selectedConcept = 
 						future.get(
 								kbService.weightedTimeout(), 
 								KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
 						);
-				selectedConcept = concepts.get(0);
 			} catch (InterruptedException | ExecutionException | TimeoutException | IndexOutOfBoundsException e1) {
 				selectedConcept = role.equals(ConceptRole.SUBJECT) ? subject : object;
 			}
@@ -1801,9 +2108,9 @@ public class ListView extends BaseView implements Util {
 
 			//predicateLabel = predicate.getName();
 
-			Button showRelations = new Button("Show Relations");
-			final Concept finallySelectedConcept = selectedConcept;
-			showRelations.addClickListener(e -> selectionContext(ui, conceptDetailsWindow, finallySelectedConcept));
+			Button showRelationsBtn = new Button("Show Relations");
+			final IdentifiedConcept finallySelectedConcept = selectedConcept;
+			showRelationsBtn.addClickListener(e -> selectionContext(ui, conceptDetailsWindow, finallySelectedConcept));
 
 			// RMB: 9 September 2016 - deprecating relation table display of
 			// WikiData
@@ -1829,7 +2136,7 @@ public class ListView extends BaseView implements Util {
 			});
 
 			HorizontalLayout operationsLayout = new HorizontalLayout();
-			operationsLayout.addComponent(showRelations);
+			operationsLayout.addComponent(showRelationsBtn);
 
 			// RMB: 9 September 2016 - deprecating relation table display of
 			// WikiData
@@ -1842,21 +2149,30 @@ public class ListView extends BaseView implements Util {
 			buttonsLayout.addComponents(operationsLayout, closeButton);
 
 			buttonsLayout.setSpacing(true);
-			buttonsLayout.setMargin(true);
 			buttonsLayout.setWidth("100%");
 
 			buttonsLayout.setComponentAlignment(operationsLayout, Alignment.MIDDLE_LEFT);
 			buttonsLayout.setComponentAlignment(closeButton, Alignment.MIDDLE_RIGHT);
 
 			VerticalLayout wd_details = detailshandler.getDetails(selectedConcept);
-			wd_details.addComponent(buttonsLayout);
+
+			VerticalLayout windowContent = new VerticalLayout();
+			windowContent.setSpacing(true);
+			windowContent.addComponent(wd_details);
+			windowContent.addComponent(buttonsLayout);
 
 			conceptDetailsWindow.setCaption(conceptName);
-			conceptDetailsWindow.setId("introPanel");
-			conceptDetailsWindow.setContent(wd_details);
+			conceptDetailsWindow.setContent(windowContent);
 
 			ui.addWindow(conceptDetailsWindow);
 		}
+	}
+
+	private CompletableFuture<AnnotatedConcept> getConceptWithDetails(String cliqueId) {
+		List<String> beacons = query.getCustomBeacons();
+		String sessionId = query.getUserSessionId();
+		CompletableFuture<AnnotatedConcept> future = kbService.getConceptWithDetails(cliqueId,beacons,sessionId);
+		return future;
 	}
 
 	
@@ -1870,7 +2186,7 @@ public class ListView extends BaseView implements Util {
 		// view used for searching while creating a user annotation
 		registry.setMapping(
 				ViewName.ANNOTATIONS_VIEW, 
-				new BeanItemContainer<Concept>(Concept.class),
+				new BeanItemContainer<IdentifiedConcept>(IdentifiedConcept.class),
 				// TODO: use the cache to get the results
 				conceptService, 
 				new String[] { "beaconSource", "name|*", "type" }, 
@@ -1881,7 +2197,7 @@ public class ListView extends BaseView implements Util {
 			ViewName.ANNOTATIONS_VIEW, 
 			"name", 
 			event -> {
-				Concept concept = (Concept) event.getItemId();
+				IdentifiedConcept concept = (IdentifiedConcept) event.getItemId();
 				DesktopUI ui = (DesktopUI) UI.getCurrent();
 	
 				ui.addNodeToConceptMap(concept);
@@ -1914,16 +2230,23 @@ public class ListView extends BaseView implements Util {
 		// concepts view
 		registry.setMapping(
 				ViewName.CONCEPTS_VIEW,
-				new BeanItemContainer<Concept>(Concept.class), 
+				new BeanItemContainer<IdentifiedConcept>(IdentifiedConcept.class), 
 				conceptService,
-				new String[] { "beaconSource", "clique", "id", "name|*", "semanticGroup", "description|*", "synonyms|*"},
+				new String[] { 
+						"cliqueId", 
+						"name|*", 
+						"type",
+						COL_ID_DETAILS + "|*"
+						/*, RMB: adding 'usage' here might be interesting? */
+						/*, OBSOLETE: i.e. only in details now? "description|*", "synonyms|*" */
+				},
 				null, 
 				null);
 
-		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "clique",e->{/*NOP*/});
+		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "cliqueId",e->{/*NOP*/});
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "name", event -> {
-			Concept concept = (Concept) event.getItemId();
+			IdentifiedConcept concept = (IdentifiedConcept) event.getItemId();
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
 			ui.processConceptSearch(concept);
 			ui.closeConceptSearchWindow();
@@ -1934,8 +2257,8 @@ public class ListView extends BaseView implements Util {
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "description",e->{/*NOP*/});
 
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "library", event -> {
-			Concept concept = (Concept) event.getItemId();
-
+			IdentifiedConcept concept = (IdentifiedConcept) event.getItemId();
+			
 			// Ignore ConceptSemanticType entries with empty libraries
 			Library library = concept.getLibrary();
 			if (library.isEmpty())

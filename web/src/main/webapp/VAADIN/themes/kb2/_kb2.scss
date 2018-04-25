@@ -33,7 +33,7 @@
 // Example variants can be copy/pasted from https://vaadin.com/wiki/-/wiki/Main/Valo+Examples
 
 // Overrides global variables for the Valo theme
-$v-font-size: 9.5px;
+$v-font-size: 10px;
 
 $v-border-radius: 2px;
 
@@ -423,7 +423,6 @@ $color-green: #5cb85c;
 	.alert-window-label {
 		font-size: 13px;
 		text-align: center;
-//		font-weight: bold;
 	}
 	
 //--Textfields--//
@@ -608,6 +607,9 @@ $color-green: #5cb85c;
 		text-align: center;
 	}
 
+	.concept-details-layout {
+	}
+
 //--Grid--//
 	.v-grid-row-selected .v-grid-cell {
 		background-color: #e1e1e1 !important;
@@ -625,18 +627,7 @@ $color-green: #5cb85c;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		overflow: hidden;
-		&.type-cell, &.library-cell, &.evidence-cell {
-			text-align: center;
-			.v-nativebutton {
-				@include native-square-button;
-				&:hover {
-					background-color: $color-grey;
-				}
-			}
-		}
-		&.relation-cell,  &.publication-date-cell {
-			text-align: center;
-		}		
+		text-align: center;
 	}
 	
 	.grid-margin-left {
@@ -644,18 +635,18 @@ $color-green: #5cb85c;
 	}
 
 	.grid-button-style {
-		/* This makes the button look like a Vaadin NativeButton, even though its not */
-		background: none !important;
-		border: none;
-		padding: 0 !important;
-		color: #008080;
-		cursor: pointer;
-		text-align: center;
-
-		/* This makes the button have ellipsis */
-		overflow: hidden !important;
-		white-space: nowrap !important;
-		text-overflow: ellipsis !important;
+		background-color: transparent;
+		border-style: none;
+		color: $color-teal;
+		font-weight: bold;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		&:hover {
+			@include valo-gradient($color: $control-button-background-color);
+			cursor: pointer;
+			color: $color-black;
+		}
 	}
 
 //--Tabsheet--//
@@ -684,7 +675,7 @@ $color-green: #5cb85c;
 	
 //--Window and panels--//
 	.concept-details-window {
-		max-width: 30%;
+// 		min-width: 30%;
 	}
  	
  	.moreInfoWindow{
@@ -710,6 +701,13 @@ $color-green: #5cb85c;
   		margin: 2px;
   		padding: 0px;
   		background-color: #474747;
+	}
+
+	.aliases-panel {
+		min-width: 15em;	
+	}
+	
+	.node-popup-window {
 	}
 	
 	//--images--//
@@ -805,7 +803,13 @@ $color-green: #5cb85c;
 		margin-bottom: 0.5em;
 	}
 	
+	.relation-filter {
+		vertical-align: bottom;
+		background-color: darkgreen;
+	}
+	
 	.add-to-map-button {
 		vertical-align: bottom;
+		background-color: darkgreen;
 	}
 }

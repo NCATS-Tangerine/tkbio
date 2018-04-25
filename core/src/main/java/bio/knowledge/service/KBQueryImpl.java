@@ -38,12 +38,12 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
 import bio.knowledge.model.Annotation;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
+import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.Evidence;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.Predicate;
-import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 
 /**
@@ -188,7 +188,7 @@ public class KBQueryImpl implements KBQuery {
 	@Autowired
 	private ConceptService conceptService ;
 
-	private Optional<Concept> queryConcept = Optional.empty() ;
+	private Optional<IdentifiedConcept> queryConcept = Optional.empty() ;
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCurrentQueryConcept(bio.knowledge.model.Concept)
@@ -207,7 +207,7 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#getCurrentQueryConcept()
 	 */
 	@Override
-	public Optional<Concept> getCurrentQueryConcept() {
+	public Optional<IdentifiedConcept> getCurrentQueryConcept() {
 		return queryConcept;
 	}
 	
@@ -295,18 +295,18 @@ public class KBQueryImpl implements KBQuery {
 		return currentImportedMaps;
 	}
 
-	private Optional<Concept> selectedConcept = Optional.empty() ;
+	private Optional<IdentifiedConcept> selectedConcept = Optional.empty() ;
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCurrentQueryConcept(bio.knowledge.model.Concept)
 	 */
 	@Override
-	public void setCurrentSelectedConcept(Concept query) {
+	public void setCurrentSelectedConcept(IdentifiedConcept query) {
 		if(query==null)
 			selectedConcept = Optional.empty() ;
 		else {
 			// the concept is pulled in by clique
-			String identifier = query.getClique();
+			String identifier = query.getCliqueId();
 			selectedConcept = conceptService.getDetailsByCliqueId(identifier) ;
 		}
 	}
@@ -315,7 +315,7 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#getCurrentQueryConcept()
 	 */
 	@Override
-	public Optional<Concept> getCurrentSelectedConcept() {
+	public Optional<IdentifiedConcept> getCurrentSelectedConcept() {
 		return selectedConcept;
 	}
 
@@ -375,12 +375,12 @@ public class KBQueryImpl implements KBQuery {
 		return currentAnnotation;
 	}
 	
-	private Optional< Set<SemanticGroup> > selectedInitialConceptTypes = Optional.empty() ;
+	private Optional< Set<ConceptType> > selectedInitialConceptTypes = Optional.empty() ;
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#getInitialConceptTypes()
 	 */
 	@Override
-	public Optional<Set<SemanticGroup>> getInitialConceptTypes() {
+	public Optional<Set<ConceptType>> getInitialConceptTypes() {
 		return selectedInitialConceptTypes;
 	}
 	
@@ -388,17 +388,17 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#setInitialConceptTypes(java.util.Set)
 	 */
 	@Override
-	public void setInitialConceptTypes( Set<SemanticGroup> typeSet ) {
+	public void setInitialConceptTypes( Set<ConceptType> typeSet ) {
 		this.selectedInitialConceptTypes = Optional.of(typeSet);
 	}
 
-	private Optional< Set<SemanticGroup> > selectedConceptTypes = Optional.empty() ;
+	private Optional< Set<ConceptType> > selectedConceptTypes = Optional.empty() ;
 	
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#getConceptTypes()
 	 */
 	@Override
-	public Optional<Set<SemanticGroup>> getConceptTypes() {
+	public Optional<Set<ConceptType>> getConceptTypes() {
 		return selectedConceptTypes;
 	}
 	
@@ -406,7 +406,7 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#setConceptTypes(java.util.Set)
 	 */
 	@Override
-	public void setConceptTypes( Set<SemanticGroup> typeSet ) {
+	public void setConceptTypes( Set<ConceptType> typeSet ) {
 		this.selectedConceptTypes = Optional.of(typeSet);
 	}
 
@@ -484,15 +484,15 @@ public class KBQueryImpl implements KBQuery {
 		value = null;
 	}
 	
-	private Optional<Predicate> predicateFilterValue = Optional.empty();
+	private Optional<Set<Predicate>> predicateFilterValue = Optional.empty();
 
 	@Override
-	public void setPredicateFilterValue(Predicate value) {
-		predicateFilterValue = Optional.of(value);
+	public void setPredicateFilterValue(Set<Predicate> predicates) {
+		predicateFilterValue = Optional.of(predicates);
 	}
 
 	@Override
-	public Optional<Predicate> getPredicateFilterValue() {
+	public Optional<Set<Predicate>> getPredicateFilterValue() {
 		return predicateFilterValue;
 	}
 
@@ -535,7 +535,7 @@ public class KBQueryImpl implements KBQuery {
 
 	private ConceptSearchMode conceptSearchMode = ConceptSearchMode.DEFAULT ;
 
-	private Concept lastSelectedConcept;
+	private IdentifiedConcept lastSelectedConcept;
 	
 	@Override
 	public void setConceptSearchMode(ConceptSearchMode mode) {
@@ -548,12 +548,12 @@ public class KBQueryImpl implements KBQuery {
 	}
 
 	@Override
-	public void setLastSelectedConcept(Concept concept) {
+	public void setLastSelectedConcept(IdentifiedConcept concept) {
 		this.lastSelectedConcept = concept;
 	}
 
 	@Override
-	public Concept getLastSelectedConcept() {
+	public IdentifiedConcept getLastSelectedConcept() {
 		return lastSelectedConcept;
 	}
 

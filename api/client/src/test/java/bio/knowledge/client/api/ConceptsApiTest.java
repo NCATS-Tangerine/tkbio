@@ -44,7 +44,7 @@ public class ConceptsApiTest {
         String conceptId = null;
         List<String> beacons = null;
         String sessionId = null;
-        List<BeaconConceptWithDetails> response = api.getConceptDetails(conceptId, beacons, sessionId);
+        BeaconConceptWithDetails response = api.getConceptDetails(conceptId, beacons, sessionId);
 
         // TODO: test validations
     }

@@ -54,14 +54,14 @@ import bio.knowledge.datasource.DataServiceUtility;
 import bio.knowledge.datasource.DataSourceRegistry;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
-import bio.knowledge.model.Concept;
+import bio.knowledge.model.ConceptType;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.RdfUtil;
-import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
-import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.model.neo4j.Neo4jAnnotatedConcept;
 import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
 import bio.knowledge.model.wikidata.WikiDataPropertySemanticType;
@@ -113,21 +113,22 @@ public class StatementService
 		// Sometimes this function gets call without any conceptId's (e.g. during table refresh)
 		if(sourceClique==null) return new ArrayList<Statement>();
 		
-		Optional<Set<SemanticGroup>> optionalSemanticGroupSet = query.getConceptTypes();
+		Optional<Set<ConceptType>> optionalSemanticGroupSet = query.getConceptTypes();
 		
 		String semgroups = "";
 		
 		if (optionalSemanticGroupSet.isPresent()) {
-			Set<SemanticGroup> semanticGroupSet = optionalSemanticGroupSet.get();
-			for (SemanticGroup semanticGroup : semanticGroupSet) {
+			Set<ConceptType> semanticGroupSet = optionalSemanticGroupSet.get();
+			for (ConceptType semanticGroup : semanticGroupSet) {
 				semgroups += semanticGroup.name() + " ";
 			}
 			semgroups = semgroups.trim();
 		}
 		
-		Optional<Predicate> optionalPredicateFilter = query.getPredicateFilterValue();
+		Optional<Set<Predicate>> optionalPredicateFilter = 
+										query.getPredicateFilterValue();
 		
-		Predicate predicateFilter = null;
+		Set<Predicate> predicateFilter = null;
 		
 		if (optionalPredicateFilter.isPresent()) {
 			predicateFilter = optionalPredicateFilter.get();
@@ -183,9 +184,9 @@ public class StatementService
 		else if (args.length == 4)
 			return new Neo4jGeneralStatement(
 					(String) args[0],  		  // Statement AccessionId
-					(Concept) args[1],        // Subject
+					(IdentifiedConcept) args[1],        // Subject
 					(Neo4jPredicate) args[2],      // Predicate
-					(Concept) args[3]         // Object
+					(IdentifiedConcept) args[3]         // Object
 			);
 		else
 			throw new RuntimeException("Invalid StatementService.createInstance() arguments?");
@@ -369,14 +370,14 @@ public class StatementService
 	/**
 	 * @return
 	 */
-	public Concept getCanonicalSubject(Neo4jGeneralStatement p) {
+	public IdentifiedConcept getCanonicalSubject(Neo4jGeneralStatement p) {
 		
-		List<Concept> subjects = p.getSubjects() ;
+		List<IdentifiedConcept> subjects = p.getSubjects() ;
 		
 		// might trigger a NPE in caller?
 		if( subjects==null || subjects.size()==0 ) return null ; 
 		
-		Optional<Concept> currentConcept = query.getCurrentQueryConcept();
+		Optional<IdentifiedConcept> currentConcept = query.getCurrentQueryConcept();
 		if (!currentConcept.isPresent()) return subjects.get(0) ;
 
 		// else, heuristic?
@@ -390,14 +391,14 @@ public class StatementService
 	 * @param p 
 	 * @return
 	 */
-	public Concept getCanonicalObject(Neo4jGeneralStatement p) {
+	public IdentifiedConcept getCanonicalObject(Neo4jGeneralStatement p) {
 		
-		List<Concept> objects = p.getObjects() ;
+		List<IdentifiedConcept> objects = p.getObjects() ;
 		
 		// might trigger a NPE in caller?
 		if( objects==null || objects.size()==0 ) return null ; 
 		
-		Optional<Concept> currentConceptOpt = query.getCurrentQueryConcept();
+		Optional<IdentifiedConcept> currentConceptOpt = query.getCurrentQueryConcept();
 		if (!currentConceptOpt.isPresent()) return objects.get(0) ;
 
 		// else, heuristic?
@@ -412,7 +413,7 @@ public class StatementService
 	
 	private void runQuery(
 			String serviceName,
-			Concept concept, 
+			IdentifiedConcept concept, 
 			Function<? super ResultSet, ? extends Void> resultHandler 
 	) {
 		DataService dataService = 
@@ -430,7 +431,7 @@ public class StatementService
 	// simple runQuery with paging of results
 	private void runQuery(
 			String serviceName,
-			Concept concept, String filter, Pageable pageable, 
+			IdentifiedConcept concept, String filter, Pageable pageable, 
 			Function<? super ResultSet, ? extends Void> resultHandler 
 	) {
 		DataService dataService = 
@@ -455,7 +456,7 @@ public class StatementService
 	
 	private Void loadWikiDataResults( 
 			ResultSet rs, 
-			Concept subject, 
+			IdentifiedConcept subject, 
 			List<Statement> statements 
 	) {
 		rs.stream().forEach(r->{
@@ -495,20 +496,21 @@ public class StatementService
 				String propValueId = RdfUtil.getObjectId(propValue) ;
 				String qualifiedPropValueId = wikiDataType.getDefaultQualifier()+propValueId ;
 
-				Optional<Class<? extends Neo4jConcept>> nodeTypeOpt = 
+				Optional<Class<? extends Neo4jAnnotatedConcept>> nodeTypeOpt = 
 						wikiDataType.getNodeType() ;
 				
-				Neo4jConcept wikiItem ;
+				Neo4jAnnotatedConcept wikiItem ;
 				if(nodeTypeOpt.isPresent()) {
-					Class<? extends Neo4jConcept> nodeType = nodeTypeOpt.get() ;
+					Class<? extends Neo4jAnnotatedConcept> nodeType = nodeTypeOpt.get() ;
 					wikiItem = nodeType.newInstance() ;
 					wikiItem.setName(propValueId);
 				} else
 					wikiItem = 
-						new Neo4jConcept( 
+						new Neo4jAnnotatedConcept( 
 								qualifiedPropValueId,
-								SemanticGroup.PHEN,
-								propValueId 
+								propValueId,
+								ConceptType.PHEN,
+								"Unknown Taxon"
 						) ;
 				
 				wikiItem.setId(qualifiedPropValueId);
@@ -547,8 +549,8 @@ public class StatementService
 		return (Void)null ;
 	}
 	
-	private Concept getCurrentConcept() {
-		Optional<Concept> selectedConceptOpt = query.getCurrentSelectedConcept();
+	private IdentifiedConcept getCurrentConcept() {
+		Optional<IdentifiedConcept> selectedConceptOpt = query.getCurrentSelectedConcept();
 		if (!selectedConceptOpt.isPresent()) return null;
 		return selectedConceptOpt.get();
 	}	
@@ -558,7 +560,7 @@ public class StatementService
 
 		List<Statement> statements = new ArrayList<>();
 
-		Concept concept = getCurrentConcept();
+		IdentifiedConcept concept = getCurrentConcept();
 
 		if(concept!=null) {
 
@@ -580,17 +582,17 @@ public class StatementService
 
 				// Go afresh to WikiData and load properties into Statements
 
-				switch( concept.getSemanticGroup() ) {
+				switch( concept.getType() ) {
 
 				case GENE:
 					// Retrieve Paged WikiData properties for the Gene Name == Gene Symbol?
 					final List<Statement> newStatements = new ArrayList<>();
 					runQuery( 
 							WikiDataDataSource.WD_CDS_3_ID, 
-							(Neo4jConcept) concept,
+							(Neo4jAnnotatedConcept) concept,
 							filter,
 							pageable,
-							(rs)->loadWikiDataResults(rs, (Concept) concept,newStatements) 
+							(rs)->loadWikiDataResults(rs, (IdentifiedConcept) concept,newStatements) 
 							);
 					statements = newStatements ;
 					break ;
@@ -623,7 +625,7 @@ public class StatementService
 	 */
 	private long countByWikiData(String filter) {
 		
-		Concept concept = getCurrentConcept() ;
+		IdentifiedConcept concept = getCurrentConcept() ;
 		
 		// Access WikiData here and count properties matched by filter
 		
@@ -648,7 +650,7 @@ public class StatementService
 			
 			count[0] = 0L ;
 			
-			switch( concept.getSemanticGroup() ) {
+			switch( concept.getType() ) {
 			
 				case GENE:
 					// Count WikiData properties for the Gene Name == Gene Symbol?

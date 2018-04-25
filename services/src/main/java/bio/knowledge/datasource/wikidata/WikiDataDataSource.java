@@ -42,7 +42,7 @@ import bio.knowledge.datasource.AbstractSimpleDataService;
 import bio.knowledge.datasource.DataService;
 import bio.knowledge.datasource.DataSource;
 import bio.knowledge.datasource.rdf.SPARQLDataService;
-import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
 import bio.knowledge.model.datasource.SimpleResult;
@@ -152,7 +152,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 		protected BaseSimpleDataService(  
 				DataSource dataSource, 
 				String serviceId,
-				SemanticGroup targetSemanticGroup,
+				ConceptType targetSemanticGroup,
 				String name,
 				String sparqlQuery
 		) {
@@ -211,7 +211,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 		protected BaseComplexDataService( 
 				DataSource dataSource, 
 				String serviceId,
-				SemanticGroup targetSemanticGroup, 
+				ConceptType targetSemanticGroup, 
 				String name,
 				String sparqlQuery
 		) {
@@ -242,7 +242,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 				new BaseSimpleDataService(  
 					this, 
 					WD_SDS_1_ID, 
-					SemanticGroup.GENE, 
+					ConceptType.GENE, 
 					WD_SDS_1_NAME, 
 					WD_SDS_1_SPARQL_QUERY
 					 
@@ -252,7 +252,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 				new BaseSimpleDataService(  
 					this, 
 					WD_SDS_2_ID, 
-					SemanticGroup.ANY, 
+					ConceptType.ANY, 
 					WD_SDS_2_NAME, 
 					WD_SDS_2_SPARQL_QUERY
 				) 
@@ -261,7 +261,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 				new BaseSimpleDataService(  
 					this, 
 					WD_SDS_3_ID, 
-					SemanticGroup.GENE, 
+					ConceptType.GENE, 
 					WD_SDS_3_NAME, 
 					WD_SDS_3_SPARQL_QUERY
 				) 
@@ -270,7 +270,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 				new BaseSimpleDataService(  
 					this, 
 					WD_SDS_3_COUNTING_ID, 
-					SemanticGroup.GENE, 
+					ConceptType.GENE, 
 					WD_SDS_3_COUNTING_NAME, 
 					WD_SDS_3_COUNTING_SPARQL_QUERY
 				) 
@@ -279,7 +279,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 				new BaseSimpleDataService(  
 					this, 
 					WD_SDS_4_ID, 
-					SemanticGroup.ANY, 
+					ConceptType.ANY, 
 					WD_SDS_4_NAME, 
 					WD_SDS_4_SPARQL_QUERY
 				) 
@@ -288,7 +288,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 				new BaseSimpleDataService(  
 					this, 
 					WD_SDS_5_ID, 
-					SemanticGroup.ANY, 
+					ConceptType.ANY, 
 					WD_SDS_5_NAME, 
 					WD_SDS_5_SPARQL_QUERY
 				) 
@@ -297,7 +297,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 				new BaseSimpleDataService(  
 					this, 
 					WD_SDS_6_ID, 
-					SemanticGroup.ANY, 
+					ConceptType.ANY, 
 					WD_SDS_6_NAME, 
 					WD_SDS_6_SPARQL_QUERY
 				) 
@@ -306,7 +306,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 				new BaseSimpleDataService(  
 					this, 
 					WD_SDS_7_ID, 
-					SemanticGroup.ANY, 
+					ConceptType.ANY, 
 					WD_SDS_7_NAME, 
 					WD_SDS_7_SPARQL_QUERY
 				) 
@@ -315,7 +315,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 				new BaseSimpleDataService(  
 					this, 
 					WD_SDS_8_ID, 
-					SemanticGroup.ANY, 
+					ConceptType.ANY, 
 					WD_SDS_8_NAME, 
 					WD_SDS_8_SPARQL_QUERY
 				) 
@@ -324,7 +324,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 				new BaseComplexDataService(  
 					this, 
 					WD_CDS_1_ID, 
-					SemanticGroup.ANY, 
+					ConceptType.ANY, 
 					WD_CDS_1_NAME, 
 					WD_CDS_1_SPARQL_QUERY
 				) 
@@ -333,7 +333,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 				new BaseComplexDataService(  
 					this, 
 					WD_CDS_3_ID, 
-					SemanticGroup.GENE, 
+					ConceptType.GENE, 
 					WD_CDS_3_NAME, 
 					WD_CDS_3_SPARQL_QUERY
 				) 
@@ -342,7 +342,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 				new BaseComplexDataService(  
 					this, 
 					WD_CDS_4_ID, 
-					SemanticGroup.GENE, 
+					ConceptType.GENE, 
 					WD_CDS_4_NAME, 
 					WD_CDS_4_SPARQL_QUERY
 				) 
@@ -351,7 +351,7 @@ public class WikiDataDataSource extends AbstractDataSource implements WikiDataSe
 				new BaseComplexDataService(  
 					this, 
 					WD_CDS_5_ID, 
-					SemanticGroup.ANY, 
+					ConceptType.ANY, 
 					WD_CDS_5_NAME, 
 					WD_CDS_5_SPARQL_QUERY
 				) 

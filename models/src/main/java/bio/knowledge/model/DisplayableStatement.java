@@ -6,7 +6,7 @@ public interface DisplayableStatement {
 	 * 
 	 * @return
 	 */
-	Concept getSubject();
+	IdentifiedConcept getSubject();
 
 	/**
 	 * @return the predicate
@@ -17,7 +17,7 @@ public interface DisplayableStatement {
 	 * 
 	 * @return
 	 */
-	Concept getObject();
+	IdentifiedConcept getObject();
 	
 	/**
 	 * @return associated Evidence (e.g. References) supporting the Statement

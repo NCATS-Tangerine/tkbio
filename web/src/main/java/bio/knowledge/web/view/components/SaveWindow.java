@@ -59,8 +59,8 @@ import bio.knowledge.authentication.AuthenticationManager;
 import bio.knowledge.authentication.exceptions.AuthenticationException;
 import bio.knowledge.graph.ConceptMapDisplay;
 import bio.knowledge.graph.ContentRequester;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.user.Group;
 import bio.knowledge.model.user.User;
@@ -229,9 +229,9 @@ public class SaveWindow extends Window {
 	}
 	
 	private void generateArchive(String jsonContent, String pngContent, ConceptMapArchive archive) {
-		Optional<Concept> conceptOpt = query.getCurrentQueryConcept();
+		Optional<IdentifiedConcept> conceptOpt = query.getCurrentQueryConcept();
 		if (conceptOpt.isPresent()) {
-			Concept concept = conceptOpt.get();
+			IdentifiedConcept concept = conceptOpt.get();
 			jsonContent = MessageFormat.format(skeleton, concept.getName(), concept.getId(), jsonContent);
 		} else {
 			jsonContent = MessageFormat.format(skeleton, "", "", jsonContent);
@@ -429,7 +429,7 @@ public class SaveWindow extends Window {
 		conceptMapDisplay.requestContent(new ContentRequester() {
 			@Override
 			public void processRequestedContent(String jsonContent, String pngContent) {
-				Optional<Concept> concept = query.getCurrentQueryConcept();
+				Optional<IdentifiedConcept> concept = query.getCurrentQueryConcept();
 				String conceptId;
 				String conceptName;
 				if (concept.isPresent()) {

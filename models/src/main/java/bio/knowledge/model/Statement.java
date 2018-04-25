@@ -34,23 +34,23 @@ public interface Statement extends IdentifiedEntity, DisplayableStatement, Beaco
 	 * 
 	 * @param subject to be added to the Statement
 	 */
-	void addSubject(Concept subject);
+	void addSubject(IdentifiedConcept subject);
 
 	/**
 	 * @param subjects set to be added with the Statement
 	 */
-	void setSubjects(List<Concept> subjects);
+	void setSubjects(List<IdentifiedConcept> subjects);
 
 	/**
 	 * @return subjects associated with the Statement
 	 */
-	List<Concept> getSubjects();
+	List<IdentifiedConcept> getSubjects();
 
 	/**
 	 * 
 	 * @param subject
 	 */
-	void setSubject(Concept subject);
+	void setSubject(IdentifiedConcept subject);
 
 
 	/**
@@ -62,23 +62,23 @@ public interface Statement extends IdentifiedEntity, DisplayableStatement, Beaco
 	 * 
 	 * @param subject to be added to the Statement
 	 */
-	void addObject(Concept object);
+	void addObject(IdentifiedConcept object);
 
 	/**
 	 * @param objects set to be added with the Statement
 	 */
-	void setObjects(List<Concept> objects);
+	void setObjects(List<IdentifiedConcept> objects);
 
 	/**
 	 * @return objects associated with the Statement
 	 */
-	List<Concept> getObjects();
+	List<IdentifiedConcept> getObjects();
 
 	/**
 	 * 
 	 * @param object
 	 */
-	void setObject(Concept object);
+	void setObject(IdentifiedConcept object);
 
 	/**
 	 * 

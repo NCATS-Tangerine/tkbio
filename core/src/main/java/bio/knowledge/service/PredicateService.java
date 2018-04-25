@@ -25,20 +25,19 @@
  */
 package bio.knowledge.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import bio.knowledge.database.repository.PredicateRepository;
-import bio.knowledge.datasource.DataSourceRegistry;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 
@@ -56,37 +55,22 @@ public class PredicateService {
 
     @Autowired
     private KnowledgeBeaconService kbService;
-    
-	@Autowired
-	private Cache cache;
-	
-	@Autowired
-	private DataSourceRegistry dataSourceRegistry ;
-	
-    /**
-     * 
-     * @param name
-     * @return
-     */
-    public Predicate findPredicateByName(String name) {
-    	throw new NotImplementedException("Removed all reference to neo4j");
-    }
-    
+	    
     /**
      * 
      * @return
      */
-    private static List<Predicate> predicateListCache = new ArrayList<Predicate>();
+    private static Set<Predicate> predicateListCache = new TreeSet<Predicate>();
     
-	public List<Predicate> findAllPredicates() {
+	public Set<Predicate> findAllPredicates() {
 		
 		if(predicateListCache.isEmpty()) {
 			/*
-			 *  Try to populate the list the first time?
+			 * Try to populate the list the first time?
 			 * Danger is the if some beacons fail to contribute the first time, 
 			 * they won't have a second chance?
 			 * */
-	    	CompletableFuture<List<Predicate>> future = kbService.getPredicates();
+	    	CompletableFuture<Set<Predicate>> future = kbService.getPredicates();
 	    	
 	    	try {
 	    		predicateListCache = future.get(
@@ -101,12 +85,114 @@ public class PredicateService {
 		return predicateListCache;
     }
     
-    /**
-     * 
-     * @param predicate
-     * @return
-     */
-    public Predicate annotate(Predicate predicate) {
-    	throw new NotImplementedException("Removed all reference to neo4j");
+    class PredicateIndex {
+    	
+    	PredicateIndex() {
+    		Set<Predicate> predicates = findAllPredicates() ;
+        	addPredicates(predicates);
+    	}
+    	
+    	private String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+    	
+    	class Node {
+    		
+    		private Node[] children = new Node[ALPHABET.length()];
+    		
+    		private Set<Predicate> predicates = new TreeSet<Predicate>();
+    		
+		    public Optional<Set<Predicate>> getMatchingPredicates(String s) {
+		    	
+		    	Node node = this;
+		    	
+		    	for (int i = 0; i < s.length(); i++) {
+		    		
+		    		int index = ALPHABET.indexOf(s.charAt(i));
+		    		
+		    		/*
+		    		 * ignore unrecognized characters in 
+		    		 * predicate names, e.g. spaces and punctuation?
+		    		 */
+		    		if(index<0) continue;
+
+		    		Node child = node.children[index];
+		    		if (child == null) {
+		    			// There is no predicates whose name full matches the string
+		    			return Optional.empty();
+		    		}
+		    		node = child;
+		    	}
+		    	return Optional.of(node.predicates);
+		    }
+ 	
+		    public void insert(Predicate p) {
+		    	
+		    	String s = p.getName().toLowerCase();
+		    	
+		    	Node node = this;
+		    	
+		    	/*
+		    	 * I'll point to the Predicate at every level it matches(?)
+		    	 * I'm not sure how space efficient this is, but it should work
+		    	 */
+		    	node.predicates.add(p);
+		    	
+		    	for (int i = 0; i < s.length(); i++) {
+		    		
+		    		int index = ALPHABET.indexOf(s.charAt(i));
+		    		
+		    		/*
+		    		 * ignore unrecognized characters in 
+		    		 * predicate names, e.g. spaces and punctuation?
+		    		 */
+		    		if(index<0) continue; 
+		    		
+		    		Node child = node.children[index];
+		    		if (child == null) {
+		    			// insert new nodes as needed
+		    			child = new Node();
+		    			node.children[index] = child;
+		    		}
+		    		node = child;
+		    		node.predicates.add(p);
+		    	}
+		    }
+		}
+    	
+    	private Node root = new Node();
+    	
+    	public void insert(Predicate predicate) {
+    		root.insert(predicate);
+    	}
+    	
+    	public Optional<Set<Predicate>> getMatchingPredicates(String query) {
+    		if(query.isEmpty()) return Optional.of(findAllPredicates());
+    		return root.getMatchingPredicates(query.toLowerCase());
+    	}
+
+		public void addPredicates(Set<Predicate> predicates) {
+			predicates.stream().forEach(p-> this.insert(p));
+		}
     }
+    
+    // defer initialization until first use?
+    private PredicateIndex predicateIndex = null; 
+    
+	public Optional<Set<Predicate>> getMatchingPredicates(String query) {
+		if(predicateIndex==null)
+			predicateIndex = new PredicateIndex();
+		return predicateIndex.getMatchingPredicates(query);
+	}
+	
+    /**
+     * Returns Predicates partitioned by beacon source
+     * @return
+    public Map<String,List<Predicate>> getPredicateCatalog() {
+    	if(catalog.isEmpty()) {
+    		// build the catalog
+    		predicateListCache.stream().map(p -> p.getBeacons());
+    	}
+    	return new TreeMap<String,List<Predicate>>();
+    }
+     */
+
 }

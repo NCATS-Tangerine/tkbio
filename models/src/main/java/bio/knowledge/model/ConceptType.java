@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author Richard
  *
  */
-public enum SemanticGroup {
+public enum ConceptType {
 	ANY(
 			"Any Semantic Type",
 			new String[]{}
@@ -111,7 +111,7 @@ public enum SemanticGroup {
 	)
 	;
 	
-	private static Logger _logger = LoggerFactory.getLogger(SemanticGroup.class);
+	private static Logger _logger = LoggerFactory.getLogger(ConceptType.class);
 	
 	private String description ;
 	
@@ -122,7 +122,7 @@ public enum SemanticGroup {
 	 */
 	private Set<String> wikiClasses ;
 
-	private SemanticGroup(String description, String[] wikiClasses) {
+	private ConceptType(String description, String[] wikiClasses) {
 		this.description = description ;
 		this.wikiClasses = new HashSet<String>(Arrays.asList(wikiClasses));
 	}
@@ -141,9 +141,9 @@ public enum SemanticGroup {
 	 * @param defaultValue
 	 * @return
 	 */
-	public static SemanticGroup valueOf(String str, SemanticGroup defaultValue) {
+	public static ConceptType valueOf(String str, ConceptType defaultValue) {
 		try {
-			return SemanticGroup.valueOf(str);
+			return ConceptType.valueOf(str);
 		} catch (IllegalArgumentException e) {
 			return defaultValue;
 		}
@@ -157,17 +157,17 @@ public enum SemanticGroup {
 		return description;
 	}
 	
-    public static SemanticGroup lookUpByDescription(String description) {
-    	for(SemanticGroup group: SemanticGroup.values()) {
+    public static ConceptType lookUpByDescription(String description) {
+    	for(ConceptType group: ConceptType.values()) {
     		if(group.getDescription().equals(description))
     			return group ;
     	}
     	return null;
     }
 	
-    public static SemanticGroup lookUpByWikiClass(String wikiClass) {
+    public static ConceptType lookUpByWikiClass(String wikiClass) {
     	_logger.debug("Entering SemanticGroup lookUpByWikiClass("+wikiClass+")");
-    	for(SemanticGroup group: SemanticGroup.values()) {
+    	for(ConceptType group: ConceptType.values()) {
     		if(group.wikiClasses.contains(wikiClass))
     			return group ;
     	}

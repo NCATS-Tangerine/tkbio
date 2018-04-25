@@ -44,8 +44,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import bio.knowledge.database.repository.ConceptMapArchiveRepository;
 import bio.knowledge.database.repository.LibraryRepository;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptMapArchive;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Library;
 import bio.knowledge.service.core.IdentifiedEntityServiceImpl;
 import bio.knowledge.service.core.TableSorter;
@@ -260,9 +260,9 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 		switch (query.getLibraryMode()) {
 
 		case BY_CONCEPT:
-			Optional<Concept> optConcept = query.getCurrentSelectedConcept();
+			Optional<IdentifiedConcept> optConcept = query.getCurrentSelectedConcept();
 			if ( optConcept.isPresent() ) {
-				Concept concept = (Concept) optConcept.get() ;
+				IdentifiedConcept concept = (IdentifiedConcept) optConcept.get() ;
 				Library library = concept.getLibrary();
 				words = filter.split(SEPARATOR);
 				return getConceptMapArchiveByLibraryFiltered(
@@ -347,9 +347,9 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 		switch (query.getLibraryMode()) {
 
 			case BY_CONCEPT:
-				Optional<Concept> optConcept = query.getCurrentSelectedConcept();
+				Optional<IdentifiedConcept> optConcept = query.getCurrentSelectedConcept();
 				if ( optConcept.isPresent() ) {
-					Concept concept = (Concept)optConcept.get() ;
+					IdentifiedConcept concept = (IdentifiedConcept)optConcept.get() ;
 					Library library = concept.getLibrary() ;
 					String[] words = new String[0];
 					return getConceptMapArchiveByLibraryFiltered(
@@ -425,9 +425,9 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 		switch (query.getLibraryMode()) {
 
 			case BY_CONCEPT:
-				Optional<Concept> optConcept = query.getCurrentSelectedConcept();
+				Optional<IdentifiedConcept> optConcept = query.getCurrentSelectedConcept();
 				if (optConcept.isPresent()) {
-					Concept concept = optConcept.get();
+					IdentifiedConcept concept = optConcept.get();
 					Library library = concept.getLibrary();
 					String[] words = new String[0];
 					count = archiveRepository.countConceptMapArchiveByLibraryFiltered(library, words);
@@ -477,9 +477,9 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 		switch (query.getLibraryMode()) {
 
 		case BY_CONCEPT:
-			Optional<Concept> optConcept = query.getCurrentSelectedConcept();
+			Optional<IdentifiedConcept> optConcept = query.getCurrentSelectedConcept();
 			if (optConcept.isPresent()) {
-				Concept concept = optConcept.get();
+				IdentifiedConcept concept = optConcept.get();
 				Library library = concept.getLibrary();
 				words = filter.split(SEPARATOR);
 				count = archiveRepository.countConceptMapArchiveByLibraryFiltered(library, words);

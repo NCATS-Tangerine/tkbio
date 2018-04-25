@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeoutException;
 
@@ -38,6 +39,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 
+import com.vaadin.client.ui.layout.Margins;
+import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -45,13 +49,16 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 import bio.knowledge.datasource.DataSourceException;
 import bio.knowledge.datasource.wikidata.ConceptDescriptor;
-import bio.knowledge.model.Concept;
+import bio.knowledge.model.AnnotatedConcept;
 import bio.knowledge.model.GeneralStatement;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.PredicateImpl;
 import bio.knowledge.model.RdfUtil;
@@ -86,9 +93,87 @@ public class ConceptDetailsHandler {
 	@Autowired
 	private WikiDataService wikiDataService;
 
-	public VerticalLayout getDetails(Concept selectedConcept) {
+	public VerticalLayout getDetails(IdentifiedConcept selectedConcept) {
+		FormLayout labelsLayout = new FormLayout();
+		labelsLayout.setMargin(false);
+		labelsLayout.setSpacing(false);
+		labelsLayout.setWidthUndefined();
+
+		// set up clique label
+		Label cliqueLabel = new Label();
+		cliqueLabel.setCaption("Clique Id:");
+		cliqueLabel.setWidthUndefined();
+
+		// set up accession label
+		Label accessionLabel = new Label();
+		accessionLabel.setCaption("Accession Id:");
+		accessionLabel.setWidthUndefined();
+
+		// set up name label
+		Label nameLabel = new Label();
+		nameLabel.setCaption("Name:");
+		nameLabel.setWidthUndefined();
 		
+		// set up type label
+		Label typeLabel = new Label();
+		typeLabel.setCaption("Semantic Group:");
+
+		// set up taxon label
+		Label taxonLabel = new Label();
+		taxonLabel.setCaption("Taxon:");
+
+		// set up aliases
+		VerticalLayout aliasesLayout = new VerticalLayout();
+		aliasesLayout.setCaption("Aliases:");
+		aliasesLayout.setWidthUndefined();
+		
+		Panel aliasesContentPanel = new Panel();
+		aliasesContentPanel.setStyleName("aliases-panel");
+		aliasesLayout.addComponent(aliasesContentPanel);
+				
+		VerticalLayout aliasesContent = new VerticalLayout();
+		aliasesContent.setWidthUndefined();
+		aliasesContent.setMargin(new MarginInfo(false, true, false, false));
+		aliasesContentPanel.setContent(aliasesContent);
+		aliasesContentPanel.setWidthUndefined();
+		
+		labelsLayout.addComponents(nameLabel, cliqueLabel, accessionLabel, typeLabel, taxonLabel, aliasesLayout);
+
+		VerticalLayout details = new VerticalLayout();
+		details.setWidthUndefined();
+		details.setStyleName("concept-details-layout");
+		details.addComponent(labelsLayout);
+
+		// return a skeleton layout if the selected concept is null
+		if (selectedConcept == null) {
+			return details;
+		}
+		
+		/**
+		 * Fill in the details layouts with data
+		 */
 		query.setCurrentSelectedConcept(selectedConcept);
+		AnnotatedConcept annotatedConcept = (AnnotatedConcept) selectedConcept;
+
+		// fill in labels
+		cliqueLabel.setValue(annotatedConcept.getCliqueId());
+		accessionLabel.setValue(annotatedConcept.getId());
+		nameLabel.setValue(annotatedConcept.getName());
+		typeLabel.setValue(annotatedConcept.getType().toString());
+		taxonLabel.setValue(annotatedConcept.getTaxon());
+		
+		// fill in aliases
+		Set<String> aliases = annotatedConcept.getAliases();
+		for (String alias : aliases) {
+			Label aliasLabel = new Label(alias);
+			aliasLabel.setWidthUndefined();
+			aliasesContent.addComponent(aliasLabel);
+		}
+		if (aliases.size() <= 10) {
+			aliasesContentPanel.setHeight(12, Unit.EM);
+		} else {
+			aliasesContentPanel.setHeight(25, Unit.EM);
+		}
 		
 		try {
 			// resetting descriptionBuilder
@@ -101,43 +186,6 @@ public class ConceptDetailsHandler {
 		} catch (Exception e) {
 			_logger.error(e.getMessage());
 		}
-
-		// set up the common labels
-		Label cliqueLabel    = new Label();
-		Label accessionLabel = new Label();
-		Label nameLabel      = new Label();
-		Label typeLabel      = new Label();
-		Label aliasesLabel   = new Label();
-
-		cliqueLabel.setCaption("Clique Id:");
-		accessionLabel.setCaption("Accession Id:");
-		nameLabel.setCaption("Name:");
-		typeLabel.setCaption("Semantic Group:");
-		aliasesLabel.setCaption("Aliases:");
-
-		if (selectedConcept != null) {
-			cliqueLabel.setValue(selectedConcept.getClique());
-			accessionLabel.setValue(selectedConcept.getId());
-			nameLabel.setValue(selectedConcept.getName());
-			typeLabel.setValue(selectedConcept.getSemanticGroup().getDescription());
-			aliasesLabel.setContentMode(ContentMode.HTML);
-			aliasesLabel.setValue(String.join("<br/>", selectedConcept.getCrossReferences()));
-		} else {
-			// For some reason, for some concepts, selectedConcept may be
-			// null?
-			accessionLabel.setValue("Not Available?");
-			nameLabel.setValue("Not Available?");
-			typeLabel.setValue("Not Available?");
-			cliqueLabel.setValue("Not Available?");
-			aliasesLabel.setValue("Not Available?");
-		}
-		
-		FormLayout labelsLayout = new FormLayout();
-		labelsLayout.setMargin(false);
-		labelsLayout.setSpacing(false);
-		labelsLayout.setWidth("100%");
-		
-		labelsLayout.addComponents(cliqueLabel, accessionLabel, nameLabel, typeLabel, aliasesLabel);
 		
 		boolean wiki_article_available = 
 				descriptionBuilder != null && 
@@ -184,15 +232,6 @@ public class ConceptDetailsHandler {
 			Component field = sordidDetails.get(byOrder);
 			labelsLayout.addComponent(field);
 		}
-
-		VerticalLayout fieldsLayout = new VerticalLayout();
-		fieldsLayout.setSpacing(true);
-
-		VerticalLayout details = new VerticalLayout();
-		details.setMargin(true);
-
-		details.addComponents(labelsLayout, fieldsLayout);
-
 		return details;
 	}
 
@@ -255,7 +294,7 @@ public class ConceptDetailsHandler {
 	 *            embedded meta-data)
 	 * @return the full Vaadin component to be displayed as the descriptor value
 	 */
-	private Component formatDisplayValue(Concept currentConcept, ConceptDescriptor descriptor, String rawValue) {
+	private Component formatDisplayValue(IdentifiedConcept currentConcept, ConceptDescriptor descriptor, String rawValue) {
 		String fieldId = descriptor.getQualifiedId();
 		Boolean isRetrievable = descriptor.isRetrievable();
 
@@ -344,7 +383,7 @@ public class ConceptDetailsHandler {
 						addToMap.setStyleName("concept-detail-button");
 						
 						addToMap.addClickListener(e -> {
-							Concept object = conceptService.annotate("wd:" + valueObjectId);
+							IdentifiedConcept object = conceptService.annotate("wd:" + valueObjectId);
 							if(object==null) return;
 							
 							// If annotated 'object' concept exists, add it to the concept map!
@@ -352,7 +391,7 @@ public class ConceptDetailsHandler {
 							ui.addNodeToConceptMap(currentConcept);
 							ui.addNodeToConceptMap(object);
 							Predicate relation  = new PredicateImpl(descriptor.getKey());
-							String accId = "wds:"+currentConcept.getClique()+"_"+descriptor.name()+"_"+object.getClique();
+							String accId = "wds:"+currentConcept.getCliqueId()+"_"+descriptor.name()+"_"+object.getCliqueId();
 							Statement statement = new GeneralStatement(accId,currentConcept,relation,object);
 							ui.addEdgeToConceptMap(statement);
 						});
@@ -378,7 +417,7 @@ public class ConceptDetailsHandler {
 		}
 	}
 
-	private void addWikiDataItemToMapFromList(Concept subject, String relation, ComboBox source, Map<String, String> itemMap) {
+	private void addWikiDataItemToMapFromList(IdentifiedConcept subject, String relation, ComboBox source, Map<String, String> itemMap) {
 		
 		String id = (String) source.getValue();
 		if (itemMap.containsKey(id)) {
@@ -387,7 +426,7 @@ public class ConceptDetailsHandler {
 			 * WikiData id's are often clique id's, but perhaps not always... 
 			 * this 'annotate' call may occasionally fail?
 			 */
-			Concept object = conceptService.annotate("wd:" + itemMap.get(id));
+			IdentifiedConcept object = conceptService.annotate("wd:" + itemMap.get(id));
 			
 			if(object==null) return;
 			

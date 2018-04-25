@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -30,25 +31,30 @@ import bio.knowledge.client.api.EvidenceApi;
 import bio.knowledge.client.api.PredicatesApi;
 import bio.knowledge.client.api.StatementsApi;
 import bio.knowledge.client.model.BeaconCliqueIdentifier;
+import bio.knowledge.client.model.BeaconConceptBeaconEntry;
 import bio.knowledge.client.model.BeaconConceptDetail;
 import bio.knowledge.client.model.BeaconConceptWithDetails;
 import bio.knowledge.client.model.BeaconStatementObject;
 import bio.knowledge.client.model.BeaconStatementPredicate;
 import bio.knowledge.client.model.BeaconStatementSubject;
+import bio.knowledge.model.AnnotatedConcept;
+import bio.knowledge.model.AnnotatedConcept.BeaconEntry;
+import bio.knowledge.model.AnnotatedConceptImpl;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.AnnotationImpl;
-import bio.knowledge.model.Concept;
 import bio.knowledge.model.ConceptDetailImpl;
-import bio.knowledge.model.ConceptImpl;
+import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.GeneralStatement;
+import bio.knowledge.model.IdentifiedConcept;
+import bio.knowledge.model.IdentifiedConceptImpl;
 import bio.knowledge.model.OntologyTermImpl;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Predicate.PredicateBeacon;
 import bio.knowledge.model.PredicateImpl;
-import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.Feature;
 import bio.knowledge.model.core.OntologyTerm;
+import bio.knowledge.model.util.Util;
 
 /**
  * 
@@ -68,7 +74,7 @@ import bio.knowledge.model.core.OntologyTerm;
  *
  */
 @Service
-public class KnowledgeBeaconService {
+public class KnowledgeBeaconService implements Util {
 	
 	private Logger _logger = LoggerFactory.getLogger(KnowledgeBeaconService.class);
 	
@@ -285,7 +291,7 @@ public class KnowledgeBeaconService {
 	 *         knowledge sources in the {@code KnowledgeBeaconRegistry} that
 	 *         satisfy a query with the given parameters.
 	 */
-	public CompletableFuture<List<Concept>> getConcepts(String keywords,
+	public CompletableFuture<List<IdentifiedConcept>> getConcepts(String keywords,
 			String semanticGroups,
 			int pageNumber,
 			int pageSize,
@@ -293,69 +299,77 @@ public class KnowledgeBeaconService {
 			String sessionId
 			
 	) {
-		CompletableFuture<List<Concept>> future = CompletableFuture.supplyAsync(new Supplier<List<Concept>>() {
-
-			@Override
-			public List<Concept> get() {
+		CompletableFuture<List<IdentifiedConcept>> future = 
 				
-				// Utility time variable for profiling
-				Instant start = Instant.now();
-				
-				List<Concept> concepts = new ArrayList<Concept>();
-				
-				try {
+			CompletableFuture.supplyAsync(
 					
-					_logger.debug("kbs.getConcepts() - before responses");
-					
-					List<bio.knowledge.client.model.BeaconConcept> responses = getConceptsApi(pageSize).getConcepts(
-							keywords,
-							semanticGroups,
-							pageNumber,
-							pageSize,
-							beacons,
-							sessionId
-					);
-
-					for (bio.knowledge.client.model.BeaconConcept response : responses) {
-						SemanticGroup semgroup;
+				new Supplier<List<IdentifiedConcept>>() {
+	
+					@Override
+					public List<IdentifiedConcept> get() {
+						
+						// Utility time variable for profiling
+						Instant start = Instant.now();
+						
+						List<IdentifiedConcept> concepts = new ArrayList<IdentifiedConcept>();
+						
 						try {
-							semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
-						} catch (IllegalArgumentException ex) {
-							semgroup = null;
+							
+							_logger.debug("kbs.getConcepts() - before responses");
+							
+							List<bio.knowledge.client.model.BeaconConcept> responses = getConceptsApi(pageSize).getConcepts(
+									keywords,
+									semanticGroups,
+									pageNumber,
+									pageSize,
+									beacons,
+									sessionId
+							);
+		
+							for (bio.knowledge.client.model.BeaconConcept response : responses) {
+								
+								ConceptType semgroup;
+								try {
+									String type = response.getType();
+									if (type.contains(":")) {
+										// type might be a string combined from multiple types separated by spaces
+										if (type.contains(" ")) {
+											type = type.split("\\s")[0];
+										}
+										type = type.split(":", 2)[1].toUpperCase();
+									}
+									semgroup = ConceptType.valueOf(type);
+								} catch (IllegalArgumentException ex) {
+									semgroup = null;
+								}
+								
+								IdentifiedConcept concept = new IdentifiedConceptImpl(
+										response.getClique(),
+										response.getName(),
+										semgroup,
+										response.getTaxon()
+								);
+								
+								concepts.add(concept);
+							}
+		
+							_logger.debug("Concept retrieval successfully completed?");
+							
+						} catch (Exception e) {
+							_logger.error("getConcepts() ERROR: "+e.getMessage());
 						}
 						
-						Concept concept = new ConceptImpl(
-								response.getClique(),
-								response.getId(),
-								semgroup,
-								response.getName()
-						);
+						Instant end = Instant.now();
 						
-						Set<String> xrefs = concept.getCrossReferences() ;
-						xrefs.addAll(response.getAliases());
+						// Time of exit either after success or timeout failure
+						long ms = start.until(end, ChronoUnit.MILLIS);
+						_logger.error("getConcepts() ApiClient data processing duration was: "+new Long(ms)+" milliseconds.");
 						
-						concept.setSynonyms(String.join(" ", response.getSynonyms()));
-						concept.setDescription(response.getDefinition());
-						concept.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
-						concepts.add(concept);
+						return concepts;
 					}
-
-					_logger.debug("Concept retrieval successfully completed?");
 					
-				} catch (Exception e) {
-					_logger.error("getConcepts() ERROR: "+e.getMessage());
-				}
-				
-				Instant end = Instant.now();
-				
-				// Time of exit either after success or timeout failure
-				long ms = start.until(end, ChronoUnit.MILLIS);
-				_logger.error("getConcepts() ApiClient data processing duration was: "+new Long(ms)+" milliseconds.");
-				
-				return concepts;
-			}
-			
-		});
+				});
+		
 		return future;
 	}
 	
@@ -404,67 +418,86 @@ public class KnowledgeBeaconService {
 	 * @param sessionId
 	 * @return
 	 */
-	public CompletableFuture<List<Concept>> getConceptDetails( 
+	public CompletableFuture<AnnotatedConcept> getConceptWithDetails( 
 			String cliqueId,
 			List<String> beacons,
 			String sessionId
 		) {
-		CompletableFuture<List<Concept>> future = CompletableFuture.supplyAsync(new Supplier<List<Concept>>() {
+		CompletableFuture<AnnotatedConcept> future = 
+				CompletableFuture.supplyAsync(new Supplier<AnnotatedConcept>() {
 
 			@Override
-			public List<Concept> get() {
-				List<Concept> concepts = new ArrayList<Concept>();
+			public AnnotatedConcept get() {
+				
+				AnnotatedConceptImpl concept = null;
 				
 				try {
-					List<BeaconConceptWithDetails> responses = 
+					BeaconConceptWithDetails response = 
 							getConceptsApi().getConceptDetails( cliqueId, beacons, sessionId );
-					
-					for (BeaconConceptWithDetails response : responses) {
-						
-						SemanticGroup semgroup;
-						try {
-							
-							semgroup = SemanticGroup.valueOf(response.getSemanticGroup());
-							
-						} catch (IllegalArgumentException e) {
-							semgroup = null;
-						}
-						
-						Concept concept = new ConceptImpl(
-								response.getClique(),
-								response.getClique(),
-								semgroup,
-								response.getName()
-						);
 
-						Set<String> xrefs = concept.getCrossReferences() ;
-						xrefs.addAll(response.getAliases());
-						
-						concept.setSynonyms(String.join(" ", response.getSynonyms()));
-						concept.setDescription(response.getDefinition());
-						
-						// Harvest beacon concept details here?
-						List<BeaconConceptDetail> details = response.getDetails() ;
-						Set<Feature> conceptDetails = concept.getFeatures();
-						for(BeaconConceptDetail entry : details) {
-							Feature detail = new ConceptDetailImpl();
-							OntologyTerm tag = resolveTag(entry.getTag());
-							detail.setTag(tag);
-							detail.setValue(entry.getValue());
-							conceptDetails.add(detail);
+					ConceptType semgroup;
+					try {
+						String type = response.getType();
+						if (type.contains(":")) {
+							// type might be a string combined from multiple types separated by spaces
+							if (type.contains(" ")) {
+								type = type.split("\\s")[0];
+							}
+							type = type.split(":", 2)[1].toUpperCase();
 						}
-						
-						concept.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
-						concepts.add(concept);
+						semgroup = ConceptType.valueOf(type);
+
+					} catch (IllegalArgumentException e) {
+						semgroup = null;
 					}
-					
-					return concepts;
-					
-				} catch (Exception e) {
 
+					concept = new AnnotatedConceptImpl(
+							response.getClique(),
+							response.getName(),
+							semgroup,
+							response.getTaxon()
+							);
+
+					Set<String> xrefs = concept.getAliases() ;
+					xrefs.addAll(response.getAliases());
+					
+					List<BeaconConceptBeaconEntry> beaconEntries = response.getEntries() ;
+					List<BeaconEntry> conceptBeaconEntries = concept.getEntries();
+					
+					for(BeaconConceptBeaconEntry entry : beaconEntries) {
+
+						String beacon = entry.getBeacon();
+						String id = entry.getId();
+						
+						BeaconEntry beaconEntry = 
+								concept.new ConceptBeaconEntry(beacon,id);
+								
+						List<String> synonyms = entry.getSynonyms();
+						beaconEntry.getSynonyms().addAll(synonyms);
+						
+						String definition = entry.getDefinition();
+						beaconEntry.setDefinition(definition);
+						
+						List<BeaconConceptDetail> beaconDetails = entry.getDetails();
+						Set<Feature> conceptDetails = beaconEntry.getDetails();
+						
+						for(BeaconConceptDetail detail : beaconDetails) {
+							Feature feature = new ConceptDetailImpl();
+							OntologyTerm tag = resolveTag(detail.getTag());
+							feature.setTag(tag);
+							feature.setValue(detail.getValue());
+							conceptDetails.add(feature);
+						}
+						
+						conceptBeaconEntries.add(beaconEntry);
+					}
+
+
+				} catch (Exception e) {
+					_logger.error("kbs.getConceptDetails() Exception: "+e.getMessage());
 				}
 				
-				return concepts;
+				return concept;
 			}
 			
 		});
@@ -476,15 +509,15 @@ public class KnowledgeBeaconService {
 	 * 
 	 * @return
 	 */
-	public CompletableFuture<List<Predicate>> getPredicates() {
+	public CompletableFuture<Set<Predicate>> getPredicates() {
 		
-		CompletableFuture<List<Predicate>> future = 
-				CompletableFuture.supplyAsync(new Supplier<List<Predicate>>() {
+		CompletableFuture<Set<Predicate>> future = 
+				CompletableFuture.supplyAsync(new Supplier<Set<Predicate>>() {
 
 			@Override
-			public List<Predicate> get() {
+			public Set<Predicate> get() {
 				
-				List<Predicate> predicates = new ArrayList<Predicate>();
+				Set<Predicate> predicates = new TreeSet<Predicate>();
 				
 				try {
 					List<bio.knowledge.client.model.BeaconPredicate> responses = 
@@ -525,7 +558,7 @@ public class KnowledgeBeaconService {
 	
 	public CompletableFuture<List<Statement>> getStatements(
 			String sourceClique,
-			Predicate relation,
+			Set<Predicate> relations,
 			String targetClique,
 			String keywords,
 			String semgroups,
@@ -543,7 +576,7 @@ public class KnowledgeBeaconService {
 						"kbs.getStatements(): processing cliqueId: "+sourceClique+
 						", keywords: "+keywords+
 						", semgroups: "+semgroups+
-						", relation: "+relation
+						", relation: "+relations
 				);
 				
 				// Utility time variable for profiling
@@ -561,14 +594,16 @@ public class KnowledgeBeaconService {
 					 * require recoding of the code stack above this point.
 					 */
 					String relationIds = "" ;
-					if(relation!=null) {
-						List<PredicateBeacon> beacons = relation.getBeacons();
-						if(beacons!=null)
+					if(!nullOrEmpty(relations)) {
+						for(Predicate p : relations) {
+						List<PredicateBeacon> beacons = p.getBeacons();
+						if(!nullOrEmpty(beacons))
 							for(PredicateBeacon beacon : beacons) {
 								if(!relationIds.isEmpty())
 									relationIds += " ";
 								relationIds += beacon.getId();
 							}
+						}
 					}
 					
 					_logger.debug("kbs.getStatements() - before responses");
@@ -596,20 +631,23 @@ public class KnowledgeBeaconService {
 						BeaconStatementPredicate statementsPredicate = response.getPredicate();
 						BeaconStatementObject statementsObject = response.getObject();
 
-						ConceptImpl subject = new ConceptImpl(
+						IdentifiedConceptImpl subject = new IdentifiedConceptImpl(
 								statementsSubject.getClique(), 
-								statementsSubject.getId(), 
-								statementsSubject.getSemanticGroup(), 
-								statementsSubject.getName()
+								statementsSubject.getId(),
+								statementsSubject.getName(), 
+								statementsSubject.getType(), 
+								"" // TODO - sort out statementsSubject.getTaxon() or get from Clique
 						);
+						subject.setId(sessionId);
 
 						PredicateImpl predicate = new PredicateImpl(statementsPredicate.getName());
 
-						ConceptImpl object = new ConceptImpl(
+						IdentifiedConceptImpl object = new IdentifiedConceptImpl(
 								statementsObject.getClique(), 
 								statementsObject.getId(), 
-								statementsObject.getSemanticGroup(), 
-								statementsObject.getName()
+								statementsObject.getName(),
+								statementsObject.getType(), 
+								"" // TODO - sort out statementsObject.getTaxon() or get from Clique
 						);
 						
 						Statement statement = new GeneralStatement(id, subject, predicate, object);

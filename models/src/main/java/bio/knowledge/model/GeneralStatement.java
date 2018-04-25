@@ -51,9 +51,9 @@ public class GeneralStatement extends AbstractStatement {
 	   
 	public GeneralStatement(
     		String accessionId,
-    		Concept subject,
+    		IdentifiedConcept subject,
     		Predicate predicate,
-    		Concept object
+    		IdentifiedConcept object
     ) {
     	super(accessionId, subject, predicate, object) ;
     }

@@ -113,7 +113,7 @@ public class ViewUtil {
 		// We want to use our own custom ButtonRenderer for every column except
 		// for these, since it messes up their CSS formatting. So we use
 		// Vaadin's ButtonRenderer for these other columns.
-		if (!columnId.equals("library") && !columnId.equals("parents") && !columnId.equals("evidence")) {
+		if (!columnId.equals("library") && !columnId.equals("parents") && !columnId.equals("evidence") && !columnId.equals("details")) {
 			renderer = new ButtonRenderer(listener);
 			boolean concepts_or_statements_view = viewname.equals(ViewName.CONCEPTS_VIEW) || viewname.equals(ViewName.RELATIONS_VIEW);
 			if (searchPhrase != null && concepts_or_statements_view) {

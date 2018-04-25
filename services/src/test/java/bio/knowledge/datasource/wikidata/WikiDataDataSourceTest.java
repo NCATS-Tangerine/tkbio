@@ -54,7 +54,7 @@ import bio.knowledge.datasource.DataSource;
 import bio.knowledge.datasource.DataSourceTestUtil;
 import bio.knowledge.datasource.SimpleDataService;
 
-import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
 
@@ -108,11 +108,11 @@ public class WikiDataDataSourceTest  implements DataSourceTestUtil {
 	public void tearDown() throws Exception {
 	}
 
-	private static Set<SemanticGroup> dstypes = new HashSet<SemanticGroup>();
+	private static Set<ConceptType> dstypes = new HashSet<ConceptType>();
 	
 	static {
-		dstypes.add(SemanticGroup.GENE) ;
-		dstypes.add(SemanticGroup.ANY) ;
+		dstypes.add(ConceptType.GENE) ;
+		dstypes.add(ConceptType.ANY) ;
 	}
 
 	@Test 

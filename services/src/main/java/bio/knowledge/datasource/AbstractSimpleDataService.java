@@ -28,7 +28,7 @@ package bio.knowledge.datasource;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import bio.knowledge.model.SemanticGroup;
+import bio.knowledge.model.ConceptType;
 
 /**
  * @author Richard
@@ -43,7 +43,7 @@ public abstract class AbstractSimpleDataService<T>
 	protected AbstractSimpleDataService( 
 			DataSource dataSource, 
 			String serviceId,
-			SemanticGroup targetConceptType, 
+			ConceptType targetConceptType, 
 			String name 
 	) {
 		super( dataSource, serviceId, targetConceptType, name );
@@ -55,7 +55,7 @@ public abstract class AbstractSimpleDataService<T>
 	protected AbstractSimpleDataService( 
 			DataSource dataSource, 
 			String serviceId,
-			SemanticGroup targetConceptType
+			ConceptType targetConceptType
 	) {
 		this( dataSource, serviceId, targetConceptType, "" );
 	}
