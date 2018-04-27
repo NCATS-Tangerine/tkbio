@@ -66,17 +66,20 @@ public interface KBQuery {
 	 * 
 	 * Generates a unique String session identifier user and activates it in the current session.
 	 */
+	@Deprecated
 	public void generateUserSessionId();
 
 	/**
 	 * 
 	 * @return String session identifier
 	 */
+	@Deprecated
 	public String getUserSessionId();
 
 	/**
 	 * 
 	 */
+	@Deprecated
 	public void clearUserSessionId();
 	
 
@@ -84,6 +87,7 @@ public interface KBQuery {
 	 * 
 	 * @return true if a session identifier is set; false otherwise
 	 */
+	@Deprecated
 	public boolean hasSessionId();
 
 	/**
@@ -119,7 +123,19 @@ public interface KBQuery {
 	 * @return user's current query text
 	 */
 	public String getCurrentQueryText() ;
-
+	
+	/**
+	 * 
+	 * @return current query id
+	 */
+	public String getCurrentQueryId();
+	
+	/**
+	 * Sets the current query id. This can change in the middle of a TKBio session by a user who browses different queries they've created
+	 * @return
+	 */
+	public void setCurrentQueryId(String queryId);
+	
 	/**
 	 * @param matchById is true if matching a CURIE; false if simple keyword search
 	 */
@@ -383,7 +399,7 @@ public interface KBQuery {
 
 	public String currentConceptId=null;
 
-	public String getCurrentQueryConceptId();
+	public String getCurrentConceptId();
 
 	public void setSimpleTextFilter(String filterText);
 	public String getSimpleTextFilter();

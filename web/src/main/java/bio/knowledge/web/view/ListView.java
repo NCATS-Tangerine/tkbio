@@ -353,7 +353,7 @@ public class ListView extends BaseView implements Util {
 		}
 		
 		private int countKnowledgeBeacons() {
-			List<String> beacons = query.getCustomBeacons();
+			List<Integer> beacons = query.getCustomBeacons();
 			return kbService.getKnowledgeBeaconCount(beacons);
 		}
 		
@@ -2169,9 +2169,8 @@ public class ListView extends BaseView implements Util {
 	}
 
 	private CompletableFuture<AnnotatedConcept> getConceptWithDetails(String cliqueId) {
-		List<String> beacons = query.getCustomBeacons();
-		String sessionId = query.getUserSessionId();
-		CompletableFuture<AnnotatedConcept> future = kbService.getConceptWithDetails(cliqueId,beacons,sessionId);
+		List<Integer> beacons = query.getCustomBeacons();
+		CompletableFuture<AnnotatedConcept> future = kbService.getConceptWithDetails(cliqueId,beacons);
 		return future;
 	}
 

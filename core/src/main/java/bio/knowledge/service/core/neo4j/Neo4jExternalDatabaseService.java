@@ -150,7 +150,7 @@ public class Neo4jExternalDatabaseService
 	 */
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Page<ExternalDatabase> findAll(Pageable pageable) {
+	public Page<ExternalDatabase> findAll(Pageable pageable, String queryId) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 

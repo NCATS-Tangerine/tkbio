@@ -129,7 +129,7 @@ public class Neo4jIdentifierEntityService
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Page<IdentifiedEntity> findAll(Pageable pageable) {
+	public Page<IdentifiedEntity> findAll(Pageable pageable, String queryId) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 

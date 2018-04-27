@@ -1386,11 +1386,10 @@ public class DesktopUI extends UI implements MessageService, Util {
 			// Setting manual layout while loading
 			desktopView.getCmLayoutSelect().setValue(MANUAL_CM_LAYOUT);
 
-			List<String> beacons = query.getCustomBeacons();
-			String sessionId = query.getUserSessionId();
+			List<Integer> beacons = query.getCustomBeacons();
 			
 			CompletableFuture<AnnotatedConcept> future = 
-					kbService.getConceptWithDetails(conceptId,beacons,sessionId);
+					kbService.getConceptWithDetails(conceptId, beacons);
 			
 			try {
 				AnnotatedConcept concept = future.get(

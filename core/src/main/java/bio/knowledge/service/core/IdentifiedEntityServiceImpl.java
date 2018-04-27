@@ -101,7 +101,7 @@ public abstract class IdentifiedEntityServiceImpl<T extends IdentifiedEntity>
  									new Sort(direction, sorter.getType())) ;
  		Page<T> page;
  		if (filter.isEmpty()){
-			page = this.findAll(pageable);
+			page = this.findAll(pageable, "");
 		} else {
 			page = this.findByNameLike(filter, pageable) ;
 		}
@@ -126,7 +126,7 @@ public abstract class IdentifiedEntityServiceImpl<T extends IdentifiedEntity>
  	 */
  	public abstract Page<T> findByNameLike(String filter, Pageable pageable);
  	
- 	public abstract Page<T> findAll(Pageable pageable);
+ 	public abstract Page<T> findAll(Pageable pageable, String queryId);
  	
 	private ListTableEntryCounter entryCounter = () -> countEntries() ;
 			

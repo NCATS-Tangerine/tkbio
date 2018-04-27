@@ -341,7 +341,7 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 	 * This will return all ConceptMapArchive.
 	 */
 	@Override
-	public Page<ConceptMapArchive> findAll(Pageable pageable) {
+	public Page<ConceptMapArchive> findAll(Pageable pageable, String queryId) {
 		List<ConceptMapArchive> result = new ArrayList<>();
 
 		switch (query.getLibraryMode()) {

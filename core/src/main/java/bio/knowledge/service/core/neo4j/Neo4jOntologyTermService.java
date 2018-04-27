@@ -147,7 +147,7 @@ public class Neo4jOntologyTermService
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Page<OntologyTerm> findAll(Pageable pageable) {
+	public Page<OntologyTerm> findAll(Pageable pageable, String queryId) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	

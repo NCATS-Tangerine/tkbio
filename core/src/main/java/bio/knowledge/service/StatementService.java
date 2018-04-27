@@ -105,7 +105,7 @@ public class StatementService
 		 * We are not using the {@code filter} field, since here it refers to the main keywords search text
 		 */
 		String extraFilter   = query.getSimpleTextFilter();
-		String sourceClique  = query.getCurrentQueryConceptId();
+		String sourceClique  = query.getCurrentConceptId();
 		
 		// TODO: implement the targetClique specification in TKBIO
 		String targetClique  = "";
@@ -135,7 +135,7 @@ public class StatementService
 		}
 
 		List<Integer> beacons = query.getCustomBeacons();
-		String sessionId = query.getUserSessionId();
+		String queryId = query.getCurrentQueryId();
 		
 		CompletableFuture<List<Statement>> future = 
 				kbService.getStatements( sourceClique, predicateFilter, targetClique, extraFilter, semgroups, pageIndex, pageSize,beacons,queryId);
@@ -259,7 +259,7 @@ public class StatementService
 	 */
 	@Override
 	@SuppressWarnings({})
-	public Page<Statement> findAll(Pageable pageable) {
+	public Page<Statement> findAll(Pageable pageable, String queryId) {
 		switch (query.getRelationSearchMode()) {
 			case PMID:
 				return findByPMID("", pageable);

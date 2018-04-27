@@ -56,6 +56,8 @@ import bio.knowledge.model.Statement;
 public class KBQueryImpl implements KBQuery {
 
 	private String userId = "";
+	private String queryId = "";
+	private String relationsTextFilter;
 	
 	/*
 	 * (non-Javadoc)
@@ -75,12 +77,14 @@ public class KBQueryImpl implements KBQuery {
 		this.userId = userId;
 	}
 
+	@Deprecated
 	private String sessionId = "";
 	
 	/*
 	 * (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setUserSessionId(java.lang.String)
 	 */
+	@Deprecated
 	@Override
 	public void generateUserSessionId() {
 		this.sessionId = RandomStringUtils.randomAlphanumeric(20);
@@ -90,6 +94,7 @@ public class KBQueryImpl implements KBQuery {
 	 * (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#getUserSessionId()
 	 */
+	@Deprecated
 	@Override
 	public String getUserSessionId() {
 		return sessionId;
@@ -99,6 +104,7 @@ public class KBQueryImpl implements KBQuery {
 	 * (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#clearUserSessionId()
 	 */
+	@Deprecated
 	@Override
 	public void clearUserSessionId() {
 		sessionId = "";
@@ -109,6 +115,7 @@ public class KBQueryImpl implements KBQuery {
 	 * (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#hasSessionId()
 	 */
+	@Deprecated
 	@Override
 	public boolean hasSessionId() {
 		return !sessionId.isEmpty();
@@ -199,7 +206,7 @@ public class KBQueryImpl implements KBQuery {
 		this.currentQueryConceptId = identifier;
 	}
 	private String currentQueryConceptId = null;
-	@Override public String getCurrentQueryConceptId() {
+	@Override public String getCurrentConceptId() {
 		return this.currentQueryConceptId;
 	}
 	
@@ -580,7 +587,6 @@ public class KBQueryImpl implements KBQuery {
 		this.tempY = y;
 	}
 
-	private String relationsTextFilter;
 	@Override
 	public void setSimpleTextFilter(String filterText) {
 		this.relationsTextFilter = filterText;
@@ -589,6 +595,16 @@ public class KBQueryImpl implements KBQuery {
 	@Override
 	public String getSimpleTextFilter() {
 		return this.relationsTextFilter;
+	}
+	
+	@Override
+	public String getCurrentQueryId() {
+		return queryId;
+	}
+	
+	@Override
+	public void setCurrentQueryId(String queryId) {
+		this.queryId = queryId;
 	}
 
 }

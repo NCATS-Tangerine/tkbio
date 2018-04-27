@@ -117,10 +117,10 @@ public class ConceptService
 		}
 		
 		List<Integer> beacons = query.getCustomBeacons();
-		String sessionId = query.getUserSessionId();
+		String queryId = query.getCurrentQueryId();
 		
     	CompletableFuture<List<IdentifiedConcept>> future =
-    			kbService.getConcepts(filter, semgroups, pageIndex, pageSize,beacons,sessionId);
+    			kbService.getConcepts(filter, semgroups, pageIndex, pageSize,beacons,queryId);
     	
     	try {
 			return future.get(
@@ -200,9 +200,29 @@ public class ConceptService
 		_logger.trace("Inside ConceptService.findByNameLike()");
 
 		List<Integer> beacons = query.getCustomBeacons();
-		String sessionId = query.getUserSessionId();
-		// TODO: is it ok to have no context id or do we need query id over session id?
-		return findAllFiltered(filter,pageable,beacons,sessionId);
+		String queryId = query.getCurrentQueryId();
+		return findAllFiltered(filter,pageable,beacons,queryId);
+	}
+
+	/* (non-Javadoc)
+	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#findAll(org.springframework.data.domain.Pageable)
+	 */
+	/* (non-Javadoc)
+	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#findAll(org.springframework.data.domain.Pageable)
+	 */
+	@Override
+	public Page<IdentifiedConcept> findAll(Pageable pageable, String queryId) {
+		_logger.trace("Inside ConceptService.findAll()");
+		/*
+		 *  "findAll()" for the initial concept search is not really "findAll" of all concepts
+		 *  but rather, a search on the currently active concept, thus I'll constrain the search
+		 *  to the currently known currentQueryString; The problem here is how to perform the 
+		 *  secondary text filtering on the resulting table of data?
+		 */
+
+		List<Integer> beacons = query.getCustomBeacons();
+		
+		return findAllFiltered("", pageable, beacons, queryId);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -317,27 +337,6 @@ public class ConceptService
 		}
 		
 		return (Page<IdentifiedConcept>) (Page) new PageImpl(new ArrayList<IdentifiedConcept>());
-	}
-
-	/* (non-Javadoc)
-	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#findAll(org.springframework.data.domain.Pageable)
-	 */
-	/* (non-Javadoc)
-	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#findAll(org.springframework.data.domain.Pageable)
-	 */
-	@Override
-	public Page<IdentifiedConcept> findAll(Pageable pageable) {
-		_logger.trace("Inside ConceptService.findAll()");
-		/*
-		 *  "findAll()" for the initial concept search is not really "findAll" of all concepts
-		 *  but rather, a search on the currently active concept, thus I'll constrain the search
-		 *  to the currently known currentQueryString; The problem here is how to perform the 
-		 *  secondary text filtering on the resulting table of data?
-		 */
-
-		List<Integer> beacons = query.getCustomBeacons();
-		
-		return findAllFiltered("",pageable,beacons);
 	}
 	
 	/* (non-Javadoc)
@@ -472,8 +471,6 @@ public class ConceptService
 	 */
 	public AnnotatedConcept findByCliqueId( String cliqueId, List<Integer> beacons ) {
 		
-		String sessionId = query.getUserSessionId();
-
     	CompletableFuture<AnnotatedConcept> future = 
     			kbService.getConceptWithDetails(cliqueId,beacons);
    
@@ -588,8 +585,6 @@ public class ConceptService
 	 */
 	public Optional<IdentifiedConcept> findByIdentifier( String identifier ) {
 		
-		String sessionId = query.getUserSessionId();
-
     	CompletableFuture<String> future = 
     			kbService.findByIdentifier(identifier) ;
     	

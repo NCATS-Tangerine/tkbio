@@ -18,7 +18,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import bio.knowledge.client.model.BeaconMetadata;
+import bio.knowledge.client.model.BeaconKnowledgeBeacon;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
@@ -29,7 +29,7 @@ public class KnowledgeBeaconWindow extends Window {
 	private static final long serialVersionUID = -3216657180755749441L;
 	
 	private final KnowledgeBeaconRegistry kbRegistry;
-	private List<BeaconMetadata> defaultBeacons;
+	private List<BeaconKnowledgeBeacon> defaultBeacons;
 
 	private OptionGroup optionGroup;
 
@@ -104,16 +104,14 @@ public class KnowledgeBeaconWindow extends Window {
 		
 		optionGroup.addValueChangeListener(event -> {
 			
-			@SuppressWarnings("unchecked")
-			Collection<BeaconMetadata> selected = 
-					(Collection<BeaconMetadata>) event.getProperty().getValue();
+			Collection<BeaconKnowledgeBeacon> selected = 
+					((Collection<BeaconKnowledgeBeacon>) event.getProperty().getValue());
 			
-			List<String> beaconIds = new ArrayList<String>();
+			List<Integer> beaconIds = new ArrayList<Integer>();
 			beaconIds.addAll(
 					selected.stream().map(
-							beacon -> beacon.getId()
-						).collect(Collectors.toList())
-			);
+							beacon -> beacon.getBeacon()
+						).collect(Collectors.toList()));
 			
 			query.setCustomBeacons(beaconIds);
 			
@@ -192,17 +190,17 @@ public class KnowledgeBeaconWindow extends Window {
 		return flayout;
 	}
 	
-	private void refreshOptionGroup(List<String> customBeacons) {
+	private void refreshOptionGroup(List<Integer> customBeacons) {
 		
 		optionGroup.removeAllItems();
 		optionGroup.setMultiSelect(true);
 		
-		for (BeaconMetadata kb : defaultBeacons) {
+		for (BeaconKnowledgeBeacon kb : defaultBeacons) {
 			
 			optionGroup.addItem(kb);
 			optionGroup.setItemCaption(kb, kb.getName() + " - " + kb.getUrl());
 			
-			if( customBeacons.isEmpty() || customBeacons.contains(kb.getId())) 
+			if( customBeacons.isEmpty() || customBeacons.contains(kb.getBeacon())) 
 				optionGroup.select(kb);
 		}
 	}

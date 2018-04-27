@@ -36,6 +36,7 @@ import bio.knowledge.client.model.BeaconStatementObject;
 import bio.knowledge.client.model.BeaconStatementPredicate;
 import bio.knowledge.client.model.BeaconPredicates;
 import bio.knowledge.client.model.BeaconStatementSubject;
+import bio.knowledge.client.model.BeaconStatementsQuery;
 import bio.knowledge.client.model.BeaconPredicatesByBeacon;
 import bio.knowledge.client.model.BeaconStatement;
 import bio.knowledge.model.AnnotatedConcept;
@@ -271,6 +272,18 @@ public class KnowledgeBeaconService implements Util {
 
 	private String getBeaconNameFromId(Integer id) {
 		return getBeaconIdMap().get(id);
+	}
+	
+	
+	public BeaconConceptsQuery postConceptsQuery(String keywords, List<String> types, List<Integer> beacons) {
+		throw new java.lang.UnsupportedOperationException("Not supported yet.");
+//		try {
+//			return this.conceptsApi.postConceptsQuery(keywords, types, beacons);
+//		} catch (ApiException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return null;
+//		}
 	}
 
 	/**
@@ -556,15 +569,16 @@ public class KnowledgeBeaconService implements Util {
 		
 		return future;
 	}
-	
-	public BeaconConceptsQuery postConceptsQuery(String keywords, List<String> types, List<Integer> beacons) {
-		try {
-			return this.conceptsApi.postConceptsQuery(keywords, types, beacons);
-		} catch (ApiException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+
+	public BeaconStatementsQuery postStatementsQuery(String source, List<String> relations, String target, String keywords, List<String> types, List<Integer> beacons) {
+		throw new java.lang.UnsupportedOperationException("Not supported yet.");
+//		try {
+//			return this.statementsApi.postStatementsQuery(source, relations, target, keywords, types, beacons);
+//		} catch (ApiException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return null;
+//		}
 	}
 	
 	public CompletableFuture<List<Statement>> getStatements(
