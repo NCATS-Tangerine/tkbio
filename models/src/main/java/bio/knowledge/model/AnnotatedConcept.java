@@ -19,7 +19,7 @@ public interface AnnotatedConcept extends IdentifiedConcept, BeaconResponse {
 		 * 
 		 * @return
 		 */
-		String getBeacon() ;
+		Integer getBeacon() ;
 		
 		/**
 		 * 

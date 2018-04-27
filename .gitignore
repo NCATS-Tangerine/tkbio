@@ -27,3 +27,4 @@ knowledge-sources.csv
 # Temporary files
 *~
 /.metadata/
+api/client/.settings/

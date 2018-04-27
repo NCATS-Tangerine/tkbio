@@ -4,7 +4,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **String** | beacon ID  |  [optional]
+**beacon** | **Integer** | aggregator assigned beacon index identifier  |  [optional]
 **name** | **String** | beacon name  |  [optional]
 **url** | **String** | URL used to execute API calls on the beacon  |  [optional]
 **description** | **String** | beacon description  |  [optional]
