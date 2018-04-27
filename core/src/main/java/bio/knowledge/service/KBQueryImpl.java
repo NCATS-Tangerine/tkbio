@@ -82,7 +82,7 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#setUserSessionId(java.lang.String)
 	 */
 	@Override
-	public void setUserSessionId() {
+	public void generateUserSessionId() {
 		this.sessionId = RandomStringUtils.randomAlphanumeric(20);
 	}
 
@@ -114,14 +114,14 @@ public class KBQueryImpl implements KBQuery {
 		return !sessionId.isEmpty();
 	}
 
-	private List<String> customBeacons = new ArrayList<String>();
+	private List<Integer> customBeacons = new ArrayList<Integer>();
 	
 	/*
 	 * (non-Javadoc)
 	 * @see bio.knowledge.service.KBQuery#setCustomBeacons(java.util.List)
 	 */
 	@Override
-	public void setCustomBeacons(List<String> customBeacons){ 
+	public void setCustomBeacons(List<Integer> customBeacons){ 
 		this.customBeacons = customBeacons;
 	}
 	
@@ -130,7 +130,7 @@ public class KBQueryImpl implements KBQuery {
 	 * @see bio.knowledge.service.KBQuery#getCustomBeacons()
 	 */
 	@Override
-	public List<String>  getCustomBeacons(){ 
+	public List<Integer>  getCustomBeacons(){ 
 		return customBeacons;
 	}
 	

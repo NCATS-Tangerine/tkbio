@@ -8,7 +8,7 @@ public interface Predicate extends IdentifiedEntity {
 
 	public interface PredicateBeacon {
 		
-		public String getBeacon();
+		public Integer getBeacon();
 		
 		public String getId();
 		

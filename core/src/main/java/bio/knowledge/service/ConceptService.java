@@ -116,7 +116,7 @@ public class ConceptService
 			semgroups = semgroups.trim();
 		}
 		
-		List<String> beacons = query.getCustomBeacons();
+		List<Integer> beacons = query.getCustomBeacons();
 		String sessionId = query.getUserSessionId();
 		
     	CompletableFuture<List<IdentifiedConcept>> future =
@@ -199,9 +199,9 @@ public class ConceptService
 	public Page<IdentifiedConcept> findByNameLike(String filter, Pageable pageable) {
 		_logger.trace("Inside ConceptService.findByNameLike()");
 
-		List<String> beacons = query.getCustomBeacons();
+		List<Integer> beacons = query.getCustomBeacons();
 		String sessionId = query.getUserSessionId();
-		
+		// TODO: is it ok to have no context id or do we need query id over session id?
 		return findAllFiltered(filter,pageable,beacons,sessionId);
 	}
 	
@@ -210,8 +210,8 @@ public class ConceptService
 	private Page<IdentifiedConcept> findAllFiltered(
 			String filter, 
 			Pageable pageable,
-			List<String> beacons,
-			String sessionId
+			List<Integer> beacons,
+			String queryId
 		) {
 		
 		CompletableFuture<List<IdentifiedConcept>> future = 
@@ -221,7 +221,7 @@ public class ConceptService
 						pageable.getPageNumber(),
 						pageable.getPageSize(),
 						beacons,
-						sessionId
+						queryId
 				);
 		
 		try {
@@ -335,10 +335,9 @@ public class ConceptService
 		 *  secondary text filtering on the resulting table of data?
 		 */
 
-		List<String> beacons = query.getCustomBeacons();
-		String sessionId = query.getUserSessionId();
+		List<Integer> beacons = query.getCustomBeacons();
 		
-		return findAllFiltered("",pageable,beacons,sessionId);
+		return findAllFiltered("",pageable,beacons);
 	}
 	
 	/* (non-Javadoc)
@@ -471,12 +470,12 @@ public class ConceptService
 	 * @parem list of beacons to search against (default: empty list triggers search against all known beacons)
 	 * @return
 	 */
-	public AnnotatedConcept findByCliqueId( String cliqueId, List<String> beacons ) {
+	public AnnotatedConcept findByCliqueId( String cliqueId, List<Integer> beacons ) {
 		
 		String sessionId = query.getUserSessionId();
 
     	CompletableFuture<AnnotatedConcept> future = 
-    			kbService.getConceptWithDetails(cliqueId,beacons,sessionId);
+    			kbService.getConceptWithDetails(cliqueId,beacons);
    
     	try {
     		
@@ -562,7 +561,7 @@ public class ConceptService
 	 * @return Concept found
 	 */
 	public IdentifiedConcept findByCliqueId( String cliqueId ) {
-		List<String> beacons = query.getCustomBeacons();
+		List<Integer> beacons = query.getCustomBeacons();
 		return findByCliqueId( cliqueId, beacons ) ;
 		
 	}
@@ -592,7 +591,7 @@ public class ConceptService
 		String sessionId = query.getUserSessionId();
 
     	CompletableFuture<String> future = 
-    			kbService.findByIdentifier(identifier,sessionId) ;
+    			kbService.findByIdentifier(identifier) ;
     	
     	IdentifiedConcept concept = null;
     	

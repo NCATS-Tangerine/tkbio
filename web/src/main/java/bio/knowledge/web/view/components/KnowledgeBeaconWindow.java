@@ -83,7 +83,7 @@ public class KnowledgeBeaconWindow extends Window {
 		recordLogsRadioButton.addValueChangeListener(event -> {
 			if (recordLogsRadioButton.isChecked()) {
 				viewLogs.setEnabled(true);
-				query.setUserSessionId();
+				query.generateUserSessionId();
 			} else {
 				viewLogs.setEnabled(false);
 				query.clearUserSessionId();

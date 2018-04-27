@@ -66,7 +66,7 @@ public interface KBQuery {
 	 * 
 	 * Generates a unique String session identifier user and activates it in the current session.
 	 */
-	public void setUserSessionId();
+	public void generateUserSessionId();
 
 	/**
 	 * 
@@ -90,13 +90,13 @@ public interface KBQuery {
 	 * 
 	 * @param customBeacons
 	 */
-	void setCustomBeacons(List<String> customBeacons);
+	void setCustomBeacons(List<Integer> customBeacons);
 
 	/**
 	 * 
 	 * @return
 	 */
-	List<String> getCustomBeacons();
+	List<Integer> getCustomBeacons();
 
 	/**
 	 * Clears the list of custom beacons

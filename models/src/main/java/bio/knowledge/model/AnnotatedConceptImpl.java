@@ -63,19 +63,19 @@ public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements Annot
 
 	public class ConceptBeaconEntry implements BeaconEntry {
 		
-		private final String beaconId;
+		private final Integer beaconId;
 		private final String id;
 		private Set<String> synonyms = new HashSet<String>();
 		private String definition="";
 		private Set<Feature> details = new HashSet<Feature>();
 
-		public ConceptBeaconEntry(String beaconId, String id) {
-			this.beaconId = beaconId;
+		public ConceptBeaconEntry(Integer beacon, String id) {
+			this.beaconId = beacon;
 			this.id = id;
 		}
 
 		@Override
-		public String getBeacon() {
+		public Integer getBeacon() {
 			return beaconId;
 		}
 

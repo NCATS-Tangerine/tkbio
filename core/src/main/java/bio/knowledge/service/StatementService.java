@@ -134,11 +134,11 @@ public class StatementService
 			predicateFilter = optionalPredicateFilter.get();
 		}
 
-		List<String> beacons = query.getCustomBeacons();
+		List<Integer> beacons = query.getCustomBeacons();
 		String sessionId = query.getUserSessionId();
 		
 		CompletableFuture<List<Statement>> future = 
-				kbService.getStatements( sourceClique, predicateFilter, targetClique, extraFilter, semgroups, pageIndex, pageSize,beacons,sessionId);
+				kbService.getStatements( sourceClique, predicateFilter, targetClique, extraFilter, semgroups, pageIndex, pageSize,beacons,queryId);
 		
 		try {
 			List<Statement> statements = 
