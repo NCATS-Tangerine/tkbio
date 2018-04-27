@@ -138,7 +138,7 @@ import bio.knowledge.web.ui.PopupWindow;
 
 /**
  * @author Richard
- * @author Yinglun Colin Qiao
+ * @author Yinglun(Colin) Qiao
  *
  */
 @SpringView(name = ListView.NAME)
