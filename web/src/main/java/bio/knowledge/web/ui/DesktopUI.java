@@ -439,13 +439,14 @@ public class DesktopUI extends UI implements MessageService, Util {
 		
 		VerticalLayout relationsTab = desktopView.getRelationsTab();
 
-		if (relationsTabNavigator == null) {
-			relationsTabNavigator = new Navigator(UI.getCurrent(), relationsTab);
-			relationsTabNavigator.addProvider(viewProvider);
-
-		}
-
-		relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW);
+//		if (relationsTabNavigator == null) {
+//			relationsTabNavigator = new Navigator(UI.getCurrent(), relationsTab);
+//			relationsTabNavigator.addProvider(viewProvider);
+//
+//		}
+//
+//		relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW);
+		applicationNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW);
 
 		TabSheet tabsheet = desktopView.getDataTabSheet();
 		tabsheet.setSelectedTab(relationsTab);
@@ -455,12 +456,13 @@ public class DesktopUI extends UI implements MessageService, Util {
 		
 		VerticalLayout relationsTab = desktopView.getRelationsTab();
 
-		if (relationsTabNavigator == null) {
-			relationsTabNavigator = new Navigator(UI.getCurrent(), relationsTab);
-			relationsTabNavigator.addProvider(viewProvider);
-		}
-
-		relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW + "/" + conceptId);
+//		if (relationsTabNavigator == null) {
+//			relationsTabNavigator = new Navigator(UI.getCurrent(), relationsTab);
+//			relationsTabNavigator.addProvider(viewProvider);
+//		}
+//
+//		relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW + "/" + conceptId);
+		applicationNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW + "/" + conceptId);
 
 		TabSheet tabsheet = desktopView.getDataTabSheet();
 		tabsheet.setSelectedTab(relationsTab);
@@ -855,9 +857,9 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 	// Terrible hacks. Should restructure the code to not use
 	// this many navigators.
-	private Navigator relationsTabNavigator;
-	private Navigator evidenceTabNavigator;
-	private Navigator pubmedTabNavigator;
+//	private Navigator relationsTabNavigator;
+//	private Navigator evidenceTabNavigator;
+//	private Navigator pubmedTabNavigator;
 	private Window legend = null;
 
 	@Value("${application.hostname:'none'}")
@@ -925,16 +927,20 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 			// Note: PubMed view is not a ListView...
 			if (caption.equals(ViewName.REFERENCE_TAB)) {
-				String state = pubmedTabNavigator.getState();
+				String state = applicationNavigator.getState();
 				if (!state.startsWith(ReferenceView.NAME)) {
-					pubmedTabNavigator.navigateTo(ReferenceView.NAME);
+//					pubmedTabNavigator.navigateTo(ReferenceView.NAME);
+					applicationNavigator.navigateTo(ReferenceView.NAME);
 				} else {
-					pubmedTabNavigator.navigateTo(state);
+//					pubmedTabNavigator.navigateTo(state);
+					applicationNavigator.navigateTo(state);
 				}
 			} else if (caption.equals(ViewName.EVIDENCE_TAB)) {
-				evidenceTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.EVIDENCE_VIEW);
+//				evidenceTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.EVIDENCE_VIEW);
+				applicationNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.EVIDENCE_VIEW);
 			} else if (caption.equals(ViewName.RELATIONS_TAB)) {
-				relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW);
+//				relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW);
+				applicationNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW);
 			}
 		});
 
@@ -1080,26 +1086,26 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * @param caption
 	 */
 	private void setTabNavigators(VerticalLayout tab, String caption) {
-		if (relationsTabNavigator == null) {
-			if (caption.equals(ViewName.RELATIONS_TAB)) {
-				relationsTabNavigator = new Navigator(UI.getCurrent(), tab);
-				relationsTabNavigator.addProvider(viewProvider);
-			}
-		}
-
-		if (evidenceTabNavigator == null) {
-			if (caption.equals(ViewName.EVIDENCE_TAB)) {
-				evidenceTabNavigator = new Navigator(UI.getCurrent(), tab);
-				evidenceTabNavigator.addProvider(viewProvider);
-			}
-		}
-
-		if (pubmedTabNavigator == null) {
-			if (caption.equals(ViewName.REFERENCE_TAB)) {
-				pubmedTabNavigator = new Navigator(UI.getCurrent(), tab);
-				pubmedTabNavigator.addProvider(viewProvider);
-			}
-		}
+//		if (relationsTabNavigator == null) {
+//			if (caption.equals(ViewName.RELATIONS_TAB)) {
+//				relationsTabNavigator = new Navigator(UI.getCurrent(), tab);
+//				relationsTabNavigator.addProvider(viewProvider);
+//			}
+//		}
+//
+//		if (evidenceTabNavigator == null) {
+//			if (caption.equals(ViewName.EVIDENCE_TAB)) {
+//				evidenceTabNavigator = new Navigator(UI.getCurrent(), tab);
+//				evidenceTabNavigator.addProvider(viewProvider);
+//			}
+//		}
+//
+//		if (pubmedTabNavigator == null) {
+//			if (caption.equals(ViewName.REFERENCE_TAB)) {
+//				pubmedTabNavigator = new Navigator(UI.getCurrent(), tab);
+//				pubmedTabNavigator.addProvider(viewProvider);
+//			}
+//		}
 	}
 
 	/**
@@ -1619,7 +1625,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		initializeDesktopView();
 
 		ApplicationLayout applicationLayout = new ApplicationLayout(authenticationManager);
-
+		applicationNavigator = applicationLayout.getNavigator();
 		this.loginView = applicationLayout.getLoginView();
 
 		// Note: the DesktopView is initialized within this UI class, so
@@ -1712,7 +1718,6 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * @param applicationLayout
 	 */
 	private void registerView(ApplicationLayout applicationLayout) {
-		applicationNavigator = applicationLayout.getNavigator();
 		applicationNavigator.addView(DesktopView.NAME, desktopView);
 		applicationNavigator.addView(ListView.NAME, desktopView);
 		applicationNavigator.addView(ReferenceView.NAME, desktopView);
