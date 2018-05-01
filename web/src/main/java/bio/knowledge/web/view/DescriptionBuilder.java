@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 
 import bio.knowledge.model.datasource.Result;
 
-//first iteration of a class that iteratively 
+// first iteration of a class that iteratively 
 // builds a description from a ResultSet
 // TODO: Need to generalize this "description builder" to handle more data fields?
 public class DescriptionBuilder implements Consumer<Result> {

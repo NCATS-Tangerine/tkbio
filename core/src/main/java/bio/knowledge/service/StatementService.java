@@ -96,7 +96,7 @@ public class StatementService
 	public List<Statement> getDataPage(
 			int pageIndex, 
 			int pageSize, 
-			String filter, 
+			String queryId, 
 			TableSorter sorter, 
 			boolean isAscending
 	) {
@@ -105,10 +105,7 @@ public class StatementService
 		 * We are not using the {@code filter} field, since here it refers to the main keywords search text
 		 */
 		String extraFilter   = query.getSimpleTextFilter();
-		String sourceClique  = query.getCurrentConceptId();
-		
-		// TODO: implement the targetClique specification in TKBIO
-		String targetClique  = "";
+		String sourceClique  = query.getCurrentQueryConceptId();
 		
 		// Sometimes this function gets call without any conceptId's (e.g. during table refresh)
 		if(sourceClique==null) return new ArrayList<Statement>();
@@ -135,10 +132,9 @@ public class StatementService
 		}
 
 		List<Integer> beacons = query.getCustomBeacons();
-		String queryId = query.getCurrentQueryId();
 		
 		CompletableFuture<List<Statement>> future = 
-				kbService.getStatements( sourceClique, predicateFilter, targetClique, extraFilter, semgroups, pageIndex, pageSize,beacons,queryId);
+				kbService.getStatements(queryId, predicateFilter, extraFilter, beacons, pageIndex, pageSize);
 		
 		try {
 			List<Statement> statements = 
@@ -259,7 +255,7 @@ public class StatementService
 	 */
 	@Override
 	@SuppressWarnings({})
-	public Page<Statement> findAll(Pageable pageable, String queryId) {
+	public Page<Statement> findAll(Pageable pageable) {
 		switch (query.getRelationSearchMode()) {
 			case PMID:
 				return findByPMID("", pageable);

@@ -76,9 +76,11 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 		if( !statementOpt.isPresent() ) return new ArrayList<Annotation>() ;
 		Statement statement = statementOpt.get();
 		
-		List<Integer> beacons = query.getCustomBeacons();				
+		List<Integer> beacons = query.getCustomBeacons();
+		String sessionId = query.getUserSessionId();
+				
     	CompletableFuture<List<Annotation>> future =
-    			kbService.getEvidences(statement, filter, pageIndex, pageSize, beacons);
+    			kbService.getEvidences( statement, filter, pageIndex, pageSize, beacons, sessionId );
     	
     	try {
 			List<Annotation> annotations =
@@ -132,7 +134,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#findAll(org.springframework.data.domain.Pageable)
 	 */
 	@Override
-	public Page<Annotation> findAll(Pageable pageable, String queryId) {
+	public Page<Annotation> findAll(Pageable pageable) {
 		if( !query.getCurrentEvidence().isPresent() ){
 			switch (query.getRelationSearchMode()) {
 				case PMID:

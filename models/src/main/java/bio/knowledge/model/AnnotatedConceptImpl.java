@@ -69,8 +69,8 @@ public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements Annot
 		private String definition="";
 		private Set<Feature> details = new HashSet<Feature>();
 
-		public ConceptBeaconEntry(Integer beacon, String id) {
-			this.beaconId = beacon;
+		public ConceptBeaconEntry(Integer beaconId, String id) {
+			this.beaconId = beaconId;
 			this.id = id;
 		}
 

@@ -79,13 +79,7 @@ public abstract class IdentifiedEntityServiceImpl<T extends IdentifiedEntity>
  	 * @param pageSize is equal to or greater than 1
  	 * @return a List ('Page') of DataFile records
  	 */
- 	public List<T> getDataPage( int pageIndex, int pageSize, String filter, TableSorter sorter, boolean isAscending) {
- 		// Note that PageRequests are zero-based indexed
-// 		if( pageNo < 1 ) 
-// 			pageNo = 0 ;
-// 		else
-// 			pageNo-- ;
- 		
+ 	public List<T> getDataPage( int pageIndex, int pageSize, String queryId, TableSorter sorter, boolean isAscending) { 		
  		if (pageSize < 1) pageSize = 1 ;
  		
  		Direction direction; 
@@ -100,10 +94,10 @@ public abstract class IdentifiedEntityServiceImpl<T extends IdentifiedEntity>
  		Pageable pageable = new PageRequest(pageIndex, pageSize, 
  									new Sort(direction, sorter.getType())) ;
  		Page<T> page;
- 		if (filter.isEmpty()){
-			page = this.findAll(pageable, "");
+ 		if (queryId.isEmpty()){
+			page = this.findAll(pageable);
 		} else {
-			page = this.findByNameLike(filter, pageable) ;
+			page = this.findByNameLike(queryId, pageable) ;
 		}
 
  		if(page != null)
@@ -126,7 +120,7 @@ public abstract class IdentifiedEntityServiceImpl<T extends IdentifiedEntity>
  	 */
  	public abstract Page<T> findByNameLike(String filter, Pageable pageable);
  	
- 	public abstract Page<T> findAll(Pageable pageable, String queryId);
+ 	public abstract Page<T> findAll(Pageable pageable);
  	
 	private ListTableEntryCounter entryCounter = () -> countEntries() ;
 			

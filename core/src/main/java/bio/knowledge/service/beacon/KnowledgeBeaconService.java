@@ -21,24 +21,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.squareup.okhttp.OkHttpClient;
+
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
-import bio.knowledge.client.api.MetadataApi;
 import bio.knowledge.client.api.ConceptsApi;
+import bio.knowledge.client.api.MetadataApi;
 import bio.knowledge.client.api.StatementsApi;
-import bio.knowledge.client.model.BeaconKnowledgeBeacon;
 import bio.knowledge.client.model.BeaconCliqueIdentifier;
+import bio.knowledge.client.model.BeaconConceptWithDetailsBeaconEntry;
 import bio.knowledge.client.model.BeaconConceptDetail;
 import bio.knowledge.client.model.BeaconConceptWithDetails;
-import bio.knowledge.client.model.BeaconConceptWithDetailsBeaconEntry;
-import bio.knowledge.client.model.BeaconConceptsQuery;
 import bio.knowledge.client.model.BeaconStatementObject;
 import bio.knowledge.client.model.BeaconStatementPredicate;
-import bio.knowledge.client.model.BeaconPredicates;
 import bio.knowledge.client.model.BeaconStatementSubject;
-import bio.knowledge.client.model.BeaconStatementsQuery;
-import bio.knowledge.client.model.BeaconPredicatesByBeacon;
-import bio.knowledge.client.model.BeaconStatement;
 import bio.knowledge.model.AnnotatedConcept;
 import bio.knowledge.model.AnnotatedConcept.BeaconEntry;
 import bio.knowledge.model.AnnotatedConceptImpl;
@@ -121,45 +117,53 @@ public class KnowledgeBeaconService implements Util {
 	}
 	
 	private Map<Integer, String> beaconIdMap = null;
-	private List<BeaconKnowledgeBeacon> beacons = null;
+	private List<bio.knowledge.client.model.BeaconKnowledgeBeacon> beacons = null;
 	
 	//private ApiClient apiClient;
 	private ConceptsApi conceptsApi;
+	private MetadataApi metadataApi;
 	private StatementsApi statementsApi;
-	private MetadataApi metaDataApi;
+
+	
+	public ConceptsApi getConceptsApi(int pageSize) {
+		
+		conceptsApi.getApiClient().setConnectTimeout( apiWeightedTimeout( CONCEPTS_QUERY_TIMEOUT_WEIGHTING, new Integer(pageSize)) );
+		_logger.debug("kbs.getConcepts() conceptsApi() connect timeout is currently set to '"+new Integer(conceptsApi.getApiClient().getConnectTimeout())+"' milliseconds");
+
+		OkHttpClient httpClient = conceptsApi.getApiClient().getHttpClient();
+		httpClient.setReadTimeout( apiWeightedTimeout( CONCEPTS_QUERY_TIMEOUT_WEIGHTING, new Integer(pageSize)), TimeUnit.MILLISECONDS);
+		_logger.debug("kbs.getConcepts() conceptsApi() HTTP client read timeout is currently set to '"+new Long(httpClient.getReadTimeout())+"' milliseconds");
+
+		return conceptsApi;
+	}
 	
 	public ConceptsApi getConceptsApi() {
-		
-//		conceptsApi.getApiClient().setConnectTimeout( apiWeightedTimeout( CONCEPTS_QUERY_TIMEOUT_WEIGHTING, new Integer(pageSize)) );
-//		_logger.debug("kbs.getConcepts() conceptsApi() connect timeout is currently set to '"+new Integer(conceptsApi.getApiClient().getConnectTimeout())+"' milliseconds");
-//
-//		OkHttpClient httpClient = conceptsApi.getApiClient().getHttpClient();
-//		httpClient.setReadTimeout( apiWeightedTimeout( CONCEPTS_QUERY_TIMEOUT_WEIGHTING, new Integer(pageSize)), TimeUnit.MILLISECONDS);
-//		_logger.debug("kbs.getConcepts() conceptsApi() HTTP client read timeout is currently set to '"+new Long(httpClient.getReadTimeout())+"' milliseconds");
-
-		return this.conceptsApi;
+		return getConceptsApi(0);  // default without pagesize
 	}
 	
-	public MetadataApi getMetaDataApi() {
-		return this.metaDataApi;
+	public MetadataApi getPredicatesApi() {
+		return this.metadataApi;
 	}
 	
-	public StatementsApi getStatementsApi() {
+	public StatementsApi getStatementsApi(int pageSize) {
 		
-//		statementsApi.getApiClient().setConnectTimeout( apiWeightedTimeout( STATEMENTS_QUERY_TIMEOUT_WEIGHTING, new Integer(pageSize)) );
-//		_logger.debug("kbs.getStatements() getStatementsApi() connect timeout is currently set to '"+new Integer(statementsApi.getApiClient().getConnectTimeout())+"' milliseconds");
-//
-//		OkHttpClient httpClient = statementsApi.getApiClient().getHttpClient();
-//		httpClient.setReadTimeout( apiWeightedTimeout( STATEMENTS_QUERY_TIMEOUT_WEIGHTING, new Integer(pageSize)), TimeUnit.MILLISECONDS);
-//		_logger.debug("kbs.getStatements() getStatementsApi() HTTP client read timeout is currently set to '"+new Long(httpClient.getReadTimeout())+"' milliseconds");
+		statementsApi.getApiClient().setConnectTimeout( apiWeightedTimeout( STATEMENTS_QUERY_TIMEOUT_WEIGHTING, new Integer(pageSize)) );
+		_logger.debug("kbs.getStatements() getStatementsApi() connect timeout is currently set to '"+new Integer(statementsApi.getApiClient().getConnectTimeout())+"' milliseconds");
 
+		OkHttpClient httpClient = statementsApi.getApiClient().getHttpClient();
+		httpClient.setReadTimeout( apiWeightedTimeout( STATEMENTS_QUERY_TIMEOUT_WEIGHTING, new Integer(pageSize)), TimeUnit.MILLISECONDS);
+		_logger.debug("kbs.getStatements() getStatementsApi() HTTP client read timeout is currently set to '"+new Long(httpClient.getReadTimeout())+"' milliseconds");
+
+		return statementsApi;
+	}
+	
+	public StatementsApi getEvidenceApi() {
 		return this.statementsApi;
 	}
 	
-	
-//	public AggregatorApi getAggregatorApi() {
-//		return this.aggregatorApi;
-//	}
+	public MetadataApi getAggregatorApi() {
+		return this.metadataApi;
+	}
 	
 	public static final long     BEACON_TIMEOUT_DURATION = 1;
 	public static final TimeUnit BEACON_TIMEOUT_UNIT = TimeUnit.MINUTES;
@@ -233,11 +237,11 @@ public class KnowledgeBeaconService implements Util {
 		 *  ApiClient instance for each data type class.
 		 */
 		conceptsApi = new ConceptsApi(new ApiClient().setBasePath(AGGREGATOR_BASE_URL));
+		metadataApi = new MetadataApi(new ApiClient().setBasePath(AGGREGATOR_BASE_URL));
 		statementsApi = new StatementsApi(new ApiClient().setBasePath(AGGREGATOR_BASE_URL));
-//		aggregatorApi = new AggregatorApi(new ApiClient().setBasePath(AGGREGATOR_BASE_URL));
 	}
 	
-	public List<BeaconKnowledgeBeacon> getKnowledgeBeacons() {
+	public List<bio.knowledge.client.model.BeaconKnowledgeBeacon> getKnowledgeBeacons() {
 		if (beacons == null) {
 			setupBeacons();
 		}
@@ -258,10 +262,8 @@ public class KnowledgeBeaconService implements Util {
 	private void setupBeacons() {
 		try {
 			beaconIdMap = new HashMap<Integer, String>();
-			beacons = metaDataApi.getBeacons();
-			for (BeaconKnowledgeBeacon b : beacons) {
-				// Beacons are registered as numbers, in the given beacon registry
-				// So getBeacon gets the ID from the registry rather than the beacon parameters themselves
+			beacons = metadataApi.getBeacons();
+			for (bio.knowledge.client.model.BeaconKnowledgeBeacon b : beacons) {
 				beaconIdMap.put(b.getBeacon(), b.getName());
 			}
 		} catch (ApiException e) {
@@ -272,18 +274,6 @@ public class KnowledgeBeaconService implements Util {
 
 	private String getBeaconNameFromId(Integer id) {
 		return getBeaconIdMap().get(id);
-	}
-	
-	
-	public BeaconConceptsQuery postConceptsQuery(String keywords, List<String> types, List<Integer> beacons) {
-		throw new java.lang.UnsupportedOperationException("Not supported yet.");
-//		try {
-//			return this.conceptsApi.postConceptsQuery(keywords, types, beacons);
-//		} catch (ApiException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			return null;
-//		}
 	}
 
 	/**
@@ -297,12 +287,10 @@ public class KnowledgeBeaconService implements Util {
 	 *         satisfy a query with the given parameters.
 	 */
 	public CompletableFuture<List<IdentifiedConcept>> getConcepts(
-			String keywords,
-			String semanticGroups,
-			int pageNumber,
-			int pageSize,
+			String queryID,
 			List<Integer> beacons,
-			String queryId
+			int pageNumber,
+			int pageSize
 			
 	) {
 		CompletableFuture<List<IdentifiedConcept>> future = 
@@ -323,13 +311,13 @@ public class KnowledgeBeaconService implements Util {
 							
 							_logger.debug("kbs.getConcepts() - before responses");
 							
-							List<bio.knowledge.client.model.BeaconConcept> responses = getConceptsApi().getConcepts(
-									queryId,
+							List<bio.knowledge.client.model.BeaconConcept> responses = getConceptsApi(pageSize).getConcepts(
+									queryID,
 									beacons,
 									pageNumber,
 									pageSize
 							).getResults();
-		
+
 							for (bio.knowledge.client.model.BeaconConcept response : responses) {
 								
 								ConceptType semgroup;
@@ -351,7 +339,11 @@ public class KnowledgeBeaconService implements Util {
 										response.getClique(),
 										response.getName(),
 										semgroup,
-										"" // TODO - sort out statementsSubject.getTaxon() or get from Clique
+										""
+//										response.getClique(),
+//										response.getName(),
+//										semgroup,
+//										response.getTaxon()
 								);
 								
 								concepts.add(concept);
@@ -381,7 +373,7 @@ public class KnowledgeBeaconService implements Util {
 	 * 
 	 * @return
 	 */
-	public CompletableFuture<String> findByIdentifier(String identifier) {
+	public CompletableFuture<String> findByIdentifier(String identifier, String sessionId) {
 		
 		CompletableFuture<String> future = 
 				CompletableFuture.supplyAsync( new Supplier<String>() {
@@ -440,7 +432,6 @@ public class KnowledgeBeaconService implements Util {
 
 					ConceptType semgroup;
 					try {
-						
 						String type = response.getType();
 						if (type.contains(":")) {
 							// type might be a string combined from multiple types separated by spaces
@@ -459,7 +450,8 @@ public class KnowledgeBeaconService implements Util {
 							response.getClique(),
 							response.getName(),
 							semgroup,
-							"" // TODO: Response Taxon			
+							""
+//							response.getTaxon()
 							);
 
 					Set<String> xrefs = concept.getAliases() ;
@@ -474,7 +466,7 @@ public class KnowledgeBeaconService implements Util {
 						String id = entry.getId();
 						
 						BeaconEntry beaconEntry = 
-								concept.new ConceptBeaconEntry(beacon,id);
+								concept.new ConceptBeaconEntry(beacon, id);
 								
 						List<String> synonyms = entry.getSynonyms();
 						beaconEntry.getSynonyms().addAll(synonyms);
@@ -513,7 +505,7 @@ public class KnowledgeBeaconService implements Util {
 	 * 
 	 * @return
 	 */
-	public CompletableFuture<Set<Predicate>> getPredicates() {
+	public CompletableFuture<Set<Predicate>> getPredicates(List<Integer> beacons) {
 		
 		CompletableFuture<Set<Predicate>> future = 
 				CompletableFuture.supplyAsync(new Supplier<Set<Predicate>>() {
@@ -524,33 +516,21 @@ public class KnowledgeBeaconService implements Util {
 				Set<Predicate> predicates = new TreeSet<Predicate>();
 				
 				try {
-					// TODO: transform into method (common pattern if not giving metaDataApi the ability to return integers for Beacons,
-					// OR the ability to use getters without arguments
-					// TODO: disambiguate API method names (getBeacons should return integers, not types, OR getBeacon returns types, not integers)
-					List<Integer> beaconIds = new ArrayList<Integer>();
-					for (BeaconKnowledgeBeacon bkb : getMetaDataApi().getBeacons()) {
-						beaconIds.add(bkb.getBeacon());
-					}
-					List<BeaconPredicates> responses = getMetaDataApi().getPredicates(beaconIds);
+					List<bio.knowledge.client.model.BeaconPredicates> responses = 
+							getPredicatesApi().getPredicates(beacons);
 					
-					// The server GIVES a list of beacons, with the predicates they have.
-					// The client NEEDS a list of predicates, equipped with the beacons that had them.
-					// This code transforms b:Beacon -> {Predicates} to p:Predicate -> {Beacons} for all returned b
-					for (BeaconPredicates response : responses) {
-
+					for (bio.knowledge.client.model.BeaconPredicates response : responses) {
+						
 						PredicateImpl predicate = new PredicateImpl();
+						
 						predicate.setName(response.getLabel());
 
-						List<BeaconPredicatesByBeacon> beacons = response.getBeacons();
-						
-						if(beacons != null)
-							for(BeaconPredicatesByBeacon pb : beacons) {
+						List<bio.knowledge.client.model.BeaconPredicatesByBeacon> beacons = response.getBeacons();
+						if(beacons!=null)
+							for(bio.knowledge.client.model.BeaconPredicatesByBeacon pb : beacons) {
 								Predicate.PredicateBeacon beacon = 
 										predicate.new PredicateBeaconImpl(
-												pb.getBeacon(),
-												// TODO: IRI or ID?
-												response.getId(),
-												response.getDescription()
+												pb.getBeacon()
 										) ;
 								predicate.addBeacon(beacon);
 							}
@@ -569,28 +549,14 @@ public class KnowledgeBeaconService implements Util {
 		
 		return future;
 	}
-
-	public BeaconStatementsQuery postStatementsQuery(String source, List<String> relations, String target, String keywords, List<String> types, List<Integer> beacons) {
-		throw new java.lang.UnsupportedOperationException("Not supported yet.");
-//		try {
-//			return this.statementsApi.postStatementsQuery(source, relations, target, keywords, types, beacons);
-//		} catch (ApiException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			return null;
-//		}
-	}
 	
 	public CompletableFuture<List<Statement>> getStatements(
-			String sourceClique,
+			String queryId,
 			Set<Predicate> relations,
-			String targetClique,
 			String keywords,
-			String semgroups,
-			int pageNumber,
-			int pageSize,
 			List<Integer> beacons,
-			String queryId
+			int pageNumber,
+			int pageSize
 	) {
 		CompletableFuture<List<Statement>> future = CompletableFuture.supplyAsync(new Supplier<List<Statement>>() {
 
@@ -598,10 +564,8 @@ public class KnowledgeBeaconService implements Util {
 			public List<Statement> get() {
 				
 				_logger.debug(
-						"kbs.getStatements(): processing cliqueId: "+sourceClique+
-						", keywords: "+keywords+
-						", semgroups: "+semgroups+
-						", relation: "+relations
+						"keywords: " + keywords +
+						", relation: " + relations
 				);
 				
 				// Utility time variable for profiling
@@ -633,14 +597,18 @@ public class KnowledgeBeaconService implements Util {
 					
 					_logger.debug("kbs.getStatements() - before responses");
 				
-					List<BeaconStatement> responses = 
-							getStatementsApi().
-								getStatementsQuery(queryId, beacons, pageNumber, pageSize).
-								getResults();
-								
+					List<bio.knowledge.client.model.BeaconStatement> responses = 
+							getStatementsApi(pageSize).getStatementsQuery(
+									queryId,
+									beacons,
+									pageNumber,
+									pageSize
+									
+							).getResults();
+
 					_logger.debug("kbs.getStatements() - after responses");
 					
-					for (BeaconStatement response : responses) {
+					for (bio.knowledge.client.model.BeaconStatement response : responses) {
 						
 						String id = response.getId();
 						
@@ -700,9 +668,10 @@ public class KnowledgeBeaconService implements Util {
 	public CompletableFuture<List<Annotation>> getEvidences(
 			String statementId,
 			String keywords,
-			int pageNumber,
-			int pageSize,
-			List<Integer> beacons
+			Integer pageNumber,
+			Integer pageSize,
+			List<Integer> beacons,
+			String sessionId
 	) {
 		CompletableFuture<List<Annotation>> future = CompletableFuture.supplyAsync(new Supplier<List<Annotation>>() {
 
@@ -714,7 +683,7 @@ public class KnowledgeBeaconService implements Util {
 				String id = strings.length >= 2 ? strings[2] : statementId;
 				
 				try {
-					List<bio.knowledge.client.model.BeaconAnnotation> responses = getStatementsApi().getEvidence(
+					List<bio.knowledge.client.model.BeaconAnnotation> responses = getEvidenceApi().getEvidence(
 							id,
 							keywords,
 							pageNumber,
@@ -755,9 +724,10 @@ public class KnowledgeBeaconService implements Util {
 			String keywords,
 			int pageNumber,
 			int pageSize,
-			List<Integer> beacons
+			List<Integer> beacons,
+			String sessionId
 		) {
-		return getEvidences(statement.getId(), keywords, pageNumber, pageSize, beacons);
+		return getEvidences( statement.getId(), keywords, pageNumber, pageSize, beacons, sessionId );
 	}
 
 	/**
@@ -770,7 +740,7 @@ public class KnowledgeBeaconService implements Util {
 	}
 	
 	public int getKnowledgeBeaconCount( List<Integer> beacons ) {
-		int cbsize = beacons == null ? 0 : beacons.size();
+		int cbsize = beacons==null?0:beacons.size();
 		return cbsize > 0 ? cbsize : countAllBeacons();
 	}
 

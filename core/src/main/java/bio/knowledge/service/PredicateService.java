@@ -25,6 +25,7 @@
  */
 package bio.knowledge.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -62,7 +63,7 @@ public class PredicateService {
      */
     private static Set<Predicate> predicateListCache = new TreeSet<Predicate>();
     
-	public Set<Predicate> findAllPredicates() {
+	public Set<Predicate> findAllPredicates(List<Integer> beacons) {
 		
 		if(predicateListCache.isEmpty()) {
 			/*
@@ -70,7 +71,7 @@ public class PredicateService {
 			 * Danger is the if some beacons fail to contribute the first time, 
 			 * they won't have a second chance?
 			 * */
-	    	CompletableFuture<Set<Predicate>> future = kbService.getPredicates();
+	    	CompletableFuture<Set<Predicate>> future = kbService.getPredicates(beacons);
 	    	
 	    	try {
 	    		predicateListCache = future.get(
@@ -87,8 +88,8 @@ public class PredicateService {
     
     class PredicateIndex {
     	
-    	PredicateIndex() {
-    		Set<Predicate> predicates = findAllPredicates() ;
+    	PredicateIndex(List<Integer> beacons) {
+    		Set<Predicate> predicates = findAllPredicates(beacons) ;
         	addPredicates(predicates);
     	}
     	
@@ -164,8 +165,8 @@ public class PredicateService {
     		root.insert(predicate);
     	}
     	
-    	public Optional<Set<Predicate>> getMatchingPredicates(String query) {
-    		if(query.isEmpty()) return Optional.of(findAllPredicates());
+    	public Optional<Set<Predicate>> getMatchingPredicates(String query, List<Integer>beacons) {
+    		if(query.isEmpty()) return Optional.of(findAllPredicates(beacons));
     		return root.getMatchingPredicates(query.toLowerCase());
     	}
 
@@ -177,10 +178,10 @@ public class PredicateService {
     // defer initialization until first use?
     private PredicateIndex predicateIndex = null; 
     
-	public Optional<Set<Predicate>> getMatchingPredicates(String query) {
+	public Optional<Set<Predicate>> getMatchingPredicates(String query, List<Integer> beacons) {
 		if(predicateIndex==null)
-			predicateIndex = new PredicateIndex();
-		return predicateIndex.getMatchingPredicates(query);
+			predicateIndex = new PredicateIndex(beacons);
+		return predicateIndex.getMatchingPredicates(query, beacons);
 	}
 	
     /**
