@@ -123,7 +123,7 @@ public class KnowledgeBeaconService implements Util {
 	private Map<Integer, String> beaconIdMap = null;
 	private List<BeaconKnowledgeBeacon> beacons = null;
 	
-	//private ApiClient apiClient;
+	private ApiClient apiClient;
 	private ConceptsApi conceptsApi;
 	private StatementsApi statementsApi;
 	private MetadataApi metaDataApi;
@@ -232,8 +232,10 @@ public class KnowledgeBeaconService implements Util {
 		 *  rewritten the code to create a separate 
 		 *  ApiClient instance for each data type class.
 		 */
-		conceptsApi = new ConceptsApi(new ApiClient().setBasePath(AGGREGATOR_BASE_URL));
-		statementsApi = new StatementsApi(new ApiClient().setBasePath(AGGREGATOR_BASE_URL));
+		ApiClient apiClient = new ApiClient().setBasePath(AGGREGATOR_BASE_URL);
+		conceptsApi = new ConceptsApi(apiClient);
+		statementsApi = new StatementsApi(apiClient);
+		metaDataApi = new MetadataApi(apiClient);
 //		aggregatorApi = new AggregatorApi(new ApiClient().setBasePath(AGGREGATOR_BASE_URL));
 	}
 	

@@ -15,6 +15,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -40,8 +41,6 @@ public class KnowledgeBeaconWindow extends Window {
 		
 		optionGroup = new OptionGroup("Beacons", defaultBeacons);
 		
-		System.out.println(optionGroup);
-		
 		setCaption("Knowledge Beacon Tools");
 		this.center();
 		
@@ -59,13 +58,13 @@ public class KnowledgeBeaconWindow extends Window {
 		
 		Button closeButton = new Button();
 		closeButton.setCaption("Done");
-		closeButton.addClickListener(event -> { close(); });
+		closeButton.addClickListener(event -> close());
 		
 		Button consoleButton = new Button();
 		consoleButton.setCaption("Open Console");
 		consoleButton.addClickListener(event -> { 
 			ConsoleWindow window = new ConsoleWindow(kbService);
-			DesktopUI.getCurrent().addWindow(window);
+			UI.getCurrent().addWindow(window);
 		});
 		
 		mainLayout.addComponents( optionGroup, closeButton );
