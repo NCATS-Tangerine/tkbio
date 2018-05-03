@@ -64,7 +64,7 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 	
 	private Navigator navigator;
 	private LoginView loginView;
-	private ErrorView errorView;
+//	private ErrorView errorView;
 	
 	public LoginView getLoginView() {
 		return this.loginView;
@@ -92,15 +92,15 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 		authenticationManager.addListener((AuthenticationListener) userAccountView);
 		this.loginView = new LoginView(navigator);
 		
-		navigator.addView(FaqView.NAME, new FaqView());
-		navigator.addView(AboutView.NAME, new AboutView());
-		navigator.addView(ContactView.NAME, new ContactView());
-		navigator.addView(LandingPageView.NAME, new LandingPageView());
-		navigator.addView(LoginView.NAME, this.loginView);
-		navigator.addView(UserAccountView.NAME, userAccountView);
-		navigator.addView(CreateAccountView.NAME, new CreateAccountView(navigator));
-		navigator.addView(RecoverAccountView.NAME, new RecoverAccountView());
-		navigator.addView(PasswordResetView.NAME, new PasswordResetView());
+//		navigator.addView(FaqView.NAME, new FaqView());
+//		navigator.addView(AboutView.NAME, new AboutView());
+//		navigator.addView(ContactView.NAME, new ContactView());
+//		navigator.addView(LandingPageView.NAME, new LandingPageView());
+//		navigator.addView(LoginView.NAME, this.loginView);
+//		navigator.addView(UserAccountView.NAME, userAccountView);
+//		navigator.addView(CreateAccountView.NAME, new CreateAccountView(navigator));
+//		navigator.addView(RecoverAccountView.NAME, new RecoverAccountView());
+//		navigator.addView(PasswordResetView.NAME, new PasswordResetView());
 		
 		setCommonNavigationViews();
 		
@@ -279,12 +279,15 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 	@Override
 	public void showView(View view) {
 	    if (view instanceof Component) {
-            content.setContent((Component) view);
+            content.setContent((Component) view);            
+//            for (final Iterator<Component> i = side_bar.iterator(); i.hasNext();) {
+//            	Component component = i.next();
+//            	
+//            	setStyleByData(component, view.getClass().getName());
+//            }
             
-            for (final Iterator<Component> i = side_bar.iterator(); i.hasNext();) {
-            	Component component = i.next();
-            	
-            	setStyleByData(component, view.getClass().getName());
+            for (Component component : side_bar) {
+            	setStyleByData(component, view.getClass().getName());	
             }
         } else {
             throw new IllegalArgumentException("View is not a component: "

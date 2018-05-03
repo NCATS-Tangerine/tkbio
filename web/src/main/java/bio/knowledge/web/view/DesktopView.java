@@ -171,7 +171,7 @@ public class DesktopView extends DesktopDesign implements View {
 		this.clearMapBtn = clearMapBtn;
 	}
 	
-	public TabSheet getDataTabSheet() {
+	public TabSheet getTabSheet() {
 		return dataTabSheet ;
 	}
 	
@@ -282,19 +282,19 @@ public class DesktopView extends DesktopDesign implements View {
 			// navigated back to this view's URI fragment.
 			if (state.equals(DesktopView.NAME) || 
 					(state.equals(ListView.NAME + "/" + ViewName.RELATIONS_VIEW))) {				
-				ui.gotoStatementsTable();
+				ui.navigateToRelationsView();
 			}
 			
 			// TODO: Rework the above code to fit into the below code.
 			// This should allow the user navigate to a view simply by
 			// using the URL (maybe they send a URL to a friend).
-			if (state.startsWith(ListView.NAME + "/" + ViewName.RELATIONS_VIEW)) {
-				String conceptId = getStateSegment(state, 2);
-				ui.displayStatements(conceptId);
-			} else if (state.startsWith(ReferenceView.NAME)) {
-				String annotationId = getStateSegment(state, 1);
-				ui.displayReference(annotationId);
-			}
+//			if (state.startsWith(ListView.NAME + "/" + ViewName.RELATIONS_VIEW)) {
+//				String conceptId = getStateSegment(state, 2);
+//				ui.displayStatements(conceptId);
+//			} else if (state.startsWith(ReferenceView.NAME)) {
+//				String annotationId = getStateSegment(state, 1);
+//				ui.displayReference(annotationId);
+//			}
 		}
 	}
 	

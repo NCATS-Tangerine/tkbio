@@ -248,7 +248,7 @@ public class ConceptMapPopupWindow {
 			showRelations = new Button("Show Relations", e -> {
 				parentUi.queryUpdate(selectedConcept, RelationSearchMode.RELATIONS);
 				conceptDetailsWindowOnGraph.close();
-				parentUi.gotoStatementsTable();
+				parentUi.navigateToRelationsView();
 			});
 			
 			//if (showRelations != null)

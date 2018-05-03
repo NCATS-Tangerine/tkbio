@@ -122,6 +122,7 @@ import bio.knowledge.model.util.Util;
 import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
 import bio.knowledge.service.DataServiceException;
+import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
 import bio.knowledge.service.PredicateService;
@@ -180,6 +181,9 @@ public class ListView extends BaseView implements Util {
 	
 	@Autowired
 	KnowledgeBeaconRegistry kbRegistry;
+	
+//	@Autowired
+//	KBQuery query;
 	
 	@Autowired
 	PredicateService predicateService;
@@ -1259,7 +1263,7 @@ public class ListView extends BaseView implements Util {
 
 		// add the relation triple in evidence view
 		Label dataTableLabel = null;
-
+		
 		// currentQueryConcept might be empty
 		// and/or ignored for some views
 		Optional<IdentifiedConcept> currentQueryConcept = query.getCurrentQueryConcept(); 
@@ -1868,7 +1872,8 @@ public class ListView extends BaseView implements Util {
 
 		} else {
 			
-			String viewNameWithoutUrlParameters = viewName.split("/")[0];
+			String viewNameWithoutUrlParameters = viewName;
+//			String viewNameWithoutUrlParameters = viewName.split("/")[0];
 			
 			VerticalLayout dataTableLayout = formatGenericTableComponents(viewNameWithoutUrlParameters);
 			
@@ -2039,7 +2044,7 @@ public class ListView extends BaseView implements Util {
 	private void selectionContext(DesktopUI ui, PopupWindow conceptDetailsWindow, IdentifiedConcept selectedConcept) {
 		ui.queryUpdate(selectedConcept, RelationSearchMode.RELATIONS);
 		conceptDetailsWindow.close();
-		ui.gotoStatementsTable();
+		ui.navigateToRelationsView();
 	}
 	
 	@Autowired
@@ -2205,7 +2210,7 @@ public class ListView extends BaseView implements Util {
 				// These get reset for some reason when we ask for them? Passing out of the popup instance using KBQuery
 				ui.getPredicatePopupWindow()
 					.conceptMapUserAnnotation(concept, query.tempCoordX(), query.tempCoordY());
-				ui.gotoStatementsTable();
+				ui.navigateToRelationsView();
 		});
 
 		// misc views
@@ -2249,7 +2254,7 @@ public class ListView extends BaseView implements Util {
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
 			ui.processConceptSearch(concept);
 			ui.closeConceptSearchWindow();
-			ui.gotoStatementsTable();
+			ui.navigateToRelationsView();
 		});
 		
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "synonyms",e->{/*NOP*/});
@@ -2317,7 +2322,7 @@ public class ListView extends BaseView implements Util {
 
 			_logger.trace("Display Evidence for " + selectedStatement.getName());
 
-			ui.displayEvidence(selectedStatement.getId());
+			ui.navigateToEvidenceView(selectedStatement.getId());
 		});
 
 		registry.setMapping(ViewName.EVIDENCE_VIEW, 
