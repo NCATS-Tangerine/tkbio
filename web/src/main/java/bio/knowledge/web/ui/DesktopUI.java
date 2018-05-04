@@ -32,6 +32,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -78,6 +79,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -121,11 +123,12 @@ import bio.knowledge.service.user.UserService;
 import bio.knowledge.web.KBUploader;
 import bio.knowledge.web.view.AboutView;
 import bio.knowledge.web.view.ApplicationLayout;
-import bio.knowledge.web.view.ConceptSearchResults;
+//import bio.knowledge.web.view.ConceptSearchResults;
 import bio.knowledge.web.view.ContactView;
 import bio.knowledge.web.view.DesktopView;
 import bio.knowledge.web.view.EvidenceView;
 import bio.knowledge.web.view.FaqView;
+import bio.knowledge.web.view.LandingPageView;
 import bio.knowledge.web.view.LibrarySearchResults;
 import bio.knowledge.web.view.ListView;
 import bio.knowledge.web.view.LoginView;
@@ -133,6 +136,8 @@ import bio.knowledge.web.view.PasswordResetView;
 import bio.knowledge.web.view.ReferenceView;
 import bio.knowledge.web.view.Registry;
 import bio.knowledge.web.view.RelationsView;
+import bio.knowledge.web.view.ResultView;
+import bio.knowledge.web.view.SearchResultView;
 import bio.knowledge.web.view.ViewName;
 import bio.knowledge.web.view.components.KnowledgeBeaconWindow;
 import bio.knowledge.web.view.components.LibraryDetails;
@@ -157,7 +162,7 @@ import bio.knowledge.web.view.components.UserDetails;
 		"https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" })
 @PreserveOnRefresh
 @Widgetset("bio.knowledge.renderer.ButtonRendererWidgetset")
-public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
+public class DesktopUI extends UI implements MessageService, Util {
 
 	// private static final int DAY_IN_SECOND = 86400;
 
@@ -168,10 +173,10 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	private static final long serialVersionUID = -7147784018127550717L;
 
 	private Logger _logger = LoggerFactory.getLogger(DesktopUI.class);
-	
+
 	@Autowired
 	Registry registry;
-	
+
 	@Autowired
 	UserService userService;
 
@@ -183,13 +188,13 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 
 	@Autowired
 	Cache cache;
-	
+
 	@Autowired
 	KnowledgeBeaconService kbService;
-	
+
 	@Autowired
 	ConceptService conceptService;
-	
+
 	/**
 	 * 
 	 * @return
@@ -204,8 +209,8 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	public AuthenticationState getAuthenticationState() {
 		return authenticationState;
 	}
-	
-	@ Autowired
+
+	@Autowired
 	KnowledgeBeaconRegistry beaconRegistry;
 
 	@Autowired
@@ -229,9 +234,9 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 
 	@Autowired
 	private MessageSource messageSource;
-	
+
 	private boolean zoomEnabled;
-	
+
 	public static DesktopUI getCurrent() {
 		return (DesktopUI) UI.getCurrent();
 	}
@@ -240,8 +245,7 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * bio.knowledge.service.core.MessageService#getMessage(java.lang.String)
+	 * @see bio.knowledge.service.core.MessageService#getMessage(java.lang.String)
 	 */
 	public String getMessage(String id) {
 
@@ -262,8 +266,7 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * bio.knowledge.service.core.MessageService#getMessage(java.lang.String,
+	 * @see bio.knowledge.service.core.MessageService#getMessage(java.lang.String,
 	 * java.lang.String)
 	 */
 	public String getMessage(String id, String tag) {
@@ -311,12 +314,12 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 
 	@Autowired
 	KnowledgeBeaconRegistry kbRegistry;
-	
+
 	public void openKnowledgeBeaconWindow() {
 		KnowledgeBeaconWindow kbWindow = new KnowledgeBeaconWindow(kbRegistry, query, kbService);
 		this.addWindow(kbWindow);
 	}
-	
+
 	/**
 	 * 
 	 * @return the current ConceptMapDisplay
@@ -324,7 +327,7 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	private ConceptMapDisplay cm = null;
 
 	public ConceptMapDisplay getConceptMap() {
-		if(cm == null)
+		if (cm == null)
 			cm = new ConceptMapDisplay(conceptService);
 		return cm;
 	}
@@ -355,8 +358,7 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	 * @param targetNode
 	 */
 	public void addEdgeToConceptMap(Statement statement) {
-		getConceptMap().getElements().getEdges()
-				.addEdge(new Edge(statement));
+		getConceptMap().getElements().getEdges().addEdge(new Edge(statement));
 	}
 
 	@Autowired
@@ -370,14 +372,14 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 		return this.popUp;
 	}
 
-	private Window conceptSearchWindow = null;
+	private Window searchWindow = new Window();
 
 	/**
 	 * 
 	 * @return
 	 */
 	public Window getConceptSearchWindow() {
-		return this.conceptSearchWindow;
+		return this.searchWindow;
 	}
 
 	/**
@@ -385,21 +387,21 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	 * @param newConceptSearchWindow
 	 */
 	public void setConceptSearchWindow(Window newConceptSearchWindow) {
-		this.conceptSearchWindow = newConceptSearchWindow;
+		this.searchWindow = newConceptSearchWindow;
 	}
 
 	/**
 	 * 
 	 */
 	public void closeConceptSearchWindow() {
-		if (conceptSearchWindow != null) {
-			conceptSearchWindow.close();
-			conceptSearchWindow = null;
+		if (searchWindow != null) {
+			searchWindow.close();
+			searchWindow = null;
 		}
 	}
-	
+
 	public void processConceptSearch(IdentifiedConcept concept) {
-		
+
 		addNodeToConceptMap(concept);
 
 		queryUpdate(concept, RelationSearchMode.RELATIONS);
@@ -409,7 +411,7 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 		String accessionId = concept.getId();
 		Node node = getConceptMap().getElements().getNodes().getNodeById(accessionId);
 		if (node != null)
-			node.getData().setState("add");	
+			node.getData().setState("add");
 	}
 
 	private Window conceptMapLibraryWindow = null;
@@ -426,7 +428,6 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 
 	private PopupWindow conceptSemanticWindow = null;
 
-
 	/**
 	 * 
 	 */
@@ -437,35 +438,30 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 		}
 	}
 
-	
 	/**
-	 * 
+	 * Selects the relations tab and show its contents.
 	 */
-	public void navigateToRelationsView() {
-		
+	public void showRelationsTab() {
 //		VerticalLayout relationsTab = desktopView.getRelationsTab();
-//
-//		relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW);
-//
-//		TabSheet tabsheet = desktopView.getDataTabSheet();
+//		TabSheet tabsheet = desktopView.getTabSheet();
 //		tabsheet.setSelectedTab(relationsTab);
 	}
-	
-//	public void displayStatements(String conceptId) {
-//		
+
+	public void displayStatements(String conceptId) {
+
 //		VerticalLayout relationsTab = desktopView.getRelationsTab();
 //
-////		if (relationsTabNavigator == null) {
-////			relationsTabNavigator = new Navigator(UI.getCurrent(), relationsTab);
-////			relationsTabNavigator.addProvider(viewProvider);
-////		}
-////
-////		relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW + "/" + conceptId);
+//		// if (relationsTabNavigator == null) {
+//		// relationsTabNavigator = new Navigator(UI.getCurrent(), relationsTab);
+//		// relationsTabNavigator.addProvider(viewProvider);
+//		// }
+//
+//		relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW + "/" + conceptId);
 //		applicationNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW + "/" + conceptId);
 //
 //		TabSheet tabsheet = desktopView.getDataTabSheet();
 //		tabsheet.setSelectedTab(relationsTab);
-//	}
+	}
 
 	/**
 	 * 
@@ -482,7 +478,7 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	private String lastHighlightNodeId = null;
 
 	private enum HighlightStatus {
-		
+
 		YES("yes"), NO("no");
 
 		private String text;
@@ -551,7 +547,7 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	 * updating the data of the edge
 	 * 
 	 * @param yesOrNo
-	 */	
+	 */
 	private void highlightEdge(String statementId, HighlightStatus yesOrNo) {
 		Edge edge = getConceptMap().getElements().getEdges().getEdgeByStatementId(statementId);
 		if (edge != null) {
@@ -581,7 +577,7 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 
 		// Highlighting new current concept edge
 		highlightEdge(statementId, HighlightStatus.YES);
-		
+
 		lastHighlightEdgeId = statementId;
 	}
 
@@ -590,19 +586,20 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	 */
 	public void navigateToEvidenceView(String statementId) {
 
-//		query.setRelationSearchMode(RelationSearchMode.RELATIONS);
-//
-//		// highlight the edge according to the predication
-//		setHighlightedEdge(statementId);
-//
-//		VerticalLayout referenceTab = desktopView.getEvidenceTab();
-//
-//		DesktopUI.getCurrent().getEvidenceNavigator().navigateTo(ViewName.LIST_VIEW + "/" + ViewName.EVIDENCE_VIEW);
-//
-//		TabSheet tabsheet = desktopView.getDataTabSheet();
-//		tabsheet.setSelectedTab(referenceTab);
+		// query.setRelationSearchMode(RelationSearchMode.RELATIONS);
+		//
+		// // highlight the edge according to the predication
+		// setHighlightedEdge(statementId);
+		//
+		// VerticalLayout referenceTab = desktopView.getEvidenceTab();
+		//
+		// DesktopUI.getCurrent().getEvidenceNavigator().navigateTo(ViewName.LIST_VIEW +
+		// "/" + ViewName.EVIDENCE_VIEW);
+		//
+		// TabSheet tabsheet = desktopView.getDataTabSheet();
+		// tabsheet.setSelectedTab(referenceTab);
 	}
-	
+
 	public void displayEvidence(Statement statement) {
 		query.setCurrentStatement(statement);
 		navigateToEvidenceView(statement.getId());
@@ -615,34 +612,32 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	public void displayReference(Annotation annotation) {
 		query.setCurrentAnnotation(annotation);
 		String id = annotation.getId();
-		if(!nullOrEmpty(id))
+		if (!nullOrEmpty(id))
 			displayReference(id);
 		else
-			ConfirmDialog.show(this,
-					"<span style='text-align:center;'>No evidence reference available.</span>",
-					cd -> {
-					}).setContentMode(ConfirmDialog.ContentMode.HTML);
+			ConfirmDialog.show(this, "<span style='text-align:center;'>No evidence reference available.</span>", cd -> {
+			}).setContentMode(ConfirmDialog.ContentMode.HTML);
 	}
 
 	public void displayReference(String annotationId) {
-		
-		/* 
-		 * Sometimes need to URL encode the 
-		 * annotation identifier (e.g. if from WikiData)
+
+		/*
+		 * Sometimes need to URL encode the annotation identifier (e.g. if from
+		 * WikiData)
 		 */
 		String encodedId = "";
 		try {
 			encodedId = URLEncoder.encode(annotationId, StandardCharsets.UTF_8.toString());
 		} catch (UnsupportedEncodingException e) {
-			_logger.error("displayReference() ERROR for annotationId '"+annotationId+"': "+e.getMessage());
+			_logger.error("displayReference() ERROR for annotationId '" + annotationId + "': " + e.getMessage());
 			return;
-		}		
-//		Navigator navigator = new Navigator(this, desktopView.getReferenceLayout());
-//
-//		navigator.addProvider(viewProvider);
+		}
+		// Navigator navigator = new Navigator(this, desktopView.getReferenceLayout());
+		//
+		// navigator.addProvider(viewProvider);
 
 		UI.getCurrent().getNavigator().navigateTo(ReferenceView.NAME + "/" + encodedId);
-		
+
 		VerticalLayout referenceTab = desktopView.getReferenceTab();
 		TabSheet tabsheet = desktopView.getTabSheet();
 		tabsheet.setSelectedTab(referenceTab);
@@ -667,7 +662,7 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 		// RelationSearchModes?
 		switch (mode) {
 		case RELATIONS:
-			query.setCurrentQueryConceptById(concept.getCliqueId()); 
+			query.setCurrentQueryConceptById(concept.getCliqueId());
 			break;
 		default:
 			// do nothing?
@@ -689,10 +684,10 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	ConceptDetailsHandler detailsHandler;
 
 	private String getCurrentConceptTitle(IdentifiedConcept concept) {
-		String cct = concept.getName()+" ("+concept.getCliqueId()+")";
+		String cct = concept.getName() + " (" + concept.getCliqueId() + ")";
 		return cct;
 	}
-	
+
 	/**
 	 * 
 	 * @param concept
@@ -713,32 +708,30 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 		currentConceptPopupView.setHideOnMouseOut(false);
 		currentConceptPopupView.addStyleName("current-concept-label");
 
-		popupLayout.addLayoutClickListener(
-			new LayoutClickListener() {
-				private static final long serialVersionUID = 1L;
-	
-				@Override
-				public void layoutClick(LayoutClickEvent event) {
-					currentConceptPopupView.setContent(new Content() {
-						private static final long serialVersionUID = 1L;
-	
-						@Override
-						public Component getPopupComponent() {
-							VerticalLayout popupContent = detailsHandler.getDetails(concept);
-							popupContent.setSpacing(true);
-							popupContent.setMargin(true);
-							popupContent.addStyleName("current-concept-popup-layout");
-							return popupContent;
-						}
-	
-						@Override
-						public String getMinimizedValueAsHTML() {
-							return getCurrentConceptTitle(concept);
-						}
-					});
-				}
+		popupLayout.addLayoutClickListener(new LayoutClickListener() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void layoutClick(LayoutClickEvent event) {
+				currentConceptPopupView.setContent(new Content() {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public Component getPopupComponent() {
+						VerticalLayout popupContent = detailsHandler.getDetails(concept);
+						popupContent.setSpacing(true);
+						popupContent.setMargin(true);
+						popupContent.addStyleName("current-concept-popup-layout");
+						return popupContent;
+					}
+
+					@Override
+					public String getMinimizedValueAsHTML() {
+						return getCurrentConceptTitle(concept);
+					}
+				});
 			}
-		);
+		});
 
 		popupLayout.addComponent(currentConceptPopupView);
 		popupLayout.setComponentAlignment(currentConceptPopupView, Alignment.MIDDLE_CENTER);
@@ -771,9 +764,9 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 		cache.resetCache();
 
 		// Then go to empty data table
-		navigateToRelationsView();
+		showRelationsTab();
 
-		TextField searchField = desktopView.getSearch();
+		TextField searchField = desktopView.getSearchField();
 		searchField.clear();
 		searchField.setInputPrompt("Search Concepts");
 		searchField.setImmediate(true);
@@ -854,9 +847,9 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 
 	// Terrible hacks. Should restructure the code to not use
 	// this many navigators.
-//	private Navigator relationsTabNavigator;
-//	private Navigator evidenceTabNavigator;
-//	private Navigator pubmedTabNavigator;
+	// private Navigator relationsTabNavigator;
+	// private Navigator evidenceTabNavigator;
+	// private Navigator pubmedTabNavigator;
 	private Window legend = null;
 
 	@Value("${application.hostname:'none'}")
@@ -867,14 +860,21 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	private String google_tracking_id; // e.g. "UA-87942746-1"
 
 	/**
-	 * initialize the desktop view
+	 * Initializes the desktopView (the main content after clicking the 'Launch'
+	 * button)
 	 */
-	public void initializeDesktopView() {
+	private void initDesktopView() {
 		this.desktopView = new DesktopView();
+
+		searchWindow.setCaption("Search by keywords");
+		searchWindow.center();
+		searchWindow.setResizable(true);
+		searchWindow.setHeight(50, Unit.EM);
+		searchWindow.setWidth(30, Unit.EM);
 		
 		initConceptLabelDescription();
 
-		TextField searchField = desktopView.getSearch();
+		TextField searchField = desktopView.getSearchField();
 
 		searchField.addStyleName("concept-search-field");
 
@@ -882,64 +882,65 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 			desktopView.getSearchBtn().setClickShortcut(KeyCode.ENTER);
 		});
 
-		searchField.addBlurListener(e -> {
-			desktopView.getSearchBtn().removeClickShortcut();
-		});
+		// searchField.addBlurListener(e -> {
+		// desktopView.getSearchBtn().removeClickShortcut();
+		// });
 
-		desktopView.getSearchBtn().addClickListener(e -> {
-			searchBtnClickListener(searchField, e);
-		});
-		
+		desktopView.getSearchBtn().addClickListener(createSearchClickListener());
+
 		HorizontalLayout viewingConcepts = desktopView.getViewingConcepts();
 		viewingConcepts.setSpacing(true);
-		
+
 		/*
-		 * Deprecating this checkbox triggered version of matchByIdentifier
-		 * Try to directly infer presence of a CURIE in the queryText (below)
-		 
-		// Choice of matching either by CURIE or by keywords
-		CheckBox matchByIdCb = new CheckBox("Match By Identifier");
-		matchByIdCb.setValue(query.matchByIdentifier());
-		matchByIdCb.addValueChangeListener(
-				event -> query.setMatchingMode(matchByIdCb.getValue())
-		);
-		viewingConcepts.addComponent(matchByIdCb);
-        */
-		
+		 * Deprecating this checkbox triggered version of matchByIdentifier Try to
+		 * directly infer presence of a CURIE in the queryText (below)
+		 * 
+		 * // Choice of matching either by CURIE or by keywords CheckBox matchByIdCb =
+		 * new CheckBox("Match By Identifier");
+		 * matchByIdCb.setValue(query.matchByIdentifier());
+		 * matchByIdCb.addValueChangeListener( event ->
+		 * query.setMatchingMode(matchByIdCb.getValue()) );
+		 * viewingConcepts.addComponent(matchByIdCb);
+		 */
+
 		// Button to reinitialize the query and map
 		desktopView.getClearMapBtn().addClickListener(e -> newQueryConfirmation(e));
 
 		desktopView.getTabSheet().addSelectedTabChangeListener(e -> {
-//			// Find the tabsheet
-//			TabSheet tabsheet = e.getTabSheet();
-//
-//			// Find the tab (here we know it's a VerticalLayout)
-//			VerticalLayout tab = (VerticalLayout) tabsheet.getSelectedTab();
-//
-//			// Get the tab caption from the tab object
-//			String caption = tabsheet.getTab(tab).getCaption();
-//
-//			_logger.info("Selected Tab: " + caption);
-//
-//			setTabNavigators(tab, caption);
-//
-//			// Note: PubMed view is not a ListView...
-//			if (caption.equals(ViewName.REFERENCE_TAB)) {
-//				String state = applicationNavigator.getState();
-//				if (!state.startsWith(ReferenceView.NAME)) {
-////					pubmedTabNavigator.navigateTo(ReferenceView.NAME);
-//					applicationNavigator.navigateTo(ReferenceView.NAME);
-//				} else {
-////					pubmedTabNavigator.navigateTo(state);
-//					applicationNavigator.navigateTo(state);
-//				}
-//			} else if (caption.equals(ViewName.EVIDENCE_TAB)) {
-////				evidenceTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.EVIDENCE_VIEW);
-//				applicationNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.EVIDENCE_VIEW);
-//			} else if (caption.equals(ViewName.RELATIONS_TAB)) {
-////				relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW);
-//				applicationNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW);
-//			}
+			// // Find the tabsheet
+			// TabSheet tabsheet = e.getTabSheet();
+			//
+			// // Find the tab (here we know it's a VerticalLayout)
+			// VerticalLayout tab = (VerticalLayout) tabsheet.getSelectedTab();
+			//
+			// // Get the tab caption from the tab object
+			// String caption = tabsheet.getTab(tab).getCaption();
+			//
+			// _logger.info("Selected Tab: " + caption);
+			//
+			// setTabNavigators(tab, caption);
+			//
+			// // Note: PubMed view is not a ListView...
+			// if (caption.equals(ViewName.REFERENCE_TAB)) {
+			// String state = applicationNavigator.getState();
+			// if (!state.startsWith(ReferenceView.NAME)) {
+			//// pubmedTabNavigator.navigateTo(ReferenceView.NAME);
+			// applicationNavigator.navigateTo(ReferenceView.NAME);
+			// } else {
+			//// pubmedTabNavigator.navigateTo(state);
+			// applicationNavigator.navigateTo(state);
+			// }
+			// } else if (caption.equals(ViewName.EVIDENCE_TAB)) {
+			//// evidenceTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" +
+			// ViewName.EVIDENCE_VIEW);
+			// applicationNavigator.navigateTo(ViewName.LIST_VIEW + "/" +
+			// ViewName.EVIDENCE_VIEW);
+			// } else if (caption.equals(ViewName.RELATIONS_TAB)) {
+			//// relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" +
+			// ViewName.RELATIONS_VIEW);
+			// applicationNavigator.navigateTo(ViewName.LIST_VIEW + "/" +
+			// ViewName.RELATIONS_VIEW);
+			// }
 		});
 
 		String[] colorOptions = { "Dark", "Light" };
@@ -1073,7 +1074,7 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 
 		initConceptMap();
 	}
-	
+
 	public void setZoomEnabled(boolean zoomEnabled) {
 		this.zoomEnabled = zoomEnabled;
 	}
@@ -1084,30 +1085,28 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	 * @param caption
 	 */
 	private void setTabNavigators(VerticalLayout tab, String caption) {
-//		if (relationsTabNavigator == null) {
-//			if (caption.equals(ViewName.RELATIONS_TAB)) {
-//				relationsTabNavigator = new Navigator(UI.getCurrent(), tab);
-//				relationsTabNavigator.addProvider(viewProvider);
-//			}
-//		}
-//
-//		if (evidenceTabNavigator == null) {
-//			if (caption.equals(ViewName.EVIDENCE_TAB)) {
-//				evidenceTabNavigator = new Navigator(UI.getCurrent(), tab);
-//				evidenceTabNavigator.addProvider(viewProvider);
-//			}
-//		}
-//
-//		if (pubmedTabNavigator == null) {
-//			if (caption.equals(ViewName.REFERENCE_TAB)) {
-//				pubmedTabNavigator = new Navigator(UI.getCurrent(), tab);
-//				pubmedTabNavigator.addProvider(viewProvider);
-//			}
-//		}
+		// if (relationsTabNavigator == null) {
+		// if (caption.equals(ViewName.RELATIONS_TAB)) {
+		// relationsTabNavigator = new Navigator(UI.getCurrent(), tab);
+		// relationsTabNavigator.addProvider(viewProvider);
+		// }
+		// }
+		//
+		// if (evidenceTabNavigator == null) {
+		// if (caption.equals(ViewName.EVIDENCE_TAB)) {
+		// evidenceTabNavigator = new Navigator(UI.getCurrent(), tab);
+		// evidenceTabNavigator.addProvider(viewProvider);
+		// }
+		// }
+		//
+		// if (pubmedTabNavigator == null) {
+		// if (caption.equals(ViewName.REFERENCE_TAB)) {
+		// pubmedTabNavigator = new Navigator(UI.getCurrent(), tab);
+		// pubmedTabNavigator.addProvider(viewProvider);
+		// }
+		// }
 	}
 
-	// This method will be called internally by the Navigator class.
-	@Override
 	public void showView(View view) {
 		if (view instanceof Component) {
 			VerticalLayout selectedTab = null;
@@ -1117,97 +1116,168 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 				selectedTab = desktopView.getEvidenceTab();
 			} else if (view instanceof ReferenceView) {
 				selectedTab = desktopView.getReferenceTab();
-			} else {
-				selectedTab = desktopView.getRelationsTab();
-				System.out.println("default tab selected");
 			}
-			selectedTab.removeAllComponents();
-			selectedTab.addComponent((Component) view);
-			desktopView.getTabSheet().setSelectedTab(selectedTab);
+
+			if (selectedTab != null) {
+				selectedTab.removeAllComponents();
+				selectedTab.addComponent((Component) view);
+				desktopView.getTabSheet().setSelectedTab(selectedTab);
+			}
 		} else {
 			throw new IllegalArgumentException("View is not a component: " + view);
 		}
 	}
+
+	private SearchResultView searchView = new SearchResultView();
+	/**
+	 * 
+	 * @return the ClickListener for the search button
+	 */
+	private ClickListener createSearchClickListener() {
+		ClickListener btnListener = (e) -> {
+			// prevents the user from clicking it rapidly
+			Button searchBtn = e.getButton();
+//			searchBtn.setEnabled(false);
+
+			String queryText = desktopView.getSearchField().getValue();
+			// do nothing if query is null or empty
+			if (nullOrEmpty(queryText)) {
+//				searchBtn.setEnabled(true);
+				return;
+			}
+
+			queryText = queryText.trim();
+			query.setCurrentQueryText(queryText);
+			if (matchByCurie(queryText)) {
+				/*
+				 * Matching by CURIE - resolve the matching concept then go directly to the
+				 * statements table
+				 */
+				Optional<IdentifiedConcept> conceptOpt = conceptService.findByIdentifier(queryText);
+				if (!conceptOpt.isPresent()) {
+					ConfirmDialog.show(this, "<span style='text-align:center;'>Concept identified by '" + queryText
+							+ "' could not be resolved.<br/>"
+							+ "Please check if you have a valid CURIE identifier for your concept of interest!</span>",
+							cd -> {
+							}).setContentMode(ConfirmDialog.ContentMode.HTML);
+					searchBtn.setEnabled(true);
+					return;
+				}
+
+				IdentifiedConcept concept = conceptOpt.get();
+				processConceptSearch(concept);
+
+				searchBtn.setEnabled(true);
+				showRelationsTab();
+			} else { // Classic Keyword search
+				ResultView resultView = new ResultView(queryText, new Date());
+				searchView.addResultView(resultView);
+				searchWindow.setContent(searchView);
+				searchWindow.addCloseListener(event -> {
+					searchBtn.setEnabled(true);
+					showRelationsTab();
+				});
+				
+				if (searchWindow.getParent() != this) {					
+					UI.getCurrent().addWindow(searchWindow);
+				}
+			}
+
+		};
+		return btnListener;
+	}
+
+	private Grid getSearchResultGrid() {
+		Grid resultGrid = new Grid();
+		
+		return resultGrid;
+	}
+	
+	private VerticalLayout getSearchResultLayout() {
+		VerticalLayout searchResultLayout = new VerticalLayout();
+		return  searchResultLayout;
+	}
+	
 	/**
 	 * 
 	 * @param searchField
 	 * @param e
 	 */
 	private void searchBtnClickListener(TextField searchField, ClickEvent e) {
-		// only allows the user to click once
-		Button searchBtn = e.getButton();
-		searchBtn.setEnabled(false);
-
-		String queryText = desktopView.getSearch().getValue();
-		queryText = queryText.trim();
-
-		// RMB: March 1, 2017 - empty queries seem too problematic now
-		// so we ignore them again!
-
-		if (nullOrEmpty(queryText)) {
-			ConfirmDialog.show(this,
-					"<span style='text-align:center;'>Please type in a non-empty query string in the search box</span>",
-					cd -> {
-					}).setContentMode(ConfirmDialog.ContentMode.HTML);
-
-			searchBtn.setEnabled(true);
-			return;
-		}
-
-		query.setCurrentQueryText(queryText);
-
-		if(matchByCurie(queryText)) {
-			/*
-			 * Matching by CURIE - resolve the matching concept 
-			 * then go directly to the statements table
-			 */
-			 Optional<IdentifiedConcept> conceptOpt = conceptService.findByIdentifier(queryText);
-			 
-			if (!conceptOpt.isPresent()) {
-				ConfirmDialog.show(this,
-					"<span style='text-align:center;'>Concept identified by '" + queryText + "' could not be resolved.<br/>"
-							+ "Please check if you have a valid CURIE identifier for your concept of interest!</span>",
-					cd -> {
-					}).setContentMode(ConfirmDialog.ContentMode.HTML);
-				searchBtn.setEnabled(true);
-				return;
-			}
-			
-			IdentifiedConcept concept = conceptOpt.get();
-			processConceptSearch(concept);
-
-			searchBtn.setEnabled(true);
-			
-			navigateToRelationsView();
-			
-		} else { // Classical Keyword search
-	
-			// Semantic type constraint in Concept-by-text results listing should initial be empty
-			query.setInitialConceptTypes(new HashSet<ConceptType>());
-	
-			ConceptSearchResults currentSearchResults = 
-					new ConceptSearchResults(viewProvider, ViewName.CONCEPTS_VIEW);
-			conceptSearchWindow = new Window();
-			conceptSearchWindow.setCaption("Concepts Matched by Key Words");
-			conceptSearchWindow.addStyleName("concept-search-window");
-			conceptSearchWindow.center();
-			conceptSearchWindow.setModal(true);
-			conceptSearchWindow.setResizable(true);
-			conceptSearchWindow.setWidth(75.0f, Unit.EM);
-			conceptSearchWindow.setContent(currentSearchResults);
-			
-			conceptSearchWindow.addCloseListener(event -> {
-				searchBtn.setEnabled(true);
-				navigateToRelationsView();
-			});
-	
-			UI.getCurrent().addWindow(conceptSearchWindow);
-		}
+//		Button searchBtn = e.getButton();
+//		searchBtn.setEnabled(false);
+//
+//		String queryText = desktopView.getSearchField().getValue();
+//		queryText = queryText.trim();
+//
+//		// RMB: March 1, 2017 - empty queries seem too problematic now
+//		// so we ignore them again!
+//
+//		if (nullOrEmpty(queryText)) {
+//			ConfirmDialog.show(this,
+//					"<span style='text-align:center;'>Please type in a non-empty query string in the search box</span>",
+//					cd -> {
+//					}).setContentMode(ConfirmDialog.ContentMode.HTML);
+//
+//			searchBtn.setEnabled(true);
+//			return;
+//		}
+//
+//		query.setCurrentQueryText(queryText);
+//
+//		if (matchByCurie(queryText)) {
+//			/*
+//			 * Matching by CURIE - resolve the matching concept then go directly to the
+//			 * statements table
+//			 */
+//			Optional<IdentifiedConcept> conceptOpt = conceptService.findByIdentifier(queryText);
+//
+//			if (!conceptOpt.isPresent()) {
+//				ConfirmDialog.show(this, "<span style='text-align:center;'>Concept identified by '" + queryText
+//						+ "' could not be resolved.<br/>"
+//						+ "Please check if you have a valid CURIE identifier for your concept of interest!</span>",
+//						cd -> {
+//						}).setContentMode(ConfirmDialog.ContentMode.HTML);
+//				searchBtn.setEnabled(true);
+//				return;
+//			}
+//
+//			IdentifiedConcept concept = conceptOpt.get();
+//			processConceptSearch(concept);
+//
+//			searchBtn.setEnabled(true);
+//
+//			showRelationsTab();
+//
+//		} else { // Classical Keyword search
+//
+//			// Semantic type constraint in Concept-by-text results listing should initial be
+//			// empty
+////			query.setInitialConceptTypes(new HashSet<ConceptType>());
+//
+//			ConceptSearchResults currentSearchResults = new ConceptSearchResults(viewProvider, ViewName.CONCEPTS_VIEW);
+//			conceptSearchWindow = new Window();
+//			conceptSearchWindow.setCaption("Concepts Matched by Key Words");
+//			conceptSearchWindow.addStyleName("concept-search-window");
+//			conceptSearchWindow.center();
+//			conceptSearchWindow.setModal(true);
+//			conceptSearchWindow.setResizable(true);
+//			conceptSearchWindow.setWidth(75.0f, Unit.EM);
+//			conceptSearchWindow.setContent(currentSearchResults);
+//
+//			conceptSearchWindow.addCloseListener(event -> {
+//				searchBtn.setEnabled(true);
+//				showRelationsTab();
+//			});
+//
+//			UI.getCurrent().addWindow(conceptSearchWindow);
+//		}
 	}
 
 	/**
-	 * Match the query against the form of A:B where A and B can be
-	 * of any non-whitespace characters.
+	 * Match the query against the form of A:B where A and B can be of any
+	 * non-whitespace characters.
+	 * 
 	 * @param queryText
 	 * @return true if the pattern is matched; otherwise false.
 	 */
@@ -1413,27 +1483,24 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 			desktopView.getCmLayoutSelect().setValue(MANUAL_CM_LAYOUT);
 
 			List<Integer> beacons = query.getCustomBeacons();
-			
-			CompletableFuture<AnnotatedConcept> future = 
-					kbService.getConceptWithDetails(conceptId, beacons);
-			
+
+			CompletableFuture<AnnotatedConcept> future = kbService.getConceptWithDetails(conceptId, beacons);
+
 			try {
-				AnnotatedConcept concept = future.get(
-						kbService.weightedTimeout(), 
-						KnowledgeBeaconService.BEACON_TIMEOUT_UNIT
-				);
-				
+				AnnotatedConcept concept = future.get(kbService.weightedTimeout(),
+						KnowledgeBeaconService.BEACON_TIMEOUT_UNIT);
+
 				query.setCurrentQueryConceptById(concept.getId());
 				setCurrentConceptTitle(concept.getName());
-				
+
 			} catch (InterruptedException | ExecutionException | TimeoutException | IndexOutOfBoundsException e) {
 				// e.printStackTrace();
-				_logger.error("DesktopUI.loadMap() error: "+e.getMessage()); 
+				_logger.error("DesktopUI.loadMap() error: " + e.getMessage());
 			}
-			
+
 			DesktopUI.getCurrent().getConceptMap().alignToCenter();
-			
-			navigateToRelationsView();
+
+			showRelationsTab();
 
 		} else {
 			new Notification("Invalid kb File, Could not able to parse meta information.",
@@ -1517,15 +1584,10 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	 * @return
 	 */
 	private boolean saveMap(boolean isClearMap) {
-		SaveWindow saveWindow = new SaveWindow(
-				getCurrentConceptMapName(),
-				query,
-				registry.getMapping(ViewName.LIBRARY_VIEW),
-				cm,
-				applicationNavigator,
-				cache
-		);
-//		SaveWindow.raiseExportWindow("", DesktopUI.getCurrent().getConceptMap(), query, cache);
+		SaveWindow saveWindow = new SaveWindow(getCurrentConceptMapName(), query,
+				registry.getMapping(ViewName.LIBRARY_VIEW), cm, applicationNavigator, cache);
+		// SaveWindow.raiseExportWindow("", DesktopUI.getCurrent().getConceptMap(),
+		// query, cache);
 
 		this.addWindow(saveWindow);
 
@@ -1595,7 +1657,7 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 				searchBtn.setEnabled(true);
 				ui.closeLibraryWindow();
 				ui.closeConceptSearchWindow();
-				navigateToRelationsView();
+				showRelationsTab();
 			});
 
 			// Attempting dynamic resize - not really working
@@ -1613,41 +1675,32 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	}
 
 	/**
-	 * This is the top-level navigator that controls the navigation 
-	 * in the app.
+	 * This is the top-level navigator that controls the navigation in the app.
 	 */
 	private Navigator applicationNavigator;
-	
-	private Navigator tabsheetNavigator;
-//	private Navigator evidenceTabNavigator;
-//	private Navigator referenceTabNavigator;
-//	private Navigator relationsTabNavigator;
 
+	private Navigator tabsheetNavigator;
+	// private Navigator evidenceTabNavigator;
+	// private Navigator referenceTabNavigator;
+	// private Navigator relationsTabNavigator;
 
 	/**
-	 * 
-	 * @return
+	 * @return The navigator for navigating through the application.
 	 */
 	public Navigator getApplicationNavigator() {
 		return applicationNavigator;
 	}
 
-	/**
-	 * This is a sub-level navigator that controls the navigation
-	 * to data table.
-	 */
+	// public Navigator getRelationsNavigator() {
+	// return this.relationsTabNavigator;
+	// }
+	// public Navigator getEvidenceNavigator() {
+	// return this.evidenceTabNavigator;
+	// }
+	// public Navigator getReferenceNavigator() {
+	// return this.referenceTabNavigator;
+	// }
 
-	
-//	public Navigator getRelationsNavigator() {
-//		return this.relationsTabNavigator;
-//	}
-//	public Navigator getEvidenceNavigator() {
-//		return this.evidenceTabNavigator;
-//	}
-//	public Navigator getReferenceNavigator() {
-//		return this.referenceTabNavigator;
-//	}
-	
 	@Override
 	/*
 	 * (non-Javadoc)
@@ -1655,81 +1708,85 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 	 * @see com.vaadin.ui.UI#init(com.vaadin.server.VaadinRequest)
 	 */
 	protected void init(VaadinRequest request) {
-		
+
 		GoogleAnalyticsTracker ga_tracker = new GoogleAnalyticsTracker(google_tracking_id, application_hostname, "/#!");
 		_logger.info("google_tracking_id: " + google_tracking_id);
 		_logger.info("application_hostname: " + application_hostname);
 
 		ga_tracker.extend(this);
-		
+
 		/*
-		 *  Disable session timeout
-		 *  See if this resolves the current issue of pesky premature timeout expiration
+		 * Disable session timeout See if this resolves the current issue of pesky
+		 * premature timeout expiration
 		 */
 		VaadinSession.getCurrent().getSession().setMaxInactiveInterval(-1);
-		ApplicationLayout applicationLayout = new ApplicationLayout(authenticationManager);
-		
-		applicationNavigator = applicationLayout.getNavigator();
-		applicationNavigator.addProvider(viewProvider);
-		tabsheetNavigator = new Navigator(this, (ViewDisplay)this);
-		tabsheetNavigator.addProvider(viewProvider);
-		
-		initializeDesktopView();
-//		setUpNavigator();
-
-		this.loginView = applicationLayout.getLoginView();
+		initDesktopView();
 
 		/*
-		 * attach the Google Analytics tracker to the Navigator to automatically
-		 * track all views
+		 * attach the Google Analytics tracker to the Navigator to automatically track
+		 * all views
 		 *
 		 * To use the tracker without the Navigator, just call the
 		 * tracker.trackPageview(pageId) separately when tracking is needed.
 		 */
-		applicationNavigator.addViewChangeListener(ga_tracker);
-		
+
 		getPage().addUriFragmentChangedListener(event -> handleURL(event.getUriFragment()));
-		
+
 		String fragment = getPage().getUriFragment();
 		handleURL(fragment);
 
+		ApplicationLayout applicationLayout = new ApplicationLayout(authenticationManager);
+		applicationNavigator = applicationLayout.getNavigator();
+		applicationNavigator.addView(DesktopView.NAME, desktopView);
+		applicationNavigator.addProvider(viewProvider);
+		applicationNavigator.addViewChangeListener(ga_tracker);
+		// tabsheetNavigator = new Navigator(this, (ViewDisplay)this);
+		// tabsheetNavigator.addProvider(viewProvider);
+		this.loginView = applicationLayout.getLoginView();
 		setContent(applicationLayout);
+		// Navigates to the landing page view if the URI fragment is empty
+		if (applicationNavigator.getState().isEmpty()) {
+			applicationNavigator.navigateTo(LandingPageView.NAME);
+		}
 	}
 
 	private void setUpNavigator() {
-//		relationsTabNavigator = new Navigator(UI.getCurrent(), desktopView.getRelationsTab());
-//		relationsTabNavigator.addProvider(viewProvider);
-//		evidenceTabNavigator = new Navigator(UI.getCurrent(), desktopView.getEvidenceTab());
-//		evidenceTabNavigator.addProvider(viewProvider);
-//		referenceTabNavigator = new Navigator(UI.getCurrent(), desktopView.getReferenceTab());
-//		referenceTabNavigator.addProvider(viewProvider);
-//		tabsheetNavigator = new Navigator(this, (ViewDisplay) this);
-//		tabsheetNavigator.addProvider(viewProvider);
+		// relationsTabNavigator = new Navigator(UI.getCurrent(),
+		// desktopView.getRelationsTab());
+		// relationsTabNavigator.addProvider(viewProvider);
+		// evidenceTabNavigator = new Navigator(UI.getCurrent(),
+		// desktopView.getEvidenceTab());
+		// evidenceTabNavigator.addProvider(viewProvider);
+		// referenceTabNavigator = new Navigator(UI.getCurrent(),
+		// desktopView.getReferenceTab());
+		// referenceTabNavigator.addProvider(viewProvider);
+		// tabsheetNavigator = new Navigator(this, (ViewDisplay) this);
+		// tabsheetNavigator.addProvider(viewProvider);
 	}
-	
+
 	private void handleURL(String fragment) {
-		if (fragment == null) return;
-		
+		if (fragment == null)
+			return;
+
 		final String mapPrefix = "map=";
 		final String passwordPrefix = "passwordReset?token=";
 
 		if (fragment.startsWith(mapPrefix)) {
-			
+
 			applicationNavigator.navigateTo(ListView.NAME);
 
 			User user = authenticationManager.getCurrentUser();
 			String conceptMapName = fragment.replaceFirst(mapPrefix, "");
-			
+
 			ConceptMapArchive map = conceptMapArchiveService.getConceptMapArchiveByName(conceptMapName,
 					user != null ? user.getUserId() : null,
 					user != null ? user.getIdsOfGroupsBelongedTo() : new String[0]);
-			
+
 			if (map != null) {
-				
-				LibraryDetails libraryDetails = new LibraryDetails(map, query, userService,
-						e -> {
-							conceptMapLibraryWindow.close();
-						});
+
+				LibraryDetails libraryDetails = new LibraryDetails(map, query, userService, e -> {
+					conceptMapLibraryWindow.close();
+				});
 
 				conceptMapLibraryWindow = new Window();
 				conceptMapLibraryWindow.setContent(libraryDetails);
@@ -1744,18 +1801,18 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 					searchBtn.setEnabled(true);
 					closeLibraryWindow();
 					closeConceptSearchWindow();
-					navigateToRelationsView();
+					showRelationsTab();
 				});
-				
+
 				UI.getCurrent().addWindow(conceptMapLibraryWindow);
-				
+
 			} else {
 				Notification.show("No concept map with the name \"" + conceptMapName
 						+ "\" was found. You may need to login to view this map.", Type.WARNING_MESSAGE);
 			}
 
 		} else if (fragment.startsWith(passwordPrefix)) {
-			
+
 			String token = fragment.replace(passwordPrefix, "");
 			applicationNavigator.navigateTo(PasswordResetView.NAME + "/" + token);
 		}
@@ -1789,4 +1846,3 @@ public class DesktopUI extends UI implements MessageService, Util, ViewDisplay {
 		return this.currentConceptMapName;
 	}
 }
-

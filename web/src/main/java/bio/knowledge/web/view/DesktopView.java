@@ -53,23 +53,16 @@ public class DesktopView extends DesktopDesign implements View {
 
 	private static final long serialVersionUID = -3941787763184092605L;
 
-	public static final String NAME = "desktop";
-	
-	public DesktopView() { }
-	
+	public static final String NAME = "main";
+
+	public DesktopView() {
+	}
 
 	/**
 	 * @return the search
 	 */
-	public TextField getSearch() {
+	public TextField getSearchField() {
 		return search;
-	}
-
-	/**
-	 * @param search the search to set
-	 */
-	public void setSearch(TextField search) {
-		this.search = search;
 	}
 
 	/**
@@ -80,24 +73,10 @@ public class DesktopView extends DesktopDesign implements View {
 	}
 
 	/**
-	 * @param searchBtn Button to set
-	 */
-	public void setSearchBtn(Button searchBtn) {
-		this.searchBtn = searchBtn;
-	}
-
-	/**
 	 * @return the demoMapBtn
 	 */
 	public Button getSearchMapLibraryBtn() {
 		return searchMapLibraryBtn;
-	}
-
-	/**
-	 * @param demoMapBtn the demoMapBtn to set
-	 */
-	public void setSearchMapLibraryBtn(Button searchMapLibraryBtn) {
-		this.searchMapLibraryBtn = searchMapLibraryBtn;
 	}
 
 	/**
@@ -107,14 +86,6 @@ public class DesktopView extends DesktopDesign implements View {
 		return centerMapBtn;
 	}
 
-//	/**
-//	 * @param viewingConcepts the viewingConcepts to set
-//	 */
-//	public void setViewingConceptsLabel(Label viewingConceptsLabel) {
-//		this.viewingConceptsLabel = viewingConceptsLabel;
-//	}
-
-
 	/**
 	 * @return the cmbar
 	 */
@@ -122,12 +93,12 @@ public class DesktopView extends DesktopDesign implements View {
 		return cmbar;
 	}
 
-	/**
-	 * @param cmbar the cmbar to set
-	 */
-	public void setCmbar(HorizontalLayout cmbar) {
-		this.cmbar = cmbar;
-	}
+	// /**
+	// * @param cmbar the cmbar to set
+	// */
+	// public void setCmbar(HorizontalLayout cmbar) {
+	// this.cmbar = cmbar;
+	// }
 
 	/**
 	 * @return the saveBtn
@@ -136,12 +107,12 @@ public class DesktopView extends DesktopDesign implements View {
 		return saveBtn;
 	}
 
-	/**
-	 * @param saveBtn the saveBtn to set
-	 */
-	public void setSaveBtn(Button saveBtn) {
-		this.saveBtn = saveBtn;
-	}
+	// /**
+	// * @param saveBtn the saveBtn to set
+	// */
+	// public void setSaveBtn(Button saveBtn) {
+	// this.saveBtn = saveBtn;
+	// }
 
 	/**
 	 * @return the loadMap
@@ -150,12 +121,12 @@ public class DesktopView extends DesktopDesign implements View {
 		return loadMap;
 	}
 
-	/**
-	 * @param loadMap the loadMap to set
-	 */
-	public void setLoadMap(Upload loadMap) {
-		this.loadMap = loadMap;
-	}
+	// /**
+	// * @param loadMap the loadMap to set
+	// */
+	// public void setLoadMap(Upload loadMap) {
+	// this.loadMap = loadMap;
+	// }
 
 	/**
 	 * @return the clearMapBtn
@@ -165,16 +136,17 @@ public class DesktopView extends DesktopDesign implements View {
 	}
 
 	/**
-	 * @param clearMapBtn to set
+	 * @param clearMapBtn
+	 *            to set
 	 */
-	public void setClearMapBtn(Button clearMapBtn) {
-		this.clearMapBtn = clearMapBtn;
-	}
-	
+	// public void setClearMapBtn(Button clearMapBtn) {
+	// this.clearMapBtn = clearMapBtn;
+	// }
+
 	public TabSheet getTabSheet() {
-		return dataTabSheet ;
+		return dataTabSheet;
 	}
-	
+
 	/**
 	 * @return the relationsTab
 	 */
@@ -186,71 +158,68 @@ public class DesktopView extends DesktopDesign implements View {
 	 * Implicitome disabled for now...
 	 * 
 	 * @return the implicitRelationsTab
-
-	public VerticalLayout getImplicitRelationsTab() {
-		return implicitRelationsTab;
-	}
+	 * 
+	 *         public VerticalLayout getImplicitRelationsTab() { return
+	 *         implicitRelationsTab; }
 	 */
-	
+
 	/**
 	 * April 21, Implicitome removed for now
 	 * 
 	 * @return the cooccurrencesTab
-
-	public VerticalLayout getCooccurrencesTab() {
-		return cooccurrencesTab;
-	}
-	*/
+	 * 
+	 *         public VerticalLayout getCooccurrencesTab() { return
+	 *         cooccurrencesTab; }
+	 */
 
 	public VerticalLayout getEvidenceTab() {
-		return evidenceTab ;
+		return evidenceTab;
 	}
-	
+
 	public VerticalLayout getReferenceTab() {
-		return referenceTab ;
+		return referenceTab;
 	}
-	
-	
-	public HorizontalLayout getCmPanel(){
+
+	public HorizontalLayout getCmPanel() {
 		return cmPanel;
 	}
-	
+
 	public HorizontalLayout getViewingConcepts() {
 		return viewingConcepts;
 	}
-	
+
 	public NativeSelect getColorSelect() {
 		return colorSelect;
 	}
-	
+
 	public VerticalLayout getReferenceLayout() {
 		return referenceLayout;
 	}
 
-	public void setReferenceLayout(VerticalLayout referenceLayout) {
-		this.referenceLayout = referenceLayout;
-	}
-	
+//	public void setReferenceLayout(VerticalLayout referenceLayout) {
+//		this.referenceLayout = referenceLayout;
+//	}
+
 	public NativeSelect getCmLayoutSelect() {
 		return cmLayoutSelect;
 	}
-	
-	public void setDesktopSplitPanel(VerticalSplitPanel splitPanel) {
-		this.desktopSplitPanel = splitPanel ;
-	}
-	
+
+//	public void setDesktopSplitPanel(VerticalSplitPanel splitPanel) {
+//		this.desktopSplitPanel = splitPanel;
+//	}
+
 	public VerticalSplitPanel getDesktopSplitPanel() {
-		return desktopSplitPanel ;
+		return desktopSplitPanel;
 	}
 
 	public HorizontalLayout getPopUpLayout() {
 		return popUpLayout;
 	}
-	
+
 	public Slider getZoomSlider() {
 		return zoomSlider;
 	}
-	
+
 	/**
 	 * @return the legend
 	 */
@@ -258,46 +227,45 @@ public class DesktopView extends DesktopDesign implements View {
 		return showLegendBtn;
 	}
 
-	/**
-	 * @param 
-	 */
-	public void setShowLegendBtn(Button showLegendBtn) {
-		this.showLegendBtn = showLegendBtn;
-	}
-	
+//	/**
+//	 * @param
+//	 */
+//	public void setShowLegendBtn(Button showLegendBtn) {
+//		this.showLegendBtn = showLegendBtn;
+//	}
+
 	public Label getConceptMapNameLabel() {
 		return this.conceptMapNameLabel;
 	}
-	
+
 	@Override
 	public void enter(ViewChangeEvent event) {
 		if (UI.getCurrent() instanceof DesktopUI) {
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
-			
 			String state = ui.getNavigator().getState();
-			
-			System.out.println("state is: " + state);
-			
-			// To make sure it displays the relations table when 
-			// navigated back to this view's URI fragment.
-			if (state.equals(DesktopView.NAME) || 
-					(state.equals(ListView.NAME + "/" + ViewName.RELATIONS_VIEW))) {				
-				ui.navigateToRelationsView();
-			}
-			
+
+			System.out.println("DesktopView[enter] state is: " + state);
+
+			// // To make sure it displays the relations table when
+			// // navigated back to this view's URI fragment.
+			// if (state.equals(DesktopView.NAME) ||
+			// (state.equals(ListView.NAME + "/" + ViewName.RELATIONS_VIEW))) {
+			// ui.navigateToRelationsView();
+			// }
+
 			// TODO: Rework the above code to fit into the below code.
 			// This should allow the user navigate to a view simply by
 			// using the URL (maybe they send a URL to a friend).
-//			if (state.startsWith(ListView.NAME + "/" + ViewName.RELATIONS_VIEW)) {
-//				String conceptId = getStateSegment(state, 2);
-//				ui.displayStatements(conceptId);
-//			} else if (state.startsWith(ReferenceView.NAME)) {
-//				String annotationId = getStateSegment(state, 1);
-//				ui.displayReference(annotationId);
-//			}
+			// if (state.startsWith(ListView.NAME + "/" + ViewName.RELATIONS_VIEW)) {
+			// String conceptId = getStateSegment(state, 2);
+			// ui.displayStatements(conceptId);
+			// } else if (state.startsWith(ReferenceView.NAME)) {
+			// String annotationId = getStateSegment(state, 1);
+			// ui.displayReference(annotationId);
+			// }
 		}
 	}
-	
+
 	private String getStateSegment(String state, int i) {
 		String[] parameters = state.split("/");
 		if (parameters.length > i) {
@@ -306,5 +274,5 @@ public class DesktopView extends DesktopDesign implements View {
 			return "";
 		}
 	}
-	
+
 }

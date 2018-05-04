@@ -251,7 +251,7 @@ public class ReferenceView extends ReferenceDesign implements View {
 
 			query.setCurrentPmid(pmid);
 			
-			ui.navigateToRelationsView() ;
+			ui.showRelationsTab() ;
 			
 		});
 	}

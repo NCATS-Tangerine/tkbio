@@ -57,10 +57,18 @@ public class KBQueryImpl implements KBQuery {
 
 	private String userId = "";
 	private String queryId = "";
-	private String relationsTextFilter;
-	
+	private String relationsTextFilter = "";
+
+	private Set<ConceptType> initialConceptTypes = new HashSet<>();
+	private Set<ConceptType> selectedConceptTypes = new HashSet<>();
+
+	public KBQueryImpl() {
+
+	}
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#currentUserId()
 	 */
 	@Override
@@ -70,6 +78,7 @@ public class KBQueryImpl implements KBQuery {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#currentUserId(java.lang.String)
 	 */
 	@Override
@@ -79,9 +88,10 @@ public class KBQueryImpl implements KBQuery {
 
 	@Deprecated
 	private String sessionId = "";
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#setUserSessionId(java.lang.String)
 	 */
 	@Deprecated
@@ -92,6 +102,7 @@ public class KBQueryImpl implements KBQuery {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#getUserSessionId()
 	 */
 	@Deprecated
@@ -102,6 +113,7 @@ public class KBQueryImpl implements KBQuery {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#clearUserSessionId()
 	 */
 	@Deprecated
@@ -109,10 +121,10 @@ public class KBQueryImpl implements KBQuery {
 	public void clearUserSessionId() {
 		sessionId = "";
 	}
-	
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#hasSessionId()
 	 */
 	@Deprecated
@@ -122,27 +134,30 @@ public class KBQueryImpl implements KBQuery {
 	}
 
 	private List<Integer> customBeacons = new ArrayList<Integer>();
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#setCustomBeacons(java.util.List)
 	 */
 	@Override
-	public void setCustomBeacons(List<Integer> customBeacons){ 
+	public void setCustomBeacons(List<Integer> customBeacons) {
 		this.customBeacons = customBeacons;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#getCustomBeacons()
 	 */
 	@Override
-	public List<Integer>  getCustomBeacons(){ 
+	public List<Integer> getCustomBeacons() {
 		return customBeacons;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#clearCustomBeacons()
 	 */
 	@Override
@@ -152,6 +167,7 @@ public class KBQueryImpl implements KBQuery {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#countCustomBeacons()
 	 */
 	@Override
@@ -159,27 +175,30 @@ public class KBQueryImpl implements KBQuery {
 		return customBeacons.size();
 	}
 
-	
-	private String currentQueryText = "" ; 
+	private String currentQueryText = "";
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#setCurrentQueryText(java.lang.String)
 	 */
 	@Override
 	public void setCurrentQueryText(String query) {
-		this.currentQueryText = query ;
+		this.currentQueryText = query;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#setCurrentQueryText(java.lang.String)
 	 */
-	@Override	
+	@Override
 	public String getCurrentQueryText() {
-		return currentQueryText ;
+		return currentQueryText;
 	}
 
 	private Boolean matchingByIdentifier = false;
-	
+
 	@Override
 	public void setMatchingMode(Boolean matchByID) {
 		matchingByIdentifier = matchByID;
@@ -190,50 +209,61 @@ public class KBQueryImpl implements KBQuery {
 		return matchingByIdentifier;
 	}
 
-
-	
 	@Autowired
-	private ConceptService conceptService ;
+	private ConceptService conceptService;
 
-	private Optional<IdentifiedConcept> queryConcept = Optional.empty() ;
+	private Optional<IdentifiedConcept> queryConcept = Optional.empty();
 
-	/* (non-Javadoc)
-	 * @see bio.knowledge.service.KBQuery#setCurrentQueryConcept(bio.knowledge.model.Concept)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * bio.knowledge.service.KBQuery#setCurrentQueryConcept(bio.knowledge.model.
+	 * Concept)
 	 */
 	@Override
 	public void setCurrentQueryConceptById(String identifier) {
 		resetQuery();
 		this.currentQueryConceptId = identifier;
 	}
+
 	private String currentQueryConceptId = null;
-	@Override public String getCurrentConceptId() {
+
+	@Override
+	public String getCurrentConceptId() {
 		return this.currentQueryConceptId;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#getCurrentQueryConcept()
 	 */
 	@Override
 	public Optional<IdentifiedConcept> getCurrentQueryConcept() {
 		return queryConcept;
 	}
-	
+
 	/*
 	 * flag for tracking type of Library search
 	 */
-	private LibrarySearchMode librarySearchMode = LibrarySearchMode.NONE ;
+	private LibrarySearchMode librarySearchMode = LibrarySearchMode.NONE;
 
 	/*
 	 * (non-Javadoc)
-	 * @see bio.knowledge.service.KBQuery#setLibraryMode(bio.knowledge.service.KBQuery.LibrarySearchMode)
+	 * 
+	 * @see
+	 * bio.knowledge.service.KBQuery#setLibraryMode(bio.knowledge.service.KBQuery.
+	 * LibrarySearchMode)
 	 */
 	@Override
-	public void setLibraryMode( LibrarySearchMode mode ) {
-		librarySearchMode = mode ;
+	public void setLibraryMode(LibrarySearchMode mode) {
+		librarySearchMode = mode;
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#getLibraryMode()
 	 */
 	@Override
@@ -241,60 +271,71 @@ public class KBQueryImpl implements KBQuery {
 		return librarySearchMode;
 	}
 
-	private Optional<Library> currentLibrary = Optional.empty() ;
-	
+	private Optional<Library> currentLibrary = Optional.empty();
+
 	/*
 	 * (non-Javadoc)
-	 * @see bio.knowledge.service.KBQuery#setCurrentLibrary(bio.knowledge.model.Library)
+	 * 
+	 * @see
+	 * bio.knowledge.service.KBQuery#setCurrentLibrary(bio.knowledge.model.Library)
 	 */
 	@Override
-	public void setCurrentLibrary( Library library ) {
-		if( library==null )
-			currentLibrary = Optional.empty() ;
+	public void setCurrentLibrary(Library library) {
+		if (library == null)
+			currentLibrary = Optional.empty();
 		else {
-			currentLibrary = Optional.of(library) ;
+			currentLibrary = Optional.of(library);
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#getCurrentLibrary()
 	 */
-	@Override	
+	@Override
 	public Optional<Library> getCurrentLibrary() {
-		return currentLibrary ;
+		return currentLibrary;
 	}
 
-	private Optional<Library> currentImportedMaps = Optional.empty() ;
-	
-	/* (non-Javadoc)
-	 * @see bio.knowledge.service.KBQuery#setCurrentImportedMap(bio.knowledge.model.ConceptMapArchive)
+	private Optional<Library> currentImportedMaps = Optional.empty();
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see bio.knowledge.service.KBQuery#setCurrentImportedMap(bio.knowledge.model.
+	 * ConceptMapArchive)
 	 */
 	@Override
-	public void setCurrentImportedMaps( Library library ) {
-		if( library==null )
-			currentImportedMaps = Optional.empty() ;
+	public void setCurrentImportedMaps(Library library) {
+		if (library == null)
+			currentImportedMaps = Optional.empty();
 		else {
-			currentImportedMaps = Optional.of(library) ;
+			currentImportedMaps = Optional.of(library);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see bio.knowledge.service.KBQuery#addImportedMap(bio.knowledge.model.ConceptMapArchive)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see bio.knowledge.service.KBQuery#addImportedMap(bio.knowledge.model.
+	 * ConceptMapArchive)
 	 */
 	@Override
 	public void addImportedMap(ConceptMapArchive map) {
-		Library library ;
-		if(!currentImportedMaps.isPresent())
-			library = new Library() ;
+		Library library;
+		if (!currentImportedMaps.isPresent())
+			library = new Library();
 		else
-			library = currentImportedMaps.get() ;
-		
-		library.addConceptMap(map); 
-		setCurrentImportedMaps( library ) ;
+			library = currentImportedMaps.get();
+
+		library.addConceptMap(map);
+		setCurrentImportedMaps(library);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#getCurrentImportedMap()
 	 */
 	@Override
@@ -302,23 +343,29 @@ public class KBQueryImpl implements KBQuery {
 		return currentImportedMaps;
 	}
 
-	private Optional<IdentifiedConcept> selectedConcept = Optional.empty() ;
+	private Optional<IdentifiedConcept> selectedConcept = Optional.empty();
 
-	/* (non-Javadoc)
-	 * @see bio.knowledge.service.KBQuery#setCurrentQueryConcept(bio.knowledge.model.Concept)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * bio.knowledge.service.KBQuery#setCurrentQueryConcept(bio.knowledge.model.
+	 * Concept)
 	 */
 	@Override
 	public void setCurrentSelectedConcept(IdentifiedConcept query) {
-		if(query==null)
-			selectedConcept = Optional.empty() ;
+		if (query == null)
+			selectedConcept = Optional.empty();
 		else {
 			// the concept is pulled in by clique
 			String identifier = query.getCliqueId();
-			selectedConcept = conceptService.getDetailsByCliqueId(identifier) ;
+			selectedConcept = conceptService.getDetailsByCliqueId(identifier);
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#getCurrentQueryConcept()
 	 */
 	@Override
@@ -326,19 +373,24 @@ public class KBQueryImpl implements KBQuery {
 		return selectedConcept;
 	}
 
-	private Optional<Statement> currentStatement = Optional.empty() ;
-	
-	/* (non-Javadoc)
-	 * @see bio.knowledge.service.KBQuery#setCurrentStatement(bio.knowledge.model.semmeddb.Statement)
+	private Optional<Statement> currentStatement = Optional.empty();
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see bio.knowledge.service.KBQuery#setCurrentStatement(bio.knowledge.model.
+	 * semmeddb.Statement)
 	 */
 	@Override
 	public void setCurrentStatement(Statement statement) {
 		Evidence evidence = statement.getEvidence();
-		this.currentEvidence  = Optional.ofNullable(evidence) ;
+		this.currentEvidence = Optional.ofNullable(evidence);
 		this.currentStatement = Optional.ofNullable(statement);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#getCurrentStatement()
 	 */
 	@Override
@@ -346,151 +398,171 @@ public class KBQueryImpl implements KBQuery {
 		return currentStatement;
 	}
 
-	private Optional< Evidence > currentEvidence = Optional.empty() ;
-	
-	/* (non-Javadoc)
+	private Optional<Evidence> currentEvidence = Optional.empty();
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#setCurrentEvidence(java.util.Set)
 	 */
 	@Override
-	public void setCurrentEvidence( Evidence evidence ) {
-		currentEvidence = Optional.of(evidence) ;
+	public void setCurrentEvidence(Evidence evidence) {
+		currentEvidence = Optional.of(evidence);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#getCurrentEvidence()
 	 */
 	@Override
-	public Optional< Evidence > getCurrentEvidence() {
+	public Optional<Evidence> getCurrentEvidence() {
 		return currentEvidence;
 	}
 
-	private Optional<Annotation> currentAnnotation = Optional.empty() ;
-	
-	/* (non-Javadoc)
-	 * @see bio.knowledge.service.KBQuery#setCurrentAnnotation(bio.knowledge.model.semmeddb.Annotation)
+	private Optional<Annotation> currentAnnotation = Optional.empty();
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see bio.knowledge.service.KBQuery#setCurrentAnnotation(bio.knowledge.model.
+	 * semmeddb.Annotation)
 	 */
 	@Override
 	public void setCurrentAnnotation(Annotation annotation) {
-		this.currentAnnotation = Optional.of(annotation) ; 
+		this.currentAnnotation = Optional.of(annotation);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#getCurrentAnnotation()
 	 */
 	@Override
 	public Optional<Annotation> getCurrentAnnotation() {
 		return currentAnnotation;
 	}
-	
-	private Optional< Set<ConceptType> > selectedInitialConceptTypes = Optional.empty() ;
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#getInitialConceptTypes()
 	 */
 	@Override
-	public Optional<Set<ConceptType>> getInitialConceptTypes() {
-		return selectedInitialConceptTypes;
+	public Set<ConceptType> getInitialConceptTypes() {
+		return initialConceptTypes;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#setInitialConceptTypes(java.util.Set)
 	 */
 	@Override
-	public void setInitialConceptTypes( Set<ConceptType> typeSet ) {
-		this.selectedInitialConceptTypes = Optional.of(typeSet);
+	public void setInitialConceptTypes(Set<ConceptType> types) {
+		this.initialConceptTypes = types;
 	}
 
-	private Optional< Set<ConceptType> > selectedConceptTypes = Optional.empty() ;
-	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#getConceptTypes()
 	 */
 	@Override
-	public Optional<Set<ConceptType>> getConceptTypes() {
+	public Set<ConceptType> getSelectedConceptTypes() {
 		return selectedConceptTypes;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#setConceptTypes(java.util.Set)
 	 */
 	@Override
-	public void setConceptTypes( Set<ConceptType> typeSet ) {
-		this.selectedConceptTypes = Optional.of(typeSet);
+	public void setSelectedConceptTypes(Set<ConceptType> types) {
+		this.selectedConceptTypes = types;
 	}
 
-
 	/**
-	 *  This is for retrieval of predication based on PMID.
+	 * This is for retrieval of predication based on PMID.
 	 */
 
-	private Optional<String> pmid = Optional.empty() ;
-	
+	private Optional<String> pmid = Optional.empty();
+
 	@Override
 	public void setCurrentPmid(String pmid) {
-		//this.resetQuery();
-		//currentEvidence = Optional.empty(); //not sure why this should be emptied here?
+		// this.resetQuery();
+		// currentEvidence = Optional.empty(); //not sure why this should be emptied
+		// here?
 		this.pmid = Optional.of(pmid);
-		this.relationSearchMode = RelationSearchMode.PMID ;
+		this.relationSearchMode = RelationSearchMode.PMID;
 	}
 
 	@Override
 	public Optional<String> getCurrentPmid() {
 		return pmid;
 	}
-	
-	private RelationSearchMode relationSearchMode = RelationSearchMode.RELATIONS ;
+
+	private RelationSearchMode relationSearchMode = RelationSearchMode.RELATIONS;
+
 	/*
 	 * (non-Javadoc)
-	 * @see bio.knowledge.service.KBQuery#setRelationSearchMode(bio.knowledge.service.KBQuery.RelationSearchMode)
+	 * 
+	 * @see
+	 * bio.knowledge.service.KBQuery#setRelationSearchMode(bio.knowledge.service.
+	 * KBQuery.RelationSearchMode)
 	 */
 	@Override
 	public void setRelationSearchMode(RelationSearchMode mode) {
-		relationSearchMode = mode ;
+		relationSearchMode = mode;
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#getRelationSearchMode()
 	 */
 	@Override
 	public RelationSearchMode getRelationSearchMode() {
-		return relationSearchMode ;
+		return relationSearchMode;
 	}
-	
+
 	// the type used to filter relations table (e.g. drugs, diseases, etc.)
 	private String type = "";
-	
+
 	@Override
 	public void setSemGroupFilterType(String type) {
 		this.type = type;
 	}
-	
+
 	@Override
 	public String getSemGroupFilterType() {
 		return this.type;
 	}
-	
+
 	@Override
 	public void resetSemGroupFilterType() {
 		setSemGroupFilterType("");
 	}
-	
+
 	private Object value = null;
-	
+
 	@Override
 	public void setOtherSemGroupFilterValue(Object value) {
 		this.value = value;
 	}
-	
+
 	@Override
 	public Object getOtherSemGroupFilterValue() {
-		 return value;
+		return value;
 	}
-	
-	// resets the the item id(s) to be used for the tree in the semantic popup window
+
+	// resets the the item id(s) to be used for the tree in the semantic popup
+	// window
 	private void resetOtherFilterValue() {
 		value = null;
 	}
-	
+
 	private Optional<Set<Predicate>> predicateFilterValue = Optional.empty();
 
 	@Override
@@ -507,7 +579,7 @@ public class KBQueryImpl implements KBQuery {
 	public void resetPredicateFilterValue() {
 		predicateFilterValue = Optional.empty();
 	}
-	
+
 	private Set<String> nodeIds = new HashSet<>();
 
 	@Override
@@ -519,20 +591,22 @@ public class KBQueryImpl implements KBQuery {
 	public void addNodeIdToSet(String cstId) {
 		nodeIds.add(cstId);
 	}
-	
-	public void clearNodeIdsFromConceptMap(){
+
+	public void clearNodeIdsFromConceptMap() {
 		nodeIds.clear();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bio.knowledge.service.KBQuery#resetQuery()
 	 */
 	@Override
 	public void resetQuery() {
-		queryConcept = Optional.empty() ;
-		currentStatement = Optional.empty() ;
-		currentEvidence = Optional.empty() ;
-		selectedConceptTypes = Optional.empty() ;
+		queryConcept = Optional.empty();
+		currentStatement = Optional.empty();
+		currentEvidence = Optional.empty();
+		selectedConceptTypes.clear();
 		pmid = Optional.empty();
 		resetSemGroupFilterType();
 		resetOtherFilterValue();
@@ -540,10 +614,10 @@ public class KBQueryImpl implements KBQuery {
 		clearNodeIdsFromConceptMap();
 	}
 
-	private ConceptSearchMode conceptSearchMode = ConceptSearchMode.DEFAULT ;
+	private ConceptSearchMode conceptSearchMode = ConceptSearchMode.DEFAULT;
 
 	private IdentifiedConcept lastSelectedConcept;
-	
+
 	@Override
 	public void setConceptSearchMode(ConceptSearchMode mode) {
 		this.conceptSearchMode = mode;
@@ -576,7 +650,7 @@ public class KBQueryImpl implements KBQuery {
 	public int tempCoordY() {
 		return tempY;
 	}
-	
+
 	@Override
 	public void tempCoordX(int x) {
 		this.tempX = x;
@@ -596,12 +670,12 @@ public class KBQueryImpl implements KBQuery {
 	public String getSimpleTextFilter() {
 		return this.relationsTextFilter;
 	}
-	
+
 	@Override
 	public String getCurrentQueryId() {
 		return queryId;
 	}
-	
+
 	@Override
 	public void setCurrentQueryId(String queryId) {
 		this.queryId = queryId;

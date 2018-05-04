@@ -63,6 +63,12 @@ $color-green: #5cb85c;
 
   	// Insert your own theme rules here
   	@include resets;
+  	
+  	.text-overflow {
+  		white-space: nowrap; 
+  		overflow: hidden;
+  		text-overflow: ellipsis;
+  	}
   
   	//--Buttons--//
 	#aboutBtn, #helpBtn, #contactBtn {

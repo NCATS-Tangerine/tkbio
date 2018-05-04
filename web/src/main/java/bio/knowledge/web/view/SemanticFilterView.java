@@ -193,7 +193,7 @@ public class SemanticFilterView extends SemanticFilterDesign implements View {
 			if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
 				query.setInitialConceptTypes(typeSet);
 			} else if (viewName.equals(ViewName.RELATIONS_VIEW)) {
-				query.setConceptTypes(typeSet);
+				query.setSelectedConceptTypes(typeSet);
 			}
 			
 			shouldRefresh = true;

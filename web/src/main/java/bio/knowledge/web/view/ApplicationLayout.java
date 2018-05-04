@@ -64,7 +64,6 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 	
 	private Navigator navigator;
 	private LoginView loginView;
-//	private ErrorView errorView;
 	
 	public LoginView getLoginView() {
 		return this.loginView;
@@ -86,8 +85,6 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 		
 		setupRestrictedAccess(authenticationManager);
 		
-		// Register views. Note: the DesktopView is registered in the DesktopUI class.
-		
 		View userAccountView = new UserAccountView(navigator);
 		authenticationManager.addListener((AuthenticationListener) userAccountView);
 		this.loginView = new LoginView(navigator);
@@ -104,16 +101,10 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 		
 		setCommonNavigationViews();
 		
-		// Navigates to the landing page view if the URI fragment is empty
-		if (navigator.getState().isEmpty()) {
-			navigator.navigateTo(LandingPageView.NAME);
-		}
-		
 		showButtonsForLoggedIn(authenticationManager.isUserAuthenticated());
 		
 		logoutBtn.addClickListener(event -> {
 			authenticationManager.logout();
-//			navigator.navigateTo(LandingPageView.NAME);
 		});
 		
 		AuthenticationListener authListener = new AuthenticationListener() {
@@ -279,13 +270,7 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 	@Override
 	public void showView(View view) {
 	    if (view instanceof Component) {
-            content.setContent((Component) view);            
-//            for (final Iterator<Component> i = side_bar.iterator(); i.hasNext();) {
-//            	Component component = i.next();
-//            	
-//            	setStyleByData(component, view.getClass().getName());
-//            }
-            
+            content.setContent((Component) view);                        
             for (Component component : side_bar) {
             	setStyleByData(component, view.getClass().getName());	
             }

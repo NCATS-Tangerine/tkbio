@@ -48,8 +48,6 @@ public class LandingPageView extends LandingPageDesign implements View {
 
 	public static final String NAME = "";
 	
-//	private Navigator applicationNavigator;
-	
 	public LandingPageView() {
 		initialize();
 	}
@@ -69,7 +67,6 @@ public class LandingPageView extends LandingPageDesign implements View {
 		launchBtn.addClickListener(e -> {
 			Navigator navigator = ((DesktopUI)UI.getCurrent()).getApplicationNavigator();
 			navigator.navigateTo(DesktopView.NAME);
-			
 			launchBtn.setEnabled(true);
 		});
 	}

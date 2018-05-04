@@ -260,19 +260,19 @@ public interface KBQuery {
 	 * 
 	 * @return optional of initial search result Set Concept query constraints
 	 */
-	public Optional< Set<ConceptType> > getInitialConceptTypes() ;
+	public Set<ConceptType> getInitialConceptTypes() ;
 	
 	/**
 	 * 
-	 * @param typeSet specification of current Set of Concept query constraints in Relations Data Table
+	 * @param types specification of current Set of Concept query constraints in Relations Data Table
 	 */
-	public void setConceptTypes( Set<ConceptType> typeSet ) ;
+	public void setSelectedConceptTypes( Set<ConceptType> types ) ;
 	
 	/**
 	 * 
 	 * @return optional of current Concept query constraints in Relations Data Table
 	 */
-	public Optional< Set<ConceptType> > getConceptTypes() ;
+	public Set<ConceptType> getSelectedConceptTypes() ;
 	
 	/**
 	 * 

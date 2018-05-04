@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.VerticalLayout;
 
 import bio.knowledge.grid.Grid;
 import bio.knowledge.grid.Grid.ScrollListener;
@@ -23,7 +25,7 @@ import bio.knowledge.model.Statement;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 
 @SpringView(name = RelationsView.NAME)
-public class RelationsView extends BaseView {
+public class RelationsView extends BaseView implements View {
 
 	private static final long serialVersionUID = -5096735414490820214L;
 	
@@ -41,8 +43,7 @@ public class RelationsView extends BaseView {
 	private GeneratedPropertyContainer gpContainer = new GeneratedPropertyContainer(container);
 	
 	private Grid dataTable;
-	
-	int numberOfPages = 1;
+	private int numberOfPages = 1;
 	
 	@PostConstruct
 	protected void initialize() {

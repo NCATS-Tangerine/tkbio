@@ -248,7 +248,7 @@ public class ConceptMapPopupWindow {
 			showRelations = new Button("Show Relations", e -> {
 				parentUi.queryUpdate(selectedConcept, RelationSearchMode.RELATIONS);
 				conceptDetailsWindowOnGraph.close();
-				parentUi.navigateToRelationsView();
+				parentUi.showRelationsTab();
 			});
 			
 			//if (showRelations != null)
@@ -591,25 +591,25 @@ public class ConceptMapPopupWindow {
 		
 		query.setCurrentQueryText(queryText);
 
-		ConceptSearchResults currentSearchResults = 
-				new ConceptSearchResults( 
-						((DesktopUI) UI.getCurrent()).getViewProvider(), 
-						ViewName.ANNOTATIONS_VIEW);
-		Window conceptSearchWindow = new Window();
-		conceptSearchWindow.setCaption("Concepts Matched by Key Words");
-		conceptSearchWindow.addStyleName("concept-search-window");
-		conceptSearchWindow.center();
-		conceptSearchWindow.setModal(true);
-		conceptSearchWindow.setResizable(true);
-
-		// setWindowSize(conceptSearchWindow);
-		conceptSearchWindow.setWidth(60.0f, Unit.EM);
-
-		conceptSearchWindow.setContent(currentSearchResults);
-
-		((DesktopUI) UI.getCurrent()).setConceptSearchWindow(conceptSearchWindow);
-
-		UI.getCurrent().addWindow(((DesktopUI) UI.getCurrent()).getConceptSearchWindow());
+//		ConceptSearchResults currentSearchResults = 
+//				new ConceptSearchResults( 
+//						((DesktopUI) UI.getCurrent()).getViewProvider(), 
+//						ViewName.ANNOTATIONS_VIEW);
+//		Window conceptSearchWindow = new Window();
+//		conceptSearchWindow.setCaption("Concepts Matched by Key Words");
+//		conceptSearchWindow.addStyleName("concept-search-window");
+//		conceptSearchWindow.center();
+//		conceptSearchWindow.setModal(true);
+//		conceptSearchWindow.setResizable(true);
+//
+//		// setWindowSize(conceptSearchWindow);
+//		conceptSearchWindow.setWidth(60.0f, Unit.EM);
+//
+//		conceptSearchWindow.setContent(currentSearchResults);
+//
+//		((DesktopUI) UI.getCurrent()).setConceptSearchWindow(conceptSearchWindow);
+//
+//		UI.getCurrent().addWindow(((DesktopUI) UI.getCurrent()).getConceptSearchWindow());
 		
 	}
 

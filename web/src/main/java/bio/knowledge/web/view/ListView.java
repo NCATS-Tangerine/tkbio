@@ -364,7 +364,7 @@ public class ListView extends BaseView implements Util {
 		public String makeFilter() {
 			String filter;
 			if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
-				filter = DesktopUI.getCurrent().getDesktop().getSearch().getValue();
+				filter = DesktopUI.getCurrent().getDesktop().getSearchField().getValue();
 			} else {
 				filter = "";
 			}
@@ -1564,7 +1564,7 @@ public class ListView extends BaseView implements Util {
 				if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
 					query.setInitialConceptTypes(typeSet);
 				} else if (viewName.equals(ViewName.RELATIONS_VIEW)) {
-					query.setConceptTypes(typeSet);
+					query.setSelectedConceptTypes(typeSet);
 				}
 			}
 		};
@@ -2044,7 +2044,7 @@ public class ListView extends BaseView implements Util {
 	private void selectionContext(DesktopUI ui, PopupWindow conceptDetailsWindow, IdentifiedConcept selectedConcept) {
 		ui.queryUpdate(selectedConcept, RelationSearchMode.RELATIONS);
 		conceptDetailsWindow.close();
-		ui.navigateToRelationsView();
+		ui.showRelationsTab();
 	}
 	
 	@Autowired
@@ -2210,7 +2210,7 @@ public class ListView extends BaseView implements Util {
 				// These get reset for some reason when we ask for them? Passing out of the popup instance using KBQuery
 				ui.getPredicatePopupWindow()
 					.conceptMapUserAnnotation(concept, query.tempCoordX(), query.tempCoordY());
-				ui.navigateToRelationsView();
+				ui.showRelationsTab();
 		});
 
 		// misc views
@@ -2254,7 +2254,7 @@ public class ListView extends BaseView implements Util {
 			DesktopUI ui = (DesktopUI) UI.getCurrent();
 			ui.processConceptSearch(concept);
 			ui.closeConceptSearchWindow();
-			ui.navigateToRelationsView();
+			ui.showRelationsTab();
 		});
 		
 		registry.addSelectionHandler(ViewName.CONCEPTS_VIEW, "synonyms",e->{/*NOP*/});

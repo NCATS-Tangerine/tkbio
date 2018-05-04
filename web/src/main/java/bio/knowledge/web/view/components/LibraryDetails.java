@@ -90,7 +90,7 @@ public class LibraryDetails extends VerticalLayout {
 			ui.loadMap(map);
 			query.addImportedMap(map);
 			ui.closeLibraryWindow();
-			ui.navigateToRelationsView();
+			ui.showRelationsTab();
 		});
 
 		Button backBtn = new Button("Go back");

@@ -47,42 +47,42 @@ import bio.knowledge.web.design.SearchDesign;
  */
 public class ConceptSearchResults extends SearchDesign {
 
-	private static final long serialVersionUID = 2386789095220639495L;
-	
-	private Logger _logger = LoggerFactory.getLogger(ConceptSearchResults.class);
-	
-	private SpringViewProvider viewProvider ;
-
-	private String targetListView ;
-	
-	public void setTargetListView(String targetSubView) {
-		this.targetListView = ViewName.LIST_VIEW + "/" + targetSubView;
-	}
-	
-	public VerticalLayout getConceptByTextResults() {
-		return conceptByTextResults;
-	}
-
-	public Panel getTablePanel() {
-		return tablePanel;
-	}
-	
-	@PostConstruct
-	public void initialize() {
-		
-		_logger.trace("Initializing ConceptSearchResults...");
-		
-		Navigator navigator = new Navigator(UI.getCurrent(), tablePanel);
-		navigator.addProvider(viewProvider);
-		navigator.navigateTo(targetListView);
-		
-	}
-
-    public ConceptSearchResults( SpringViewProvider provider, String targetSubView) {
-    	setTargetListView(targetSubView) ;
-        viewProvider = provider ;
-        initialize() ;
-    }
+//	private static final long serialVersionUID = 2386789095220639495L;
+//	
+//	private Logger _logger = LoggerFactory.getLogger(ConceptSearchResults.class);
+//	
+//	private SpringViewProvider viewProvider ;
+//
+//	private String targetListView ;
+//	
+//	public void setTargetListView(String targetSubView) {
+//		this.targetListView = ViewName.LIST_VIEW + "/" + targetSubView;
+//	}
+//	
+//	public VerticalLayout getConceptByTextResults() {
+//		return conceptByTextResults;
+//	}
+//
+//	public Panel getTablePanel() {
+//		return tablePanel;
+//	}
+//	
+//	@PostConstruct
+//	public void initialize() {
+//		
+//		_logger.trace("Initializing ConceptSearchResults...");
+//		
+//		Navigator navigator = new Navigator(UI.getCurrent(), tablePanel);
+//		navigator.addProvider(viewProvider);
+//		navigator.navigateTo(targetListView);
+//		
+//	}
+//
+//    public ConceptSearchResults( SpringViewProvider provider, String targetSubView) {
+//    	setTargetListView(targetSubView) ;
+//        viewProvider = provider ;
+//        initialize() ;
+//    }
 
 
 }

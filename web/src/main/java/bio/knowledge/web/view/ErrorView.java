@@ -27,10 +27,13 @@ package bio.knowledge.web.view;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.spring.annotation.SpringView;
 
 import bio.knowledge.web.design.ErrorViewDesign;
 
+@SpringView(name = ErrorView.NAME)
 public class ErrorView extends ErrorViewDesign implements View {
+	public static final String NAME = "error";
 	private static final long serialVersionUID = 1425847766508000345L;
 
 	@Override
