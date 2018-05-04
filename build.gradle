@@ -1,14 +1,17 @@
 // NCATS Translator Knowledge.Bio (TKBio) Main Meta-Project Root Build File
 
-ext.apacheHTTPClientVersion  = '4.5.2'
-ext.springCoreVersion        = '4.3.2.RELEASE'
-ext.jacksonXmlVersion        = '2.8.1'
-ext.logbackCoreVersion       = '1.1.7'
-ext.springBootVersion        = '1.3.7.RELEASE'
-ext.springDataNeo4jVersion   = '4.1.2.RELEASE'
-ext.springNeo4jVersion       = '3.0.4'
-ext.springNeo4jOGMVersion    = '2.0.3'
-ext.vaadinSharedVersion      = '7.6.5'
+ext {
+	apacheHTTPClientVersion  = '4.5.2'
+	springCoreVersion        = '4.3.2.RELEASE'
+	jacksonXmlVersion        = '2.8.1'
+	logbackCoreVersion       = '1.1.7'
+	springBootVersion        = '1.3.7.RELEASE'
+	springDataNeo4jVersion   = '4.1.2.RELEASE'
+	springNeo4jVersion       = '3.0.4'
+	springNeo4jOGMVersion    = '2.0.3'
+	vaadinSharedVersion      = '7.6.5'
+	prettyTimeVersion        = '4.0.1.Final'
+}
 
 buildscript {
     ext {
