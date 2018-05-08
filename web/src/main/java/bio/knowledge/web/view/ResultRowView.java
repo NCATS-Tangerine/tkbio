@@ -1,6 +1,7 @@
 package bio.knowledge.web.view;
 
 import java.util.Date;
+import org.ocpsoft.prettytime.PrettyTime;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -12,29 +13,32 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 
-public class ResultView extends HorizontalLayout {
+public class ResultRowView extends HorizontalLayout implements SearchResultView.Listener {
 
 	private static final long serialVersionUID = -2841062072954936319L;
 
 	private Label conceptLabel = new Label("Concept Name");
-	private Label timeStampLabel = new Label("1 min ago");
+	private Label timeLabel = new Label("1 min ago");
 	private Button detailsButton = new Button(FontAwesome.CHECK);
 	private Button removeButton = new Button(FontAwesome.TIMES);
-	// TODO: http://www.ocpsoft.org/prettytime/
+
 	private Date creationTime = new Date();
+	PrettyTime p = new PrettyTime();
 	
 	private VerticalLayout titleLayout = new VerticalLayout();
 	private HorizontalLayout buttonsLayout = new HorizontalLayout();
 	
-	public ResultView(String conceptName, Date creationTime) {
+	public ResultRowView(String conceptName) {
 		conceptLabel.setValue("<strong style = \"font-size: 120%;\">" + conceptName + "</strong>");
 		conceptLabel.setStyleName("text-overflow");
 		conceptLabel.setContentMode(ContentMode.HTML);
-		this.creationTime = creationTime;
+		
+		timeLabel.setValue(p.format(creationTime));
+		
 		setSpacing(true);
 		setSizeFull();
 		
-		titleLayout.addComponents(timeStampLabel, conceptLabel);
+		titleLayout.addComponents(timeLabel, conceptLabel);
 		titleLayout.setSizeFull();
 		buttonsLayout.setSpacing(true);
 		buttonsLayout.addComponents(detailsButton, removeButton);
@@ -56,5 +60,10 @@ public class ResultView extends HorizontalLayout {
 			Layout parent = (Layout) this.getParent();
 			parent.removeComponent(this);
 		});
+	}
+	
+	@Override
+	public void update() {
+		timeLabel.setValue(p.format(creationTime));
 	}
 }

@@ -142,6 +142,13 @@ allprojects {
     }
 }
 
+project(':web') {
+  dependencies {
+		compile "org.ocpsoft.prettytime:prettytime:$prettyTimeVersion"
+		compile "com.vaadin:vaadin-push:$vaadinSharedVersion"
+  }
+}
+
 evaluationDependsOn(':dataloader')
 evaluationDependsOn(':web')
 

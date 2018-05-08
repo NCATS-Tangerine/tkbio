@@ -55,6 +55,7 @@ import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 
 import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Widgetset;
@@ -71,6 +72,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.shared.communication.PushMode;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.AbstractSplitPanel.SplitPositionChangeEvent;
@@ -136,8 +138,8 @@ import bio.knowledge.web.view.PasswordResetView;
 import bio.knowledge.web.view.ReferenceView;
 import bio.knowledge.web.view.Registry;
 import bio.knowledge.web.view.RelationsView;
-import bio.knowledge.web.view.ResultView;
-import bio.knowledge.web.view.SearchResultView;
+import bio.knowledge.web.view.ResultRowView;
+import bio.knowledge.web.view.SearchResultViewImpl;
 import bio.knowledge.web.view.ViewName;
 import bio.knowledge.web.view.components.KnowledgeBeaconWindow;
 import bio.knowledge.web.view.components.LibraryDetails;
@@ -162,6 +164,7 @@ import bio.knowledge.web.view.components.UserDetails;
 		"https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" })
 @PreserveOnRefresh
 @Widgetset("bio.knowledge.renderer.ButtonRendererWidgetset")
+@Push(PushMode.MANUAL)
 public class DesktopUI extends UI implements MessageService, Util {
 
 	// private static final int DAY_IN_SECOND = 86400;
@@ -442,25 +445,27 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * Selects the relations tab and show its contents.
 	 */
 	public void showRelationsTab() {
-//		VerticalLayout relationsTab = desktopView.getRelationsTab();
-//		TabSheet tabsheet = desktopView.getTabSheet();
-//		tabsheet.setSelectedTab(relationsTab);
+		// VerticalLayout relationsTab = desktopView.getRelationsTab();
+		// TabSheet tabsheet = desktopView.getTabSheet();
+		// tabsheet.setSelectedTab(relationsTab);
 	}
 
 	public void displayStatements(String conceptId) {
 
-//		VerticalLayout relationsTab = desktopView.getRelationsTab();
-//
-//		// if (relationsTabNavigator == null) {
-//		// relationsTabNavigator = new Navigator(UI.getCurrent(), relationsTab);
-//		// relationsTabNavigator.addProvider(viewProvider);
-//		// }
-//
-//		relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW + "/" + conceptId);
-//		applicationNavigator.navigateTo(ViewName.LIST_VIEW + "/" + ViewName.RELATIONS_VIEW + "/" + conceptId);
-//
-//		TabSheet tabsheet = desktopView.getDataTabSheet();
-//		tabsheet.setSelectedTab(relationsTab);
+		// VerticalLayout relationsTab = desktopView.getRelationsTab();
+		//
+		// // if (relationsTabNavigator == null) {
+		// // relationsTabNavigator = new Navigator(UI.getCurrent(), relationsTab);
+		// // relationsTabNavigator.addProvider(viewProvider);
+		// // }
+		//
+		// relationsTabNavigator.navigateTo(ViewName.LIST_VIEW + "/" +
+		// ViewName.RELATIONS_VIEW + "/" + conceptId);
+		// applicationNavigator.navigateTo(ViewName.LIST_VIEW + "/" +
+		// ViewName.RELATIONS_VIEW + "/" + conceptId);
+		//
+		// TabSheet tabsheet = desktopView.getDataTabSheet();
+		// tabsheet.setSelectedTab(relationsTab);
 	}
 
 	/**
@@ -871,7 +876,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		searchWindow.setResizable(true);
 		searchWindow.setHeight(50, Unit.EM);
 		searchWindow.setWidth(30, Unit.EM);
-		
+
 		initConceptLabelDescription();
 
 		TextField searchField = desktopView.getSearchField();
@@ -1128,150 +1133,186 @@ public class DesktopUI extends UI implements MessageService, Util {
 		}
 	}
 
-	private SearchResultView searchView = new SearchResultView();
+	private SearchResultViewImpl searchView = new SearchResultViewImpl();
+
 	/**
 	 * 
 	 * @return the ClickListener for the search button
 	 */
 	private ClickListener createSearchClickListener() {
 		ClickListener btnListener = (e) -> {
-			// prevents the user from clicking it rapidly
-			Button searchBtn = e.getButton();
-//			searchBtn.setEnabled(false);
-
-			String queryText = desktopView.getSearchField().getValue();
-			// do nothing if query is null or empty
-			if (nullOrEmpty(queryText)) {
-//				searchBtn.setEnabled(true);
-				return;
+			// // prevents the user from clicking it rapidly
+			// Button searchBtn = e.getButton();
+			// String queryText = desktopView.getSearchField().getValue();
+			// // do nothing if query is null or empty
+			// if (nullOrEmpty(queryText)) {
+			// return;
+			// }
+			//
+			// queryText = queryText.trim();
+			// query.setCurrentQueryText(queryText);
+			// if (matchByCurie(queryText)) {
+			// /*
+			// * Matching by CURIE - resolve the matching concept then go directly to the
+			// * statements table
+			// */
+			// Optional<IdentifiedConcept> conceptOpt =
+			// conceptService.findByIdentifier(queryText);
+			// if (!conceptOpt.isPresent()) {
+			// ConfirmDialog.show(this, "<span style='text-align:center;'>Concept identified
+			// by '" + queryText
+			// + "' could not be resolved.<br/>"
+			// + "Please check if you have a valid CURIE identifier for your concept of
+			// interest!</span>",
+			// cd -> {
+			// }).setContentMode(ConfirmDialog.ContentMode.HTML);
+			// searchBtn.setEnabled(true);
+			// return;
+			// }
+			//
+			// IdentifiedConcept concept = conceptOpt.get();
+			// processConceptSearch(concept);
+			//
+			// searchBtn.setEnabled(true);
+			// showRelationsTab();
+			// } else { // Classic Keyword search
+			// ResultRowView resultView = new ResultRowView(queryText);
+			// searchView.addResultView(resultView);
+			// searchWindow.setContent(searchView);
+			// if (searchWindow.getParent() != this) {
+			// UI.getCurrent().addWindow(searchWindow);
+			// }
+			// }
+			searchWindow.setContent(searchView);
+			if (searchWindow.getParent() != this) {
+				UI.getCurrent().addWindow(searchWindow);
 			}
-
-			queryText = queryText.trim();
-			query.setCurrentQueryText(queryText);
-			if (matchByCurie(queryText)) {
-				/*
-				 * Matching by CURIE - resolve the matching concept then go directly to the
-				 * statements table
-				 */
-				Optional<IdentifiedConcept> conceptOpt = conceptService.findByIdentifier(queryText);
-				if (!conceptOpt.isPresent()) {
-					ConfirmDialog.show(this, "<span style='text-align:center;'>Concept identified by '" + queryText
-							+ "' could not be resolved.<br/>"
-							+ "Please check if you have a valid CURIE identifier for your concept of interest!</span>",
-							cd -> {
-							}).setContentMode(ConfirmDialog.ContentMode.HTML);
-					searchBtn.setEnabled(true);
-					return;
-				}
-
-				IdentifiedConcept concept = conceptOpt.get();
-				processConceptSearch(concept);
-
-				searchBtn.setEnabled(true);
-				showRelationsTab();
-			} else { // Classic Keyword search
-				ResultView resultView = new ResultView(queryText, new Date());
-				searchView.addResultView(resultView);
-				searchWindow.setContent(searchView);
-				searchWindow.addCloseListener(event -> {
-					searchBtn.setEnabled(true);
-					showRelationsTab();
-				});
-				
-				if (searchWindow.getParent() != this) {					
-					UI.getCurrent().addWindow(searchWindow);
-				}
-			}
-
+			new FeederThread(this).start();
 		};
 		return btnListener;
 	}
 
-	private Grid getSearchResultGrid() {
-		Grid resultGrid = new Grid();
-		
-		return resultGrid;
+	class FeederThread extends Thread {
+		int count = 0;
+		private UI ui;
+
+		public FeederThread(UI ui) {
+			this.ui = ui;
+		}
+
+		@Override
+		public void run() {
+			try {
+				// Update the data for a while
+				while (count < 10) {
+					Thread.sleep(1000);
+
+					access(new Runnable() {
+						@Override
+						public void run() {
+							searchView.addResultView(new ResultRowView("Number: " + count + " row"));
+							System.out.println("doing work");
+							ui.push();
+						}
+					});
+
+					count++;
+				}
+
+				// Inform that we have stopped running
+				access(new Runnable() {
+
+					@Override
+					public void run() {
+						System.out.println("done!");
+					}
+				});
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
-	
-	private VerticalLayout getSearchResultLayout() {
-		VerticalLayout searchResultLayout = new VerticalLayout();
-		return  searchResultLayout;
-	}
-	
+
 	/**
 	 * 
 	 * @param searchField
 	 * @param e
 	 */
 	private void searchBtnClickListener(TextField searchField, ClickEvent e) {
-//		Button searchBtn = e.getButton();
-//		searchBtn.setEnabled(false);
-//
-//		String queryText = desktopView.getSearchField().getValue();
-//		queryText = queryText.trim();
-//
-//		// RMB: March 1, 2017 - empty queries seem too problematic now
-//		// so we ignore them again!
-//
-//		if (nullOrEmpty(queryText)) {
-//			ConfirmDialog.show(this,
-//					"<span style='text-align:center;'>Please type in a non-empty query string in the search box</span>",
-//					cd -> {
-//					}).setContentMode(ConfirmDialog.ContentMode.HTML);
-//
-//			searchBtn.setEnabled(true);
-//			return;
-//		}
-//
-//		query.setCurrentQueryText(queryText);
-//
-//		if (matchByCurie(queryText)) {
-//			/*
-//			 * Matching by CURIE - resolve the matching concept then go directly to the
-//			 * statements table
-//			 */
-//			Optional<IdentifiedConcept> conceptOpt = conceptService.findByIdentifier(queryText);
-//
-//			if (!conceptOpt.isPresent()) {
-//				ConfirmDialog.show(this, "<span style='text-align:center;'>Concept identified by '" + queryText
-//						+ "' could not be resolved.<br/>"
-//						+ "Please check if you have a valid CURIE identifier for your concept of interest!</span>",
-//						cd -> {
-//						}).setContentMode(ConfirmDialog.ContentMode.HTML);
-//				searchBtn.setEnabled(true);
-//				return;
-//			}
-//
-//			IdentifiedConcept concept = conceptOpt.get();
-//			processConceptSearch(concept);
-//
-//			searchBtn.setEnabled(true);
-//
-//			showRelationsTab();
-//
-//		} else { // Classical Keyword search
-//
-//			// Semantic type constraint in Concept-by-text results listing should initial be
-//			// empty
-////			query.setInitialConceptTypes(new HashSet<ConceptType>());
-//
-//			ConceptSearchResults currentSearchResults = new ConceptSearchResults(viewProvider, ViewName.CONCEPTS_VIEW);
-//			conceptSearchWindow = new Window();
-//			conceptSearchWindow.setCaption("Concepts Matched by Key Words");
-//			conceptSearchWindow.addStyleName("concept-search-window");
-//			conceptSearchWindow.center();
-//			conceptSearchWindow.setModal(true);
-//			conceptSearchWindow.setResizable(true);
-//			conceptSearchWindow.setWidth(75.0f, Unit.EM);
-//			conceptSearchWindow.setContent(currentSearchResults);
-//
-//			conceptSearchWindow.addCloseListener(event -> {
-//				searchBtn.setEnabled(true);
-//				showRelationsTab();
-//			});
-//
-//			UI.getCurrent().addWindow(conceptSearchWindow);
-//		}
+		// Button searchBtn = e.getButton();
+		// searchBtn.setEnabled(false);
+		//
+		// String queryText = desktopView.getSearchField().getValue();
+		// queryText = queryText.trim();
+		//
+		// // RMB: March 1, 2017 - empty queries seem too problematic now
+		// // so we ignore them again!
+		//
+		// if (nullOrEmpty(queryText)) {
+		// ConfirmDialog.show(this,
+		// "<span style='text-align:center;'>Please type in a non-empty query string in
+		// the search box</span>",
+		// cd -> {
+		// }).setContentMode(ConfirmDialog.ContentMode.HTML);
+		//
+		// searchBtn.setEnabled(true);
+		// return;
+		// }
+		//
+		// query.setCurrentQueryText(queryText);
+		//
+		// if (matchByCurie(queryText)) {
+		// /*
+		// * Matching by CURIE - resolve the matching concept then go directly to the
+		// * statements table
+		// */
+		// Optional<IdentifiedConcept> conceptOpt =
+		// conceptService.findByIdentifier(queryText);
+		//
+		// if (!conceptOpt.isPresent()) {
+		// ConfirmDialog.show(this, "<span style='text-align:center;'>Concept identified
+		// by '" + queryText
+		// + "' could not be resolved.<br/>"
+		// + "Please check if you have a valid CURIE identifier for your concept of
+		// interest!</span>",
+		// cd -> {
+		// }).setContentMode(ConfirmDialog.ContentMode.HTML);
+		// searchBtn.setEnabled(true);
+		// return;
+		// }
+		//
+		// IdentifiedConcept concept = conceptOpt.get();
+		// processConceptSearch(concept);
+		//
+		// searchBtn.setEnabled(true);
+		//
+		// showRelationsTab();
+		//
+		// } else { // Classical Keyword search
+		//
+		// // Semantic type constraint in Concept-by-text results listing should initial
+		// be
+		// // empty
+		//// query.setInitialConceptTypes(new HashSet<ConceptType>());
+		//
+		// ConceptSearchResults currentSearchResults = new
+		// ConceptSearchResults(viewProvider, ViewName.CONCEPTS_VIEW);
+		// conceptSearchWindow = new Window();
+		// conceptSearchWindow.setCaption("Concepts Matched by Key Words");
+		// conceptSearchWindow.addStyleName("concept-search-window");
+		// conceptSearchWindow.center();
+		// conceptSearchWindow.setModal(true);
+		// conceptSearchWindow.setResizable(true);
+		// conceptSearchWindow.setWidth(75.0f, Unit.EM);
+		// conceptSearchWindow.setContent(currentSearchResults);
+		//
+		// conceptSearchWindow.addCloseListener(event -> {
+		// searchBtn.setEnabled(true);
+		// showRelationsTab();
+		// });
+		//
+		// UI.getCurrent().addWindow(conceptSearchWindow);
+		// }
 	}
 
 	/**
