@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import bio.knowledge.client.ApiCallback;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.api.MetadataApi;
@@ -57,6 +58,8 @@ import bio.knowledge.model.Statement;
 import bio.knowledge.model.core.Feature;
 import bio.knowledge.model.core.OntologyTerm;
 import bio.knowledge.model.util.Util;
+import bio.knowledge.service.KBQuery;
+import bio.knowledge.service.KBQueryImpl;
 
 /**
  * 
@@ -89,6 +92,12 @@ public class KnowledgeBeaconService implements Util {
 	public final int CONCEPTS_QUERY_TIMEOUT_WEIGHTING   = 20000;
 	public final int STATEMENTS_QUERY_TIMEOUT_WEIGHTING = 60000; 
 
+	private static final KnowledgeBeaconService INSTANCE = new KnowledgeBeaconService();
+	
+	public static KnowledgeBeaconService get() {
+		return INSTANCE;
+	}
+	
 	/*
 	 * Here we need to discriminate between the
 	 * "local" private (i.e. Docker LAN) version of
@@ -123,7 +132,7 @@ public class KnowledgeBeaconService implements Util {
 	private Map<Integer, String> beaconIdMap = null;
 	private List<BeaconKnowledgeBeacon> beacons = null;
 	
-	private ApiClient apiClient;
+//	private ApiClient apiClient;
 	private ConceptsApi conceptsApi;
 	private StatementsApi statementsApi;
 	private MetadataApi metaDataApi;
@@ -278,14 +287,21 @@ public class KnowledgeBeaconService implements Util {
 	
 	
 	public BeaconConceptsQuery postConceptsQuery(String keywords, List<String> types, List<Integer> beacons) {
-		throw new java.lang.UnsupportedOperationException("Not supported yet.");
-//		try {
-//			return this.conceptsApi.postConceptsQuery(keywords, types, beacons);
-//		} catch (ApiException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			return null;
-//		}
+		try {
+			return conceptsApi.postConceptsQuery(keywords, types, beacons);
+		} catch (ApiException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void postConceptsQueryAsync(String keywords, List<String> types, List<Integer> beacons, ApiCallback<BeaconConceptsQuery> callback) {
+		try {
+			conceptsApi.postConceptsQueryAsync(keywords, types, beacons, callback);
+		} catch (ApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**

@@ -131,6 +131,18 @@ public interface KBQuery {
 	public String getCurrentQueryId();
 	
 	/**
+	 * Set the list of types for searching a concept.
+	 * @param types
+	 */
+	public void setTypes(List<String> types);
+	
+	/**
+	 * Get the list of types for searching a concept.
+	 * @return
+	 */
+	public List<String> getTypes();
+	
+	/**
 	 * Sets the current query id. This can change in the middle of a TKBio session by a user who browses different queries they've created
 	 * @return
 	 */

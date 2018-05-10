@@ -1141,53 +1141,45 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 */
 	private ClickListener createSearchClickListener() {
 		ClickListener btnListener = (e) -> {
-			// // prevents the user from clicking it rapidly
-			// Button searchBtn = e.getButton();
-			// String queryText = desktopView.getSearchField().getValue();
-			// // do nothing if query is null or empty
-			// if (nullOrEmpty(queryText)) {
-			// return;
-			// }
-			//
-			// queryText = queryText.trim();
-			// query.setCurrentQueryText(queryText);
-			// if (matchByCurie(queryText)) {
-			// /*
-			// * Matching by CURIE - resolve the matching concept then go directly to the
-			// * statements table
-			// */
-			// Optional<IdentifiedConcept> conceptOpt =
-			// conceptService.findByIdentifier(queryText);
-			// if (!conceptOpt.isPresent()) {
-			// ConfirmDialog.show(this, "<span style='text-align:center;'>Concept identified
-			// by '" + queryText
-			// + "' could not be resolved.<br/>"
-			// + "Please check if you have a valid CURIE identifier for your concept of
-			// interest!</span>",
-			// cd -> {
-			// }).setContentMode(ConfirmDialog.ContentMode.HTML);
-			// searchBtn.setEnabled(true);
-			// return;
-			// }
-			//
-			// IdentifiedConcept concept = conceptOpt.get();
-			// processConceptSearch(concept);
-			//
-			// searchBtn.setEnabled(true);
-			// showRelationsTab();
-			// } else { // Classic Keyword search
-			// ResultRowView resultView = new ResultRowView(queryText);
-			// searchView.addResultView(resultView);
-			// searchWindow.setContent(searchView);
-			// if (searchWindow.getParent() != this) {
-			// UI.getCurrent().addWindow(searchWindow);
-			// }
-			// }
-			searchWindow.setContent(searchView);
-			if (searchWindow.getParent() != this) {
-				UI.getCurrent().addWindow(searchWindow);
+			// prevents the user from clicking it rapidly
+			Button searchBtn = e.getButton();
+			String queryText = desktopView.getSearchField().getValue();
+			// do nothing if query is null or empty
+			if (nullOrEmpty(queryText)) {
+				return;
 			}
-			new FeederThread(this).start();
+
+			queryText = queryText.trim();
+			query.setCurrentQueryText(queryText);
+			if (isCurie(queryText)) {
+				/*
+				 * Matching by CURIE - resolve the matching concept then go directly to the
+				 * statements table
+				 */
+				Optional<IdentifiedConcept> conceptOpt = conceptService.findByIdentifier(queryText);
+				if (!conceptOpt.isPresent()) {
+					ConfirmDialog.show(this, "<span style='text-align:center;'>Concept identified by '" + queryText
+							+ "' could not be resolved.<br/>"
+							+ "Please check if you have a valid CURIE identifier for your concept of interest!</span>",
+							cd -> {
+							}).setContentMode(ConfirmDialog.ContentMode.HTML);
+//					searchBtn.setEnabled(true);
+					return;
+				}
+
+				IdentifiedConcept concept = conceptOpt.get();
+				processConceptSearch(concept);
+
+				searchBtn.setEnabled(true);
+				showRelationsTab();
+			} else { // Classic Keyword search
+				ResultRowView resultView = new ResultRowView(queryText);
+				searchView.addResultView(resultView);
+				searchWindow.setContent(searchView);
+				if (searchWindow.getParent() != this) {
+					UI.getCurrent().addWindow(searchWindow);
+				}
+			}
 		};
 		return btnListener;
 	}
@@ -1322,7 +1314,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * @param queryText
 	 * @return true if the pattern is matched; otherwise false.
 	 */
-	private boolean matchByCurie(String queryText) {
+	private boolean isCurie(String queryText) {
 		Matcher matcher = Pattern.compile("(\\S*):(\\S*)").matcher(queryText);
 		if (matcher.matches()) {
 			return true;
