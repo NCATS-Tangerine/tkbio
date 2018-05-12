@@ -63,15 +63,15 @@ public class KBQueryImpl implements KBQuery {
 	private Set<ConceptType> selectedConceptTypes = new HashSet<>();
 	private List<String> types = new ArrayList<>();
 
-	private static final KBQuery INSTANCE = new KBQueryImpl();
+//	private static final KBQuery INSTANCE = new KBQueryImpl();
 	
 	public KBQueryImpl() {
 
 	}
 	
-	public static KBQuery get() {
-		return INSTANCE;
-	}
+//	public static KBQuery get() {
+//		return INSTANCE;
+//	}
 
 	/*
 	 * (non-Javadoc)

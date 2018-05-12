@@ -164,7 +164,7 @@ import bio.knowledge.web.view.components.UserDetails;
 		"https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" })
 @PreserveOnRefresh
 @Widgetset("bio.knowledge.renderer.ButtonRendererWidgetset")
-@Push(PushMode.MANUAL)
+@Push
 public class DesktopUI extends UI implements MessageService, Util {
 
 	// private static final int DAY_IN_SECOND = 86400;
@@ -1173,7 +1173,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 				searchBtn.setEnabled(true);
 				showRelationsTab();
 			} else { // Classic Keyword search
-				ResultRowView resultView = new ResultRowView(queryText);
+				ResultRowView resultView = new ResultRowView(queryText, query, kbService);
 				searchView.addResultView(resultView);
 				searchWindow.setContent(searchView);
 				if (searchWindow.getParent() != this) {
@@ -1182,47 +1182,6 @@ public class DesktopUI extends UI implements MessageService, Util {
 			}
 		};
 		return btnListener;
-	}
-
-	class FeederThread extends Thread {
-		int count = 0;
-		private UI ui;
-
-		public FeederThread(UI ui) {
-			this.ui = ui;
-		}
-
-		@Override
-		public void run() {
-			try {
-				// Update the data for a while
-				while (count < 10) {
-					Thread.sleep(1000);
-
-					access(new Runnable() {
-						@Override
-						public void run() {
-							searchView.addResultView(new ResultRowView("Number: " + count + " row"));
-							System.out.println("doing work");
-							ui.push();
-						}
-					});
-
-					count++;
-				}
-
-				// Inform that we have stopped running
-				access(new Runnable() {
-
-					@Override
-					public void run() {
-						System.out.println("done!");
-					}
-				});
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	/**

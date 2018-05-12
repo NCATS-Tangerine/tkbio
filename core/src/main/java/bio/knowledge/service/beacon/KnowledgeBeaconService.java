@@ -33,6 +33,8 @@ import bio.knowledge.client.model.BeaconConceptDetail;
 import bio.knowledge.client.model.BeaconConceptWithDetails;
 import bio.knowledge.client.model.BeaconConceptWithDetailsBeaconEntry;
 import bio.knowledge.client.model.BeaconConceptsQuery;
+import bio.knowledge.client.model.BeaconConceptsQueryResult;
+import bio.knowledge.client.model.BeaconConceptsQueryStatus;
 import bio.knowledge.client.model.BeaconStatementObject;
 import bio.knowledge.client.model.BeaconStatementPredicate;
 import bio.knowledge.client.model.BeaconPredicates;
@@ -92,11 +94,11 @@ public class KnowledgeBeaconService implements Util {
 	public final int CONCEPTS_QUERY_TIMEOUT_WEIGHTING   = 20000;
 	public final int STATEMENTS_QUERY_TIMEOUT_WEIGHTING = 60000; 
 
-	private static final KnowledgeBeaconService INSTANCE = new KnowledgeBeaconService();
-	
-	public static KnowledgeBeaconService get() {
-		return INSTANCE;
-	}
+//	private static final KnowledgeBeaconService INSTANCE = new KnowledgeBeaconService();
+//	
+//	public static KnowledgeBeaconService get() {
+//		return INSTANCE;
+//	}
 	
 	/*
 	 * Here we need to discriminate between the
@@ -301,6 +303,25 @@ public class KnowledgeBeaconService implements Util {
 		} catch (ApiException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	public void getConceptsAsync(String queryId, List<Integer> beacons, Integer pageNumber, Integer pageSize, ApiCallback<BeaconConceptsQueryResult> callback) {
+		try {
+			conceptsApi.getConceptsAsync(queryId, beacons, pageNumber, pageSize, callback);
+		} catch (ApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public BeaconConceptsQueryStatus getConceptsQueryStatus(String queryId, List<Integer> beacons) {
+		try {
+			return conceptsApi.getConceptsQueryStatus(queryId, beacons);
+		} catch (ApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
 		}
 	}
 
