@@ -33,6 +33,7 @@ import bio.knowledge.client.model.BeaconConceptDetail;
 import bio.knowledge.client.model.BeaconConceptWithDetails;
 import bio.knowledge.client.model.BeaconConceptWithDetailsBeaconEntry;
 import bio.knowledge.client.model.BeaconConceptsQuery;
+import bio.knowledge.client.model.BeaconConceptsQueryBeaconStatus;
 import bio.knowledge.client.model.BeaconConceptsQueryResult;
 import bio.knowledge.client.model.BeaconConceptsQueryStatus;
 import bio.knowledge.client.model.BeaconStatementObject;
@@ -315,9 +316,9 @@ public class KnowledgeBeaconService implements Util {
 		}
 	}
 	
-	public BeaconConceptsQueryStatus getConceptsQueryStatus(String queryId, List<Integer> beacons) {
+	public List<BeaconConceptsQueryBeaconStatus> getConceptsQueryStatus(String queryId, List<Integer> beacons) {
 		try {
-			return conceptsApi.getConceptsQueryStatus(queryId, beacons);
+			return conceptsApi.getConceptsQueryStatus(queryId, beacons).getStatus();
 		} catch (ApiException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

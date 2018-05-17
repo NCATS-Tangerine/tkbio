@@ -12,6 +12,9 @@
 	    
 	    &.v-disabled {
 	    	color: $color-white;
+	    	&:hover {
+	    		background: darken($button-background-color, 0%);
+	   		}
 	    }
 	    
 	    .v-pressed {

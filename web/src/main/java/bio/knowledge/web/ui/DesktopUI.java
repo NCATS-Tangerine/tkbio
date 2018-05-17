@@ -39,10 +39,17 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.jws.WebService;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import javax.servlet.http.Cookie;
 
 import org.slf4j.Logger;
@@ -138,8 +145,8 @@ import bio.knowledge.web.view.PasswordResetView;
 import bio.knowledge.web.view.ReferenceView;
 import bio.knowledge.web.view.Registry;
 import bio.knowledge.web.view.RelationsView;
-import bio.knowledge.web.view.ResultRowView;
-import bio.knowledge.web.view.SearchResultViewImpl;
+import bio.knowledge.web.view.SingleSearchHistoryView;
+import bio.knowledge.web.view.SearchHistoryViewImpl;
 import bio.knowledge.web.view.ViewName;
 import bio.knowledge.web.view.components.KnowledgeBeaconWindow;
 import bio.knowledge.web.view.components.LibraryDetails;
@@ -879,6 +886,8 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 		initConceptLabelDescription();
 
+		searchWindow.setContent(searchView);
+		
 		TextField searchField = desktopView.getSearchField();
 
 		searchField.addStyleName("concept-search-field");
@@ -1133,7 +1142,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		}
 	}
 
-	private SearchResultViewImpl searchView = new SearchResultViewImpl();
+	private SearchHistoryViewImpl searchView = new SearchHistoryViewImpl();
 
 	/**
 	 * 
@@ -1173,9 +1182,9 @@ public class DesktopUI extends UI implements MessageService, Util {
 				searchBtn.setEnabled(true);
 				showRelationsTab();
 			} else { // Classic Keyword search
-				ResultRowView resultView = new ResultRowView(queryText, query, kbService);
+				SingleSearchHistoryView resultView = new SingleSearchHistoryView(queryText, query, kbService);
 				searchView.addResultView(resultView);
-				searchWindow.setContent(searchView);
+//				searchWindow.setContent(searchView);
 				if (searchWindow.getParent() != this) {
 					UI.getCurrent().addWindow(searchWindow);
 				}
@@ -1830,11 +1839,37 @@ public class DesktopUI extends UI implements MessageService, Util {
 		this.currentConceptMapName = name;
 	}
 
+	@Override
+	public void detach() {
+		searchView.stopService();
+		super.detach();
+	}
 	/**
 	 * 
 	 * @return
 	 */
 	public String getCurrentConceptMapName() {
 		return this.currentConceptMapName;
+	}
+	
+	@WebListener
+	public class ThreadPool implements ServletContextListener {
+
+		private ExecutorService executorService;
+		
+		@Override
+		public void contextInitialized(ServletContextEvent sce) {
+			executorService = Executors.newScheduledThreadPool(10);
+		}
+
+		@Override
+		public void contextDestroyed(ServletContextEvent sce) {
+			executorService.shutdown();
+		}
+		
+		public ExecutorService service() {
+			return executorService;
+		}
+		
 	}
 }

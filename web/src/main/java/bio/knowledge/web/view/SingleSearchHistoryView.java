@@ -1,10 +1,12 @@
 package bio.knowledge.web.view;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.ocpsoft.prettytime.PrettyTime;
+import org.springframework.http.HttpStatus;
 
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.FontAwesome;
@@ -16,7 +18,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.ProgressBar;
-import com.vaadin.ui.SingleComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -24,11 +25,12 @@ import bio.knowledge.client.ApiCallback;
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconConceptsQuery;
+import bio.knowledge.client.model.BeaconConceptsQueryBeaconStatus;
 import bio.knowledge.client.model.BeaconConceptsQueryResult;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 
-public class ResultRowView extends HorizontalLayout implements SearchResultView.Listener {
+public class SingleSearchHistoryView extends HorizontalLayout implements SearchHistoryView.Listener {
 
 	private static final long serialVersionUID = -2841062072954936319L;
 
@@ -47,16 +49,19 @@ public class ResultRowView extends HorizontalLayout implements SearchResultView.
 	private Date creationTime = new Date();
 	private PrettyTime p = new PrettyTime();
 	private String conceptName = "";
+	private boolean done = false;
 	
-	private ApiCallback<BeaconConceptsQuery> callback;
+	private ApiCallback<BeaconConceptsQueryResult> resultCb;
+	private List<Integer> beacons;
+	private List<BeaconConceptsQueryBeaconStatus> beaconStatuses;
 	private BeaconConceptsQuery conceptQuery;
 	private BeaconConceptsQueryResult conceptQueryResult;
 	
-	public ResultRowView(String conceptName) {
+	public SingleSearchHistoryView(String conceptName) {
 		init(conceptName);
 	}
 
-	public ResultRowView(String conceptName, KBQuery kbQuery, KnowledgeBeaconService kbService) {
+	public SingleSearchHistoryView(String conceptName, KBQuery kbQuery, KnowledgeBeaconService kbService) {
 		this.kbQuery = kbQuery;
 		this.kbService = kbService;
 		init(conceptName);
@@ -82,6 +87,9 @@ public class ResultRowView extends HorizontalLayout implements SearchResultView.
 		addComponents(titleLayout, buttonsLayout);
 		setComponentAlignment(buttonsLayout, Alignment.BOTTOM_RIGHT);
 		setExpandRatio(titleLayout, 1);
+		
+		beacons = kbQuery.getCustomBeacons();
+		
 		initButtons();
 		initCallbacks();
 		
@@ -90,12 +98,12 @@ public class ResultRowView extends HorizontalLayout implements SearchResultView.
 	
 
 	private void initCallbacks() {
-		List<Integer> beacons = kbQuery.getCustomBeacons();
-		ApiCallback<BeaconConceptsQueryResult> queryCallback = new ApiCallback<BeaconConceptsQueryResult>() {
+		resultCb = new ApiCallback<BeaconConceptsQueryResult>() {
 		
 			@Override
 			public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
 				// TODO Auto-generated method stub
+				e.printStackTrace();
 				
 			}
 
@@ -121,30 +129,6 @@ public class ResultRowView extends HorizontalLayout implements SearchResultView.
 				
 			}
 		};
-		
-		callback = new ApiCallback<BeaconConceptsQuery>() {
-
-			@Override
-			public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-				// TODO Auto-generated method stub
-				e.printStackTrace();
-
-			}
-
-			@Override
-			public void onSuccess(BeaconConceptsQuery result, int statusCode, Map<String, List<String>> responseHeaders) {
-				conceptQuery = result;					
-				kbService.getConceptsAsync(result.getQueryId(), beacons, null, null, queryCallback);
-			}
-
-			@Override
-			public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
-			}
-
-			@Override
-			public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
-			}
-		};
 	}
 
 	private void initButtons() {
@@ -155,41 +139,60 @@ public class ResultRowView extends HorizontalLayout implements SearchResultView.
 			detailsWindow.center();
 			detailsWindow.setModal(true);
 			
-			VerticalLayout contentLayout = new VerticalLayout();
-			contentLayout.setSpacing(true);
-			detailsWindow.setContent(contentLayout);
-			
-			List<BeaconConcept> results = conceptQueryResult.getResults();
-			BeanItemContainer<BeaconConcept> container = new BeanItemContainer<BeaconConcept>(BeaconConcept.class, results);
-			Grid grid = new Grid(container);
-			contentLayout.addComponent(grid);
-			
+			detailsWindow.setContent(new SearchResultView(conceptQueryResult.getResults()));
 			getUI().addWindow(detailsWindow);
 
 		});
 
 		removeButton.setStyleName("page-button");
 		removeButton.addClickListener(e -> {
-			getUI().access(() -> {				
-				Layout parent = (Layout) this.getParent();
-				parent.removeComponent(this);
-			});
+			Layout parent = (Layout) this.getParent();
+			parent.removeComponent(this);
 		});
 	}
 
 	@Override
 	public void update() {
-		getUI().access(() -> {			
-			timeLabel.setValue(p.format(creationTime));
-		});
+		timeLabel.setValue(p.format(creationTime));
+		if (!done) {
+			boolean ready = checkStatus();
+			if (ready) {
+				beacons = getResultBeacons(beaconStatuses);
+				kbService.getConceptsAsync(conceptQuery.getQueryId(), beacons, 1, 500, resultCb);
+				done = true;
+			}
+		}
 	}
 
+	private boolean checkStatus() {
+		beaconStatuses = kbService.getConceptsQueryStatus(conceptQuery.getQueryId(), beacons);
+		boolean ready = true;
+		for (BeaconConceptsQueryBeaconStatus status : beaconStatuses) {
+			if (status.getStatus() == HttpStatus.PROCESSING.value()) {
+				ready = false;
+				break;
+			}
+		}
+		return ready;
+	}
+	
+	private List<Integer> getResultBeacons(List<BeaconConceptsQueryBeaconStatus> beaconStatuses) {
+		List<Integer> beacons = new ArrayList<>();
+		for (BeaconConceptsQueryBeaconStatus beaconStatus : beaconStatuses) {
+			if (beaconStatus.getStatus() == HttpStatus.OK.value()) {
+				Integer beaconId = beaconStatus.getBeacon();
+				beacons.add(beaconId);
+			}
+		}
+		return beacons;
+	}
+	
 	public void setServices(KBQuery kbQuery, KnowledgeBeaconService kbService) {
 		this.kbQuery = kbQuery;
 		this.kbService = kbService;
 	}
 
 	private void postQuery() {		
-		kbService.postConceptsQueryAsync(conceptName, kbQuery.getTypes(), kbQuery.getCustomBeacons(), callback);
+		conceptQuery = kbService.postConceptsQuery(conceptName, kbQuery.getTypes(), kbQuery.getCustomBeacons());
 	}
 }

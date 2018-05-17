@@ -33,7 +33,7 @@
 // Example variants can be copy/pasted from https://vaadin.com/wiki/-/wiki/Main/Valo+Examples
 
 // Overrides global variables for the Valo theme
-$v-font-size: 10px;
+$v-font-size: 11px;
 
 $v-border-radius: 2px;
 
@@ -817,5 +817,10 @@ $color-green: #5cb85c;
 	.add-to-map-button {
 		vertical-align: bottom;
 		background-color: darkgreen;
+	}
+	
+	.strong-and-big {
+		font-weight: strong;
+		font-size: 120%;
 	}
 }
