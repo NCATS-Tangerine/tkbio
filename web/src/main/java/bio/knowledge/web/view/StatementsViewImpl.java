@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -17,10 +18,11 @@ public class StatementsViewImpl extends VerticalLayout implements StatementsView
 	private static final long serialVersionUID = 1012771871917385704L;
 	
 	private Button addToGraphBtn = new Button();
+	private Grid grid = new Grid();
 	private Set<Object> selected;
 	private List<StatementsView.Listener> listeners = new ArrayList<>();
 	
-	public StatementsViewImpl(Grid grid) {
+	public StatementsViewImpl() {
 		grid.setSelectionMode(SelectionMode.MULTI);
 		grid.addSelectionListener(e -> {
 			selected = e.getSelected();
@@ -40,6 +42,10 @@ public class StatementsViewImpl extends VerticalLayout implements StatementsView
 		addComponents(grid, addToGraphBtn);
 	}
 
+	public void setDataSource(BeanItemContainer<?> beanItemContainer) {
+		grid.setContainerDataSource(beanItemContainer);
+	}
+	
 	@Override
 	public void buttonClick(ClickEvent event) {
 		for (StatementsView.Listener listener : listeners) {
