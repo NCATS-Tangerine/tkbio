@@ -246,7 +246,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "BeaconPredicates",
+                "title": "BeaconPredicate",
                 "type": "object",
                 "properties": {
                   "id": {

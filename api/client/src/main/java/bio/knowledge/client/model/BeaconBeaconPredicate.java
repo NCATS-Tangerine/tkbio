@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiModelProperty;
  * Local predicate definition from a given beacon 
  */
 @ApiModel(description = "Local predicate definition from a given beacon ")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-05-18T11:21:57.544-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-05-18T11:46:52.023-07:00")
 public class BeaconBeaconPredicate {
   @SerializedName("id")
   private String id = null;

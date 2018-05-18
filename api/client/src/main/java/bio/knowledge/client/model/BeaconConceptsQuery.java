@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * BeaconConceptsQuery
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-05-18T11:21:57.544-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-05-18T11:46:52.023-07:00")
 public class BeaconConceptsQuery {
   @SerializedName("queryId")
   private String queryId = null;

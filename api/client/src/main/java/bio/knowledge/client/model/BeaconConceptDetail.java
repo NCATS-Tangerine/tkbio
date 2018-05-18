@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiModelProperty;
  * Additional attributes associated with a concept 
  */
 @ApiModel(description = "Additional attributes associated with a concept ")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-05-18T11:21:57.544-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-05-18T11:46:52.023-07:00")
 public class BeaconConceptDetail {
   @SerializedName("tag")
   private String tag = null;

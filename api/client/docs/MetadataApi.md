@@ -189,7 +189,7 @@ No authorization required
 
 <a name="getPredicates"></a>
 # **getPredicates**
-> List&lt;BeaconPredicates&gt; getPredicates(beacons)
+> List&lt;BeaconPredicate&gt; getPredicates(beacons)
 
 
 
@@ -205,7 +205,7 @@ Get a list of predicates used in statements issued by the knowledge source
 MetadataApi apiInstance = new MetadataApi();
 List<Integer> beacons = Arrays.asList(56); // List<Integer> | set of aggregator indices of beacons to constrain predicates returned 
 try {
-    List<BeaconPredicates> result = apiInstance.getPredicates(beacons);
+    List<BeaconPredicate> result = apiInstance.getPredicates(beacons);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling MetadataApi#getPredicates");
@@ -221,7 +221,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;BeaconPredicates&gt;**](BeaconPredicates.md)
+[**List&lt;BeaconPredicate&gt;**](BeaconPredicate.md)
 
 ### Authorization
 

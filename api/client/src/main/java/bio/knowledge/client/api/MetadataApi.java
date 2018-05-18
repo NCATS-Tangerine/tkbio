@@ -31,7 +31,7 @@ import bio.knowledge.client.model.BeaconConceptCategory;
 import bio.knowledge.client.model.BeaconKnowledgeBeacon;
 import bio.knowledge.client.model.BeaconKnowledgeMap;
 import bio.knowledge.client.model.BeaconLogEntry;
-import bio.knowledge.client.model.BeaconPredicates;
+import bio.knowledge.client.model.BeaconPredicate;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -578,11 +578,11 @@ public class MetadataApi {
      * 
      * Get a list of predicates used in statements issued by the knowledge source 
      * @param beacons set of aggregator indices of beacons to constrain predicates returned  (optional)
-     * @return List&lt;BeaconPredicates&gt;
+     * @return List&lt;BeaconPredicate&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<BeaconPredicates> getPredicates(List<Integer> beacons) throws ApiException {
-        ApiResponse<List<BeaconPredicates>> resp = getPredicatesWithHttpInfo(beacons);
+    public List<BeaconPredicate> getPredicates(List<Integer> beacons) throws ApiException {
+        ApiResponse<List<BeaconPredicate>> resp = getPredicatesWithHttpInfo(beacons);
         return resp.getData();
     }
 
@@ -590,12 +590,12 @@ public class MetadataApi {
      * 
      * Get a list of predicates used in statements issued by the knowledge source 
      * @param beacons set of aggregator indices of beacons to constrain predicates returned  (optional)
-     * @return ApiResponse&lt;List&lt;BeaconPredicates&gt;&gt;
+     * @return ApiResponse&lt;List&lt;BeaconPredicate&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<BeaconPredicates>> getPredicatesWithHttpInfo(List<Integer> beacons) throws ApiException {
+    public ApiResponse<List<BeaconPredicate>> getPredicatesWithHttpInfo(List<Integer> beacons) throws ApiException {
         com.squareup.okhttp.Call call = getPredicatesValidateBeforeCall(beacons, null, null);
-        Type localVarReturnType = new TypeToken<List<BeaconPredicates>>(){}.getType();
+        Type localVarReturnType = new TypeToken<List<BeaconPredicate>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
@@ -607,7 +607,7 @@ public class MetadataApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getPredicatesAsync(List<Integer> beacons, final ApiCallback<List<BeaconPredicates>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getPredicatesAsync(List<Integer> beacons, final ApiCallback<List<BeaconPredicate>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -629,7 +629,7 @@ public class MetadataApi {
         }
 
         com.squareup.okhttp.Call call = getPredicatesValidateBeforeCall(beacons, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<List<BeaconPredicates>>(){}.getType();
+        Type localVarReturnType = new TypeToken<List<BeaconPredicate>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
