@@ -48,8 +48,8 @@ public class StatementsApiTest {
         Integer pageNumber = null;
         Integer pageSize = null;
         List<String> beacons = null;
-        String sessionId = null;
-        List<BeaconStatement> response = api.getStatements(sourceClique, relations, targetClique, keywords, semanticGroups, pageNumber, pageSize, beacons, sessionId);
+        List<BeaconStatement> response = 
+        		api.getStatements(sourceClique, relations, targetClique, keywords, semanticGroups, pageNumber, pageSize, beacons);
 
         // TODO: test validations
     }

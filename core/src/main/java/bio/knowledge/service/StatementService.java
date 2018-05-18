@@ -138,7 +138,7 @@ public class StatementService
 		String sessionId = query.getUserSessionId();
 		
 		CompletableFuture<List<Statement>> future = 
-				kbService.getStatements( sourceClique, predicateFilter, targetClique, extraFilter, semgroups, pageIndex, pageSize,beacons,sessionId);
+				kbService.getStatements( sourceClique, predicateFilter, targetClique, extraFilter, semgroups, pageIndex, pageSize,beacons);
 		
 		try {
 			List<Statement> statements = 

@@ -588,8 +588,6 @@ public class ConceptService
 	 * @return Optional<Concept> of matching concept
 	 */
 	public Optional<IdentifiedConcept> findByIdentifier( String identifier ) {
-		
-		String sessionId = query.getUserSessionId();
 
     	CompletableFuture<String> future = 
     			kbService.findByIdentifier(identifier) ;
