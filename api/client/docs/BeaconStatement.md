@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **subject** | [**BeaconStatementSubject**](BeaconStatementSubject.md) |  |  [optional]
 **predicate** | [**BeaconStatementPredicate**](BeaconStatementPredicate.md) |  |  [optional]
 **object** | [**BeaconStatementObject**](BeaconStatementObject.md) |  |  [optional]
-**beacon** | **String** | beacon ID  |  [optional]
+**beacon** | **Integer** | aggregator assigned beacon index number  |  [optional]
 
 
 
