@@ -13,6 +13,15 @@
 
 package bio.knowledge.client.api;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.google.gson.reflect.TypeToken;
+
 import bio.knowledge.client.ApiCallback;
 import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
@@ -21,20 +30,8 @@ import bio.knowledge.client.Configuration;
 import bio.knowledge.client.Pair;
 import bio.knowledge.client.ProgressRequestBody;
 import bio.knowledge.client.ProgressResponseBody;
-
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-
-
+import bio.knowledge.client.model.BeaconKnowledgeBeacon;
 import bio.knowledge.client.model.BeaconLogEntry;
-import bio.knowledge.client.model.BeaconMetadata;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class AggregatorApi {
     private ApiClient apiClient;
@@ -112,23 +109,23 @@ public class AggregatorApi {
     /**
      * 
      * Get a list of all of the knowledge beacons that the aggregator can query 
-     * @return List&lt;BeaconMetadata&gt;
+     * @return List&lt;BeaconKnowledgeBeacon&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<BeaconMetadata> getBeacons() throws ApiException {
-        ApiResponse<List<BeaconMetadata>> resp = getBeaconsWithHttpInfo();
+    public List<BeaconKnowledgeBeacon> getBeacons() throws ApiException {
+        ApiResponse<List<BeaconKnowledgeBeacon>> resp = getBeaconsWithHttpInfo();
         return resp.getData();
     }
 
     /**
      * 
      * Get a list of all of the knowledge beacons that the aggregator can query 
-     * @return ApiResponse&lt;List&lt;BeaconMetadata&gt;&gt;
+     * @return ApiResponse&lt;List&lt;BeaconKnowledgeBeacon&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<BeaconMetadata>> getBeaconsWithHttpInfo() throws ApiException {
+    public ApiResponse<List<BeaconKnowledgeBeacon>> getBeaconsWithHttpInfo() throws ApiException {
         com.squareup.okhttp.Call call = getBeaconsValidateBeforeCall(null, null);
-        Type localVarReturnType = new TypeToken<List<BeaconMetadata>>(){}.getType();
+        Type localVarReturnType = new TypeToken<List<BeaconKnowledgeBeacon>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
@@ -139,7 +136,7 @@ public class AggregatorApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getBeaconsAsync(final ApiCallback<List<BeaconMetadata>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getBeaconsAsync(final ApiCallback<List<BeaconKnowledgeBeacon>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -161,7 +158,7 @@ public class AggregatorApi {
         }
 
         com.squareup.okhttp.Call call = getBeaconsValidateBeforeCall(progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<List<BeaconMetadata>>(){}.getType();
+        Type localVarReturnType = new TypeToken<List<BeaconKnowledgeBeacon>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }

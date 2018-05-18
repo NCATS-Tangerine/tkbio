@@ -134,7 +134,7 @@ public class StatementService
 			predicateFilter = optionalPredicateFilter.get();
 		}
 
-		List<String> beacons = query.getCustomBeacons();
+		List<Integer> beacons = query.getCustomBeacons();
 		String sessionId = query.getUserSessionId();
 		
 		CompletableFuture<List<Statement>> future = 

@@ -19,7 +19,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import bio.knowledge.client.ApiException;
-import bio.knowledge.client.model.BeaconMetadata;
+import bio.knowledge.client.model.BeaconKnowledgeBeacon;
 import bio.knowledge.client.model.BeaconLogEntry;
 
 /**
@@ -42,7 +42,7 @@ public class AggregatorApiTest {
     @Test
     public void getBeaconsTest() throws ApiException {
         String sessionId = null;
-        List<BeaconMetadata> response = api.getBeacons();
+        List<BeaconKnowledgeBeacon> response = api.getBeacons();
 
         // TODO: test validations
     }

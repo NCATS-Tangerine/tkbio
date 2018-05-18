@@ -13,14 +13,15 @@
 
 package bio.knowledge.client.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import bio.knowledge.client.ApiException;
-import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconConceptWithDetails;
+import bio.knowledge.client.model.BeaconConceptsQueryResult;
 
 /**
  * API tests for ConceptsApi
@@ -42,9 +43,9 @@ public class ConceptsApiTest {
     @Test
     public void getConceptDetailsTest() throws ApiException {
         String conceptId = null;
-        List<String> beacons = null;
+        List<Integer> beacons = null;
         String sessionId = null;
-        BeaconConceptWithDetails response = api.getConceptDetails(conceptId, beacons, sessionId);
+        BeaconConceptWithDetails response = api.getConceptDetails(conceptId, beacons);
 
         // TODO: test validations
     }
@@ -59,13 +60,14 @@ public class ConceptsApiTest {
      */
     @Test
     public void getConceptsTest() throws ApiException {
-        String keywords = null;
-        String semanticGroups = null;
-        Integer pageNumber = null;
-        Integer pageSize = null;
-        List<String> beacons = null;
-        String sessionId = null;
-        List<BeaconConcept> response = api.getConcepts(keywords, semanticGroups, pageNumber, pageSize, beacons, sessionId);
+    	
+        String queryId = "ABC";
+        List<Integer> beacons = new ArrayList<Integer>();
+        Integer pageNumber = 1;
+        Integer pageSize = 10;
+        
+        BeaconConceptsQueryResult response = 
+        		api.getConcepts(queryId, beacons, pageNumber, pageSize);
 
         // TODO: test validations
     }

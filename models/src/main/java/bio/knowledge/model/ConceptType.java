@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author Richard
  *
  */
+@Deprecated
 public enum ConceptType {
 	ANY(
 			"Any Semantic Type",

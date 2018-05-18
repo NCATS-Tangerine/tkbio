@@ -19,12 +19,12 @@ public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements Annot
 
 	protected AnnotatedConceptImpl() { }
 	
-	public AnnotatedConceptImpl( String clique, String name, ConceptType type, String taxon ) {
-		super( clique, name, type,taxon ) ;
+	public AnnotatedConceptImpl( String clique, String name, ConceptType type ) {
+		super( clique, name, type ) ;
 	}
 
-	public AnnotatedConceptImpl( String clique, String name, String type, String taxon ) {
-		super( clique, name, type, taxon ) ;
+	public AnnotatedConceptImpl( String clique, String name, String type ) {
+		super( clique, name, type) ;
 	}
 
 	/*
@@ -63,19 +63,19 @@ public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements Annot
 
 	public class ConceptBeaconEntry implements BeaconEntry {
 		
-		private final String beaconId;
+		private final Integer beaconId;
 		private final String id;
 		private Set<String> synonyms = new HashSet<String>();
 		private String definition="";
 		private Set<Feature> details = new HashSet<Feature>();
 
-		public ConceptBeaconEntry(String beaconId, String id) {
+		public ConceptBeaconEntry(Integer beaconId, String id) {
 			this.beaconId = beaconId;
 			this.id = id;
 		}
 
 		@Override
-		public String getBeacon() {
+		public Integer getBeacon() {
 			return beaconId;
 		}
 

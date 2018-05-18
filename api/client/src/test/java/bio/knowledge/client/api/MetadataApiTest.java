@@ -13,19 +13,17 @@
 
 package bio.knowledge.client.api;
 
+import java.util.List;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.BeaconConceptCategory;
 import bio.knowledge.client.model.BeaconKnowledgeBeacon;
 import bio.knowledge.client.model.BeaconKnowledgeMap;
 import bio.knowledge.client.model.BeaconLogEntry;
 import bio.knowledge.client.model.BeaconPredicate;
-import org.junit.Test;
-import org.junit.Ignore;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * API tests for MetadataApi

@@ -80,7 +80,7 @@ public class RelationsView extends BaseView {
 	
 	private void loadDataPage(int pageNumber) {
 		
-		List<String> beacons = query.getCustomBeacons();
+		List<Integer> beacons = query.getCustomBeacons();
 		String sessionId     = query.getUserSessionId();
 		String conceptId     = query.getCurrentQueryConceptId();
 		

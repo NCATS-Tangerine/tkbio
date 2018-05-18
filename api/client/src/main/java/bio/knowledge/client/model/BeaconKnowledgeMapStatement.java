@@ -14,11 +14,9 @@
 package bio.knowledge.client.model;
 
 import java.util.Objects;
-import bio.knowledge.client.model.BeaconKnowledgeMapObject;
-import bio.knowledge.client.model.BeaconKnowledgeMapPredicate;
-import bio.knowledge.client.model.BeaconKnowledgeMapSubject;
+
 import com.google.gson.annotations.SerializedName;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**

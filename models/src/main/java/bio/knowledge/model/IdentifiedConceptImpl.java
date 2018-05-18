@@ -31,11 +31,10 @@ implements IdentifiedConcept {
 	 * @param type
 	 * @param taxon
 	 */
-	public IdentifiedConceptImpl(  String clique, String name, ConceptType type, String taxon ) {
-		super( "", name, name+" in taxon "+taxon );
+	public IdentifiedConceptImpl(  String clique, String name, ConceptType type ) {
+		super( "", name, name );
 		this.clique = clique ;
 		this.conceptType = type;
-		this.taxon = taxon;
 	}
 
 	/**
@@ -45,8 +44,8 @@ implements IdentifiedConcept {
 	 * @param type
 	 * @param taxon
 	 */
-	public IdentifiedConceptImpl(  String clique, String name, String type, String taxon ) {
-		this( clique, "", name, type, taxon) ;
+	public IdentifiedConceptImpl(  String clique, String name, String type ) {
+		this( clique, "", name, type ) ;
 	}
 
 	/**
@@ -57,8 +56,8 @@ implements IdentifiedConcept {
 	 * @param type
 	 * @param taxon
 	 */
-	public IdentifiedConceptImpl( String clique, String id, String name, String type, String taxon ) {
-		super( id, name, name+" in taxon "+taxon );
+	public IdentifiedConceptImpl( String clique, String id, String name, String type ) {
+		super( id, name, name );
 
 		this.clique = clique ;
 
@@ -66,8 +65,6 @@ implements IdentifiedConcept {
 			this.conceptType = ConceptType.OBJC;
 		else
 			this.conceptType = ConceptType.valueOf(type,ConceptType.OBJC) ;
-		
-		this.taxon = taxon;
 	}
 	
 	/* (non-Javadoc)
