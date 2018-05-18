@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Translator Knowledge Beacon Aggregator API
-  version: 1.0.10
+  version: 1.0.12
   contact:
     url: 'http://starinformatics.com'
     email: richard@starinformatics.com
@@ -81,105 +81,108 @@ paths:
               - id: 1
                 name: SemMedDB
                 url: 'https://rkb.ncats.io'
-                description: |
-                  Reference Knowledge Beacon implementation indexed by Wikidata
-  /types:
+                description: ''
+  /categories:
     get:
       description: >
-        Get a list of types and number of instances in the knowledge source, and
-        a link to the API call for the list of equivalent terminology
+        Get a list of semantic categories and number of instances in each 
+        available knowledge beacon, including associated beacon-specific
+        metadata
       tags:
         - metadata
       parameters:
         - name: beacons
           in: query
-          description: |
-            set of aggregator indices of beacons to constrain types returned
+          description: >
+            set of aggregator indices of beacons to constrain categories
+            returned
           required: false
           type: array
           items:
             type: integer
-      operationId: getConceptTypes
+      operationId: getConceptCategories
       responses:
         '200':
           schema:
             type: array
             items:
-              title: BeaconConceptTypes
+              title: BeaconConceptCategory
               type: object
               properties:
                 id:
                   type: string
                   description: >-
-                    the CURIE of the concept type (see [Biolink
-                    Model](https://biolink.github.io/biolink-model)
-                iri:
+                    the CURIE of the concept category (see [Biolink Model
+                    Classes](https://biolink.github.io/biolink-model)
+                uri:
                   type: string
                   description: >-
-                    the IRI of the concept type (see [Biolink
-                    Model](https://biolink.github.io/biolink-model) for the full
-                    list of IRI)
-                label:
+                    the URI of the concept category (see [Biolink Model
+                    Classes](https://biolink.github.io/biolink-model)  for the
+                    full list of URI)
+                category:
                   type: string
                   description: >
-                    the human readable label of the concept type (see [Biolink
-                    Model](https://biolink.github.io/biolink-model) for the full
-                    list of concept type names)
+                    the human readable label of the concept category (see
+                    [Biolink Model
+                    Classes](https://biolink.github.io/biolink-model) for  the
+                    full list of concept category names)
                 description:
                   type: string
                   description: >
                     human readable definition assigned by the beacon for the
-                    specified concept type
+                    specified concept category
                 beacons:
                   type: array
                   description: >
                     list of metadata for beacons that support the use of this
-                    concept type
+                    concept category
                   items:
-                    title: BeaconConceptTypesByBeacon
+                    title: BeaconConceptCategoriesByBeacon
                     type: object
                     properties:
                       beacon:
                         type: integer
                         description: |
-                          aggregator index identifier of the given beacon
-                      types:
+                          Aggregator index identifier of the given beacon
+                      categories:
                         type: array
                         items:
-                          title: BeaconBeaconConceptType
+                          title: BeaconBeaconConceptCategory
                           type: object
                           description: |
-                            Single local concept type term from a given beacon
+                            Single local concept categories from a given beacon
                           properties:
                             id:
                               type: string
                               description: >
                                 the 'local' CURIE-encoded identifier of the
-                                given concept type, as published by the given
+                                given concept category, as published by the
+                                given beacon
+                            uri:
+                              type: string
+                              description: >
+                                the 'local' URI of the given concept category, 
+                                as published by the given beacon
+                            category:
+                              type: string
+                              description: >
+                                the 'local' human readable label of the given
+                                concept category, as published by the given
                                 beacon
-                            iri:
-                              type: string
-                              description: >
-                                the 'local' IRI of the given concept type, as
-                                published by the given beacon
-                            label:
-                              type: string
-                              description: >
-                                the 'local' human readable of the given concept
-                                type, as published by the given beacon
                             frequency:
                               type: integer
                               description: >
                                 the number of instances of the specified concept
-                                type is used in statements within the given
+                                category is used in statements within the given
                                 beacon
           description: |
-            Successful response with types and frequency returned
+            Successful response with concept categories and frequency returned
           examples:
             application/json:
               - id: 'BLM:Gene'
-                iri: 'http://bioentity.io/vocab/Gene'
-                label: gene
+                uri: 'http://bioentity.io/vocab/Gene'
+                category: gene
                 description: >
                   A region (or regions) that includes all of the sequence
                   elements necessary to encode a functional transcript. A gene
@@ -187,16 +190,16 @@ paths:
                   other functional sequence regions.
                 beacons:
                   - beacon: 1
-                    types:
+                    categories:
                       - id: 'UMLSSG:GENE'
-                        iri: 'https://metamap.nlm.nih.gov/Docs/SemGroups_2013#GENE'
-                        label: GENE
+                        uri: 'https://metamap.nlm.nih.gov/Docs/SemGroups_2013#GENE'
+                        category: GENE
                     frequency: 1234
                   - beacon: 5
-                    types:
+                    categories:
                       - id: 'SO:0000704'
-                        iri: 'http://www.sequenceontology.org/0000704'
-                        label: gene
+                        uri: 'http://www.sequenceontology.org/0000704'
+                        category: gene
                         frequency: 5678
   /predicates:
     get:
@@ -221,7 +224,7 @@ paths:
           schema:
             type: array
             items:
-              title: BeaconPredicates
+              title: BeaconPredicate
               type: object
               properties:
                 id:
@@ -229,18 +232,19 @@ paths:
                   description: >-
                     the CURIE of the predicate relation (see [Biolink
                     Model](https://biolink.github.io/biolink-model)
-                iri:
+                uri:
                   type: string
                   description: >-
-                    the IRI of the predicate relation (see [Biolink
+                    the URI of the predicate relation (see [Biolink
                     Model](https://biolink.github.io/biolink-model) for the full
-                    list of IRI)
-                label:
+                    list of URI)
+                edge_label:
                   type: string
                   description: >-
-                    the human readable label of the prediccate relation (see
-                    [Biolink Model](https://biolink.github.io/biolink-model) for
-                    the full list of predicates)
+                    the human readable 'edge label' of the 'minimal' predicate
+                    (see [Biolink
+                    Model](https://biolink.github.io/biolink-model) for the full
+                    list of Biolink Model minimal predicates)
                 description:
                   type: string
                   description: >
@@ -265,25 +269,33 @@ paths:
                           title: BeaconBeaconPredicate
                           type: object
                           description: |
-                            Single local predicate term from a given beacon
+                            Local predicate definition from a given beacon
                           properties:
                             id:
                               type: string
                               description: >
-                                the 'local' CURIE-encoded identifier of the
-                                given predicate, as published by the given
-                                beacon
-                            iri:
+                                the 'local' CURIE-encoded identifier of a
+                                maximal predicate relation, as published by  the
+                                given beacon
+                            uri:
                               type: string
                               description: >
-                                the 'local' CURIE-encoded identifier of the
-                                given predicate, as published by the given
-                                beacon
-                            label:
+                                the 'local' URI of a maximal predicate
+                                relation,  as published by the given beacon
+                            relation:
                               type: string
                               description: >
-                                the 'local' human readable of the given
-                                predicate, as published by the given beacon
+                                the human readable 'relation of the 'maximal'
+                                predicate (see the [Biolink
+                                Model](https://biolink.github.io/biolink-model)
+                                for a list of Biolink maximal predicates; this
+                                field may map onto beacon-specific non-Biolink
+                                relations
+                            description:
+                              type: string
+                              description: >
+                                human readable definition of the given 
+                                predicate relation
                             frequency:
                               type: integer
                               description: >
@@ -295,31 +307,28 @@ paths:
             indexed by beacons which support the relation
           examples:
             application/json:
-              - id: 'BLM:GeneToDiseaseAssociation'
-                iri: 'http://bioentity.io/vocab/GeneToDiseaseAssociation'
-                label: gene to disease association
+              - id: 'BLM:affects_risk_for'
+                uri: 'http://bioentity.io/vocab/affects_risk_for'
+                edge_label: affects_risk_for
                 description: |
-                  gene in which variation is correlated with the disease - 
-                  may be protective or causative or associative, or as a model
+                  holds between two entities where exposure to one entity 
+                  alters the chance of developing the other
                 beacons:
-                  - beacon: 5
+                  - beacon: 1
                     predicates:
-                      - id: 'RO:0003302'
-                        iri: 'http://purl.obolibrary.org/obo/RO_0003302'
-                        label: causes or contributes to condition
+                      - id: 'SEMMEDDB:PREDISPOSES'
+                        uri: 'https://metamap.nlm.nih.gov/predicate/PREDISPOSES'
+                        relation: PREDISPOSES
+                        description: >-
+                          agent which predisposes individual to a given
+                          condition
                         frequency: 123
-                  - beacon: 2
-                    predicates:
-                      - id: 'SIO:000983'
-                        iri: 'http://semanticscience.org/resource/SIO_000983'
-                        label: gene-disease association
-                        frequency: 321
   /kmap:
     get:
       description: >
         Get a high level knowledge map of the all the beacons specified by
-        triplets of subject concept type, relationship predicate and concept
-        object type
+        triplets of subject concept category, relationship predicate and concept
+        object category
       tags:
         - metadata
       parameters:
@@ -355,16 +364,11 @@ paths:
                         title: BeaconKnowledgeMapSubject
                         type: object
                         properties:
-                          id:
+                          category:
                             type: string
-                            description: |
-                              the CURIE designating the concept type of a 
-                              statement subject
-                          label:
-                            type: string
-                            description: |
-                              the human readable label of the concept type of a
-                              statement subject
+                            description: >
+                              the human readable label of the concept category
+                              of a statement subject
                           prefixes:
                             type: array
                             items:
@@ -377,30 +381,25 @@ paths:
                         title: BeaconKnowledgeMapPredicate
                         type: object
                         properties:
-                          id:
+                          edge_label:
                             type: string
                             description: >-
-                              the CURIE of the predicate of the given
-                              relationship
-                          label:
+                              the human readable edge label of the 'minimal' 
+                              predicate of the given relationship
+                          relation:
                             type: string
                             description: >-
-                              the human readable label of the  predicate ofthe
-                              given relationship
+                              the human readable label of the 'maximal' 
+                              predicate of the given relationship
                       object:
                         title: BeaconKnowledgeMapObject
                         type: object
                         properties:
-                          id:
+                          category:
                             type: string
-                            description: |
-                              the CURIE designating the concept type of a 
-                              statement object
-                          label:
-                            type: string
-                            description: |
-                              the human readable label of the concept type of a
-                              statement object
+                            description: >
+                              the human readable label of the concept category
+                              of a statement object
                           prefixes:
                             type: array
                             items:
@@ -419,24 +418,22 @@ paths:
                         description: |
                           a description of the nature of the relationship
           description: |
-            Successful response with types and frequency returned
+            Successful response with categories and frequency returned
           examples:
             application/json:
               - beacon: 1
                 statements:
                   - subject:
-                      id: 'BLM:Gene'
-                      label: gene
+                      category: gene
                       prefixes:
                         - DRUGBANK
                         - CHEMBL
                         - UNIPROT
                     predicate:
-                      id: 'RO:0002606'
-                      label: is substance that treats
+                      edge_label: is substance that treats
+                      relation: 'RO:0002606'
                     object:
-                      id: 'BLM:DiseaseOrPhenotypicFeature'
-                      label: disease or phenotypic feature
+                      category: disease or phenotypic feature
                       prefixes:
                         - MP
                         - HP
@@ -447,22 +444,20 @@ paths:
                       activity that negative regulates or decreases the
                       magnitude of a pathological process, phenotype or disease
                   - subject:
-                      id: 'BLM:Drug'
-                      label: drug
+                      category: drug
                       prefixes:
                         - DRUGBANK
                         - CHEMBL
                     predicate:
-                      id: 'SIO:001250'
-                      label: chemical to pathway association
+                      edge_label: chemical_to_pathway_association
+                      relation: 'SIO:001250'
                     object:
-                      id: 'BLM:Pathway'
-                      label: pathway
+                      category: pathway
                       prefixes:
                         - KEGG
                     count: 100
                     description: |
-                      Drug interacts with a given protein
+                      Drug interacts with a given pathway
   /errorlog:
     get:
       description: |
@@ -529,13 +524,14 @@ paths:
             which to match concept names and synonyms, e.g. diabetes.
           required: true
           type: string
-        - name: types
+        - name: categories
           in: query
           description: >
-            a subset array of concept types (specified as codes gene, pathway,
-            etc.) to which to constrain concepts matched by the main keyword
-            search (see [Biolink Model](https://biolink.github.io/biolink-model)
-            for the full list of codes)
+            a subset array of concept categories (specified as codes 'gene', 
+            'pathway', etc.) to which to constrain concepts matched by the main
+            keyword search (see [Biolink
+            Model](https://biolink.github.io/biolink-model) for the full list of
+            codes)
           required: false
           type: array
           items:
@@ -564,12 +560,12 @@ paths:
                 type: string
                 description: |
                   'keywords' string parameter to call, echoed back
-              types:
+              categories:
                 type: array
                 items:
                   type: string
                 description: |
-                  'types' string parameter to call, echoed back
+                  'categories' string parameter to call, echoed back
           description: >
             Successful concept query initialization, with initial query status
             returned
@@ -996,10 +992,10 @@ paths:
             the set of concept-relations matched by the 'source' concepts.
           required: false
           type: string
-        - name: types
+        - name: categories
           in: query
           description: >
-            a subset (array) of identifiers of concept types to which to
+            a subset (array) of identifiers of concept categories to which to
             constrain 'target' concepts associated with the given 'source'
             concept ((see [Biolink
             Model](https://biolink.github.io/biolink-model) for the full list of
@@ -1046,12 +1042,12 @@ paths:
                 type: string
                 description: |
                   'keywords' string parameter to call, echoed back
-              types:
+              categories:
                 type: array
                 items:
                   type: string
                 description: |
-                  'types' string parameter to call, echoed back
+                  'categories' string parameter to call, echoed back
           description: >
             Successful concept query initialization, with initial query status
             returned

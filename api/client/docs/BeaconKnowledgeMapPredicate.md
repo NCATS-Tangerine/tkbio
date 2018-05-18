@@ -4,8 +4,8 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **String** | the CURIE of the predicate of the given relationship |  [optional]
-**label** | **String** | the human readable label of the  predicate ofthe given relationship |  [optional]
+**edgeLabel** | **String** | the human readable edge label of the &#39;minimal&#39;  predicate of the given relationship |  [optional]
+**relation** | **String** | the human readable label of the &#39;maximal&#39;  predicate of the given relationship |  [optional]
 
 
 

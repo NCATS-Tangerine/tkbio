@@ -14,7 +14,7 @@
 package bio.knowledge.client.model;
 
 import java.util.Objects;
-import bio.knowledge.client.model.BeaconPredicatesByBeacon;
+import bio.knowledge.client.model.BeaconConceptCategoriesByBeacon;
 import com.google.gson.annotations.SerializedName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,35 +22,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * BeaconPredicate
+ * BeaconConceptCategory
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-05-18T11:46:52.023-07:00")
-public class BeaconPredicate {
+public class BeaconConceptCategory {
   @SerializedName("id")
   private String id = null;
 
   @SerializedName("uri")
   private String uri = null;
 
-  @SerializedName("edge_label")
-  private String edgeLabel = null;
+  @SerializedName("category")
+  private String category = null;
 
   @SerializedName("description")
   private String description = null;
 
   @SerializedName("beacons")
-  private List<BeaconPredicatesByBeacon> beacons = new ArrayList<BeaconPredicatesByBeacon>();
+  private List<BeaconConceptCategoriesByBeacon> beacons = new ArrayList<BeaconConceptCategoriesByBeacon>();
 
-  public BeaconPredicate id(String id) {
+  public BeaconConceptCategory id(String id) {
     this.id = id;
     return this;
   }
 
    /**
-   * the CURIE of the predicate relation (see [Biolink Model](https://biolink.github.io/biolink-model)
+   * the CURIE of the concept category (see [Biolink Model Classes](https://biolink.github.io/biolink-model)
    * @return id
   **/
-  @ApiModelProperty(example = "null", value = "the CURIE of the predicate relation (see [Biolink Model](https://biolink.github.io/biolink-model)")
+  @ApiModelProperty(example = "null", value = "the CURIE of the concept category (see [Biolink Model Classes](https://biolink.github.io/biolink-model)")
   public String getId() {
     return id;
   }
@@ -59,16 +59,16 @@ public class BeaconPredicate {
     this.id = id;
   }
 
-  public BeaconPredicate uri(String uri) {
+  public BeaconConceptCategory uri(String uri) {
     this.uri = uri;
     return this;
   }
 
    /**
-   * the URI of the predicate relation (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of URI)
+   * the URI of the concept category (see [Biolink Model Classes](https://biolink.github.io/biolink-model)  for the full list of URI)
    * @return uri
   **/
-  @ApiModelProperty(example = "null", value = "the URI of the predicate relation (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of URI)")
+  @ApiModelProperty(example = "null", value = "the URI of the concept category (see [Biolink Model Classes](https://biolink.github.io/biolink-model)  for the full list of URI)")
   public String getUri() {
     return uri;
   }
@@ -77,34 +77,34 @@ public class BeaconPredicate {
     this.uri = uri;
   }
 
-  public BeaconPredicate edgeLabel(String edgeLabel) {
-    this.edgeLabel = edgeLabel;
+  public BeaconConceptCategory category(String category) {
+    this.category = category;
     return this;
   }
 
    /**
-   * the human readable 'edge label' of the 'minimal' predicate (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of Biolink Model minimal predicates)
-   * @return edgeLabel
+   * the human readable label of the concept category (see [Biolink Model Classes](https://biolink.github.io/biolink-model) for  the full list of concept category names) 
+   * @return category
   **/
-  @ApiModelProperty(example = "null", value = "the human readable 'edge label' of the 'minimal' predicate (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of Biolink Model minimal predicates)")
-  public String getEdgeLabel() {
-    return edgeLabel;
+  @ApiModelProperty(example = "null", value = "the human readable label of the concept category (see [Biolink Model Classes](https://biolink.github.io/biolink-model) for  the full list of concept category names) ")
+  public String getCategory() {
+    return category;
   }
 
-  public void setEdgeLabel(String edgeLabel) {
-    this.edgeLabel = edgeLabel;
+  public void setCategory(String category) {
+    this.category = category;
   }
 
-  public BeaconPredicate description(String description) {
+  public BeaconConceptCategory description(String description) {
     this.description = description;
     return this;
   }
 
    /**
-   * human readable definition assigned by the beacon for the predicate relation 
+   * human readable definition assigned by the beacon for the specified concept category 
    * @return description
   **/
-  @ApiModelProperty(example = "null", value = "human readable definition assigned by the beacon for the predicate relation ")
+  @ApiModelProperty(example = "null", value = "human readable definition assigned by the beacon for the specified concept category ")
   public String getDescription() {
     return description;
   }
@@ -113,26 +113,26 @@ public class BeaconPredicate {
     this.description = description;
   }
 
-  public BeaconPredicate beacons(List<BeaconPredicatesByBeacon> beacons) {
+  public BeaconConceptCategory beacons(List<BeaconConceptCategoriesByBeacon> beacons) {
     this.beacons = beacons;
     return this;
   }
 
-  public BeaconPredicate addBeaconsItem(BeaconPredicatesByBeacon beaconsItem) {
+  public BeaconConceptCategory addBeaconsItem(BeaconConceptCategoriesByBeacon beaconsItem) {
     this.beacons.add(beaconsItem);
     return this;
   }
 
    /**
-   * list of metadata for beacons that support the use of this predicate relation 
+   * list of metadata for beacons that support the use of this concept category 
    * @return beacons
   **/
-  @ApiModelProperty(example = "null", value = "list of metadata for beacons that support the use of this predicate relation ")
-  public List<BeaconPredicatesByBeacon> getBeacons() {
+  @ApiModelProperty(example = "null", value = "list of metadata for beacons that support the use of this concept category ")
+  public List<BeaconConceptCategoriesByBeacon> getBeacons() {
     return beacons;
   }
 
-  public void setBeacons(List<BeaconPredicatesByBeacon> beacons) {
+  public void setBeacons(List<BeaconConceptCategoriesByBeacon> beacons) {
     this.beacons = beacons;
   }
 
@@ -145,28 +145,28 @@ public class BeaconPredicate {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    BeaconPredicate beaconPredicate = (BeaconPredicate) o;
-    return Objects.equals(this.id, beaconPredicate.id) &&
-        Objects.equals(this.uri, beaconPredicate.uri) &&
-        Objects.equals(this.edgeLabel, beaconPredicate.edgeLabel) &&
-        Objects.equals(this.description, beaconPredicate.description) &&
-        Objects.equals(this.beacons, beaconPredicate.beacons);
+    BeaconConceptCategory beaconConceptCategory = (BeaconConceptCategory) o;
+    return Objects.equals(this.id, beaconConceptCategory.id) &&
+        Objects.equals(this.uri, beaconConceptCategory.uri) &&
+        Objects.equals(this.category, beaconConceptCategory.category) &&
+        Objects.equals(this.description, beaconConceptCategory.description) &&
+        Objects.equals(this.beacons, beaconConceptCategory.beacons);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, uri, edgeLabel, description, beacons);
+    return Objects.hash(id, uri, category, description, beacons);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class BeaconPredicate {\n");
+    sb.append("class BeaconConceptCategory {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    uri: ").append(toIndentedString(uri)).append("\n");
-    sb.append("    edgeLabel: ").append(toIndentedString(edgeLabel)).append("\n");
+    sb.append("    category: ").append(toIndentedString(category)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    beacons: ").append(toIndentedString(beacons)).append("\n");
     sb.append("}");

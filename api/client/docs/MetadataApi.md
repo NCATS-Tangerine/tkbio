@@ -5,7 +5,7 @@ All URIs are relative to *https://kba.ncats.io/*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**getBeacons**](MetadataApi.md#getBeacons) | **GET** /beacons | 
-[**getConceptTypes**](MetadataApi.md#getConceptTypes) | **GET** /types | 
+[**getConceptCategories**](MetadataApi.md#getConceptCategories) | **GET** /categories | 
 [**getErrors**](MetadataApi.md#getErrors) | **GET** /errorlog | 
 [**getKnowledgeMap**](MetadataApi.md#getKnowledgeMap) | **GET** /kmap | 
 [**getPredicates**](MetadataApi.md#getPredicates) | **GET** /predicates | 
@@ -52,13 +52,13 @@ No authorization required
  - **Content-Type**: Not defined
  - **Accept**: application/json
 
-<a name="getConceptTypes"></a>
-# **getConceptTypes**
-> List&lt;BeaconConceptTypes&gt; getConceptTypes(beacons)
+<a name="getConceptCategories"></a>
+# **getConceptCategories**
+> List&lt;BeaconConceptCategory&gt; getConceptCategories(beacons)
 
 
 
-Get a list of types and number of instances in the knowledge source, and a link to the API call for the list of equivalent terminology 
+Get a list of semantic categories and number of instances in each  available knowledge beacon, including associated beacon-specific metadata 
 
 ### Example
 ```java
@@ -68,12 +68,12 @@ Get a list of types and number of instances in the knowledge source, and a link 
 
 
 MetadataApi apiInstance = new MetadataApi();
-List<Integer> beacons = Arrays.asList(56); // List<Integer> | set of aggregator indices of beacons to constrain types returned 
+List<Integer> beacons = Arrays.asList(56); // List<Integer> | set of aggregator indices of beacons to constrain categories returned 
 try {
-    List<BeaconConceptTypes> result = apiInstance.getConceptTypes(beacons);
+    List<BeaconConceptCategory> result = apiInstance.getConceptCategories(beacons);
     System.out.println(result);
 } catch (ApiException e) {
-    System.err.println("Exception when calling MetadataApi#getConceptTypes");
+    System.err.println("Exception when calling MetadataApi#getConceptCategories");
     e.printStackTrace();
 }
 ```
@@ -82,11 +82,11 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **beacons** | [**List&lt;Integer&gt;**](Integer.md)| set of aggregator indices of beacons to constrain types returned  | [optional]
+ **beacons** | [**List&lt;Integer&gt;**](Integer.md)| set of aggregator indices of beacons to constrain categories returned  | [optional]
 
 ### Return type
 
-[**List&lt;BeaconConceptTypes&gt;**](BeaconConceptTypes.md)
+[**List&lt;BeaconConceptCategory&gt;**](BeaconConceptCategory.md)
 
 ### Authorization
 
@@ -148,7 +148,7 @@ No authorization required
 
 
 
-Get a high level knowledge map of the all the beacons specified by triplets of subject concept type, relationship predicate and concept object type 
+Get a high level knowledge map of the all the beacons specified by triplets of subject concept category, relationship predicate and concept object category 
 
 ### Example
 ```java
@@ -189,7 +189,7 @@ No authorization required
 
 <a name="getPredicates"></a>
 # **getPredicates**
-> List&lt;BeaconPredicates&gt; getPredicates(beacons)
+> List&lt;BeaconPredicate&gt; getPredicates(beacons)
 
 
 
@@ -205,7 +205,7 @@ Get a list of predicates used in statements issued by the knowledge source
 MetadataApi apiInstance = new MetadataApi();
 List<Integer> beacons = Arrays.asList(56); // List<Integer> | set of aggregator indices of beacons to constrain predicates returned 
 try {
-    List<BeaconPredicates> result = apiInstance.getPredicates(beacons);
+    List<BeaconPredicate> result = apiInstance.getPredicates(beacons);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling MetadataApi#getPredicates");
@@ -221,7 +221,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;BeaconPredicates&gt;**](BeaconPredicates.md)
+[**List&lt;BeaconPredicate&gt;**](BeaconPredicate.md)
 
 ### Authorization
 

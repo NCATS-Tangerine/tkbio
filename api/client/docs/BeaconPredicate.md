@@ -1,5 +1,5 @@
 
-# BeaconPredicates
+# BeaconPredicate
 
 ## Properties
 Name | Type | Description | Notes

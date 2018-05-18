@@ -14,7 +14,7 @@
 package bio.knowledge.client.model;
 
 import java.util.Objects;
-import bio.knowledge.client.model.BeaconStatementsQueryBeaconStatus;
+import bio.knowledge.client.model.BeaconBeaconConceptCategory;
 import com.google.gson.annotations.SerializedName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,55 +22,55 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * BeaconStatementsQueryStatus
+ * BeaconConceptCategoriesByBeacon
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-05-18T11:46:52.023-07:00")
-public class BeaconStatementsQueryStatus {
-  @SerializedName("queryId")
-  private String queryId = null;
+public class BeaconConceptCategoriesByBeacon {
+  @SerializedName("beacon")
+  private Integer beacon = null;
 
-  @SerializedName("status")
-  private List<BeaconStatementsQueryBeaconStatus> status = new ArrayList<BeaconStatementsQueryBeaconStatus>();
+  @SerializedName("categories")
+  private List<BeaconBeaconConceptCategory> categories = new ArrayList<BeaconBeaconConceptCategory>();
 
-  public BeaconStatementsQueryStatus queryId(String queryId) {
-    this.queryId = queryId;
+  public BeaconConceptCategoriesByBeacon beacon(Integer beacon) {
+    this.beacon = beacon;
     return this;
   }
 
    /**
-   * session identifier of initiated query 
-   * @return queryId
+   * Aggregator index identifier of the given beacon 
+   * @return beacon
   **/
-  @ApiModelProperty(example = "null", value = "session identifier of initiated query ")
-  public String getQueryId() {
-    return queryId;
+  @ApiModelProperty(example = "null", value = "Aggregator index identifier of the given beacon ")
+  public Integer getBeacon() {
+    return beacon;
   }
 
-  public void setQueryId(String queryId) {
-    this.queryId = queryId;
+  public void setBeacon(Integer beacon) {
+    this.beacon = beacon;
   }
 
-  public BeaconStatementsQueryStatus status(List<BeaconStatementsQueryBeaconStatus> status) {
-    this.status = status;
+  public BeaconConceptCategoriesByBeacon categories(List<BeaconBeaconConceptCategory> categories) {
+    this.categories = categories;
     return this;
   }
 
-  public BeaconStatementsQueryStatus addStatusItem(BeaconStatementsQueryBeaconStatus statusItem) {
-    this.status.add(statusItem);
+  public BeaconConceptCategoriesByBeacon addCategoriesItem(BeaconBeaconConceptCategory categoriesItem) {
+    this.categories.add(categoriesItem);
     return this;
   }
 
    /**
-   * array of beacon-specific query status reports 
-   * @return status
+   * Get categories
+   * @return categories
   **/
-  @ApiModelProperty(example = "null", value = "array of beacon-specific query status reports ")
-  public List<BeaconStatementsQueryBeaconStatus> getStatus() {
-    return status;
+  @ApiModelProperty(example = "null", value = "")
+  public List<BeaconBeaconConceptCategory> getCategories() {
+    return categories;
   }
 
-  public void setStatus(List<BeaconStatementsQueryBeaconStatus> status) {
-    this.status = status;
+  public void setCategories(List<BeaconBeaconConceptCategory> categories) {
+    this.categories = categories;
   }
 
 
@@ -82,24 +82,24 @@ public class BeaconStatementsQueryStatus {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    BeaconStatementsQueryStatus beaconStatementsQueryStatus = (BeaconStatementsQueryStatus) o;
-    return Objects.equals(this.queryId, beaconStatementsQueryStatus.queryId) &&
-        Objects.equals(this.status, beaconStatementsQueryStatus.status);
+    BeaconConceptCategoriesByBeacon beaconConceptCategoriesByBeacon = (BeaconConceptCategoriesByBeacon) o;
+    return Objects.equals(this.beacon, beaconConceptCategoriesByBeacon.beacon) &&
+        Objects.equals(this.categories, beaconConceptCategoriesByBeacon.categories);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(queryId, status);
+    return Objects.hash(beacon, categories);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class BeaconStatementsQueryStatus {\n");
+    sb.append("class BeaconConceptCategoriesByBeacon {\n");
     
-    sb.append("    queryId: ").append(toIndentedString(queryId)).append("\n");
-    sb.append("    status: ").append(toIndentedString(status)).append("\n");
+    sb.append("    beacon: ").append(toIndentedString(beacon)).append("\n");
+    sb.append("    categories: ").append(toIndentedString(categories)).append("\n");
     sb.append("}");
     return sb.toString();
   }
