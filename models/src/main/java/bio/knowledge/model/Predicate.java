@@ -8,25 +8,27 @@ public interface Predicate extends IdentifiedEntity {
 
 	public interface PredicateBeacon {
 		
-		public String getBeacon();
+		public Integer getBeaconId();
 		
-		public String getId();
+		public String getEdgeLabel();
 		
-		public String getDefinition();
+		public String getRelation();
+		
+		public String getDescription();
 		
 	}
 	
 	/**
 	 * 
-	 * @param beaconNameFromId
+	 * @param predicates
 	 */
-	void setBeacons(List<PredicateBeacon> beacons);
+	void setPredicatesByBeacons(List<PredicateBeacon> predicates);
 	
 	/**
 	 * 
 	 */
-	public List<PredicateBeacon> getBeacons() ;
+	public List<PredicateBeacon> getPredicatesByBeacons() ;
 
-	void addBeacon(PredicateBeacon beacon);
+	void addPredicatesByBeacon(PredicateBeacon predicate);
 
 }

@@ -31,6 +31,7 @@ import bio.knowledge.client.api.EvidenceApi;
 import bio.knowledge.client.api.PredicatesApi;
 import bio.knowledge.client.api.StatementsApi;
 import bio.knowledge.client.model.BeaconAnnotation;
+import bio.knowledge.client.model.BeaconBeaconPredicate;
 import bio.knowledge.client.model.BeaconCliqueIdentifier;
 import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconConceptDetail;
@@ -526,22 +527,29 @@ public class KnowledgeBeaconService implements Util {
 					List<BeaconPredicate> responses = 
 							getPredicatesApi().getPredicates();
 					
-					for ( BeaconPredicate response : responses ) {
+					for ( BeaconPredicate bp : responses ) {
 						
 						PredicateImpl predicate = new PredicateImpl();
 						
-						predicate.setName(response.getEdgeLabel());
+						predicate.setName(bp.getEdgeLabel());
 
-						List<BeaconPredicatesByBeacon> beacons = response.getBeacons();
-						if(beacons!=null)
-							for(BeaconPredicatesByBeacon pb : beacons) {
-								Predicate.PredicateBeacon beacon = 
-										predicate.new PredicateBeaconImpl(
-												pb.getBeacon(),
-												pb.getId(),
-												pb.getDefinition()
-										) ;
-								predicate.addBeacon(beacon);
+						List<BeaconPredicatesByBeacon> pbbList = bp.getBeacons();
+						if(pbbList!=null)
+							for(BeaconPredicatesByBeacon pb : pbbList) {
+								
+								List<BeaconBeaconPredicate> beaconPredicates = pb.getPredicates();
+								
+								for(BeaconBeaconPredicate entry : beaconPredicates) {
+									Predicate.PredicateBeacon predicateBeacon = 
+											predicate.new PredicateBeaconImpl(
+													pb.getBeacon(),
+													bp.getEdgeLabel(),
+													entry.getRelation(),
+													entry.getDescription()
+											) ;
+									
+									predicate.addPredicatesByBeacon(predicateBeacon);
+								}
 							}
 						
 						predicates.add(predicate);
@@ -599,12 +607,12 @@ public class KnowledgeBeaconService implements Util {
 					String relationIds = "" ;
 					if(!nullOrEmpty(relations)) {
 						for(Predicate p : relations) {
-						List<PredicateBeacon> beacons = p.getBeacons();
+						List<PredicateBeacon> beacons = p.getPredicatesByBeacons();
 						if(!nullOrEmpty(beacons))
-							for(PredicateBeacon beacon : beacons) {
+							for(PredicateBeacon predicateByBeacon : beacons) {
 								if(!relationIds.isEmpty())
 									relationIds += " ";
-								relationIds += beacon.getId();
+								relationIds += predicateByBeacon.getRelation();
 							}
 						}
 					}
@@ -696,11 +704,11 @@ public class KnowledgeBeaconService implements Util {
 				List<Annotation> annotations = new ArrayList<Annotation>();
 				
 				String[] strings = statementId.split("\\|");
-				String id = strings.length >= 2 ? strings[2] : statementId;
+				String statementId = strings.length >= 2 ? strings[2] : statementId;
 				
 				try {
 					List<BeaconAnnotation> responses = getEvidenceApi().getEvidence(
-							id,
+							statementId,
 							keywords,
 							pageNumber,
 							pageSize,

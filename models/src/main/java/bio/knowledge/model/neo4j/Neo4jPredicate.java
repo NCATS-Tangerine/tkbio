@@ -56,34 +56,41 @@ public class Neo4jPredicate extends Neo4jAbstractIdentifiedEntity implements Pre
 	
 	public class Neo4jPredicateBeacon implements Predicate.PredicateBeacon {
 
-		private String beaconId;
-		private String predicateId;
-		private String definition;
+		private Integer beaconId;
+		private String edgeLabel;
+		private String relation;
+		private String description;
 		
 		public Neo4jPredicateBeacon(
-				String beaconId,
-				String predicateId,
-				String definition
-			) {
+				Integer beaconId,
+				String edgeLabel,
+				String relation,
+				String description
+		) {
 			this.beaconId = beaconId;
-			this.predicateId = predicateId;
-			this.definition = definition;
-
+			this.edgeLabel = edgeLabel;
+			this.relation = relation;
+			this.description = description;
 		}
 		
 		@Override
-		public String getBeacon() {
+		public Integer getBeaconId() {
 			return beaconId;
 		}
 
 		@Override
-		public String getId() {
-			return predicateId;
+		public String getEdgeLabel() {
+			return edgeLabel;
 		}
 
 		@Override
-		public String getDefinition() {
-			return definition;
+		public String getRelation() {
+			return relation;
+		}
+
+		@Override
+		public String getDescription() {
+			return description;
 		}
 		
 	}
@@ -91,17 +98,17 @@ public class Neo4jPredicate extends Neo4jAbstractIdentifiedEntity implements Pre
 	private List<PredicateBeacon> beacons = new ArrayList<PredicateBeacon>();
 	
 	@Override
-	public void setBeacons(List<PredicateBeacon> beacons) {
+	public void setPredicatesByBeacons(List<PredicateBeacon> beacons) {
 		this.beacons.addAll(beacons);
 	}
 
 	@Override
-	public List<PredicateBeacon> getBeacons() {
+	public List<PredicateBeacon> getPredicatesByBeacons() {
 		return beacons;
 	}
 
 	@Override
-	public void addBeacon(PredicateBeacon beacon) {
+	public void addPredicatesByBeacon(PredicateBeacon beacon) {
 		beacons.add(beacon);
 	}
 	
