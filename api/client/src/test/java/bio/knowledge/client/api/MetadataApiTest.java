@@ -18,7 +18,7 @@ import bio.knowledge.client.model.BeaconConceptCategory;
 import bio.knowledge.client.model.BeaconKnowledgeBeacon;
 import bio.knowledge.client.model.BeaconKnowledgeMap;
 import bio.knowledge.client.model.BeaconLogEntry;
-import bio.knowledge.client.model.BeaconPredicates;
+import bio.knowledge.client.model.BeaconPredicate;
 import org.junit.Test;
 import org.junit.Ignore;
 
@@ -110,7 +110,7 @@ public class MetadataApiTest {
     @Test
     public void getPredicatesTest() throws ApiException {
         List<Integer> beacons = null;
-        List<BeaconPredicates> response = api.getPredicates(beacons);
+        List<BeaconPredicate> response = api.getPredicates(beacons);
 
         // TODO: test validations
     }
