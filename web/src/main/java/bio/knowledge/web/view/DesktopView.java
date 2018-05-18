@@ -25,8 +25,11 @@
  */
 package bio.knowledge.web.view;
 
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.FontAwesome;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -39,6 +42,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.web.design.DesktopDesign;
 import bio.knowledge.web.ui.DesktopUI;
@@ -56,6 +60,14 @@ public class DesktopView extends DesktopDesign implements View {
 	public static final String NAME = "main";
 
 	public DesktopView() {
+		viewingConcepts.setSpacing(false);
+		searchLayout.setSpacing(true);
+		searchLayout.setMargin(new MarginInfo(true, false, false, true));
+		search.addStyleName("concept-search-field");
+		historyBtn.setIcon(FontAwesome.HISTORY);
+		historyBtn.setStyleName(ValoTheme.BUTTON_HUGE);
+		historyBtn.setStyleName(ValoTheme.BUTTON_ICON_ONLY, true);
+		historyBtn.setStyleName(ValoTheme.BUTTON_BORDERLESS, true);
 	}
 
 	/**
@@ -192,10 +204,6 @@ public class DesktopView extends DesktopDesign implements View {
 		return colorSelect;
 	}
 
-	public VerticalLayout getReferenceLayout() {
-		return referenceLayout;
-	}
-
 //	public void setReferenceLayout(VerticalLayout referenceLayout) {
 //		this.referenceLayout = referenceLayout;
 //	}
@@ -226,6 +234,10 @@ public class DesktopView extends DesktopDesign implements View {
 	public Button getShowLegendBtn() {
 		return showLegendBtn;
 	}
+	
+	public Button getHistoryButton() {
+		return historyBtn;
+	}
 
 //	/**
 //	 * @param
@@ -240,11 +252,26 @@ public class DesktopView extends DesktopDesign implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		if (UI.getCurrent() instanceof DesktopUI) {
-			DesktopUI ui = (DesktopUI) UI.getCurrent();
-			String state = ui.getNavigator().getState();
+		System.out.println("[parameters]: " + event.getParameters());
+		String eventParameter = event.getParameters();
+		if (!eventParameter.contains("/")) {
+			return;
+		}
+		
+		String[] parameters =  event.getParameters().split("/");
+		if (parameters.length >= 2) {
+			String viewName = parameters[0];
+			String parameter = parameters[1];
+			
+			getUI().getNavigator().navigateTo(viewName + "/" + parameter);
+		}
 
-			System.out.println("DesktopView[enter] state is: " + state);
+		
+		
+//		if (UI.getCurrent() instanceof DesktopUI) {
+//			DesktopUI ui = (DesktopUI) UI.getCurrent();
+//			String state = ui.getNavigator().getState();
+
 
 			// // To make sure it displays the relations table when
 			// // navigated back to this view's URI fragment.
@@ -263,7 +290,7 @@ public class DesktopView extends DesktopDesign implements View {
 			// String annotationId = getStateSegment(state, 1);
 			// ui.displayReference(annotationId);
 			// }
-		}
+//		}
 	}
 
 	private String getStateSegment(String state, int i) {

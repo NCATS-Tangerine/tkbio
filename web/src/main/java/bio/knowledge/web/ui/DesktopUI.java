@@ -877,33 +877,29 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 */
 	private void initDesktopView() {
 		this.desktopView = new DesktopView();
-
+		
 		searchWindow.setCaption("Search by keywords");
 		searchWindow.center();
 		searchWindow.setResizable(true);
 		searchWindow.setHeight(50, Unit.EM);
 		searchWindow.setWidth(30, Unit.EM);
-
-		initConceptLabelDescription();
-
 		searchWindow.setContent(searchView);
-		
-		TextField searchField = desktopView.getSearchField();
-
-		searchField.addStyleName("concept-search-field");
-
-		searchField.addFocusListener(e -> {
-			desktopView.getSearchBtn().setClickShortcut(KeyCode.ENTER);
+		searchWindow.addCloseListener(e -> {
+			desktopView.getHistoryButton().setEnabled(true);
 		});
 
-		// searchField.addBlurListener(e -> {
-		// desktopView.getSearchBtn().removeClickShortcut();
-		// });
+		desktopView.getHistoryButton().setDisableOnClick(true);
+		desktopView.getHistoryButton().addClickListener(e -> {
+			getUI().addWindow(searchWindow);
+		});
+		
+		
+		desktopView.getSearchBtn().setClickShortcut(KeyCode.ENTER);
+	
+		
+//		initConceptLabelDescription();
 
 		desktopView.getSearchBtn().addClickListener(createSearchClickListener());
-
-		HorizontalLayout viewingConcepts = desktopView.getViewingConcepts();
-		viewingConcepts.setSpacing(true);
 
 		/*
 		 * Deprecating this checkbox triggered version of matchByIdentifier Try to
@@ -1184,7 +1180,6 @@ public class DesktopUI extends UI implements MessageService, Util {
 			} else { // Classic Keyword search
 				SingleSearchHistoryView resultView = new SingleSearchHistoryView(queryText, query, kbService);
 				searchView.addResultView(resultView);
-//				searchWindow.setContent(searchView);
 				if (searchWindow.getParent() != this) {
 					UI.getCurrent().addWindow(searchWindow);
 				}
@@ -1720,9 +1715,15 @@ public class DesktopUI extends UI implements MessageService, Util {
 		 * Disable session timeout See if this resolves the current issue of pesky
 		 * premature timeout expiration
 		 */
-		VaadinSession.getCurrent().getSession().setMaxInactiveInterval(-1);
+//		VaadinSession.getCurrent().getSession().setMaxInactiveInterval(-1);
 		initDesktopView();
 
+		this.addComponentAttachListener(e -> {
+			Component component = e.getAttachedComponent();
+			if (component == searchWindow) {
+				desktopView.getHistoryButton().setEnabled(false);
+			}
+		});
 		/*
 		 * attach the Google Analytics tracker to the Navigator to automatically track
 		 * all views

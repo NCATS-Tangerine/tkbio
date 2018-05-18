@@ -16,9 +16,13 @@
  <body> 
 	  <vaadin-vertical-layout primary-style-name="v-vertical-layout" spacing responsive size-full _id="verticalLayout"> 
 			<vaadin-horizontal-layout spacing width-full height="40px">
-				<vaadin-horizontal-layout primary-style-name="v-viewConcepts"  width="350px" margin :middle :left _id="viewingConcepts"> 
-					<vaadin-text-field description="Type Concept To Search" input-prompt="Search Concepts" style-name="no-border-radius-right huge main-search-field borderless" width-full _id="search" :expand></vaadin-text-field> 
-					<vaadin-button description="Search" icon="fonticon://FontAwesome/f002" style-name="icon-only no-border-radius-left borderless huge" plain-text _id="searchBtn"></vaadin-button>
+				<vaadin-horizontal-layout primary-style-name="v-searchLayout" _id="searchLayout">
+					<vaadin-horizontal-layout primary-style-name="v-viewConcepts"  width="350px" _id="viewingConcepts"> 
+						<vaadin-text-field description="Type keywords" input-prompt="Search Concepts" style-name="no-border-radius-right huge main-search-field borderless" width-full _id="search" :expand></vaadin-text-field> 
+						<vaadin-button description="Click to start searching" icon="fonticon://FontAwesome/f002" style-name="icon-only no-border-radius-left borderless huge" plain-text _id="searchBtn"></vaadin-button>
+					</vaadin-horizontal-layout>
+					<vaadin-button description="Click to show query history" _id="historyBtn">
+					</vaadin-button>
 				</vaadin-horizontal-layout>
 				<vaadin-horizontal-layout width="200px" margin :middle :center >
 				<vaadin-horizontal-layout visible="false" _id="popUpLayout"></vaadin-horizontal-layout>
@@ -58,15 +62,15 @@
 			    <vaadin-vertical-layout spacing responsive id="relations-layout" size-full margin>
 		     <vaadin-tab-sheet style-name="framed padded-tabbar" responsive size-full _id="dataTabSheet" :expand> 
 		      <tab caption="Relations" selected> 
-		       <vaadin-vertical-layout responsive margin size-full _id="relationsTab"> 
+		       <vaadin-vertical-layout responsive margin _id="relationsTab"> 
 		       </vaadin-vertical-layout> 
 		      </tab> 
 		      <tab caption="Evidence"> 
-		       <vaadin-vertical-layout responsive size-full margin _id="evidenceTab"></vaadin-vertical-layout> 
+		       <vaadin-vertical-layout responsive margin _id="evidenceTab">
+		       </vaadin-vertical-layout> 
 		      </tab> 
 		      <tab caption="Reference"> 
-		       <vaadin-vertical-layout size-full _id="referenceTab"> 
-		        <vaadin-vertical-layout size-full _id="referenceLayout"></vaadin-vertical-layout> 
+		       <vaadin-vertical-layout responsive margin _id="referenceTab">
 		       </vaadin-vertical-layout> 
 		      </tab> 
 		     </vaadin-tab-sheet> 

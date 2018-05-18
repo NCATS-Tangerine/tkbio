@@ -26,7 +26,7 @@ public class SearchHistoryViewImpl extends VerticalLayout implements SearchHisto
 	private List<SearchHistoryView.Listener> listeners = Collections.synchronizedList(new ArrayList<>());
 	private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 	private ScheduledFuture<?> job;
-	private boolean started = false;
+	private boolean jobStarted = false;
 
 	public SearchHistoryViewImpl() {
 		setSpacing(true);
@@ -41,8 +41,8 @@ public class SearchHistoryViewImpl extends VerticalLayout implements SearchHisto
 	public void addResultView(SingleSearchHistoryView resultView) {
 		addComponentAsFirst(resultView);
 		addListener(resultView);
-		if (!started) {
-			started = true;
+		if (!jobStarted) {
+			jobStarted = true;
 			initPolling();
 		}
 	}
@@ -54,11 +54,17 @@ public class SearchHistoryViewImpl extends VerticalLayout implements SearchHisto
 	
 	private void removeListener(SearchHistoryView.Listener listener) {
 		listeners.remove(listener);
+		if (listeners.isEmpty()) {
+			if (!job.isCancelled()) {
+				job.cancel(true);
+				jobStarted = false;
+			}
+		}
 	}
 	
 	private void update() {
 		System.out.println("[updating all listeners]");
-		synchronized (listeners) {			
+		synchronized (listeners) {
 			for (SearchHistoryView.Listener listener : listeners) {
 				listener.update();
 			}

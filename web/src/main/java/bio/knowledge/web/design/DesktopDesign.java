@@ -28,14 +28,15 @@ import com.vaadin.ui.declarative.Design;
 public class DesktopDesign extends VerticalLayout {
 	protected VerticalSplitPanel desktopSplitPanel;
 	protected HorizontalLayout viewingConcepts;
+	protected HorizontalLayout searchLayout;
 	protected TextField search;
 	protected Button searchBtn;
+	protected Button historyBtn;
 	protected HorizontalLayout popUpLayout;
 	protected TabSheet dataTabSheet;
 	protected VerticalLayout relationsTab;
 	protected VerticalLayout evidenceTab;
 	protected VerticalLayout referenceTab;
-	protected VerticalLayout referenceLayout;
 	protected HorizontalLayout cmbar;
 	protected Upload loadMap;
 	protected Button saveBtn;

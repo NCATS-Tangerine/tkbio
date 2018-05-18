@@ -65,8 +65,7 @@ public class LandingPageView extends LandingPageDesign implements View {
 	private void initButtons() {
 		launchBtn.setDisableOnClick(true);
 		launchBtn.addClickListener(e -> {
-			Navigator navigator = ((DesktopUI)UI.getCurrent()).getApplicationNavigator();
-			navigator.navigateTo(DesktopView.NAME);
+			getUI().getNavigator().navigateTo(DesktopView.NAME);
 			launchBtn.setEnabled(true);
 		});
 	}

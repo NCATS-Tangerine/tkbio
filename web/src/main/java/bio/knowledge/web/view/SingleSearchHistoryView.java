@@ -138,7 +138,6 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 			detailsWindow.setCaption("Matching results");
 			detailsWindow.center();
 			detailsWindow.setModal(true);
-			
 			detailsWindow.setContent(new SearchResultView(conceptQueryResult.getResults()));
 			getUI().addWindow(detailsWindow);
 
