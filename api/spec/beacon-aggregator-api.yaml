@@ -43,7 +43,7 @@ paths:
           schema:
             type: array
             items:
-              title: ServerKnowledgeBeacon
+              title: BeaconKnowledgeBeacon
               type: object
               properties:
                 beacon:
@@ -106,7 +106,7 @@ paths:
           schema:
             type: array
             items:
-              title: ServerConceptCategory
+              title: BeaconConceptCategory
               type: object
               properties:
                 id:
@@ -138,7 +138,7 @@ paths:
                     list of metadata for beacons that support the use of this
                     concept category
                   items:
-                    title: ServerConceptCategoriesByBeacon
+                    title: BeaconConceptCategoriesByBeacon
                     type: object
                     properties:
                       beacon:
@@ -148,7 +148,7 @@ paths:
                       categories:
                         type: array
                         items:
-                          title: ServerBeaconConceptCategory
+                          title: BeaconBeaconConceptCategory
                           type: object
                           description: |
                             Single local concept categories from a given beacon
@@ -224,7 +224,7 @@ paths:
           schema:
             type: array
             items:
-              title: ServerPredicates
+              title: BeaconPredicates
               type: object
               properties:
                 id:
@@ -256,7 +256,7 @@ paths:
                     list of metadata for beacons that support the use of this
                     predicate relation
                   items:
-                    title: ServerPredicatesByBeacon
+                    title: BeaconPredicatesByBeacon
                     type: object
                     properties:
                       beacon:
@@ -266,7 +266,7 @@ paths:
                       predicates:
                         type: array
                         items:
-                          title: ServerBeaconPredicate
+                          title: BeaconBeaconPredicate
                           type: object
                           description: |
                             Local predicate definition from a given beacon
@@ -347,7 +347,7 @@ paths:
           schema:
             type: array
             items:
-              title: ServerKnowledgeMap
+              title: BeaconKnowledgeMap
               type: object
               properties:
                 beacon:
@@ -357,11 +357,11 @@ paths:
                 statements:
                   type: array
                   items:
-                    title: ServerKnowledgeMapStatement
+                    title: BeaconKnowledgeMapStatement
                     type: object
                     properties:
                       subject:
-                        title: ServerKnowledgeMapSubject
+                        title: BeaconKnowledgeMapSubject
                         type: object
                         properties:
                           category:
@@ -378,7 +378,7 @@ paths:
                                 concept identifiers which may conceivably be
                                 bound to the given relationship
                       predicate:
-                        title: ServerKnowledgeMapPredicate
+                        title: BeaconKnowledgeMapPredicate
                         type: object
                         properties:
                           edge_label:
@@ -392,7 +392,7 @@ paths:
                               the human readable label of the 'maximal' 
                               predicate of the given relationship
                       object:
-                        title: ServerKnowledgeMapObject
+                        title: BeaconKnowledgeMapObject
                         type: object
                         properties:
                           category:
@@ -477,7 +477,7 @@ paths:
           schema:
             type: array
             items:
-              title: ServerLogEntry
+              title: BeaconLogEntry
               type: object
               properties:
                 queryId:
@@ -549,7 +549,7 @@ paths:
       responses:
         '200':
           schema:
-            title: ServerConceptsQuery
+            title: BeaconConceptsQuery
             type: object
             properties:
               queryId:
@@ -602,7 +602,7 @@ paths:
       responses:
         '200':
           schema:
-            title: ServerConceptsQueryStatus
+            title: BeaconConceptsQueryStatus
             type: object
             properties:
               queryId:
@@ -615,7 +615,7 @@ paths:
                 description: |
                   array of beacon-specific query status reports
                 items:
-                  title: ServerConceptsQueryBeaconStatus
+                  title: BeaconConceptsQueryBeaconStatus
                   type: object
                   properties:
                     beacon:
@@ -696,7 +696,7 @@ paths:
       responses:
         '200':
           schema:
-            title: ServerConceptsQueryResult
+            title: BeaconConceptsQueryResult
             type: object
             properties:
               queryId:
@@ -721,7 +721,7 @@ paths:
               results:
                 type: array
                 items:
-                  title: ServerConcept
+                  title: BeaconConcept
                   type: object
                   properties:
                     clique:
@@ -782,7 +782,7 @@ paths:
       responses:
         '200':
           schema:
-            title: ServerCliqueIdentifier
+            title: BeaconCliqueIdentifier
             type: object
             properties:
               cliqueId:
@@ -825,7 +825,7 @@ paths:
       responses:
         '200':
           schema:
-            title: ServerConceptWithDetails
+            title: BeaconConceptWithDetails
             type: object
             description: |
               A single record of a given concept clique with details
@@ -856,7 +856,7 @@ paths:
                   List of details specifically harvested from beacons, indexed
                   by beacon
                 items:
-                  title: ServerConceptWithDetailsBeaconEntry
+                  title: BeaconConceptWithDetailsBeaconEntry
                   type: object
                   properties:
                     beacon:
@@ -881,7 +881,7 @@ paths:
                     details:
                       type: array
                       items:
-                        title: ServerConceptDetail
+                        title: BeaconConceptDetail
                         type: object
                         description: |
                           Additional attributes associated with a concept
@@ -1017,7 +1017,7 @@ paths:
       responses:
         '200':
           schema:
-            title: ServerStatementsQuery
+            title: BeaconStatementsQuery
             type: object
             properties:
               queryId:
@@ -1087,7 +1087,7 @@ paths:
       responses:
         '200':
           schema:
-            title: ServerStatementsQueryStatus
+            title: BeaconStatementsQueryStatus
             type: object
             properties:
               queryId:
@@ -1099,7 +1099,7 @@ paths:
                 description: |
                   array of beacon-specific query status reports
                 items:
-                  title: ServerStatementsQueryBeaconStatus
+                  title: BeaconStatementsQueryBeaconStatus
                   type: object
                   properties:
                     beacon:
@@ -1188,7 +1188,7 @@ paths:
             is an exact match of an input concept identifier either to the
             subject or object concepts of the statement
           schema:
-            title: ServerStatementsQueryResult
+            title: BeaconStatementsQueryResult
             type: object
             properties:
               queryId:
@@ -1213,7 +1213,7 @@ paths:
               results:
                 type: array
                 items:
-                  title: ServerStatement
+                  title: BeaconStatement
                   type: object
                   properties:
                     id:
@@ -1222,7 +1222,7 @@ paths:
                         CURIE-encoded identifier for statement (can be used to
                         retrieve associated evidence)
                     subject:
-                      title: ServerStatementSubject
+                      title: BeaconStatementSubject
                       type: object
                       properties:
                         clique:
@@ -1243,7 +1243,7 @@ paths:
                             a semantic group for the subject concept (specified 
                             as a CURIE of a Translator data type ontology term)
                     predicate:
-                      title: ServerStatementPredicate
+                      title: BeaconStatementPredicate
                       type: object
                       properties:
                         id:
@@ -1254,7 +1254,7 @@ paths:
                           type: string
                           description: human readable label of concept
                     object:
-                      title: ServerStatementObject
+                      title: BeaconStatementObject
                       type: object
                       properties:
                         clique:
@@ -1357,7 +1357,7 @@ paths:
           schema:
             type: array
             items:
-              title: ServerAnnotation
+              title: BeaconAnnotation
               type: object
               properties:
                 id:

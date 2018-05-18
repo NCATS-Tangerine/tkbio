@@ -48,7 +48,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ServerKnowledgeBeacon",
+                "title": "BeaconKnowledgeBeacon",
                 "type": "object",
                 "properties": {
                   "beacon": {
@@ -121,7 +121,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ServerConceptCategory",
+                "title": "BeaconConceptCategory",
                 "type": "object",
                 "properties": {
                   "id": {
@@ -144,7 +144,7 @@
                     "type": "array",
                     "description": "list of metadata for beacons that support the use of this concept category\n",
                     "items": {
-                      "title": "ServerConceptCategoriesByBeacon",
+                      "title": "BeaconConceptCategoriesByBeacon",
                       "type": "object",
                       "properties": {
                         "beacon": {
@@ -154,7 +154,7 @@
                         "categories": {
                           "type": "array",
                           "items": {
-                            "title": "ServerBeaconConceptCategory",
+                            "title": "BeaconBeaconConceptCategory",
                             "type": "object",
                             "description": "Single local concept categories from a given beacon\n",
                             "properties": {
@@ -246,7 +246,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ServerPredicates",
+                "title": "BeaconPredicates",
                 "type": "object",
                 "properties": {
                   "id": {
@@ -269,7 +269,7 @@
                     "type": "array",
                     "description": "list of metadata for beacons that support the use of this predicate relation\n",
                     "items": {
-                      "title": "ServerPredicatesByBeacon",
+                      "title": "BeaconPredicatesByBeacon",
                       "type": "object",
                       "properties": {
                         "beacon": {
@@ -279,7 +279,7 @@
                         "predicates": {
                           "type": "array",
                           "items": {
-                            "title": "ServerBeaconPredicate",
+                            "title": "BeaconBeaconPredicate",
                             "type": "object",
                             "description": "Local predicate definition from a given beacon\n",
                             "properties": {
@@ -365,7 +365,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ServerKnowledgeMap",
+                "title": "BeaconKnowledgeMap",
                 "type": "object",
                 "properties": {
                   "beacon": {
@@ -375,11 +375,11 @@
                   "statements": {
                     "type": "array",
                     "items": {
-                      "title": "ServerKnowledgeMapStatement",
+                      "title": "BeaconKnowledgeMapStatement",
                       "type": "object",
                       "properties": {
                         "subject": {
-                          "title": "ServerKnowledgeMapSubject",
+                          "title": "BeaconKnowledgeMapSubject",
                           "type": "object",
                           "properties": {
                             "category": {
@@ -396,7 +396,7 @@
                           }
                         },
                         "predicate": {
-                          "title": "ServerKnowledgeMapPredicate",
+                          "title": "BeaconKnowledgeMapPredicate",
                           "type": "object",
                           "properties": {
                             "edge_label": {
@@ -410,7 +410,7 @@
                           }
                         },
                         "object": {
-                          "title": "ServerKnowledgeMapObject",
+                          "title": "BeaconKnowledgeMapObject",
                           "type": "object",
                           "properties": {
                             "category": {
@@ -520,7 +520,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ServerLogEntry",
+                "title": "BeaconLogEntry",
                 "type": "object",
                 "properties": {
                   "queryId": {
@@ -601,7 +601,7 @@
         "responses": {
           "200": {
             "schema": {
-              "title": "ServerConceptsQuery",
+              "title": "BeaconConceptsQuery",
               "type": "object",
               "properties": {
                 "queryId": {
@@ -662,7 +662,7 @@
         "responses": {
           "200": {
             "schema": {
-              "title": "ServerConceptsQueryStatus",
+              "title": "BeaconConceptsQueryStatus",
               "type": "object",
               "properties": {
                 "queryId": {
@@ -673,7 +673,7 @@
                   "type": "array",
                   "description": "array of beacon-specific query status reports\n",
                   "items": {
-                    "title": "ServerConceptsQueryBeaconStatus",
+                    "title": "BeaconConceptsQueryBeaconStatus",
                     "type": "object",
                     "properties": {
                       "beacon": {
@@ -765,7 +765,7 @@
         "responses": {
           "200": {
             "schema": {
-              "title": "ServerConceptsQueryResult",
+              "title": "BeaconConceptsQueryResult",
               "type": "object",
               "properties": {
                 "queryId": {
@@ -790,7 +790,7 @@
                 "results": {
                   "type": "array",
                   "items": {
-                    "title": "ServerConcept",
+                    "title": "BeaconConcept",
                     "type": "object",
                     "properties": {
                       "clique": {
@@ -866,7 +866,7 @@
         "responses": {
           "200": {
             "schema": {
-              "title": "ServerCliqueIdentifier",
+              "title": "BeaconCliqueIdentifier",
               "type": "object",
               "properties": {
                 "cliqueId": {
@@ -914,7 +914,7 @@
         "responses": {
           "200": {
             "schema": {
-              "title": "ServerConceptWithDetails",
+              "title": "BeaconConceptWithDetails",
               "type": "object",
               "description": "A single record of a given concept clique with details\n",
               "properties": {
@@ -941,7 +941,7 @@
                   "type": "array",
                   "description": "List of details specifically harvested from beacons, indexed by beacon\n",
                   "items": {
-                    "title": "ServerConceptWithDetailsBeaconEntry",
+                    "title": "BeaconConceptWithDetailsBeaconEntry",
                     "type": "object",
                     "properties": {
                       "beacon": {
@@ -966,7 +966,7 @@
                       "details": {
                         "type": "array",
                         "items": {
-                          "title": "ServerConceptDetail",
+                          "title": "BeaconConceptDetail",
                           "type": "object",
                           "description": "Additional attributes associated with a concept\n",
                           "properties": {
@@ -1108,7 +1108,7 @@
         "responses": {
           "200": {
             "schema": {
-              "title": "ServerStatementsQuery",
+              "title": "BeaconStatementsQuery",
               "type": "object",
               "properties": {
                 "queryId": {
@@ -1187,7 +1187,7 @@
         "responses": {
           "200": {
             "schema": {
-              "title": "ServerStatementsQueryStatus",
+              "title": "BeaconStatementsQueryStatus",
               "type": "object",
               "properties": {
                 "queryId": {
@@ -1198,7 +1198,7 @@
                   "type": "array",
                   "description": "array of beacon-specific query status reports\n",
                   "items": {
-                    "title": "ServerStatementsQueryBeaconStatus",
+                    "title": "BeaconStatementsQueryBeaconStatus",
                     "type": "object",
                     "properties": {
                       "beacon": {
@@ -1289,7 +1289,7 @@
           "200": {
             "description": "Successful response returns a list of concept-relations where there is an exact match of an input concept identifier either to the subject or object concepts of the statement\n",
             "schema": {
-              "title": "ServerStatementsQueryResult",
+              "title": "BeaconStatementsQueryResult",
               "type": "object",
               "properties": {
                 "queryId": {
@@ -1314,7 +1314,7 @@
                 "results": {
                   "type": "array",
                   "items": {
-                    "title": "ServerStatement",
+                    "title": "BeaconStatement",
                     "type": "object",
                     "properties": {
                       "id": {
@@ -1322,7 +1322,7 @@
                         "description": "CURIE-encoded identifier for statement (can be used to retrieve associated evidence)"
                       },
                       "subject": {
-                        "title": "ServerStatementSubject",
+                        "title": "BeaconStatementSubject",
                         "type": "object",
                         "properties": {
                           "clique": {
@@ -1344,7 +1344,7 @@
                         }
                       },
                       "predicate": {
-                        "title": "ServerStatementPredicate",
+                        "title": "BeaconStatementPredicate",
                         "type": "object",
                         "properties": {
                           "id": {
@@ -1358,7 +1358,7 @@
                         }
                       },
                       "object": {
-                        "title": "ServerStatementObject",
+                        "title": "BeaconStatementObject",
                         "type": "object",
                         "properties": {
                           "clique": {
@@ -1482,7 +1482,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "ServerAnnotation",
+                "title": "BeaconAnnotation",
                 "type": "object",
                 "properties": {
                   "id": {
