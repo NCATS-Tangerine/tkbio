@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Translator Knowledge Beacon Aggregator API",
-    "version": "1.0.10",
+    "version": "1.0.12",
     "contact": {
       "url": "http://starinformatics.com",
       "email": "richard@starinformatics.com"
@@ -48,7 +48,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "BeaconKnowledgeBeacon",
+                "title": "ServerKnowledgeBeacon",
                 "type": "object",
                 "properties": {
                   "beacon": {
@@ -89,7 +89,7 @@
                   "id": 1,
                   "name": "SemMedDB",
                   "url": "https://rkb.ncats.io",
-                  "description": "Reference Knowledge Beacon implementation indexed by Wikidata\n"
+                  "description": ""
                 }
               ]
             }
@@ -97,9 +97,9 @@
         }
       }
     },
-    "/types": {
+    "/categories": {
       "get": {
-        "description": "Get a list of types and number of instances in the knowledge source, and a link to the API call for the list of equivalent terminology\n",
+        "description": "Get a list of semantic categories and number of instances in each  available knowledge beacon, including associated beacon-specific metadata\n",
         "tags": [
           "metadata"
         ],
@@ -107,7 +107,7 @@
           {
             "name": "beacons",
             "in": "query",
-            "description": "set of aggregator indices of beacons to constrain types returned\n",
+            "description": "set of aggregator indices of beacons to constrain categories returned\n",
             "required": false,
             "type": "array",
             "items": {
@@ -115,64 +115,64 @@
             }
           }
         ],
-        "operationId": "getConceptTypes",
+        "operationId": "getConceptCategories",
         "responses": {
           "200": {
             "schema": {
               "type": "array",
               "items": {
-                "title": "BeaconConceptTypes",
+                "title": "ServerConceptCategory",
                 "type": "object",
                 "properties": {
                   "id": {
                     "type": "string",
-                    "description": "the CURIE of the concept type (see [Biolink Model](https://biolink.github.io/biolink-model)"
+                    "description": "the CURIE of the concept category (see [Biolink Model Classes](https://biolink.github.io/biolink-model)"
                   },
-                  "iri": {
+                  "uri": {
                     "type": "string",
-                    "description": "the IRI of the concept type (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of IRI)"
+                    "description": "the URI of the concept category (see [Biolink Model Classes](https://biolink.github.io/biolink-model)  for the full list of URI)"
                   },
-                  "label": {
+                  "category": {
                     "type": "string",
-                    "description": "the human readable label of the concept type (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of concept type names)\n"
+                    "description": "the human readable label of the concept category (see [Biolink Model Classes](https://biolink.github.io/biolink-model) for  the full list of concept category names)\n"
                   },
                   "description": {
                     "type": "string",
-                    "description": "human readable definition assigned by the beacon for the specified concept type\n"
+                    "description": "human readable definition assigned by the beacon for the specified concept category\n"
                   },
                   "beacons": {
                     "type": "array",
-                    "description": "list of metadata for beacons that support the use of this concept type\n",
+                    "description": "list of metadata for beacons that support the use of this concept category\n",
                     "items": {
-                      "title": "BeaconConceptTypesByBeacon",
+                      "title": "ServerConceptCategoriesByBeacon",
                       "type": "object",
                       "properties": {
                         "beacon": {
                           "type": "integer",
-                          "description": "aggregator index identifier of the given beacon\n"
+                          "description": "Aggregator index identifier of the given beacon\n"
                         },
-                        "types": {
+                        "categories": {
                           "type": "array",
                           "items": {
-                            "title": "BeaconBeaconConceptType",
+                            "title": "ServerBeaconConceptCategory",
                             "type": "object",
-                            "description": "Single local concept type term from a given beacon\n",
+                            "description": "Single local concept categories from a given beacon\n",
                             "properties": {
                               "id": {
                                 "type": "string",
-                                "description": "the 'local' CURIE-encoded identifier of the given concept type, as published by the given beacon\n"
+                                "description": "the 'local' CURIE-encoded identifier of the given concept category, as published by the given beacon\n"
                               },
-                              "iri": {
+                              "uri": {
                                 "type": "string",
-                                "description": "the 'local' IRI of the given concept type, as published by the given beacon\n"
+                                "description": "the 'local' URI of the given concept category,  as published by the given beacon\n"
                               },
-                              "label": {
+                              "category": {
                                 "type": "string",
-                                "description": "the 'local' human readable of the given concept type, as published by the given beacon\n"
+                                "description": "the 'local' human readable label of the given concept category, as published by the given beacon\n"
                               },
                               "frequency": {
                                 "type": "integer",
-                                "description": "the number of instances of the specified concept type is used in statements within the given beacon\n"
+                                "description": "the number of instances of the specified concept category is used in statements within the given beacon\n"
                               }
                             }
                           }
@@ -183,33 +183,33 @@
                 }
               }
             },
-            "description": "Successful response with types and frequency returned\n",
+            "description": "Successful response with concept categories and frequency returned\n",
             "examples": {
               "application/json": [
                 {
                   "id": "BLM:Gene",
-                  "iri": "http://bioentity.io/vocab/Gene",
-                  "label": "gene",
+                  "uri": "http://bioentity.io/vocab/Gene",
+                  "category": "gene",
                   "description": "A region (or regions) that includes all of the sequence elements necessary to encode a functional transcript. A gene may include regulatory regions, transcribed regions and/or other functional sequence regions.\n",
                   "beacons": [
                     {
                       "beacon": 1,
-                      "types": [
+                      "categories": [
                         {
                           "id": "UMLSSG:GENE",
-                          "iri": "https://metamap.nlm.nih.gov/Docs/SemGroups_2013#GENE",
-                          "label": "GENE"
+                          "uri": "https://metamap.nlm.nih.gov/Docs/SemGroups_2013#GENE",
+                          "category": "GENE"
                         }
                       ],
                       "frequency": 1234
                     },
                     {
                       "beacon": 5,
-                      "types": [
+                      "categories": [
                         {
                           "id": "SO:0000704",
-                          "iri": "http://www.sequenceontology.org/0000704",
-                          "label": "gene",
+                          "uri": "http://www.sequenceontology.org/0000704",
+                          "category": "gene",
                           "frequency": 5678
                         }
                       ]
@@ -246,20 +246,20 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "BeaconPredicates",
+                "title": "ServerPredicates",
                 "type": "object",
                 "properties": {
                   "id": {
                     "type": "string",
                     "description": "the CURIE of the predicate relation (see [Biolink Model](https://biolink.github.io/biolink-model)"
                   },
-                  "iri": {
+                  "uri": {
                     "type": "string",
-                    "description": "the IRI of the predicate relation (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of IRI)"
+                    "description": "the URI of the predicate relation (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of URI)"
                   },
-                  "label": {
+                  "edge_label": {
                     "type": "string",
-                    "description": "the human readable label of the prediccate relation (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of predicates)"
+                    "description": "the human readable 'edge label' of the 'minimal' predicate (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of Biolink Model minimal predicates)"
                   },
                   "description": {
                     "type": "string",
@@ -269,7 +269,7 @@
                     "type": "array",
                     "description": "list of metadata for beacons that support the use of this predicate relation\n",
                     "items": {
-                      "title": "BeaconPredicatesByBeacon",
+                      "title": "ServerPredicatesByBeacon",
                       "type": "object",
                       "properties": {
                         "beacon": {
@@ -279,21 +279,25 @@
                         "predicates": {
                           "type": "array",
                           "items": {
-                            "title": "BeaconBeaconPredicate",
+                            "title": "ServerBeaconPredicate",
                             "type": "object",
-                            "description": "Single local predicate term from a given beacon\n",
+                            "description": "Local predicate definition from a given beacon\n",
                             "properties": {
                               "id": {
                                 "type": "string",
-                                "description": "the 'local' CURIE-encoded identifier of the given predicate, as published by the given beacon\n"
+                                "description": "the 'local' CURIE-encoded identifier of a maximal predicate relation, as published by  the given beacon\n"
                               },
-                              "iri": {
+                              "uri": {
                                 "type": "string",
-                                "description": "the 'local' CURIE-encoded identifier of the given predicate, as published by the given beacon\n"
+                                "description": "the 'local' URI of a maximal predicate relation,  as published by the given beacon\n"
                               },
-                              "label": {
+                              "relation": {
                                 "type": "string",
-                                "description": "the 'local' human readable of the given predicate, as published by the given beacon\n"
+                                "description": "the human readable 'relation of the 'maximal' predicate (see the [Biolink Model](https://biolink.github.io/biolink-model) for a list of Biolink maximal predicates; this field may map onto beacon-specific non-Biolink relations\n"
+                              },
+                              "description": {
+                                "type": "string",
+                                "description": "human readable definition of the given  predicate relation\n"
                               },
                               "frequency": {
                                 "type": "integer",
@@ -312,30 +316,20 @@
             "examples": {
               "application/json": [
                 {
-                  "id": "BLM:GeneToDiseaseAssociation",
-                  "iri": "http://bioentity.io/vocab/GeneToDiseaseAssociation",
-                  "label": "gene to disease association",
-                  "description": "gene in which variation is correlated with the disease - \nmay be protective or causative or associative, or as a model\n",
+                  "id": "BLM:affects_risk_for",
+                  "uri": "http://bioentity.io/vocab/affects_risk_for",
+                  "edge_label": "affects_risk_for",
+                  "description": "holds between two entities where exposure to one entity \nalters the chance of developing the other\n",
                   "beacons": [
                     {
-                      "beacon": 5,
+                      "beacon": 1,
                       "predicates": [
                         {
-                          "id": "RO:0003302",
-                          "iri": "http://purl.obolibrary.org/obo/RO_0003302",
-                          "label": "causes or contributes to condition",
+                          "id": "SEMMEDDB:PREDISPOSES",
+                          "uri": "https://metamap.nlm.nih.gov/predicate/PREDISPOSES",
+                          "relation": "PREDISPOSES",
+                          "description": "agent which predisposes individual to a given condition",
                           "frequency": 123
-                        }
-                      ]
-                    },
-                    {
-                      "beacon": 2,
-                      "predicates": [
-                        {
-                          "id": "SIO:000983",
-                          "iri": "http://semanticscience.org/resource/SIO_000983",
-                          "label": "gene-disease association",
-                          "frequency": 321
                         }
                       ]
                     }
@@ -349,7 +343,7 @@
     },
     "/kmap": {
       "get": {
-        "description": "Get a high level knowledge map of the all the beacons specified by triplets of subject concept type, relationship predicate and concept object type\n",
+        "description": "Get a high level knowledge map of the all the beacons specified by triplets of subject concept category, relationship predicate and concept object category\n",
         "tags": [
           "metadata"
         ],
@@ -371,7 +365,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "BeaconKnowledgeMap",
+                "title": "ServerKnowledgeMap",
                 "type": "object",
                 "properties": {
                   "beacon": {
@@ -381,20 +375,16 @@
                   "statements": {
                     "type": "array",
                     "items": {
-                      "title": "BeaconKnowledgeMapStatement",
+                      "title": "ServerKnowledgeMapStatement",
                       "type": "object",
                       "properties": {
                         "subject": {
-                          "title": "BeaconKnowledgeMapSubject",
+                          "title": "ServerKnowledgeMapSubject",
                           "type": "object",
                           "properties": {
-                            "id": {
+                            "category": {
                               "type": "string",
-                              "description": "the CURIE designating the concept type of a \nstatement subject\n"
-                            },
-                            "label": {
-                              "type": "string",
-                              "description": "the human readable label of the concept type of a\nstatement subject\n"
+                              "description": "the human readable label of the concept category of a statement subject\n"
                             },
                             "prefixes": {
                               "type": "array",
@@ -406,30 +396,26 @@
                           }
                         },
                         "predicate": {
-                          "title": "BeaconKnowledgeMapPredicate",
+                          "title": "ServerKnowledgeMapPredicate",
                           "type": "object",
                           "properties": {
-                            "id": {
+                            "edge_label": {
                               "type": "string",
-                              "description": "the CURIE of the predicate of the given relationship"
+                              "description": "the human readable edge label of the 'minimal'  predicate of the given relationship"
                             },
-                            "label": {
+                            "relation": {
                               "type": "string",
-                              "description": "the human readable label of the  predicate ofthe given relationship"
+                              "description": "the human readable label of the 'maximal'  predicate of the given relationship"
                             }
                           }
                         },
                         "object": {
-                          "title": "BeaconKnowledgeMapObject",
+                          "title": "ServerKnowledgeMapObject",
                           "type": "object",
                           "properties": {
-                            "id": {
+                            "category": {
                               "type": "string",
-                              "description": "the CURIE designating the concept type of a \nstatement object\n"
-                            },
-                            "label": {
-                              "type": "string",
-                              "description": "the human readable label of the concept type of a\nstatement object\n"
+                              "description": "the human readable label of the concept category of a statement object\n"
                             },
                             "prefixes": {
                               "type": "array",
@@ -454,7 +440,7 @@
                 }
               }
             },
-            "description": "Successful response with types and frequency returned\n",
+            "description": "Successful response with categories and frequency returned\n",
             "examples": {
               "application/json": [
                 {
@@ -462,8 +448,7 @@
                   "statements": [
                     {
                       "subject": {
-                        "id": "BLM:Gene",
-                        "label": "gene",
+                        "category": "gene",
                         "prefixes": [
                           "DRUGBANK",
                           "CHEMBL",
@@ -471,12 +456,11 @@
                         ]
                       },
                       "predicate": {
-                        "id": "RO:0002606",
-                        "label": "is substance that treats"
+                        "edge_label": "is substance that treats",
+                        "relation": "RO:0002606"
                       },
                       "object": {
-                        "id": "BLM:DiseaseOrPhenotypicFeature",
-                        "label": "disease or phenotypic feature",
+                        "category": "disease or phenotypic feature",
                         "prefixes": [
                           "MP",
                           "HP",
@@ -488,26 +472,24 @@
                     },
                     {
                       "subject": {
-                        "id": "BLM:Drug",
-                        "label": "drug",
+                        "category": "drug",
                         "prefixes": [
                           "DRUGBANK",
                           "CHEMBL"
                         ]
                       },
                       "predicate": {
-                        "id": "SIO:001250",
-                        "label": "chemical to pathway association"
+                        "edge_label": "chemical_to_pathway_association",
+                        "relation": "SIO:001250"
                       },
                       "object": {
-                        "id": "BLM:Pathway",
-                        "label": "pathway",
+                        "category": "pathway",
                         "prefixes": [
                           "KEGG"
                         ]
                       },
                       "count": 100,
-                      "description": "Drug interacts with a given protein\n"
+                      "description": "Drug interacts with a given pathway\n"
                     }
                   ]
                 }
@@ -538,7 +520,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "BeaconLogEntry",
+                "title": "ServerLogEntry",
                 "type": "object",
                 "properties": {
                   "queryId": {
@@ -595,9 +577,9 @@
             "type": "string"
           },
           {
-            "name": "types",
+            "name": "categories",
             "in": "query",
-            "description": "a subset array of concept types (specified as codes gene, pathway, etc.) to which to constrain concepts matched by the main keyword search (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes)\n",
+            "description": "a subset array of concept categories (specified as codes 'gene',  'pathway', etc.) to which to constrain concepts matched by the main keyword search (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes)\n",
             "required": false,
             "type": "array",
             "items": {
@@ -619,7 +601,7 @@
         "responses": {
           "200": {
             "schema": {
-              "title": "BeaconConceptsQuery",
+              "title": "ServerConceptsQuery",
               "type": "object",
               "properties": {
                 "queryId": {
@@ -630,12 +612,12 @@
                   "type": "string",
                   "description": "'keywords' string parameter to call, echoed back\n"
                 },
-                "types": {
+                "categories": {
                   "type": "array",
                   "items": {
                     "type": "string"
                   },
-                  "description": "'types' string parameter to call, echoed back\n"
+                  "description": "'categories' string parameter to call, echoed back\n"
                 }
               }
             },
@@ -680,7 +662,7 @@
         "responses": {
           "200": {
             "schema": {
-              "title": "BeaconConceptsQueryStatus",
+              "title": "ServerConceptsQueryStatus",
               "type": "object",
               "properties": {
                 "queryId": {
@@ -691,7 +673,7 @@
                   "type": "array",
                   "description": "array of beacon-specific query status reports\n",
                   "items": {
-                    "title": "BeaconConceptsQueryBeaconStatus",
+                    "title": "ServerConceptsQueryBeaconStatus",
                     "type": "object",
                     "properties": {
                       "beacon": {
@@ -783,7 +765,7 @@
         "responses": {
           "200": {
             "schema": {
-              "title": "BeaconConceptsQueryResult",
+              "title": "ServerConceptsQueryResult",
               "type": "object",
               "properties": {
                 "queryId": {
@@ -808,7 +790,7 @@
                 "results": {
                   "type": "array",
                   "items": {
-                    "title": "BeaconConcept",
+                    "title": "ServerConcept",
                     "type": "object",
                     "properties": {
                       "clique": {
@@ -884,7 +866,7 @@
         "responses": {
           "200": {
             "schema": {
-              "title": "BeaconCliqueIdentifier",
+              "title": "ServerCliqueIdentifier",
               "type": "object",
               "properties": {
                 "cliqueId": {
@@ -932,7 +914,7 @@
         "responses": {
           "200": {
             "schema": {
-              "title": "BeaconConceptWithDetails",
+              "title": "ServerConceptWithDetails",
               "type": "object",
               "description": "A single record of a given concept clique with details\n",
               "properties": {
@@ -959,7 +941,7 @@
                   "type": "array",
                   "description": "List of details specifically harvested from beacons, indexed by beacon\n",
                   "items": {
-                    "title": "BeaconConceptWithDetailsBeaconEntry",
+                    "title": "ServerConceptWithDetailsBeaconEntry",
                     "type": "object",
                     "properties": {
                       "beacon": {
@@ -984,7 +966,7 @@
                       "details": {
                         "type": "array",
                         "items": {
-                          "title": "BeaconConceptDetail",
+                          "title": "ServerConceptDetail",
                           "type": "object",
                           "description": "Additional attributes associated with a concept\n",
                           "properties": {
@@ -1102,9 +1084,9 @@
             "type": "string"
           },
           {
-            "name": "types",
+            "name": "categories",
             "in": "query",
-            "description": "a subset (array) of identifiers of concept types to which to constrain 'target' concepts associated with the given 'source' concept ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes).\n",
+            "description": "a subset (array) of identifiers of concept categories to which to constrain 'target' concepts associated with the given 'source' concept ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes).\n",
             "required": false,
             "type": "array",
             "items": {
@@ -1126,7 +1108,7 @@
         "responses": {
           "200": {
             "schema": {
-              "title": "BeaconStatementsQuery",
+              "title": "ServerStatementsQuery",
               "type": "object",
               "properties": {
                 "queryId": {
@@ -1152,12 +1134,12 @@
                   "type": "string",
                   "description": "'keywords' string parameter to call, echoed back\n"
                 },
-                "types": {
+                "categories": {
                   "type": "array",
                   "items": {
                     "type": "string"
                   },
-                  "description": "'types' string parameter to call, echoed back\n"
+                  "description": "'categories' string parameter to call, echoed back\n"
                 }
               }
             },
@@ -1205,7 +1187,7 @@
         "responses": {
           "200": {
             "schema": {
-              "title": "BeaconStatementsQueryStatus",
+              "title": "ServerStatementsQueryStatus",
               "type": "object",
               "properties": {
                 "queryId": {
@@ -1216,7 +1198,7 @@
                   "type": "array",
                   "description": "array of beacon-specific query status reports\n",
                   "items": {
-                    "title": "BeaconStatementsQueryBeaconStatus",
+                    "title": "ServerStatementsQueryBeaconStatus",
                     "type": "object",
                     "properties": {
                       "beacon": {
@@ -1307,7 +1289,7 @@
           "200": {
             "description": "Successful response returns a list of concept-relations where there is an exact match of an input concept identifier either to the subject or object concepts of the statement\n",
             "schema": {
-              "title": "BeaconStatementsQueryResult",
+              "title": "ServerStatementsQueryResult",
               "type": "object",
               "properties": {
                 "queryId": {
@@ -1332,7 +1314,7 @@
                 "results": {
                   "type": "array",
                   "items": {
-                    "title": "BeaconStatement",
+                    "title": "ServerStatement",
                     "type": "object",
                     "properties": {
                       "id": {
@@ -1340,7 +1322,7 @@
                         "description": "CURIE-encoded identifier for statement (can be used to retrieve associated evidence)"
                       },
                       "subject": {
-                        "title": "BeaconStatementSubject",
+                        "title": "ServerStatementSubject",
                         "type": "object",
                         "properties": {
                           "clique": {
@@ -1362,7 +1344,7 @@
                         }
                       },
                       "predicate": {
-                        "title": "BeaconStatementPredicate",
+                        "title": "ServerStatementPredicate",
                         "type": "object",
                         "properties": {
                           "id": {
@@ -1376,7 +1358,7 @@
                         }
                       },
                       "object": {
-                        "title": "BeaconStatementObject",
+                        "title": "ServerStatementObject",
                         "type": "object",
                         "properties": {
                           "clique": {
@@ -1500,7 +1482,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "title": "BeaconAnnotation",
+                "title": "ServerAnnotation",
                 "type": "object",
                 "properties": {
                   "id": {
