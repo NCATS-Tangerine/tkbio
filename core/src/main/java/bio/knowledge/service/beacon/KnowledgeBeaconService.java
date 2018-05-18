@@ -41,9 +41,11 @@ import bio.knowledge.client.model.BeaconConceptsQueryResult;
 import bio.knowledge.client.model.BeaconKnowledgeBeacon;
 import bio.knowledge.client.model.BeaconPredicate;
 import bio.knowledge.client.model.BeaconPredicatesByBeacon;
+import bio.knowledge.client.model.BeaconStatement;
 import bio.knowledge.client.model.BeaconStatementObject;
 import bio.knowledge.client.model.BeaconStatementPredicate;
 import bio.knowledge.client.model.BeaconStatementSubject;
+import bio.knowledge.client.model.BeaconStatementsQueryResult;
 import bio.knowledge.model.AnnotatedConcept;
 import bio.knowledge.model.AnnotatedConcept.BeaconEntry;
 import bio.knowledge.model.AnnotatedConceptImpl;
@@ -564,6 +566,9 @@ public class KnowledgeBeaconService implements Util {
 			int pageSize,
 			List<Integer> beacons
 	) {
+		
+		String queryId = "Stub query id..need to implement properly!";
+		
 		CompletableFuture<List<Statement>> future = CompletableFuture.supplyAsync(new Supplier<List<Statement>>() {
 
 			@Override
@@ -605,27 +610,23 @@ public class KnowledgeBeaconService implements Util {
 					
 					_logger.debug("kbs.getStatements() - before responses");
 				
-					List<bio.knowledge.client.model.BeaconStatement> responses = 
-							getStatementsApi(pageSize).getStatements(
-									sourceClique,
-									relationIds,
-									targetClique,
-									keywords,
-									categories,
+					BeaconStatementsQueryResult response = 
+							getStatementsApi(pageSize).getStatementsQuery(
+									queryId,
+									beacons,
 									pageNumber,
-									pageSize,
-									beacons
+									pageSize
 							);
 
 					_logger.debug("kbs.getStatements() - after responses");
 					
-					for (bio.knowledge.client.model.BeaconStatement response : responses) {
+					for (BeaconStatement beaconStatement : response.getResults()) {
 						
-						String id = response.getId();
+						String id = beaconStatement.getId();
 						
-						BeaconStatementSubject statementsSubject = response.getSubject();
-						BeaconStatementPredicate statementsPredicate = response.getPredicate();
-						BeaconStatementObject statementsObject = response.getObject();
+						BeaconStatementSubject statementsSubject     = beaconStatement.getSubject();
+						BeaconStatementPredicate statementsPredicate = beaconStatement.getPredicate();
+						BeaconStatementObject statementsObject       = beaconStatement.getObject();
 
 						IdentifiedConceptImpl subject = new IdentifiedConceptImpl(
 								statementsSubject.getClique(), 
@@ -645,7 +646,7 @@ public class KnowledgeBeaconService implements Util {
 						
 						Statement statement = new GeneralStatement(id, subject, predicate, object);
 						
-						statement.setBeaconSource(getBeaconNameFromId(response.getBeacon()));
+						statement.setBeaconSource(getBeaconNameFromId(beaconStatement.getBeacon()));
 						
 						statements.add(statement);
 					}

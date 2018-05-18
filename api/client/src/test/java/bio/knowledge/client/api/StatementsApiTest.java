@@ -13,13 +13,14 @@
 
 package bio.knowledge.client.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import bio.knowledge.client.ApiException;
-import bio.knowledge.client.model.BeaconStatement;
+import bio.knowledge.client.model.BeaconStatementsQueryResult;
 
 /**
  * API tests for StatementsApi
@@ -40,16 +41,12 @@ public class StatementsApiTest {
      */
     @Test
     public void getStatementsTest() throws ApiException {
-        String sourceClique = null;
-        String relations = null;
-        String targetClique = null;
-        String keywords = null;
-        String semanticGroups = null;
-        Integer pageNumber = null;
-        Integer pageSize = null;
-        List<String> beacons = null;
-        List<BeaconStatement> response = 
-        		api.getStatements(sourceClique, relations, targetClique, keywords, semanticGroups, pageNumber, pageSize, beacons);
+        String queryId = "ABC";
+        List<Integer> beacons = new ArrayList<Integer>();
+        Integer pageNumber = 1;
+        Integer pageSize = 10;
+        BeaconStatementsQueryResult response = 
+        		api.getStatementsQuery(queryId, beacons, pageNumber, pageSize);
 
         // TODO: test validations
     }
