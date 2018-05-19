@@ -1,14 +1,10 @@
 package bio.knowledge.web.view;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.Grid.CellStyleGenerator;
-import com.vaadin.ui.Grid.MultiSelectionModel;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.VerticalLayout;
 
@@ -55,7 +51,7 @@ public class SearchResultView extends VerticalLayout {
 		statementBtn.addClickListener(e -> {
 			BeaconConcept concept = (BeaconConcept) resultGrid.getSelectedRow();
 			System.out.println(concept);
-			getUI().getNavigator().navigateTo(DesktopView.NAME + "/statements/" + concept.getClique());
+			getUI().getNavigator().navigateTo(DesktopView.NAME + "/" + "statements" + "/" + concept.getClique());
 		});
 	}
 

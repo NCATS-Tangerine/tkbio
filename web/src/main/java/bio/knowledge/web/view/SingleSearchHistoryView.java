@@ -8,12 +8,10 @@ import java.util.Map;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.http.HttpStatus;
 
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
@@ -23,7 +21,6 @@ import com.vaadin.ui.Window;
 
 import bio.knowledge.client.ApiCallback;
 import bio.knowledge.client.ApiException;
-import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconConceptsQuery;
 import bio.knowledge.client.model.BeaconConceptsQueryBeaconStatus;
 import bio.knowledge.client.model.BeaconConceptsQueryResult;

@@ -28,7 +28,7 @@ public class KnowledgeBeacon {
 			if (url.endsWith("/")) {
 				url = url.substring(0, url.length() - 1);
 			}
-			URI uri = new URI(url);
+			new URI(url);
 		} catch (URISyntaxException e) {
 			throw new RuntimeException("URL: " + url + " is not valid.");
 		}

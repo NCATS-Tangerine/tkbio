@@ -41,7 +41,6 @@ import java.util.concurrent.TimeoutException;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.jena.riot.adapters.AdapterRDFWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +60,6 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
-import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
@@ -71,7 +69,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.CellReference;
 import com.vaadin.ui.Grid.Column;
@@ -109,7 +106,6 @@ import bio.knowledge.model.DisplayableStatement;
 import bio.knowledge.model.DomainModelException;
 import bio.knowledge.model.Evidence;
 import bio.knowledge.model.IdentifiedConcept;
-import bio.knowledge.model.IdentifiedConceptImpl;
 import bio.knowledge.model.Library;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Statement;
@@ -1919,7 +1915,7 @@ public class ListView extends BaseView implements Util {
 			concept = future.get(kbService.weightedTimeout(), KnowledgeBeaconService.BEACON_TIMEOUT_UNIT);
 		} catch (InterruptedException | ExecutionException | TimeoutException | IndexOutOfBoundsException exception) {
 			// should do something useful here
-			concept = new AnnotatedConceptImpl(concept.getCliqueId(), concept.getName(), concept.getType(), concept.getTaxon());
+			concept = new AnnotatedConceptImpl(concept.getCliqueId(), concept.getName(), concept.getType() );
 			_logger.error("Error retrieving concept details from the search result table");
 		}
 		

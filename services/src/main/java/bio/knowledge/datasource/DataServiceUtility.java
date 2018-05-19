@@ -29,7 +29,6 @@ package bio.knowledge.datasource;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
@@ -37,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import bio.knowledge.model.datasource.ResultSet;
-import bio.knowledge.datasource.DataService;
 
 /**
  * @author Richard

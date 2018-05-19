@@ -119,6 +119,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 			return future.get(kbService.weightedTimeout(pageSize * 10), // initial concept retrieval may be heavy... add
 																		// an extra weighting
 					KnowledgeBeaconService.BEACON_TIMEOUT_UNIT);
+
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			return new ArrayList<IdentifiedConcept>();
 		}
@@ -192,7 +193,6 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 	@Override
 	public Page<IdentifiedConcept> findByNameLike(String filter, Pageable pageable) {
 		_logger.trace("Inside ConceptService.findByNameLike()");
-
 		List<Integer> beacons = query.getCustomBeacons();
 		String queryId = query.getCurrentQueryId();
 		return findAllFiltered(filter, pageable, beacons, queryId);
@@ -228,6 +228,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	// TODO: I think this is where the refactoring faltered
+
 	private Page<IdentifiedConcept> findAllFiltered(String filter, Pageable pageable, List<Integer> beacons,
 			String queryId) {
 
@@ -460,7 +461,6 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 		CompletableFuture<AnnotatedConcept> future = kbService.getConceptWithDetails(cliqueId, beacons);
 
 		try {
-
 			AnnotatedConcept concept = future.get(
 
 					// scale timeout by number of beacons
@@ -527,7 +527,6 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 	public IdentifiedConcept findByCliqueId(String cliqueId) {
 		List<Integer> beacons = query.getCustomBeacons();
 		return findByCliqueId(cliqueId, beacons);
-
 	}
 
 	/**
