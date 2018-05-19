@@ -78,7 +78,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 		
 		List<Integer> beacons = query.getCustomBeacons();				
     	CompletableFuture<List<Annotation>> future =
-    			kbService.getEvidences(statement, filter, pageIndex, pageSize, beacons);
+    			kbService.getEvidence(statement, filter, pageIndex, pageSize, beacons);
     	
     	try {
 			List<Annotation> annotations =

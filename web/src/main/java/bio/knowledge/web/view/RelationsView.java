@@ -82,6 +82,7 @@ public class RelationsView extends BaseView implements View {
 	private void loadDataPage(int pageNumber) {
 		
 		List<Integer> beacons = query.getCustomBeacons();
+
 		String queryId = query.getCurrentQueryId();
 		String conceptId = query.getCurrentConceptId();
 		

@@ -19,12 +19,12 @@ public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements Annot
 
 	protected AnnotatedConceptImpl() { }
 	
-	public AnnotatedConceptImpl( String clique, String name, ConceptType type, String taxon ) {
-		super( clique, name, type,taxon ) ;
+	public AnnotatedConceptImpl( String clique, String name, ConceptType type ) {
+		super( clique, name, type ) ;
 	}
 
-	public AnnotatedConceptImpl( String clique, String name, String type, String taxon ) {
-		super( clique, name, type, taxon ) ;
+	public AnnotatedConceptImpl( String clique, String name, String type ) {
+		super( clique, name, type) ;
 	}
 
 	/*
@@ -69,8 +69,9 @@ public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements Annot
 		private String definition="";
 		private Set<Feature> details = new HashSet<Feature>();
 
-		public ConceptBeaconEntry(Integer beacon, String id) {
-			this.beaconId = beacon;
+		public ConceptBeaconEntry(Integer beaconId, String id) {
+			this.beaconId = beaconId;
+
 			this.id = id;
 		}
 

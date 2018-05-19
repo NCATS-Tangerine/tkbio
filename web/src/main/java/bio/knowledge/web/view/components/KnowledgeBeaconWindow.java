@@ -23,7 +23,6 @@ import bio.knowledge.client.model.BeaconKnowledgeBeacon;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeaconRegistry;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
-import bio.knowledge.web.ui.DesktopUI;
 
 public class KnowledgeBeaconWindow extends Window {
 	
@@ -103,6 +102,7 @@ public class KnowledgeBeaconWindow extends Window {
 		
 		optionGroup.addValueChangeListener(event -> {
 			
+			@SuppressWarnings("unchecked")
 			Collection<BeaconKnowledgeBeacon> selected = 
 					((Collection<BeaconKnowledgeBeacon>) event.getProperty().getValue());
 			
@@ -110,6 +110,7 @@ public class KnowledgeBeaconWindow extends Window {
 			beaconIds.addAll(
 					selected.stream().map(
 							beacon -> beacon.getBeacon()
+
 						).collect(Collectors.toList()));
 			
 			query.setCustomBeacons(beaconIds);

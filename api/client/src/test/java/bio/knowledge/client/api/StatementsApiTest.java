@@ -10,21 +10,19 @@
  * Do not edit the class manually.
  */
 
-
 package bio.knowledge.client.api;
+
+import java.util.List;
+
+import org.junit.Ignore;
+import org.junit.Test;
 
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.BeaconAnnotation;
 import bio.knowledge.client.model.BeaconStatementsQuery;
 import bio.knowledge.client.model.BeaconStatementsQueryResult;
 import bio.knowledge.client.model.BeaconStatementsQueryStatus;
-import org.junit.Test;
-import org.junit.Ignore;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * API tests for StatementsApi

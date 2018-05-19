@@ -13,19 +13,17 @@
 
 package bio.knowledge.client.api;
 
+import java.util.List;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.BeaconConceptCategory;
 import bio.knowledge.client.model.BeaconKnowledgeBeacon;
 import bio.knowledge.client.model.BeaconKnowledgeMap;
 import bio.knowledge.client.model.BeaconLogEntry;
-import bio.knowledge.client.model.BeaconPredicates;
-import org.junit.Test;
-import org.junit.Ignore;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import bio.knowledge.client.model.BeaconPredicate;
 
 /**
  * API tests for MetadataApi
@@ -110,7 +108,7 @@ public class MetadataApiTest {
     @Test
     public void getPredicatesTest() throws ApiException {
         List<Integer> beacons = null;
-        List<BeaconPredicates> response = api.getPredicates(beacons);
+        List<BeaconPredicate> response = api.getPredicates(beacons);
 
         // TODO: test validations
     }

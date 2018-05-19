@@ -25,6 +25,8 @@
  */
 package bio.knowledge.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -64,13 +66,16 @@ public class PredicateService {
     
 	public Set<Predicate> findAllPredicates() {
 		
+		// If I want "all Beacons" then my beacon id filter to getPredicates() should be empty?
+		List<Integer> beacons = new ArrayList<Integer>();
+		
 		if(predicateListCache.isEmpty()) {
 			/*
 			 * Try to populate the list the first time?
 			 * Danger is the if some beacons fail to contribute the first time, 
 			 * they won't have a second chance?
 			 * */
-	    	CompletableFuture<Set<Predicate>> future = kbService.getPredicates();
+	    	CompletableFuture<Set<Predicate>> future = kbService.getPredicates(beacons);
 	    	
 	    	try {
 	    		predicateListCache = future.get(
