@@ -27,7 +27,7 @@ Retrieves a (paged) list of annotations cited as evidence for a specified concep
 
 StatementsApi apiInstance = new StatementsApi();
 String statementId = "statementId_example"; // String | (url-encoded) CURIE identifier of the concept-relationship statement (\"assertion\", \"claim\") for which associated evidence is sought, e.g. kbs:Q420626_P2175_Q126691 
-String keywords = "keywords_example"; // String | (url-encoded, space delimited) keyword filter to apply against the label field of the annotation 
+List<String> keywords = Arrays.asList("keywords_example"); // List<String> | an array of keywords or substrings against which to filter an reference label (e.g. title) of a citation serving as statement evidence
 Integer pageNumber = 56; // Integer | (1-based) number of the page to be returned in a paged set of query results 
 Integer pageSize = 56; // Integer | number of cited references per page to be returned in a paged set of query results 
 List<Integer> beacons = Arrays.asList(56); // List<Integer> | set of aggregator indices of beacons to be used as knowledge sources for the query 
@@ -45,7 +45,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **statementId** | **String**| (url-encoded) CURIE identifier of the concept-relationship statement (\&quot;assertion\&quot;, \&quot;claim\&quot;) for which associated evidence is sought, e.g. kbs:Q420626_P2175_Q126691  |
- **keywords** | **String**| (url-encoded, space delimited) keyword filter to apply against the label field of the annotation  | [optional]
+ **keywords** | [**List&lt;String&gt;**](String.md)| an array of keywords or substrings against which to filter an reference label (e.g. title) of a citation serving as statement evidence | [optional]
  **pageNumber** | **Integer**| (1-based) number of the page to be returned in a paged set of query results  | [optional]
  **pageSize** | **Integer**| number of cited references per page to be returned in a paged set of query results  | [optional]
  **beacons** | [**List&lt;Integer&gt;**](Integer.md)| set of aggregator indices of beacons to be used as knowledge sources for the query  | [optional]
@@ -180,8 +180,8 @@ StatementsApi apiInstance = new StatementsApi();
 String source = "source_example"; // String | a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of the  exactly matching 'source' clique, as defined by other endpoints of the beacon aggregator API.  
 List<String> relations = Arrays.asList("relations_example"); // List<String> | a subset (array) of identifiers of predicate relation identifiers with which to constrain the statement relations retrieved  for the given query seed concept. The predicate ids sent should  be as published by the beacon-aggregator by the /predicates API endpoint. 
 String target = "target_example"; // String | a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of the  exactly matching 'target' clique, as defined by other endpoints of the beacon aggregator API.  
-String keywords = "keywords_example"; // String | a (url-encoded, space-delimited) string of keywords or substrings against which to match the 'target' concept or 'predicate' names of the set of concept-relations matched by the 'source' concepts. 
-List<String> categories = Arrays.asList("categories_example"); // List<String> | a subset (array) of identifiers of concept categories to which to constrain 'target' concepts associated with the given 'source' concept ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes). 
+List<String> keywords = Arrays.asList("keywords_example"); // List<String> | an array of keywords or substrings against which to match the  'target' concept or 'predicate' names of the set of  concept-relations matched by the 'source' concepts.
+List<String> categories = Arrays.asList("categories_example"); // List<String> | a subset (array) of identifiers of concept categories to which to constrain 'target' concepts associated with the given 'source' concept ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of categories). 
 List<Integer> beacons = Arrays.asList(56); // List<Integer> | set of aggregator indices of beacons to be used as knowledge sources for the query 
 try {
     BeaconStatementsQuery result = apiInstance.postStatementsQuery(source, relations, target, keywords, categories, beacons);
@@ -199,8 +199,8 @@ Name | Type | Description  | Notes
  **source** | **String**| a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of the  exactly matching &#39;source&#39; clique, as defined by other endpoints of the beacon aggregator API.   |
  **relations** | [**List&lt;String&gt;**](String.md)| a subset (array) of identifiers of predicate relation identifiers with which to constrain the statement relations retrieved  for the given query seed concept. The predicate ids sent should  be as published by the beacon-aggregator by the /predicates API endpoint.  | [optional]
  **target** | **String**| a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of the  exactly matching &#39;target&#39; clique, as defined by other endpoints of the beacon aggregator API.   | [optional]
- **keywords** | **String**| a (url-encoded, space-delimited) string of keywords or substrings against which to match the &#39;target&#39; concept or &#39;predicate&#39; names of the set of concept-relations matched by the &#39;source&#39; concepts.  | [optional]
- **categories** | [**List&lt;String&gt;**](String.md)| a subset (array) of identifiers of concept categories to which to constrain &#39;target&#39; concepts associated with the given &#39;source&#39; concept ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes).  | [optional]
+ **keywords** | [**List&lt;String&gt;**](String.md)| an array of keywords or substrings against which to match the  &#39;target&#39; concept or &#39;predicate&#39; names of the set of  concept-relations matched by the &#39;source&#39; concepts. | [optional]
+ **categories** | [**List&lt;String&gt;**](String.md)| a subset (array) of identifiers of concept categories to which to constrain &#39;target&#39; concepts associated with the given &#39;source&#39; concept ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of categories).  | [optional]
  **beacons** | [**List&lt;Integer&gt;**](Integer.md)| set of aggregator indices of beacons to be used as knowledge sources for the query  | [optional]
 
 ### Return type
