@@ -286,7 +286,7 @@ public class KnowledgeBeaconService implements Util {
 	}
 	
 	
-	public BeaconConceptsQuery postConceptsQuery(String keywords, List<String> types, List<Integer> beacons) {
+	public BeaconConceptsQuery postConceptsQuery(List<String> keywords, List<String> types, List<Integer> beacons) {
 		try {
 			return conceptsApi.postConceptsQuery(keywords, types, beacons);
 		} catch (ApiException e) {
@@ -295,7 +295,7 @@ public class KnowledgeBeaconService implements Util {
 		}
 	}
 
-	public void postConceptsQueryAsync(String keywords, List<String> types, List<Integer> beacons, ApiCallback<BeaconConceptsQuery> callback) {
+	public void postConceptsQueryAsync(List<String> keywords, List<String> types, List<Integer> beacons, ApiCallback<BeaconConceptsQuery> callback) {
 		try {
 			conceptsApi.postConceptsQueryAsync(keywords, types, beacons, callback);
 		} catch (ApiException e) {
@@ -334,7 +334,7 @@ public class KnowledgeBeaconService implements Util {
 	 *         satisfy a query with the given parameters.
 	 */
 	public CompletableFuture<List<IdentifiedConcept>> getConcepts(
-			String keywords,
+			List<String> keywords,
 			String semanticGroups,
 			int pageNumber,
 			int pageSize,
@@ -372,7 +372,7 @@ public class KnowledgeBeaconService implements Util {
 								
 								ConceptType category;
 								try {
-									String type = beaconConcept.getType();
+									String type = beaconConcept.getCategory();
 									if (type.contains(":")) {
 										// type might be a string combined from multiple types separated by spaces
 										if (type.contains(" ")) {
@@ -689,16 +689,16 @@ public class KnowledgeBeaconService implements Util {
 								statementsSubject.getClique(), 
 								statementsSubject.getId(),
 								statementsSubject.getName(), 
-								statementsSubject.getType()
+								statementsSubject.getCategory()
 						);
 
-						PredicateImpl predicate = new PredicateImpl(statementsPredicate.getName());
+						PredicateImpl predicate = new PredicateImpl(statementsPredicate.getEdgeLabel());
 
 						IdentifiedConceptImpl object = new IdentifiedConceptImpl(
 								statementsObject.getClique(), 
 								statementsObject.getId(), 
 								statementsObject.getName(),
-								statementsObject.getType()
+								statementsObject.getCategory()
 						);
 						
 						Statement statement = new GeneralStatement(id, subject, predicate, object);
@@ -733,7 +733,7 @@ public class KnowledgeBeaconService implements Util {
 	 */
 	public CompletableFuture<List<Annotation>> getEvidence(
 			String statementId,
-			String keywords,
+			List<String> keywords,
 			int pageNumber,
 			int pageSize,
 			List<Integer> beacons
@@ -789,7 +789,7 @@ public class KnowledgeBeaconService implements Util {
 	
 	public CompletableFuture<List<Annotation>> getEvidence(
 			Statement statement,
-			String keywords,
+			List<String> keywords,
 			int pageNumber,
 			int pageSize,
 			List<Integer> beacons

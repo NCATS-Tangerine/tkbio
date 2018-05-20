@@ -44,7 +44,7 @@ public class StatementsApiTest {
     @Test
     public void getEvidenceTest() throws ApiException {
         String statementId = null;
-        String keywords = null;
+        List<String> keywords = null;
         Integer pageNumber = null;
         Integer pageSize = null;
         List<Integer> beacons = null;
@@ -102,10 +102,11 @@ public class StatementsApiTest {
         String source = null;
         List<String> relations = null;
         String target = null;
-        String keywords = null;
+        List<String> keywords = null;
         List<String> types = null;
         List<Integer> beacons = null;
-        BeaconStatementsQuery response = api.postStatementsQuery(source, relations, target, keywords, types, beacons);
+        BeaconStatementsQuery response = 
+        		api.postStatementsQuery(source, relations, target, keywords, types, beacons);
 
         // TODO: test validations
     }

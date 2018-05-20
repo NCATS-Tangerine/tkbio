@@ -13,13 +13,14 @@
 
 package bio.knowledge.client.model;
 
-import java.util.Objects;
-import bio.knowledge.client.model.BeaconConceptWithDetailsBeaconEntry;
-import com.google.gson.annotations.SerializedName;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import com.google.gson.annotations.SerializedName;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * A single record of a given concept clique with details 

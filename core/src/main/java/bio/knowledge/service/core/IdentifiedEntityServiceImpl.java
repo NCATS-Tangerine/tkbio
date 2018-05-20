@@ -58,8 +58,10 @@ public abstract class IdentifiedEntityServiceImpl<T extends IdentifiedEntity>
 		ListTablePageCounter, 
 		IdentifiedEntityService<T> {
 	
+	protected final List<String> EMPTY_KEYWORDS = new ArrayList<String>();
+	
 	private ListTablePager<T> pager =  
-			( int pageNo, int pageSize, String filter, TableSorter sorter, boolean direction) ->
+			( int pageNo, int pageSize, List<String> filter, TableSorter sorter, boolean direction) ->
 				getDataPage( pageNo, pageSize, filter, sorter, direction) ;
 			
 	/* (non-Javadoc)
@@ -79,7 +81,7 @@ public abstract class IdentifiedEntityServiceImpl<T extends IdentifiedEntity>
  	 * @param pageSize is equal to or greater than 1
  	 * @return a List ('Page') of DataFile records
  	 */
- 	public List<T> getDataPage( int pageIndex, int pageSize, String filter, TableSorter sorter, boolean isAscending) {
+ 	public List<T> getDataPage( int pageIndex, int pageSize, List<String> filter, TableSorter sorter, boolean isAscending) {
  		// Note that PageRequests are zero-based indexed
 // 		if( pageNo < 1 ) 
 // 			pageNo = 0 ;
@@ -124,7 +126,7 @@ public abstract class IdentifiedEntityServiceImpl<T extends IdentifiedEntity>
  	 * @param filter text to filter out matches, usually by name. 
  	 * @return Page of data entries retrieved
  	 */
- 	public abstract Page<T> findByNameLike(String filter, Pageable pageable);
+ 	public abstract Page<T> findByNameLike(List<String> filter, Pageable pageable);
  	
  	public abstract Page<T> findAll(Pageable pageable, String queryId);
  	
@@ -141,7 +143,7 @@ public abstract class IdentifiedEntityServiceImpl<T extends IdentifiedEntity>
  	 */
  	public abstract long countEntries() ;
  	
-	private ListTableFilteredHitCounter hitCounter = ( String filter ) -> countHits( filter ) ;
+	private ListTableFilteredHitCounter hitCounter = ( List<String> filter ) -> countHits( filter ) ;
 			
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#getHitCounter()
@@ -153,7 +155,7 @@ public abstract class IdentifiedEntityServiceImpl<T extends IdentifiedEntity>
  	 * 
  	 * @return total number of hits in the database table matching the given filter
  	 */
- 	public long countHits( String filter ) {
+ 	public long countHits( List<String> filter ) {
  		long hits ;
  		if (filter.isEmpty()){
 			hits = countEntries() ;
@@ -168,9 +170,9 @@ public abstract class IdentifiedEntityServiceImpl<T extends IdentifiedEntity>
  	 * @param filter
  	 * @return
  	 */
- 	public abstract long countHitsByNameLike(String filter) ;
+ 	public abstract long countHitsByNameLike( List<String> filter ) ;
  	
-	private ListTablePageCounter pageCounter = ( String filter, int pageSize ) -> countPages( filter, pageSize ) ;
+	private ListTablePageCounter pageCounter = ( List<String> filter, int pageSize ) -> countPages( filter, pageSize ) ;
 			
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#getPageCounter()
@@ -182,7 +184,7 @@ public abstract class IdentifiedEntityServiceImpl<T extends IdentifiedEntity>
  	 * 
  	 * @return total number of pages of data of a given page size, in the database table of a given data type
  	 */
- 	public int countPages( String filter, int pageSize ) {
+ 	public int countPages( List<String> filter, int pageSize ) {
  		int pages ;
  		if (filter.isEmpty()){
 			pages = (int)( this.countEntries() / (long)pageSize) + 1 ;

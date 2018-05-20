@@ -58,9 +58,8 @@ public class Neo4jContactFormService
  	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.general.IdentifiedEntityService#findAll(org.springframework.data.domain.Pageable)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Page<ContactForm> findByNameLike(String filter, Pageable pageable){
+	public Page<ContactForm> findByNameLike(List<String> filter, Pageable pageable){
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	
@@ -91,7 +90,6 @@ public class Neo4jContactFormService
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#getIdentifiers(org.springframework.data.domain.Pageable)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<ContactForm> getIdentifiers(Pageable pageable) {
 		throw new NotImplementedException("Removed all reference to neo4j");
@@ -105,12 +103,10 @@ public class Neo4jContactFormService
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
     
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List<ContactForm> getContactMessages() {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<ContactForm> findAll(Pageable pageable, String queryId) {
 		throw new NotImplementedException("Removed all reference to neo4j");
@@ -120,7 +116,7 @@ public class Neo4jContactFormService
 	 * @see bio.knowledge.service.core.general.IdentifiedEntityService#countHits(java.lang.String)
 	 */
 	@Override
-	public long countHitsByNameLike(String filter) {
+	public long countHitsByNameLike(List<String> filter) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 

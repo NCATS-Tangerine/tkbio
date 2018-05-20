@@ -25,14 +25,11 @@
  */
 package bio.knowledge.web.view;
 
-import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.UI;
 
 import bio.knowledge.web.design.LandingPageDesign;
-import bio.knowledge.web.ui.DesktopUI;
 
 /**
  * The actual view is created using Vaadin Designer.

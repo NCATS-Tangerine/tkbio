@@ -68,7 +68,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
     public List<Annotation> getDataPage(
     		int pageIndex,
     		int pageSize,
-    		String filter,
+    		List<String> filter,
     		TableSorter sorter,
     		boolean isAscending
     ) {
@@ -101,7 +101,6 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 	/* (non-Javadoc)
 	 * @see bio.knowledge.service.core.IdentifiedEntityService#getIdentifiers(org.springframework.data.domain.Pageable)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	@Deprecated
 	public Page<Annotation> getIdentifiers(Pageable pageable) {
@@ -112,7 +111,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#findByNameLike(java.lang.String, org.springframework.data.domain.Pageable)
 	 */
 	@Override
-	public Page<Annotation> findByNameLike(String filter, Pageable pageable) {
+	public Page<Annotation> findByNameLike(List<String> filter, Pageable pageable) {
 		if ( !query.getCurrentEvidence().isPresent() ) {
 			switch (query.getRelationSearchMode()) {
 				case PMID:
@@ -136,16 +135,16 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 		if( !query.getCurrentEvidence().isPresent() ){
 			switch (query.getRelationSearchMode()) {
 				case PMID:
-					return findHelperByPMID("", pageable);
+					return findHelperByPMID(EMPTY_KEYWORDS, pageable);
 				case RELATIONS:
-					return findHelper("", pageable);
+					return findHelper(EMPTY_KEYWORDS, pageable);
 				case WIKIDATA:
 					return null;
 				default:
 					throw new DataServiceException("AnnotationService.findAll(): Invalid RelationSearchMode()?");
 			} 
 		} else
-			return findHelper("", pageable);
+			return findHelper(EMPTY_KEYWORDS, pageable);
 	}
 
 	
@@ -158,9 +157,9 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 		if( query.getCurrentEvidence().isPresent())
 			switch (query.getRelationSearchMode()) {
 				case PMID:
-					return countHelperByPMID("");
+					return countHelperByPMID(EMPTY_KEYWORDS);
 				case RELATIONS:
-					return countHelper("");
+					return countHelper(EMPTY_KEYWORDS);
 				case WIKIDATA:
 					return 0L;
 				default:
@@ -174,7 +173,7 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#countHitsByNameLike(java.lang.String)
 	 */
 	@Override
-	public long countHitsByNameLike(String filter) {
+	public long countHitsByNameLike(List<String> filter) {
 		if( query.getCurrentEvidence().isPresent() )
 			switch (query.getRelationSearchMode()) {
 				case PMID:
@@ -201,11 +200,11 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 	}
 
 	@Deprecated
-	private Page<Annotation> findHelper(String filter, Pageable pageable) {
+	private Page<Annotation> findHelper(List<String> filter, Pageable pageable) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	
-	private long countHelper(String filter) {
+	private long countHelper(List<String> filter) {
 		
 		Optional<Evidence> evidenceOpt = query.getCurrentEvidence() ;
 		if( !evidenceOpt.isPresent() ) return 0 ;
@@ -219,13 +218,12 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 				cache.searchForCounter(
 						"Annotation", 
 						evidenceId.toString(), 
-						new String[] { filter }
+						filter.toArray(new String[0])
 				);
 		
 		// Is key present ? then fetch it from cache
 		// Long count = cache.getCountCache().get(cacheKey);
-		Long count = cacheLocation.getCounter();
-		
+		//Long count = cacheLocation.getCounter();
 		
 		return 0;
 		// TODO: Figure out why this code was not working??? But it's being phased out anyway...
@@ -246,12 +244,12 @@ public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 	}
 
 	@Deprecated
-	private Page<Annotation> findHelperByPMID(String filter, Pageable pageable){
+	private Page<Annotation> findHelperByPMID(List<String> filter, Pageable pageable){
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 	
 	@Deprecated
-	private long countHelperByPMID(String filter){
+	private long countHelperByPMID(List<String> filter){
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 

@@ -25,6 +25,8 @@
  */
 package bio.knowledge.service.core;
 
+import java.util.List;
+
 /**
  * @author Richard
  *
@@ -36,5 +38,5 @@ public interface ListTableFilteredHitCounter {
 	 * 
 	 * @return total number of entries in a given data source, matched with given text filter
 	 */
-	public long countHits(String filter) ;
+	public long countHits( List<String> filter) ;
 }

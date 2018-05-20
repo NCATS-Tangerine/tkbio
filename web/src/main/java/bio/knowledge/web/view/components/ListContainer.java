@@ -26,6 +26,7 @@
 package bio.knowledge.web.view.components;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.vaadin.data.Container;
@@ -62,7 +63,7 @@ class ListContainer implements Serializable {
 	private int pageSize = DEFAULT_PAGE_SIZE;
 	private int totalPages = 0;
 	
-	private String simpleTextFilter = "";
+	private List<String> simpleTextFilter = new ArrayList<String>();
 	
 	// By default, it will be false to list predication in descending order of evidence count
 	private boolean isAscending = DEFAULT_IS_ASCENDING;
@@ -154,7 +155,7 @@ class ListContainer implements Serializable {
 		this.pageSize = pageSize ;
 	}
 	
-	public void setSimpleTextFilter ( String textfilter ){
+	public void setSimpleTextFilter ( List<String> textfilter ){
 		this.simpleTextFilter = textfilter;
 	}
 	
@@ -232,7 +233,7 @@ class ListContainer implements Serializable {
 		return currentPageIndex;
 	}
 	
-	public String getSimpleTextFilter() {
+	public List<String> getSimpleTextFilter() {
 		return simpleTextFilter;
 	}
 	

@@ -26,7 +26,6 @@
 package bio.knowledge.web.view;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;

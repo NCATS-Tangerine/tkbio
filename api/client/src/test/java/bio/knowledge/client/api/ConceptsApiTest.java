@@ -113,7 +113,7 @@ public class ConceptsApiTest {
      */
     @Test
     public void postConceptsQueryTest() throws ApiException {
-        String keywords = null;
+        List<String> keywords = null;
         List<String> types = null;
         List<Integer> beacons = null;
         BeaconConceptsQuery response = api.postConceptsQuery(keywords, types, beacons);

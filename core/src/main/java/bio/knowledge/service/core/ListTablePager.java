@@ -44,5 +44,5 @@ public interface ListTablePager<T> {
 	 * @param filter 
 	 * @return a page of data items of specified type if available, otherwise, an empty list
 	 */
-	public List<T> getDataPage( int pageNo, int pageSize, String filter, TableSorter sorter, boolean direction) ;
+	public List<T> getDataPage( int pageNo, int pageSize, List<String> filter, TableSorter sorter, boolean direction) ;
 }

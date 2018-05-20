@@ -83,7 +83,7 @@ public class Neo4jOntologyService
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Page<Ontology> findByNameLike(String filter, Pageable pageable) {
+	public Page<Ontology> findByNameLike(List<String> filter, Pageable pageable) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
@@ -141,7 +141,7 @@ public class Neo4jOntologyService
 	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#countHitsByNameLike(java.lang.String)
 	 */
 	@Override
-	public long countHitsByNameLike(String filter) {
+	public long countHitsByNameLike(List<String> filter) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 

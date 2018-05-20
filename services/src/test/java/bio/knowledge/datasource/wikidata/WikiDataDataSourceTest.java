@@ -53,7 +53,6 @@ import bio.knowledge.datasource.ComplexDataService;
 import bio.knowledge.datasource.DataSource;
 import bio.knowledge.datasource.DataSourceTestUtil;
 import bio.knowledge.datasource.SimpleDataService;
-
 import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
