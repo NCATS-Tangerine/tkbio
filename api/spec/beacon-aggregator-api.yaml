@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Translator Knowledge Beacon Aggregator API
-  version: 1.0.12
+  version: 1.1.0
   contact:
     url: 'http://starinformatics.com'
     email: richard@starinformatics.com
@@ -126,7 +126,7 @@ paths:
                     the human readable label of the concept category (see
                     [Biolink Model
                     Classes](https://biolink.github.io/biolink-model) for  the
-                    full list of concept category names)
+                    full list of concept categories)
                 description:
                   type: string
                   description: >
@@ -520,10 +520,12 @@ paths:
         - name: keywords
           in: query
           description: >-
-            a (urlencoded) space delimited set of keywords or substrings against
-            which to match concept names and synonyms, e.g. diabetes.
+            an array of keywords or substrings against which to match concept
+            names and synonyms
           required: true
-          type: string
+          type: array
+          items:
+            type: string
         - name: categories
           in: query
           description: >
@@ -557,7 +559,9 @@ paths:
                 description: |
                   session identifier of initiated query
               keywords:
-                type: string
+                type: array
+                items:
+                  type: string
                 description: |
                   'keywords' string parameter to call, echoed back
               categories:
@@ -571,9 +575,14 @@ paths:
             returned
           examples:
             application/json:
-              queryId: AB123
-              keywords: WRN
-              type: gene chem disease
+              queryId: XRBTu9CgfiXEhcfMdr4y
+              keywords:
+                - Werner
+                - Syndrome
+              categories:
+                - gene
+                - protein
+                - disease
   '/concepts/status/{queryId}':
     get:
       description: |
@@ -640,9 +649,7 @@ paths:
             Current query status returned
           examples:
             application/json:
-              queryId: AB123
-              keywords: WRN
-              type: gene chem disease
+              queryId: XRBTu9CgfiXEhcfMdr4y
               status:
                 - beacon: 1
                   status: 200
@@ -734,33 +741,35 @@ paths:
                       type: string
                       description: |
                         Canonical human readable name of the concept
-                    type:
+                    category:
                       type: string
                       description: >
-                        Concept semantic type as a CURIE into a data type
-                        ontology
+                        Concept category associated with the given concept ((see
+                        [Biolink Model](https://biolink.github.io/biolink-model)
+                        for the full list of categories).
           description: |
             Successful response with concept list returned
           examples:
             application/json:
-              queryId: AB123
+              queryId: XRBTu9CgfiXEhcfMdr4y
               beacons:
                 - 1
+                - 5
               pageNumber: 1
               pageSize: 4
               results:
                 - clique: 'UNIPROT:Q14191'
                   name: 'WRN protein, human'
-                  type: 'UMLSSG:CHEM'
+                  category: protein
                 - clique: 'NCBIGENE:56897'
                   name: WRNIP1
-                  type: 'UMLSSG:GENE'
+                  category: gene
                 - clique: 'NCBIGENE:7486'
                   name: WRN
-                  type: 'UMLSSG:GENE'
+                  category: gene
                 - clique: 'DOID:5686'
                   name: Werner Syndrome
-                  type: 'UMLSSG:DISO'
+                  category: disease
   '/clique/{identifier}':
     get:
       description: >
@@ -900,7 +909,7 @@ paths:
             application/json:
               clique: 'wd:Q14883734'
               name: Werner Syndrome
-              type: 'UMLSSG:DISO'
+              type: disease
               aliases:
                 - 'wd:Q14883734'
                 - 'OMIM:277700'
@@ -986,12 +995,14 @@ paths:
           type: string
         - name: keywords
           in: query
-          description: >
-            a (url-encoded, space-delimited) string of keywords or substrings
-            against which to match the 'target' concept or 'predicate' names of
-            the set of concept-relations matched by the 'source' concepts.
+          description: >-
+            an array of keywords or substrings against which to match the 
+            'target' concept or 'predicate' names of the set of 
+            concept-relations matched by the 'source' concepts.
           required: false
-          type: string
+          type: array
+          items:
+            type: string
         - name: categories
           in: query
           description: >
@@ -999,7 +1010,7 @@ paths:
             constrain 'target' concepts associated with the given 'source'
             concept ((see [Biolink
             Model](https://biolink.github.io/biolink-model) for the full list of
-            codes).
+            categories).
           required: false
           type: array
           items:
@@ -1039,9 +1050,11 @@ paths:
                 description: |
                   'target' string parameter to call, echoed back
               keywords:
-                type: string
+                type: array
+                items:
+                  type: string
                 description: |
-                  'keywords' string parameter to call, echoed back
+                  'keywords' string filter parameter to call, echoed back
               categories:
                 type: array
                 items:
@@ -1053,12 +1066,13 @@ paths:
             returned
           examples:
             application/json:
-              queryId: XY456
+              queryId: Mi1ZtYiLofVNTxDa9Dz5
               source: 'NCBIGENE:7486'
-              relations: 'SIO:000983'
+              relations: has_phenotype
               target: ''
-              keywords: ''
-              type: disease
+              keywords: []
+              categories:
+                - disease
   '/statements/status/{queryId}':
     get:
       description: |
@@ -1229,30 +1243,44 @@ paths:
                           type: string
                           description: >
                             CURIE-encoded canonical identifier of "equivalent
-                            concepts clique"
+                            concepts clique" of the subject concept
                         id:
                           type: string
                           description: |
-                            CURIE-encoded identifier of concept
+                            CURIE-encoded identifier of the subject concept
                         name:
                           type: string
-                          description: human readable label of subject concept
-                        type:
+                          description: human readable label of the subject concept
+                        category:
                           type: string
                           description: >
-                            a semantic group for the subject concept (specified 
-                            as a CURIE of a Translator data type ontology term)
+                            Semantic category of the subject concept ((see
+                            [Biolink
+                            Model](https://biolink.github.io/biolink-model) for
+                            the full list of categories).
                     predicate:
                       title: BeaconStatementPredicate
                       type: object
                       properties:
-                        id:
+                        edge_label:
                           type: string
-                          description: |
-                            CURIE-encoded identifier of predicate resource
-                        name:
+                          description: >
+                            Relationship predicate drawn from the Biolink Model
+                            based list of Translator minimal predicate ((see
+                            [Biolink
+                            Model](https://biolink.github.io/biolink-model) for
+                            the full list of minimal predicates).
+                        relation:
                           type: string
-                          description: human readable label of concept
+                          description: >
+                            Predicate relation; should be drawn Biolink Model
+                            based list of Translator minimal predicate ((see
+                            [Biolink
+                            Model](https://biolink.github.io/biolink-model) for
+                            the full list of minimal predicates)., but
+                            reasoner-specific extensions allowed. Preferred
+                            format is a CURIE, where one exists, but
+                            strings/labels acceptable.
                     object:
                       title: BeaconStatementObject
                       type: object
@@ -1261,48 +1289,46 @@ paths:
                           type: string
                           description: >
                             CURIE-encoded canonical identifier of "equivalent
-                            concepts clique"
+                            concepts clique" of the object concept
                         id:
                           type: string
                           description: |
-                            CURIE-encoded identifier of object concept
+                            CURIE-encoded identifier of the object concept
                         name:
                           type: string
-                          description: human readable label of object concept
-                        type:
+                          description: human readable label of the object concept
+                        category:
                           type: string
                           description: >
-                            a semantic group for the object concept (specified 
-                            as a CURIE of a Translator data type ontology term)
+                            Semantic category of the object concept ((see
+                            [Biolink
+                            Model](https://biolink.github.io/biolink-model) for
+                            the full list of categories).
                     beacon:
                       type: integer
                       description: |
                         aggregator assigned beacon index number
           examples:
             application/json:
-              queryId: XYZ456
+              queryId: Mi1ZtYiLofVNTxDa9Dz5
               beacons:
-                - 1
+                - 5
               pageNumber: 1
               pageSize: 1
               results:
-                - source: semmeddb
-                  id: 'kb:12345'
+                - id: 'kb:12345'
                   subject:
-                    id:
-                      - 'wd:Q14912054'
+                    id: 'wd:Q14912054'
                     name: KCNJ11
-                    type: 'UMLSSG:GENE'
+                    category: gene
                   predicate:
-                    id:
-                      - 'kbp:10'
-                    name: Causes
+                    edge_label: has_phenotype
+                    relation: 'RO:0002200'
                   object:
-                    id:
-                      - 'wd:Q2898645'
+                    id: 'wd:Q2898645'
                     name: Neonatal diabetes mellitus
-                    type: 'UMLSSG:DISO'
-                  beacon: '1'
+                    category: disease
+                  beacon: '5'
   '/evidence/{statementId}':
     get:
       description: >
@@ -1321,11 +1347,14 @@ paths:
           type: string
         - name: keywords
           in: query
-          description: >
-            (url-encoded, space delimited) keyword filter to apply against the
-            label field of the annotation
+          description: >-
+            an array of keywords or substrings against which to filter an
+            reference label (e.g. title) of a citation serving as statement
+            evidence
           required: false
-          type: string
+          type: array
+          items:
+            type: string
         - name: pageNumber
           in: query
           description: |
@@ -1370,7 +1399,7 @@ paths:
                   description: >
                     canonical human readable and searchable label of the
                     annotation (i.e. comment, matched sentence, etc.)
-                type:
+                evidence_code:
                   type: string
                   description: >
                     Gene Ontology Evidence Code
@@ -1390,6 +1419,6 @@ paths:
                 label: >-
                   Neonatal diabetes mellitus and congenital diaphragmatic hernia
                   coincidence or concurrent etiology?
-                type: TAS
+                evidence_code: TAS
                 date: 2012-07-10T00:00:00.000Z
                 beacon: 1

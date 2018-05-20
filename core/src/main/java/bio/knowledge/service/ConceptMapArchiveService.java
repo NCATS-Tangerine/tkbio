@@ -70,7 +70,7 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
     public List<ConceptMapArchive> getDataPage(
     		int pageIndex,
     		int pageSize,
-    		String filter,
+    		List<String> filter,
     		TableSorter sorter,
     		boolean isAscending
     ) {
@@ -189,9 +189,15 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 	 * @param pageable
 	 * @return
 	 */
-	public Page<ConceptMapArchive> getConceptMapArchiveByLibraryFiltered(Library library, String[] filter,
-			Pageable pageable, String accountId, String[] groupIds) {
-		List<Map<String, Object>> data = archiveRepository.getConceptMapArchiveByLibraryFiltered(library, filter,
+	public Page<ConceptMapArchive> getConceptMapArchiveByLibraryFiltered(
+			Library library, 
+			List<String> filter,
+			Pageable pageable, 
+			String accountId, 
+			String[] groupIds
+	) {
+		List<Map<String, Object>> data = 
+				archiveRepository.getConceptMapArchiveByLibraryFiltered(library, filter,
 				pageable, accountId, groupIds);
 		return parseLibraryResult(data, pageable);
 	}
@@ -253,7 +259,7 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 	 *  This will return all ConceptMapArchive containing Concept having name matched as filter.
 	 */
 	@Override
-	public Page<ConceptMapArchive> findByNameLike(String filter, Pageable pageable) {
+	public Page<ConceptMapArchive> findByNameLike(List<String> filter, Pageable pageable) {
 
 		List<ConceptMapArchive> result = new ArrayList<>();
 		String[] words;
@@ -264,10 +270,10 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 			if ( optConcept.isPresent() ) {
 				IdentifiedConcept concept = (IdentifiedConcept) optConcept.get() ;
 				Library library = concept.getLibrary();
-				words = filter.split(SEPARATOR);
+
 				return getConceptMapArchiveByLibraryFiltered(
 						library,
-						words,
+						filter,
 						pageable,
 						authState.getUserId(),
 						authState.getGroupIds()
@@ -318,10 +324,9 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 			Optional<Library> libraryOpt = query.getCurrentLibrary();
 			if (libraryOpt.isPresent()) {
 				Library library = libraryOpt.get();
-				words = filter.split(SEPARATOR);
 				return getConceptMapArchiveByLibraryFiltered(
 						library,
-						words,
+						filter,
 						pageable,
 						authState.getUserId(),
 						authState.getGroupIds()
@@ -351,10 +356,9 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 				if ( optConcept.isPresent() ) {
 					IdentifiedConcept concept = (IdentifiedConcept)optConcept.get() ;
 					Library library = concept.getLibrary() ;
-					String[] words = new String[0];
 					return getConceptMapArchiveByLibraryFiltered(
 							library,
-							words,
+							EMPTY_KEYWORDS,
 							pageable,
 							authState.getUserId(),
 							authState.getGroupIds()
@@ -471,7 +475,7 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 	 *  This will return count of ConceptMapArchive containing Concept having name matched as filter.
 	 */
 	@Override
-	public long countHitsByNameLike(String filter) {
+	public long countHitsByNameLike(List<String> filter) {
 		long count = 0L;
 		String[] words;
 		switch (query.getLibraryMode()) {
@@ -481,8 +485,11 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 			if (optConcept.isPresent()) {
 				IdentifiedConcept concept = optConcept.get();
 				Library library = concept.getLibrary();
-				words = filter.split(SEPARATOR);
-				count = archiveRepository.countConceptMapArchiveByLibraryFiltered(library, words);
+
+				count = archiveRepository.
+							countConceptMapArchiveByLibraryFiltered(
+									library, filter.toArray(new String[0])
+							);
 			}
 			break;
 
@@ -511,8 +518,10 @@ public class ConceptMapArchiveService extends IdentifiedEntityServiceImpl<Concep
 			Optional<Library> libraryOpt = query.getCurrentLibrary();
 			if (libraryOpt.isPresent()) {
 				Library library = libraryOpt.get();
-				words = filter.split(SEPARATOR);
-				count = archiveRepository.countConceptMapArchiveByLibraryFiltered(library, words);
+				count = 
+					archiveRepository.
+							countConceptMapArchiveByLibraryFiltered(
+									library, filter.toArray(new String[0]));
 			}
 			break;
 

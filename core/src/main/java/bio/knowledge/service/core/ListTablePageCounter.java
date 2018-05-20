@@ -25,6 +25,8 @@
  */
 package bio.knowledge.service.core;
 
+import java.util.List;
+
 /**
  * @author Richard
  *
@@ -37,5 +39,5 @@ public interface ListTablePageCounter {
 	 * @param pageSize of items per page
 	 * @return number of pages of items in the given implementing source
 	 */
-	public int countPages( String filter, int pageSize ) ;
+	public int countPages( List<String> filter, int pageSize ) ;
 }

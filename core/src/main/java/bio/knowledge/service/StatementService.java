@@ -92,7 +92,7 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	private KnowledgeBeaconService kbService;
 
 	@Override
-	public List<Statement> getDataPage(int pageIndex, int pageSize, String filter, TableSorter sorter,
+	public List<Statement> getDataPage(int pageIndex, int pageSize, List<String> filter, TableSorter sorter,
 			boolean isAscending) {
 
 		/**
@@ -220,12 +220,12 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#findByNameLike(
 	 * java.lang.String, org.springframework.data.domain.Pageable)
 	 */
-	private Page<Statement> findByFilter(String filter, Pageable pageable) {
+	private Page<Statement> findByFilter(List<String>  filter, Pageable pageable) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
 	@Override
-	public Page<Statement> findByNameLike(String filter, Pageable pageable) {
+	public Page<Statement> findByNameLike(List<String> filter, Pageable pageable) {
 		switch (query.getRelationSearchMode()) {
 		case PMID:
 			return findByPMID(filter, pageable);
@@ -249,11 +249,11 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	public Page<Statement> findAll(Pageable pageable, String queryId) {
 		switch (query.getRelationSearchMode()) {
 		case PMID:
-			return findByPMID("", pageable);
+			return findByPMID(EMPTY_KEYWORDS, pageable);
 		case RELATIONS:
-			return findByFilter("", pageable);
+			return findByFilter(EMPTY_KEYWORDS, pageable);
 		case WIKIDATA:
-			return findWikiDataByFilter("", pageable);
+			return findWikiDataByFilter(EMPTY_KEYWORDS, pageable);
 		default:
 			throw new DataServiceException("StatementService.findAll(): Invalid RelationSearchMode()?");
 		}
@@ -268,11 +268,11 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	public long countEntries() {
 		switch (query.getRelationSearchMode()) {
 		case PMID:
-			return countByPMID("");
+			return countByPMID(EMPTY_KEYWORDS);
 		case RELATIONS:
-			return countHelper("");
+			return countHelper(EMPTY_KEYWORDS);
 		case WIKIDATA:
-			return countByWikiData("");
+			return countByWikiData(EMPTY_KEYWORDS);
 		default:
 			throw new DataServiceException("StatementService.countEntries(): Invalid RelationSearchMode()?");
 		}
@@ -285,7 +285,7 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	 * countHitsByNameLike(java.lang.String)
 	 */
 	@Override
-	public long countHitsByNameLike(String filter) {
+	public long countHitsByNameLike(List<String> filter) {
 		switch (query.getRelationSearchMode()) {
 		case PMID:
 			return countByPMID(filter);
@@ -310,7 +310,7 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	 * @param filter
 	 * @return
 	 */
-	private long countHelper(String filter) {
+	private long countHelper(List<String> filter) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
@@ -321,7 +321,7 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	 * @param pageable
 	 * @return
 	 */
-	private Page<Statement> findByPMID(String filter, Pageable pageable) {
+	private Page<Statement> findByPMID(List<String>  filter, Pageable pageable) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
@@ -331,7 +331,7 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	 * @param filter
 	 * @return
 	 */
-	private long countByPMID(String filter) {
+	private long countByPMID(List<String> filter) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
@@ -419,7 +419,7 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	}
 
 	// simple runQuery with paging of results
-	private void runQuery(String serviceName, IdentifiedConcept concept, String filter, Pageable pageable,
+	private void runQuery(String serviceName, IdentifiedConcept concept, List<String> filter, Pageable pageable,
 			Function<? super ResultSet, ? extends Void> resultHandler) {
 		DataService dataService = dataSourceRegistry.getDataService(WikiDataDataSource.WIKIDATA_DATASOURCE_ID,
 				serviceName);
@@ -529,7 +529,7 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	}
 
 	@SuppressWarnings({ "unchecked" })
-	private Page<Statement> findWikiDataByFilter(String filter, Pageable pageable) {
+	private Page<Statement> findWikiDataByFilter(List<String> filter, Pageable pageable) {
 
 		List<Statement> statements = new ArrayList<>();
 
@@ -546,8 +546,15 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 			// cacheKey = Base64.getEncoder().encodeToString(cacheKey.getBytes());
 
 			String pageKey = new Integer(pageable.hashCode()).toString();
-			CacheLocation cacheLocation = cache.searchForResultSet("WikiData", accessionId,
-					new String[] { filter, pageKey });
+			List<String> cacheKey = new ArrayList<String>(filter);
+			cacheKey.add(pageKey);
+			
+			CacheLocation cacheLocation = 
+					cache.searchForResultSet(
+							"WikiData", 
+							accessionId,
+							cacheKey.toArray(new String[0])
+					);
 
 			// Is key present ? then fetch it from cache
 			// List<Statement> cachedResult = (List<Statement>)
@@ -595,7 +602,7 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	 *            String that WikiData property names should match
 	 * @return
 	 */
-	private long countByWikiData(String filter) {
+	private long countByWikiData(List<String> filter) {
 
 		IdentifiedConcept concept = getCurrentConcept();
 
@@ -606,8 +613,9 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 		// creating cache key using ("WikiData" + conceptId + textFilter)
 		// String cacheKey = ("WikiData" + "#" + conceptId + "#" + filter);
 		// cacheKey = Base64.getEncoder().encodeToString(cacheKey.getBytes());
-		CacheLocation cacheLocation = cache.searchForCounter("Statement", conceptId.toString(),
-				new String[] { filter });
+		String[] cacheKey = filter.toArray(new String[0]);
+		CacheLocation cacheLocation = 
+				cache.searchForCounter("Statement", conceptId.toString(),cacheKey);
 
 		// Is key present ? then fetch it from cache
 		Long[] count = new Long[1];

@@ -217,7 +217,7 @@ Posts the query parameters to retrieves a (paged) list of  concepts from the sys
 
 
 ConceptsApi apiInstance = new ConceptsApi();
-String keywords = "keywords_example"; // String | a (urlencoded) space delimited set of keywords or substrings against which to match concept names and synonyms, e.g. diabetes.
+List<String> keywords = Arrays.asList("keywords_example"); // List<String> | an array of keywords or substrings against which to match concept names and synonyms
 List<String> categories = Arrays.asList("categories_example"); // List<String> | a subset array of concept categories (specified as codes 'gene',  'pathway', etc.) to which to constrain concepts matched by the main keyword search (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes) 
 List<Integer> beacons = Arrays.asList(56); // List<Integer> | subset of aggregator indices of beacons to be used as knowledge sources for the query (if omitted, then the all beacons are queried) 
 try {
@@ -233,7 +233,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **keywords** | **String**| a (urlencoded) space delimited set of keywords or substrings against which to match concept names and synonyms, e.g. diabetes. |
+ **keywords** | [**List&lt;String&gt;**](String.md)| an array of keywords or substrings against which to match concept names and synonyms |
  **categories** | [**List&lt;String&gt;**](String.md)| a subset array of concept categories (specified as codes &#39;gene&#39;,  &#39;pathway&#39;, etc.) to which to constrain concepts matched by the main keyword search (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes)  | [optional]
  **beacons** | [**List&lt;Integer&gt;**](Integer.md)| subset of aggregator indices of beacons to be used as knowledge sources for the query (if omitted, then the all beacons are queried)  | [optional]
 

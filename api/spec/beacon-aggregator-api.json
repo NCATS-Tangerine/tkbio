@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Translator Knowledge Beacon Aggregator API",
-    "version": "1.0.12",
+    "version": "1.1.0",
     "contact": {
       "url": "http://starinformatics.com",
       "email": "richard@starinformatics.com"
@@ -134,7 +134,7 @@
                   },
                   "category": {
                     "type": "string",
-                    "description": "the human readable label of the concept category (see [Biolink Model Classes](https://biolink.github.io/biolink-model) for  the full list of concept category names)\n"
+                    "description": "the human readable label of the concept category (see [Biolink Model Classes](https://biolink.github.io/biolink-model) for  the full list of concept categories)\n"
                   },
                   "description": {
                     "type": "string",
@@ -572,9 +572,12 @@
           {
             "name": "keywords",
             "in": "query",
-            "description": "a (urlencoded) space delimited set of keywords or substrings against which to match concept names and synonyms, e.g. diabetes.",
+            "description": "an array of keywords or substrings against which to match concept names and synonyms",
             "required": true,
-            "type": "string"
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           {
             "name": "categories",
@@ -609,7 +612,10 @@
                   "description": "session identifier of initiated query\n"
                 },
                 "keywords": {
-                  "type": "string",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
                   "description": "'keywords' string parameter to call, echoed back\n"
                 },
                 "categories": {
@@ -624,9 +630,16 @@
             "description": "Successful concept query initialization, with initial query status returned\n",
             "examples": {
               "application/json": {
-                "queryId": "AB123",
-                "keywords": "WRN",
-                "type": "gene chem disease"
+                "queryId": "XRBTu9CgfiXEhcfMdr4y",
+                "keywords": [
+                  "Werner",
+                  "Syndrome"
+                ],
+                "categories": [
+                  "gene",
+                  "protein",
+                  "disease"
+                ]
               }
             }
           }
@@ -696,9 +709,7 @@
             "description": "Current query status returned\n",
             "examples": {
               "application/json": {
-                "queryId": "AB123",
-                "keywords": "WRN",
-                "type": "gene chem disease",
+                "queryId": "XRBTu9CgfiXEhcfMdr4y",
                 "status": [
                   {
                     "beacon": 1,
@@ -801,9 +812,9 @@
                         "type": "string",
                         "description": "Canonical human readable name of the concept\n"
                       },
-                      "type": {
+                      "category": {
                         "type": "string",
-                        "description": "Concept semantic type as a CURIE into a data type ontology\n"
+                        "description": "Concept category associated with the given concept ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of categories).\n"
                       }
                     }
                   }
@@ -813,9 +824,10 @@
             "description": "Successful response with concept list returned\n",
             "examples": {
               "application/json": {
-                "queryId": "AB123",
+                "queryId": "XRBTu9CgfiXEhcfMdr4y",
                 "beacons": [
-                  1
+                  1,
+                  5
                 ],
                 "pageNumber": 1,
                 "pageSize": 4,
@@ -823,22 +835,22 @@
                   {
                     "clique": "UNIPROT:Q14191",
                     "name": "WRN protein, human",
-                    "type": "UMLSSG:CHEM"
+                    "category": "protein"
                   },
                   {
                     "clique": "NCBIGENE:56897",
                     "name": "WRNIP1",
-                    "type": "UMLSSG:GENE"
+                    "category": "gene"
                   },
                   {
                     "clique": "NCBIGENE:7486",
                     "name": "WRN",
-                    "type": "UMLSSG:GENE"
+                    "category": "gene"
                   },
                   {
                     "clique": "DOID:5686",
                     "name": "Werner Syndrome",
-                    "type": "UMLSSG:DISO"
+                    "category": "disease"
                   }
                 ]
               }
@@ -991,7 +1003,7 @@
               "application/json": {
                 "clique": "wd:Q14883734",
                 "name": "Werner Syndrome",
-                "type": "UMLSSG:DISO",
+                "type": "disease",
                 "aliases": [
                   "wd:Q14883734",
                   "OMIM:277700"
@@ -1079,14 +1091,17 @@
           {
             "name": "keywords",
             "in": "query",
-            "description": "a (url-encoded, space-delimited) string of keywords or substrings against which to match the 'target' concept or 'predicate' names of the set of concept-relations matched by the 'source' concepts.\n",
+            "description": "an array of keywords or substrings against which to match the  'target' concept or 'predicate' names of the set of  concept-relations matched by the 'source' concepts.",
             "required": false,
-            "type": "string"
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           {
             "name": "categories",
             "in": "query",
-            "description": "a subset (array) of identifiers of concept categories to which to constrain 'target' concepts associated with the given 'source' concept ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes).\n",
+            "description": "a subset (array) of identifiers of concept categories to which to constrain 'target' concepts associated with the given 'source' concept ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of categories).\n",
             "required": false,
             "type": "array",
             "items": {
@@ -1131,8 +1146,11 @@
                   "description": "'target' string parameter to call, echoed back\n"
                 },
                 "keywords": {
-                  "type": "string",
-                  "description": "'keywords' string parameter to call, echoed back\n"
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "'keywords' string filter parameter to call, echoed back\n"
                 },
                 "categories": {
                   "type": "array",
@@ -1146,12 +1164,14 @@
             "description": "Successful concept query initialization, with initial query status returned\n",
             "examples": {
               "application/json": {
-                "queryId": "XY456",
+                "queryId": "Mi1ZtYiLofVNTxDa9Dz5",
                 "source": "NCBIGENE:7486",
-                "relations": "SIO:000983",
+                "relations": "has_phenotype",
                 "target": "",
-                "keywords": "",
-                "type": "disease"
+                "keywords": [],
+                "categories": [
+                  "disease"
+                ]
               }
             }
           }
@@ -1327,19 +1347,19 @@
                         "properties": {
                           "clique": {
                             "type": "string",
-                            "description": "CURIE-encoded canonical identifier of \"equivalent concepts clique\"\n"
+                            "description": "CURIE-encoded canonical identifier of \"equivalent concepts clique\" of the subject concept\n"
                           },
                           "id": {
                             "type": "string",
-                            "description": "CURIE-encoded identifier of concept\n"
+                            "description": "CURIE-encoded identifier of the subject concept\n"
                           },
                           "name": {
                             "type": "string",
-                            "description": "human readable label of subject concept"
+                            "description": "human readable label of the subject concept"
                           },
-                          "type": {
+                          "category": {
                             "type": "string",
-                            "description": "a semantic group for the subject concept (specified  as a CURIE of a Translator data type ontology term)\n"
+                            "description": "Semantic category of the subject concept ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of categories).\n"
                           }
                         }
                       },
@@ -1347,13 +1367,13 @@
                         "title": "BeaconStatementPredicate",
                         "type": "object",
                         "properties": {
-                          "id": {
+                          "edge_label": {
                             "type": "string",
-                            "description": "CURIE-encoded identifier of predicate resource\n"
+                            "description": "Relationship predicate drawn from the Biolink Model based list of Translator minimal predicate ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of minimal predicates).\n"
                           },
-                          "name": {
+                          "relation": {
                             "type": "string",
-                            "description": "human readable label of concept"
+                            "description": "Predicate relation; should be drawn Biolink Model based list of Translator minimal predicate ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of minimal predicates)., but reasoner-specific extensions allowed. Preferred format is a CURIE, where one exists, but strings/labels acceptable.\n"
                           }
                         }
                       },
@@ -1363,19 +1383,19 @@
                         "properties": {
                           "clique": {
                             "type": "string",
-                            "description": "CURIE-encoded canonical identifier of \"equivalent concepts clique\"\n"
+                            "description": "CURIE-encoded canonical identifier of \"equivalent concepts clique\" of the object concept\n"
                           },
                           "id": {
                             "type": "string",
-                            "description": "CURIE-encoded identifier of object concept\n"
+                            "description": "CURIE-encoded identifier of the object concept\n"
                           },
                           "name": {
                             "type": "string",
-                            "description": "human readable label of object concept"
+                            "description": "human readable label of the object concept"
                           },
-                          "type": {
+                          "category": {
                             "type": "string",
-                            "description": "a semantic group for the object concept (specified  as a CURIE of a Translator data type ontology term)\n"
+                            "description": "Semantic category of the object concept ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of categories).\n"
                           }
                         }
                       },
@@ -1390,37 +1410,30 @@
             },
             "examples": {
               "application/json": {
-                "queryId": "XYZ456",
+                "queryId": "Mi1ZtYiLofVNTxDa9Dz5",
                 "beacons": [
-                  1
+                  5
                 ],
                 "pageNumber": 1,
                 "pageSize": 1,
                 "results": [
                   {
-                    "source": "semmeddb",
                     "id": "kb:12345",
                     "subject": {
-                      "id": [
-                        "wd:Q14912054"
-                      ],
+                      "id": "wd:Q14912054",
                       "name": "KCNJ11",
-                      "type": "UMLSSG:GENE"
+                      "category": "gene"
                     },
                     "predicate": {
-                      "id": [
-                        "kbp:10"
-                      ],
-                      "name": "Causes"
+                      "edge_label": "has_phenotype",
+                      "relation": "RO:0002200"
                     },
                     "object": {
-                      "id": [
-                        "wd:Q2898645"
-                      ],
+                      "id": "wd:Q2898645",
                       "name": "Neonatal diabetes mellitus",
-                      "type": "UMLSSG:DISO"
+                      "category": "disease"
                     },
-                    "beacon": "1"
+                    "beacon": "5"
                   }
                 ]
               }
@@ -1446,9 +1459,12 @@
           {
             "name": "keywords",
             "in": "query",
-            "description": "(url-encoded, space delimited) keyword filter to apply against the label field of the annotation\n",
+            "description": "an array of keywords or substrings against which to filter an reference label (e.g. title) of a citation serving as statement evidence",
             "required": false,
-            "type": "string"
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           {
             "name": "pageNumber",
@@ -1493,7 +1509,7 @@
                     "type": "string",
                     "description": "canonical human readable and searchable label of the annotation (i.e. comment, matched sentence, etc.)\n"
                   },
-                  "type": {
+                  "evidence_code": {
                     "type": "string",
                     "description": "Gene Ontology Evidence Code (http://www.geneontology.org/page/guide-go-evidence-codes)\n"
                   },
@@ -1513,7 +1529,7 @@
                 {
                   "id": "pmid:22781086",
                   "label": "Neonatal diabetes mellitus and congenital diaphragmatic hernia coincidence or concurrent etiology?",
-                  "type": "TAS",
+                  "evidence_code": "TAS",
                   "date": "2012-07-10T00:00:00.000Z",
                   "beacon": 1
                 }

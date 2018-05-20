@@ -141,7 +141,7 @@ public class Neo4jExternalDatabaseService
 	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#countHitsByNameLike(java.lang.String)
 	 */
 	@Override
-	public long countHitsByNameLike(String filter) {
+	public long countHitsByNameLike(List<String> filter) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
@@ -159,7 +159,7 @@ public class Neo4jExternalDatabaseService
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Page<ExternalDatabase> findByNameLike(String filter, Pageable pageable) {
+	public Page<ExternalDatabase> findByNameLike(List<String> filter, Pageable pageable) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 

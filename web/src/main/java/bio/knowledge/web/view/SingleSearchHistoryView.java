@@ -1,6 +1,7 @@
 package bio.knowledge.web.view;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -188,7 +189,9 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 		this.kbService = kbService;
 	}
 
-	private void postQuery() {		
-		conceptQuery = kbService.postConceptsQuery(conceptName, kbQuery.getTypes(), kbQuery.getCustomBeacons());
+	private void postQuery() {
+		String[] keywordArray = conceptName.replace(",","").split("\\s+");
+		List<String> keywords  = Arrays.asList(keywordArray);
+		conceptQuery = kbService.postConceptsQuery(keywords, kbQuery.getTypes(), kbQuery.getCustomBeacons());
 	}
 }

@@ -27,6 +27,7 @@ package bio.knowledge.web.view;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -118,7 +119,6 @@ import bio.knowledge.model.util.Util;
 import bio.knowledge.service.ConceptMapArchiveService;
 import bio.knowledge.service.ConceptMapArchiveService.SearchMode;
 import bio.knowledge.service.DataServiceException;
-import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.KBQuery.LibrarySearchMode;
 import bio.knowledge.service.KBQuery.RelationSearchMode;
 import bio.knowledge.service.PredicateService;
@@ -247,7 +247,7 @@ public class ListView extends BaseView implements Util {
 		private int pageSize = DEFAULT_PAGE_SIZE;
 		private int totalPages = 0;
 
-		private String simpleTextFilter = "";
+		private List<String> simpleTextFilter = new ArrayList<String>();
 
 		// By default, it will be false to list predication in descending order
 		// of evidence count
@@ -339,7 +339,7 @@ public class ListView extends BaseView implements Util {
 			this.pageSize = pageSize;
 		}
 
-		public void setSimpleTextFilter(String textfilter) {
+		public void setSimpleTextFilter(List<String> textfilter) {
 			this.simpleTextFilter = textfilter;
 		}
 
@@ -357,17 +357,16 @@ public class ListView extends BaseView implements Util {
 			return kbService.getKnowledgeBeaconCount(beacons);
 		}
 		
-		public String makeFilter() {
-			String filter;
+		public List<String> makeFilter() {
+			
+			List<String> filter = new ArrayList<String>();
+			
 			if (viewName.equals(ViewName.CONCEPTS_VIEW)) {
-				filter = DesktopUI.getCurrent().getDesktop().getSearchField().getValue();
-			} else {
-				filter = "";
+				String value = DesktopUI.getCurrent().getDesktop().getSearchField().getValue();
+				if( ! nullOrEmpty(value)) filter.add(value);
 			}
 			
-			if(!simpleTextFilter.isEmpty()) {
-				filter += " " + simpleTextFilter ;
-			}
+			if( ! nullOrEmpty(simpleTextFilter) ) filter.addAll(simpleTextFilter) ;
 			
 			return filter;
 		}
@@ -386,7 +385,7 @@ public class ListView extends BaseView implements Util {
 						authenticationState.setState(null, null);
 					}
 					
-					String filter = makeFilter();
+					List<String> filter = makeFilter();
 					int pageNumber = currentPageIndex + 1;
 					if (filter.isEmpty() && viewName.equals(ViewName.CONCEPTS_VIEW)){
 						// We don't want to initiate an empty search when we load the CONCEPTS_VIEW page
@@ -449,7 +448,7 @@ public class ListView extends BaseView implements Util {
 			return currentPageIndex;
 		}
 
-		public String getSimpleTextFilter() {
+		public List<String> getSimpleTextFilter() {
 			return simpleTextFilter;
 		}
 
@@ -1701,7 +1700,8 @@ public class ListView extends BaseView implements Util {
 				String filterText = (String) event.getProperty().getValue();
 				filterText = filterText.trim();
 				query.setSimpleTextFilter(filterText);
-				listContainer.setSimpleTextFilter(filterText);
+				String[] keywordArray = filterText.split("\\s+");
+				listContainer.setSimpleTextFilter(Arrays.asList(keywordArray));
 				gotoPageIndex(0); // refreshes the view
 			});
 		}
@@ -1856,7 +1856,7 @@ public class ListView extends BaseView implements Util {
 
 		// Clear the simpleTextFilter so that it isn't
 		// sticky across various list views!
-		listContainer.setSimpleTextFilter("");
+		listContainer.setSimpleTextFilter(new ArrayList<String>());
 
 		// TODO: refactor the execution flow. batch-handle
 		// the property value declarations, the event handler declarations

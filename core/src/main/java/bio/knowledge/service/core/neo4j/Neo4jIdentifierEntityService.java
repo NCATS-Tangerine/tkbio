@@ -120,7 +120,7 @@ public class Neo4jIdentifierEntityService
 	 * @see bio.knowledge.service.core.IdentifiedEntityServiceImpl#countHitsByNameLike(java.lang.String)
 	 */
 	@Override
-	public long countHitsByNameLike(String filter) {
+	public long countHitsByNameLike(List<String> filter) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 
@@ -138,7 +138,7 @@ public class Neo4jIdentifierEntityService
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Page<IdentifiedEntity> findByNameLike(String filter, Pageable pageable) {
+	public Page<IdentifiedEntity> findByNameLike(List<String> filter, Pageable pageable) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 

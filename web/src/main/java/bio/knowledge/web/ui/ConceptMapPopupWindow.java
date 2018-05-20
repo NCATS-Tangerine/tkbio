@@ -38,7 +38,6 @@ import org.vaadin.dialogs.ConfirmDialog.Listener;
 
 import com.ibm.icu.util.Calendar;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -79,8 +78,6 @@ import bio.knowledge.service.PredicateService;
 import bio.knowledge.service.ReferenceService;
 import bio.knowledge.service.StatementService;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
-import bio.knowledge.web.view.ConceptSearchResults;
-import bio.knowledge.web.view.ViewName;
 
 /**
  * This class creates an popup window to be filled in by views Properties

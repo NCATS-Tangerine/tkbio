@@ -17,7 +17,6 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.VerticalLayout;
 
 import bio.knowledge.grid.Grid;
 import bio.knowledge.grid.Grid.ScrollListener;

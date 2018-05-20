@@ -25,7 +25,6 @@
  */
 package bio.knowledge.web.view;
 
-import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
@@ -38,14 +37,12 @@ import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Slider;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.themes.ValoTheme;
 
 import bio.knowledge.web.design.DesktopDesign;
-import bio.knowledge.web.ui.DesktopUI;
 
 /**
  * @author Richard

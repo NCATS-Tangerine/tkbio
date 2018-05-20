@@ -91,7 +91,7 @@ public interface ConceptMapArchiveRepository extends GraphRepository<ConceptMapA
 			)
 	public List<Map<String, Object>> getConceptMapArchiveByLibraryFiltered(
 			@Param("libraryId") Library library,
-			@Param("filter") String[] filter,
+			@Param("filter") List<String> filter,
 			Pageable pageable,
 			@Param("accountId") String accountId,
 			@Param("groupIds") String[] groupIds

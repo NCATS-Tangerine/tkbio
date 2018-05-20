@@ -26,6 +26,7 @@
 package bio.knowledge.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +96,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 	private KnowledgeBeaconService kbService;
 
 	@Override
-	public List<IdentifiedConcept> getDataPage(int pageIndex, int pageSize, String filter, TableSorter sorter,
+	public List<IdentifiedConcept> getDataPage(int pageIndex, int pageSize, List<String> filter, TableSorter sorter,
 			boolean isAscending) {
 
 		// Capture the Semantic Group filter for use in the concept query
@@ -191,7 +192,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 	 * lang.String, org.springframework.data.domain.Pageable)
 	 */
 	@Override
-	public Page<IdentifiedConcept> findByNameLike(String filter, Pageable pageable) {
+	public Page<IdentifiedConcept> findByNameLike(List<String> filter, Pageable pageable) {
 		_logger.trace("Inside ConceptService.findByNameLike()");
 		List<Integer> beacons = query.getCustomBeacons();
 		String queryId = query.getCurrentQueryId();
@@ -223,13 +224,13 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 
 		List<Integer> beacons = query.getCustomBeacons();
 
-		return findAllFiltered("", pageable, beacons, queryId);
+		return findAllFiltered(EMPTY_KEYWORDS, pageable, beacons, queryId);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	// TODO: I think this is where the refactoring faltered
 
-	private Page<IdentifiedConcept> findAllFiltered(String filter, Pageable pageable, List<Integer> beacons,
+	private Page<IdentifiedConcept> findAllFiltered(List<String>  filter, Pageable pageable, List<Integer> beacons,
 			String queryId) {
 
 		CompletableFuture<List<IdentifiedConcept>> future = kbService.getConcepts(filter, null,
@@ -347,7 +348,8 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 		 * table of data?
 		 */
 		String searchString = query.getCurrentQueryText();
-		CacheLocation cacheLocation = cache.searchForCounter("Concept", "SearchByText", new String[] { searchString });
+		String[] keywordArray = searchString.split("\\s+");
+		CacheLocation cacheLocation = cache.searchForCounter("Concept", "SearchByText", keywordArray);
 		Long count = cacheLocation.getCounter();
 
 		if (count == null) {
@@ -370,7 +372,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 				// count = conceptRepository.countAll();
 
 			} else {
-				count = this.countHitsByNameLike(searchString);
+				count = this.countHitsByNameLike(Arrays.asList(keywordArray));
 			}
 		}
 
@@ -388,7 +390,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 	 */
 	@Override
 	@Deprecated
-	public long countHitsByNameLike(String filter) {
+	public long countHitsByNameLike(List<String> filter) {
 		throw new NotImplementedException("Removed all reference to neo4j");
 	}
 

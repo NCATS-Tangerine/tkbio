@@ -4,10 +4,10 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**clique** | **String** | CURIE-encoded canonical identifier of \&quot;equivalent concepts clique\&quot;  |  [optional]
-**id** | **String** | CURIE-encoded identifier of concept  |  [optional]
-**name** | **String** | human readable label of subject concept |  [optional]
-**type** | **String** | a semantic group for the subject concept (specified  as a CURIE of a Translator data type ontology term)  |  [optional]
+**clique** | **String** | CURIE-encoded canonical identifier of \&quot;equivalent concepts clique\&quot; of the subject concept  |  [optional]
+**id** | **String** | CURIE-encoded identifier of the subject concept  |  [optional]
+**name** | **String** | human readable label of the subject concept |  [optional]
+**category** | **String** | Semantic category of the subject concept ((see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of categories).  |  [optional]
 
 
 
