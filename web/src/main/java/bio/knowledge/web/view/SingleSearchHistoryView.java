@@ -175,9 +175,9 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 	private List<Integer> getResultBeacons(List<BeaconConceptsQueryBeaconStatus> beaconStatuses) {
 		List<Integer> beacons = new ArrayList<>();
 		for (BeaconConceptsQueryBeaconStatus beaconStatus : beaconStatuses) {
-			if (beaconStatus.getStatus() == HttpStatus.OK.value()) {
-				Integer beaconId = beaconStatus.getBeacon();
-				beacons.add(beaconId);
+			int status = beaconStatus.getStatus();
+			if (status == HttpStatus.OK.value() || status == HttpStatus.CREATED.value()) {
+				beacons.add(beaconStatus.getBeacon());
 			}
 		}
 		return beacons;

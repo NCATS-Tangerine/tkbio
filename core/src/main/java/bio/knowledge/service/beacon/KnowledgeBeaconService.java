@@ -323,6 +323,16 @@ public class KnowledgeBeaconService implements Util {
 		}
 	}
 
+	public BeaconStatementsQuery postStatementsQuery(String source, List<String> relations, String target, String keywords, List<String> categories, List<Integer> beacons) {
+		try {
+			return statementsApi.postStatementsQuery(source, relations, target, keywords, categories, beacons);
+		} catch (ApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	/**
 	 * Gets a list of concepts satisfying a query with the given parameters.
 	 * @param keywords
@@ -601,17 +611,6 @@ public class KnowledgeBeaconService implements Util {
 		});
 		
 		return future;
-	}
-
-	public BeaconStatementsQuery postStatementsQuery(String source, List<String> relations, String target, String keywords, List<String> types, List<Integer> beacons) {
-		throw new java.lang.UnsupportedOperationException("Not supported yet.");
-//		try {
-//			return this.statementsApi.postStatementsQuery(source, relations, target, keywords, types, beacons);
-//		} catch (ApiException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			return null;
-//		}
 	}
 	
 	public CompletableFuture<List<Statement>> getStatements(
