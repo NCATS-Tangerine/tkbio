@@ -89,11 +89,12 @@ public class BeaconStatementPredicate {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class BeaconStatementPredicate {\n");
-    
-    sb.append("    edgeLabel: ").append(toIndentedString(edgeLabel)).append("\n");
-    sb.append("    relation: ").append(toIndentedString(relation)).append("\n");
-    sb.append("}");
+    sb.append(edgeLabel);
+//    sb.append("class BeaconStatementPredicate {\n");
+//    
+//    sb.append("    edgeLabel: ").append(toIndentedString(edgeLabel)).append("\n");
+//    sb.append("    relation: ").append(toIndentedString(relation)).append("\n");
+//    sb.append("}");
     return sb.toString();
   }
 

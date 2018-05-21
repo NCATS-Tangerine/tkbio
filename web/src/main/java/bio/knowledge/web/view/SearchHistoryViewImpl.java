@@ -53,14 +53,13 @@ public class SearchHistoryViewImpl extends VerticalLayout implements SearchHisto
 		listeners.remove(listener);
 		if (listeners.isEmpty()) {
 			if (!job.isCancelled()) {
-				job.cancel(true);
+				job.cancel(false);
 				jobStarted = false;
 			}
 		}
 	}
 	
 	private void update() {
-		System.out.println("[updating all listeners]");
 		synchronized (listeners) {
 			for (SearchHistoryView.Listener listener : listeners) {
 				listener.update();

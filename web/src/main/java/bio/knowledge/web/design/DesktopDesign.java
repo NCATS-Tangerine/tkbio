@@ -34,9 +34,9 @@ public class DesktopDesign extends VerticalLayout {
 	protected Button historyBtn;
 	protected HorizontalLayout popUpLayout;
 	protected TabSheet dataTabSheet;
-	protected VerticalLayout relationsTab;
-	protected VerticalLayout evidenceTab;
-	protected VerticalLayout referenceTab;
+//	protected VerticalLayout relationsTab;
+//	protected VerticalLayout evidenceTab;
+//	protected VerticalLayout referenceTab;
 	protected HorizontalLayout cmbar;
 	protected Upload loadMap;
 	protected Button saveBtn;

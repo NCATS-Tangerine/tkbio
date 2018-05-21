@@ -133,13 +133,14 @@ public class BeaconStatementObject {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class BeaconStatementObject {\n");
-    
-    sb.append("    clique: ").append(toIndentedString(clique)).append("\n");
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    category: ").append(toIndentedString(category)).append("\n");
-    sb.append("}");
+    sb.append(name);
+//    sb.append("class BeaconStatementObject {\n");
+//    
+//    sb.append("    clique: ").append(toIndentedString(clique)).append("\n");
+//    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+//    sb.append("    name: ").append(toIndentedString(name)).append("\n");
+//    sb.append("    category: ").append(toIndentedString(category)).append("\n");
+//    sb.append("}");
     return sb.toString();
   }
 

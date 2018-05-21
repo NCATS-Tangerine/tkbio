@@ -27,6 +27,7 @@ import bio.knowledge.client.model.BeaconConceptsQueryBeaconStatus;
 import bio.knowledge.client.model.BeaconConceptsQueryResult;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
+import bio.knowledge.web.ui.DesktopUI;
 
 public class SingleSearchHistoryView extends HorizontalLayout implements SearchHistoryView.Listener {
 
@@ -43,18 +44,18 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 
 	private VerticalLayout titleLayout = new VerticalLayout();
 	private HorizontalLayout buttonsLayout = new HorizontalLayout();
-	
+
 	private Date creationTime = new Date();
 	private PrettyTime p = new PrettyTime();
 	private String conceptName = "";
 	private boolean done = false;
-	
+
 	private ApiCallback<BeaconConceptsQueryResult> resultCb;
 	private List<Integer> beacons;
 	private List<BeaconConceptsQueryBeaconStatus> beaconStatuses;
 	private BeaconConceptsQuery conceptQuery;
 	private BeaconConceptsQueryResult conceptQueryResult;
-	
+
 	public SingleSearchHistoryView(String conceptName) {
 		init(conceptName);
 	}
@@ -64,7 +65,7 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 		this.kbService = kbService;
 		init(conceptName);
 	}
-	
+
 	private void init(String conceptName) {
 		this.conceptName = conceptName;
 		conceptLabel.setValue("<strong style = \"font-size: 120%;\">" + conceptName + "</strong>");
@@ -85,24 +86,23 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 		addComponents(titleLayout, buttonsLayout);
 		setComponentAlignment(buttonsLayout, Alignment.BOTTOM_RIGHT);
 		setExpandRatio(titleLayout, 1);
-		
+
 		beacons = kbQuery.getCustomBeacons();
-		
+
 		initButtons();
 		initCallbacks();
-		
+
 		postQuery();
 	}
-	
 
 	private void initCallbacks() {
 		resultCb = new ApiCallback<BeaconConceptsQueryResult>() {
-		
+
 			@Override
 			public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
 				// TODO Auto-generated method stub
 				e.printStackTrace();
-				
+
 			}
 
 			@Override
@@ -112,19 +112,19 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 					buttonsLayout.replaceComponent(progressBar, detailsButton);
 					conceptQueryResult = result;
 				});
-				
+
 			}
 
 			@Override
 			public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		};
 	}
@@ -132,13 +132,11 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 	private void initButtons() {
 		detailsButton.setStyleName("page-button");
 		detailsButton.addClickListener(e -> {
-			Window detailsWindow = new Window();
-			detailsWindow.setCaption("Matching results");
-			detailsWindow.center();
-			detailsWindow.setModal(true);
-			detailsWindow.setContent(new SearchResultView(conceptQueryResult.getResults()));
-			getUI().addWindow(detailsWindow);
-
+			DesktopUI ui = (DesktopUI) getUI();
+			for (Window window : ui.getWindows()) {
+				window.close();
+			}
+			ui.getStatementsPresenter().setConceptsDataSource(conceptQueryResult.getResults());
 		});
 
 		removeButton.setStyleName("page-button");
@@ -155,7 +153,7 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 			boolean ready = checkStatus();
 			if (ready) {
 				beacons = getResultBeacons(beaconStatuses);
-				kbService.getConceptsAsync(conceptQuery.getQueryId(), beacons, 1, 500, resultCb);
+				kbService.getConceptsAsync(conceptQuery.getQueryId(), beacons, 1, 100, resultCb);
 				done = true;
 			}
 		}
@@ -172,7 +170,7 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 		}
 		return ready;
 	}
-	
+
 	private List<Integer> getResultBeacons(List<BeaconConceptsQueryBeaconStatus> beaconStatuses) {
 		List<Integer> beacons = new ArrayList<>();
 		for (BeaconConceptsQueryBeaconStatus beaconStatus : beaconStatuses) {
@@ -183,15 +181,15 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 		}
 		return beacons;
 	}
-	
+
 	public void setServices(KBQuery kbQuery, KnowledgeBeaconService kbService) {
 		this.kbQuery = kbQuery;
 		this.kbService = kbService;
 	}
 
 	private void postQuery() {
-		String[] keywordArray = conceptName.replace(",","").split("\\s+");
-		List<String> keywords  = Arrays.asList(keywordArray);
+		String[] keywordArray = conceptName.replace(",", "").split("\\s+");
+		List<String> keywords = Arrays.asList(keywordArray);
 		conceptQuery = kbService.postConceptsQuery(keywords, kbQuery.getTypes(), kbQuery.getCustomBeacons());
 	}
 }

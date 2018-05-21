@@ -55,16 +55,22 @@ public class DesktopView extends DesktopDesign implements View {
 	private static final long serialVersionUID = -3941787763184092605L;
 
 	public static final String NAME = "main";
+	
+	private StatementsView statementsView = new StatementsView();
 
 	public DesktopView() {
 		viewingConcepts.setSpacing(false);
+		
 		searchLayout.setSpacing(true);
 		searchLayout.setMargin(new MarginInfo(true, false, false, true));
 		search.addStyleName("concept-search-field");
+		
 		historyBtn.setIcon(FontAwesome.HISTORY);
 		historyBtn.setStyleName(ValoTheme.BUTTON_HUGE);
 		historyBtn.setStyleName(ValoTheme.BUTTON_ICON_ONLY, true);
 		historyBtn.setStyleName(ValoTheme.BUTTON_BORDERLESS, true);
+		
+		dataTabSheet.addTab(statementsView, "Statements");
 	}
 
 	/**
@@ -159,10 +165,14 @@ public class DesktopView extends DesktopDesign implements View {
 	/**
 	 * @return the relationsTab
 	 */
-	public VerticalLayout getRelationsTab() {
-		return relationsTab;
-	}
+//	public VerticalLayout getRelationsTab() {
+//		return relationsTab;
+//	}
 
+	
+	public StatementsView getStatementsView() {
+		return statementsView;
+	}
 	/**
 	 * Implicitome disabled for now...
 	 * 
@@ -181,13 +191,13 @@ public class DesktopView extends DesktopDesign implements View {
 	 *         cooccurrencesTab; }
 	 */
 
-	public VerticalLayout getEvidenceTab() {
-		return evidenceTab;
-	}
-
-	public VerticalLayout getReferenceTab() {
-		return referenceTab;
-	}
+//	public VerticalLayout getEvidenceTab() {
+//		return evidenceTab;
+//	}
+//
+//	public VerticalLayout getReferenceTab() {
+//		return referenceTab;
+//	}
 
 	public HorizontalLayout getCmPanel() {
 		return cmPanel;

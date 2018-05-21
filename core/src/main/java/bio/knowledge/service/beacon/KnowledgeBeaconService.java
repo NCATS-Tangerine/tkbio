@@ -47,7 +47,9 @@ import bio.knowledge.client.model.BeaconStatementObject;
 import bio.knowledge.client.model.BeaconStatementPredicate;
 import bio.knowledge.client.model.BeaconStatementSubject;
 import bio.knowledge.client.model.BeaconStatementsQuery;
+import bio.knowledge.client.model.BeaconStatementsQueryBeaconStatus;
 import bio.knowledge.client.model.BeaconStatementsQueryResult;
+import bio.knowledge.client.model.BeaconStatementsQueryStatus;
 import bio.knowledge.model.AnnotatedConcept;
 import bio.knowledge.model.AnnotatedConcept.BeaconEntry;
 import bio.knowledge.model.AnnotatedConceptImpl;
@@ -323,13 +325,33 @@ public class KnowledgeBeaconService implements Util {
 		}
 	}
 
-	public BeaconStatementsQuery postStatementsQuery(String source, List<String> relations, String target, String keywords, List<String> categories, List<Integer> beacons) {
+	public BeaconStatementsQuery postStatementsQuery(String source, List<String> relations, String target, List<String> keywords, List<String> categories, List<Integer> beacons) {
 		try {
 			return statementsApi.postStatementsQuery(source, relations, target, keywords, categories, beacons);
 		} catch (ApiException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	public List<BeaconStatementsQueryBeaconStatus> getStatementsQueryStatus(String queryId, List<Integer> beacons) {
+		try {
+			return statementsApi.getStatementsQueryStatus(queryId, beacons).getStatus();
+		} catch (ApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
+	public void getStatementsAsync(String queryId, List<Integer> beacons, Integer pageNumber, Integer pageSize, ApiCallback<BeaconStatementsQueryResult> callback) {
+		try {
+			statementsApi.getStatementsQueryAsync(queryId, beacons, pageNumber, pageSize, callback);
+		} catch (ApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
