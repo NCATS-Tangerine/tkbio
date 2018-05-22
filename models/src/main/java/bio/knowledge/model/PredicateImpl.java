@@ -124,4 +124,9 @@ public class PredicateImpl extends AbstractIdentifiedEntity implements Predicate
         PredicateImpl p = (PredicateImpl) obj;
         return getName().equals(p.getName());
     }
+    
+    @Override
+    public String toString() {
+    	return getName();
+    }
 }

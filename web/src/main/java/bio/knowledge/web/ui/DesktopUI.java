@@ -1695,6 +1695,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	@Override
 	public void detach() {
 		searchView.stopService();
+		statementsPresenter.shutDown();
 		super.detach();
 	}
 	/**

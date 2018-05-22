@@ -17,7 +17,6 @@ public class StatementsView extends VerticalLayout {
 
 	private static final long serialVersionUID = -7988756397144422937L;
 	
-//	private HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
 	private Grid conceptsGrid = new Grid();
 	private Grid statemtsGrid = new Grid();
 	private Button addToGraphBtn = new Button();
@@ -74,10 +73,6 @@ public class StatementsView extends VerticalLayout {
 	public Button getAddToGraphButton() {
 		return addToGraphBtn;
 	}
-	
-//	public HorizontalSplitPanel getSplitPanel() {
-//		return splitPanel;
-//	}
 	
 	public void showProgress() {
 		statemtsLayout.replaceComponent(statemtsGrid, progressBar);
