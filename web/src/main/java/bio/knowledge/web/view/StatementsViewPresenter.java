@@ -2,7 +2,6 @@ package bio.knowledge.web.view;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,25 +11,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.http.HttpStatus;
-
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SingleSelectionModel;
-import com.vaadin.ui.UI;
 
-import bio.knowledge.client.ApiCallback;
-import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.BeaconConcept;
-import bio.knowledge.client.model.BeaconConceptsQueryBeaconStatus;
-import bio.knowledge.client.model.BeaconConceptsQueryResult;
 import bio.knowledge.client.model.BeaconStatement;
 import bio.knowledge.client.model.BeaconStatementsQuery;
-import bio.knowledge.client.model.BeaconStatementsQueryBeaconStatus;
-import bio.knowledge.client.model.BeaconStatementsQueryResult;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
+import bio.knowledge.web.view.components.QueryPollingListener;
+import bio.knowledge.web.view.components.StatementsQueryListener;
 
 /**
  * The behavior logic for StatementsView.
@@ -49,28 +41,52 @@ public class StatementsViewPresenter {
 	private KBQuery kbQuery;
 	
 	private List<BeaconConcept> cachedConcepts = new ArrayList<>();
-	private Map<String, List<BeaconStatement>> cachedStatements = new ConcurrentHashMap<>();
-
-	private List<BeaconStatementsQuery> cachedQueries = Collections.synchronizedList(new ArrayList<>());
-	private List<BeaconStatementsQuery> finishedQueries = Collections.synchronizedList(new ArrayList<>());
+	private Map<BeaconConcept, List<BeaconStatement>> cachedStatements = new ConcurrentHashMap<>();
+	private List<QueryPollingListener> listeners = Collections.synchronizedList(new ArrayList<>());
 	
 	private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 	private ScheduledFuture<?> job;
 	private boolean hasJobStarted = false;
-	private List<BeaconStatementsQueryBeaconStatus> beaconStatuses;
 	private List<Integer> beacons;
-	private ApiCallback<BeaconStatementsQueryResult> cb;
 	
 	public StatementsViewPresenter(StatementsView statementsView, KnowledgeBeaconService kbService, KBQuery kbQuery) {
 		this.statementsView = statementsView;
 		this.kbService = kbService;
 		this.kbQuery = kbQuery;
-		cb = createStatementsCallback();
 		
 		initConceptsSelect();
 		initStatementsSelect();
 	}
 
+	public BeaconConcept getCurrentConcept() {
+		return currentConcept;
+	}
+	
+	public void addStatements(BeaconConcept sourceConcept, List<BeaconStatement> statements) {
+		cachedStatements.put(sourceConcept, statements);
+		if (currentConcept.equals(sourceConcept)) {
+			statementsView.getUI().access(() -> {				
+				setStatementsDataSource(statements);
+			});
+		}
+	}
+	
+	public void setConceptsDataSource(List<BeaconConcept> results) {
+		/**
+		 * Getting a potentially new results, so removed the old cached ones.
+		 */
+		cachedConcepts.clear();
+		cachedStatements.clear();
+		listeners.clear();
+		
+		BeanItemContainer<BeaconConcept> container = new BeanItemContainer<>(BeaconConcept.class, results);
+		statementsView.getConceptsGrid().setContainerDataSource(container);
+	}
+	
+	public KnowledgeBeaconService getKbService() {
+		return kbService;
+	}
+	
 	/**
 	 * Initializes the selection logic for the statements grid
 	 */
@@ -104,25 +120,26 @@ public class StatementsViewPresenter {
 			}
 			
 			currentConcept = selectedConcept;
-			String sourceClique = currentConcept.getClique();
 			/**
 			 * Check the cached concepts first; if one is found, then immediately use the cached statements
 			 * instead of making another http request.
 			 */
 			if (cachedConcepts.contains(currentConcept)) {
-				if (cachedStatements.containsKey(sourceClique)) {
-					List<BeaconStatement> statements = cachedStatements.get(sourceClique);
+				if (cachedStatements.containsKey(currentConcept)) {
+					List<BeaconStatement> statements = cachedStatements.get(currentConcept);
 					setStatementsDataSource(statements);
+				} else {					
+					statementsView.showProgress();
 				}
-				statementsView.showProgress();
 			} else {
 				/**
 				 * Not found in cache, so make a new request.
 				 */
 				statementsView.showProgress();
 				cachedConcepts.add(currentConcept);
-				BeaconStatementsQuery statementsQuery = kbService.postStatementsQuery(sourceClique, null, null, null, kbQuery.getTypes(), kbQuery.getCustomBeacons());
-				cachedQueries.add(statementsQuery);
+				BeaconStatementsQuery statementsQuery = kbService.postStatementsQuery(currentConcept.getClique(), null, null, null, kbQuery.getTypes(), kbQuery.getCustomBeacons());
+				QueryPollingListener listener = new StatementsQueryListener(statementsQuery, kbQuery.getCustomBeacons(), this);
+				listeners.add(listener);
 				if (!hasJobStarted) {
 					hasJobStarted = true;
 					initPolling();
@@ -130,12 +147,7 @@ public class StatementsViewPresenter {
 			}
 		});
 	}
-	
-	public void setConceptsDataSource(List<BeaconConcept> results) {
-		BeanItemContainer<BeaconConcept> container = new BeanItemContainer<>(BeaconConcept.class, results);
-		statementsView.getConceptsGrid().setContainerDataSource(container);
-	}
-	
+
 	private void setStatementsDataSource(List<BeaconStatement> results) {
 		BeanItemContainer<BeaconStatement> container = new BeanItemContainer<>(BeaconStatement.class, results);
 		statementsView.getStatemtsGrid().setContainerDataSource(container);
@@ -152,96 +164,23 @@ public class StatementsViewPresenter {
 	
 	private void update() {
 		System.out.println("[updating all listeners]");
-		synchronized (cachedQueries) {
-			for (BeaconStatementsQuery query : cachedQueries) {
-				String queryId = query.getQueryId();
-				boolean ready = checkStatus(queryId, beacons);
-				if (ready) {
-					beacons = getResultBeacons(beaconStatuses);
-					kbService.getStatementsAsync(queryId, beacons, 1, 100, cb);
-					finishedQueries.add(query);
-				}
-			}
-			
-			/**
-			 * Remove the queries that are ready so requests will not be sent again.
-			 */
-			cachedQueries.removeAll(finishedQueries);
-			if (cachedQueries.isEmpty()) {
-				System.out.println("cancelling job!");
-				job.cancel(false);
-				hasJobStarted = false;
-			}
-		} 
-	}
-	
-	private boolean checkStatus(String queryId, List<Integer> beacons) {
-		beaconStatuses = kbService.getStatementsQueryStatus(queryId, beacons);
-		boolean ready = true;
-		for (BeaconStatementsQueryBeaconStatus status : beaconStatuses) {
-			if (status.getStatus() == HttpStatus.PROCESSING.value()) {
-				ready = false;
-				break;
-			}
+		
+		if (listeners.isEmpty()) {
+			System.out.println("cancelling job!");
+			job.cancel(true);
+			hasJobStarted = false;
 		}
-		return ready;
-	}
-	
-	private List<Integer> getResultBeacons(List<BeaconStatementsQueryBeaconStatus> beaconStatuses) {
-		List<Integer> beacons = new ArrayList<>();
-		for (BeaconStatementsQueryBeaconStatus beaconStatus : beaconStatuses) {
-			int status = beaconStatus.getStatus();
-			if (status == HttpStatus.OK.value() || status == HttpStatus.CREATED.value()) {
-				beacons.add(beaconStatus.getBeacon());
+		
+		synchronized(listeners) {
+			List<QueryPollingListener> completedListeners = new ArrayList<>();
+			for (QueryPollingListener listener : this.listeners) {
+				if (listener.isDone()) {
+					completedListeners.add(listener);
+				} else {
+					listener.update();
+				}
 			}
+			listeners.removeAll(completedListeners);
 		}
-		return beacons;
-	}
-	
-	private ApiCallback<BeaconStatementsQueryResult> createStatementsCallback() {
-		return new ApiCallback<BeaconStatementsQueryResult>() {
-
-			@Override
-			public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-				// TODO Auto-generated method stub
-				e.printStackTrace();
-				
-			}
-
-			@Override
-			public void onSuccess(BeaconStatementsQueryResult result, int statusCode,
-					Map<String, List<String>> responseHeaders) {
-				BeaconStatementsQuery query = null;
-				synchronized (finishedQueries) {
-					for (BeaconStatementsQuery q : finishedQueries) {
-						if (q.getQueryId().equals(result.getQueryId())) {
-							query = q;
-							break;
-						}
-					}
-				}
-				String cliqueId = query.getSource();
-				cachedStatements.put(cliqueId, result.getResults());
-				finishedQueries.remove(query);
-				
-				if (cliqueId.equals(currentConcept.getClique())) {
-					statementsView.getUI().access(() -> {
-						setStatementsDataSource(result.getResults());
-					});
-				}
-			}
-
-			@Override
-			public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
-				// TODO Auto-generated method stub
-				
-			}
-		};
-	}
+	}	
 }
