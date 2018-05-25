@@ -32,6 +32,7 @@ configurations {
 dependencies {
 
     compile project(':core')
+	compile project(':beacon-ontology')
     
     compile 'javax.portlet:portlet-api:2.0'
 
