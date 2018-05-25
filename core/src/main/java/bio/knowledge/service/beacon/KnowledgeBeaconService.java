@@ -288,9 +288,9 @@ public class KnowledgeBeaconService {
 	}
 	
 	
-	public BeaconConceptsQuery postConceptsQuery(List<String> keywords, List<String> types, List<Integer> beacons) {
+	public BeaconConceptsQuery postConceptsQuery(List<String> keywords, List<String> categories, List<Integer> beacons) {
 		try {
-			return conceptsApi.postConceptsQuery(keywords, types, beacons);
+			return conceptsApi.postConceptsQuery(keywords, categories, beacons);
 		} catch (ApiException e) {
 			e.printStackTrace();
 			return null;
