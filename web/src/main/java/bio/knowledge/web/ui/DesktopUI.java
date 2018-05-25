@@ -37,15 +37,10 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
 import javax.servlet.http.Cookie;
 
 import org.slf4j.Logger;
@@ -68,7 +63,6 @@ import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.Navigator;
-import com.vaadin.navigator.View;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
@@ -123,7 +117,6 @@ import bio.knowledge.service.user.UserService;
 import bio.knowledge.web.KBUploader;
 import bio.knowledge.web.view.AboutView;
 import bio.knowledge.web.view.ApplicationLayout;
-//import bio.knowledge.web.view.ConceptSearchResults;
 import bio.knowledge.web.view.ContactView;
 import bio.knowledge.web.view.DesktopView;
 import bio.knowledge.web.view.EvidenceView;
@@ -164,7 +157,7 @@ import bio.knowledge.web.view.components.UserDetails;
 @PreserveOnRefresh
 @Widgetset("bio.knowledge.renderer.ButtonRendererWidgetset")
 @Push
-public class DesktopUI extends UI implements MessageService, Util {
+public class DesktopUI extends UI implements MessageService {
 
 	// private static final int DAY_IN_SECOND = 86400;
 
@@ -251,7 +244,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 */
 	public String getMessage(String id) {
 
-		if (nullOrEmpty(id))
+		if (Util.nullOrEmpty(id))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage id?");
 
 		Locale locale = this.getLocale();
@@ -273,10 +266,10 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 */
 	public String getMessage(String id, String tag) {
 
-		if (nullOrEmpty(id))
+		if (Util.nullOrEmpty(id))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage id?");
 
-		if (nullOrEmpty(tag))
+		if (Util.nullOrEmpty(tag))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage tag?");
 
 		Locale locale = getLocale();
@@ -310,7 +303,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * 
 	 * @return
 	 */
-	public DesktopView getDesktop() {
+	public DesktopView getDesktopView() {
 		return desktopView;
 	}
 
@@ -616,7 +609,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	public void displayReference(Annotation annotation) {
 		query.setCurrentAnnotation(annotation);
 		String id = annotation.getId();
-		if (!nullOrEmpty(id))
+		if (!Util.nullOrEmpty(id))
 			displayReference(id);
 		else
 			ConfirmDialog.show(this, "<span style='text-align:center;'>No evidence reference available.</span>", cd -> {
@@ -698,7 +691,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 */
 	private void setConceptLabelDescription(IdentifiedConcept concept) {
 
-		HorizontalLayout popupLayout = getDesktop().getPopUpLayout();
+		HorizontalLayout popupLayout = getDesktopView().getPopUpLayout();
 
 		if (concept == null) {
 			popupLayout.setVisible(false);
@@ -849,11 +842,11 @@ public class DesktopUI extends UI implements MessageService, Util {
 		}
 	}
 
-	// Terrible hacks. Should restructure the code to not use
-	// this many navigators.
-	// private Navigator relationsTabNavigator;
-	// private Navigator evidenceTabNavigator;
-	// private Navigator pubmedTabNavigator;
+//	 Terrible hacks. Should restructure the code to not use
+//	 this many navigators.
+//	 private Navigator relationsTabNavigator;
+//	 private Navigator evidenceTabNavigator;
+//	 private Navigator pubmedTabNavigator;
 	private Window legend = null;
 
 	@Value("${application.hostname:'none'}")
@@ -908,7 +901,8 @@ public class DesktopUI extends UI implements MessageService, Util {
 		// Button to reinitialize the query and map
 		desktopView.getClearMapBtn().addClickListener(e -> newQueryConfirmation(e));
 		
-		statementsPresenter = new StatementsViewPresenter(desktopView.getStatementsView(), kbService, query);
+//		statementsPresenter = new StatementsViewPresenter(desktopView.getStatementsView(), kbService, query);
+		statementsPresenter = new StatementsViewPresenter();
 		
 		desktopView.getTabSheet().addSelectedTabChangeListener(e -> {
 			// // Find the tabsheet
@@ -1116,7 +1110,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 			Button searchBtn = e.getButton();
 			String queryText = desktopView.getSearchField().getValue();
 			// do nothing if query is null or empty
-			if (nullOrEmpty(queryText)) {
+			if (Util.nullOrEmpty(queryText)) {
 				return;
 			}
 
@@ -1422,7 +1416,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		DesktopUI ui = (DesktopUI) UI.getCurrent();
 
 		// only allows the user to click once
-		Button searchBtn = ui.getDesktop().getSearchBtn();
+		Button searchBtn = ui.getDesktopView().getSearchBtn();
 		searchBtn.setEnabled(false);
 
 		// String queryText = desktop.getSearch().getValue();
@@ -1533,7 +1527,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 			conceptMapLibraryWindow.addCloseListener(event -> {
 				DesktopUI ui = (DesktopUI) UI.getCurrent();
-				Button searchBtn = ui.getDesktop().getSearchBtn();
+				Button searchBtn = ui.getDesktopView().getSearchBtn();
 				searchBtn.setEnabled(true);
 				ui.closeLibraryWindow();
 				ui.closeConceptSearchWindow();
@@ -1645,7 +1639,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 				conceptMapLibraryWindow.setWidth(45.0f, Unit.EM);
 				conceptMapLibraryWindow.setHeight(56.0f, Unit.EM);
 				conceptMapLibraryWindow.addCloseListener(e -> {
-					Button searchBtn = getDesktop().getSearchBtn();
+					Button searchBtn = getDesktopView().getSearchBtn();
 					searchBtn.setEnabled(true);
 					closeLibraryWindow();
 					closeConceptSearchWindow();
@@ -1694,6 +1688,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 	@Override
 	public void detach() {
+		System.out.println("UI detached!");
 		searchView.stopService();
 		statementsPresenter.shutDown();
 		super.detach();

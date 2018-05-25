@@ -1,5 +1,8 @@
 package bio.knowledge.web.view;
 
+import java.util.Collection;
+
+import com.vaadin.data.Container.Indexed;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -24,6 +27,15 @@ public class StatementsView extends VerticalLayout {
 	private VerticalLayout statemtsLayout = new VerticalLayout();
 	
 	public StatementsView() {
+		init();
+	}
+	
+	public StatementsView(Indexed conceptsContainer) {
+		init();
+		conceptsGrid.setContainerDataSource(conceptsContainer);
+	}
+
+	private void init() {
 		conceptsGrid.setSelectionMode(SelectionMode.SINGLE);
 		conceptsGrid.setCellDescriptionGenerator(getCellDescriptionGenerator());
 		conceptsGrid.setSizeFull();
@@ -53,6 +65,36 @@ public class StatementsView extends VerticalLayout {
 		setHeight(100, Unit.PERCENTAGE);
 		addComponents(splitPanel, addToGraphBtn);
 		setExpandRatio(splitPanel, 1);
+
+		initGrid();
+	}
+
+	private void initGrid() {
+		statemtsGrid.addSelectionListener(e -> {
+			Collection<Object> itemIds = statemtsGrid.getSelectedRows();
+			if (itemIds.isEmpty()) {
+				addToGraphBtn.setEnabled(false);
+			} else {
+				addToGraphBtn.setEnabled(true);
+			}
+		});
+		
+//		addToGraphBtn.addClickListener(e -> {
+//			Indexed container = statemtsGrid.getContainerDataSource();
+//			Collection<Object> selectedItemIds = statemtsGrid.getSelectedRows();
+//			for (Object itemId : selectedItemIds) {
+//				IdentifiedConcept subject = (IdentifiedConcept) container.getContainerProperty(itemId, SUBJECT_ID).getValue();
+//				IdentifiedConcept object = (IdentifiedConcept) container.getContainerProperty(itemId, OBJECT_ID).getValue();
+//				Predicate predicate = (Predicate) container.getContainerProperty(itemId, PREDICATE_ID).getValue();
+//				Statement statement = new GeneralStatement("", subject, predicate, object);
+//				
+//				DesktopUI ui = (DesktopUI) getUI();
+//				ui.addNodeToConceptMap(subject);
+//				ui.addNodeToConceptMap(object);
+//				ui.addEdgeToConceptMap(statement);
+//			}
+//			statemtsGrid.deselectAll();
+//		});
 	}
 
 	private CellDescriptionGenerator getCellDescriptionGenerator() {

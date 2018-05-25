@@ -51,7 +51,7 @@ import bio.knowledge.service.PredicateService;
 import bio.knowledge.web.design.PredicateFilterDesign;
 
 @SpringView(name = PredicateFilterView.NAME)
-public class PredicateFilterView extends PredicateFilterDesign implements View, Util {
+public class PredicateFilterView extends PredicateFilterDesign implements View {
 
 	private static final long serialVersionUID = 3768288267000228449L;
 	
@@ -94,7 +94,7 @@ public class PredicateFilterView extends PredicateFilterDesign implements View, 
 		
 		searchField.addValueChangeListener( e -> {
 			String queryText = searchField.getValue();
-			if (nullOrEmpty(queryText)) {
+			if (Util.nullOrEmpty(queryText)) {
 				return;
 			}
 			queryText = queryText.trim();

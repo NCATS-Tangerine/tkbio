@@ -130,14 +130,14 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 
 		// on dragging node or edge, change layout to manual
 		addFunction("onDrag", arguments -> {
-			((DesktopUI) getUI()).getDesktop().getCmLayoutSelect().setValue(DesktopUI.MANUAL_CM_LAYOUT);
+			((DesktopUI) getUI()).getDesktopView().getCmLayoutSelect().setValue(DesktopUI.MANUAL_CM_LAYOUT);
 		});
 		
 		addFunction("onZoom", args -> {
 			
 			double value = args.get(0).asNumber();
 			DesktopUI ui = DesktopUI.getCurrent();
-			Slider slider = ui.getDesktop().getZoomSlider();
+			Slider slider = ui.getDesktopView().getZoomSlider();
 			
 			DesktopUI.getCurrent().setZoomEnabled(false);
 			// set slider to value, or set it to min/max possible value

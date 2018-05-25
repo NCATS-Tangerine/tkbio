@@ -56,7 +56,9 @@ public class DesktopView extends DesktopDesign implements View {
 
 	public static final String NAME = "main";
 	
-	private StatementsView statementsView = new StatementsView();
+	private VerticalLayout statementsTab = new VerticalLayout();
+	private VerticalLayout evidencesTab = new VerticalLayout();
+	private VerticalLayout referencesTab = new VerticalLayout();
 
 	public DesktopView() {
 		viewingConcepts.setSpacing(false);
@@ -70,7 +72,9 @@ public class DesktopView extends DesktopDesign implements View {
 		historyBtn.setStyleName(ValoTheme.BUTTON_ICON_ONLY, true);
 		historyBtn.setStyleName(ValoTheme.BUTTON_BORDERLESS, true);
 		
-		dataTabSheet.addTab(statementsView, "Statements");
+		dataTabSheet.addTab(statementsTab, "Statements");
+		dataTabSheet.addTab(evidencesTab, "Evidences");
+		dataTabSheet.addTab(referencesTab, "References");
 	}
 
 	/**
@@ -169,28 +173,6 @@ public class DesktopView extends DesktopDesign implements View {
 //		return relationsTab;
 //	}
 
-	
-	public StatementsView getStatementsView() {
-		return statementsView;
-	}
-	/**
-	 * Implicitome disabled for now...
-	 * 
-	 * @return the implicitRelationsTab
-	 * 
-	 *         public VerticalLayout getImplicitRelationsTab() { return
-	 *         implicitRelationsTab; }
-	 */
-
-	/**
-	 * April 21, Implicitome removed for now
-	 * 
-	 * @return the cooccurrencesTab
-	 * 
-	 *         public VerticalLayout getCooccurrencesTab() { return
-	 *         cooccurrencesTab; }
-	 */
-
 //	public VerticalLayout getEvidenceTab() {
 //		return evidenceTab;
 //	}
@@ -199,6 +181,10 @@ public class DesktopView extends DesktopDesign implements View {
 //		return referenceTab;
 //	}
 
+	public VerticalLayout getStatementsTab() {
+		return statementsTab;
+	}
+	
 	public HorizontalLayout getCmPanel() {
 		return cmPanel;
 	}

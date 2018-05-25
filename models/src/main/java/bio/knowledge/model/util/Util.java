@@ -28,23 +28,16 @@ package bio.knowledge.model.util;
 import java.util.Collection;
 
 /**
- * Utility functions to make code more readable?
- * 
- * @author Richard
+ * @author Richard, Colin
  *
+ * Some common utility code to be shared with Views
  */
-public interface Util {
-	
-	/**
-	 * Check to see if the given string is null or empty.
-	 * @param string
-	 * @return true if the given string is null or empty; false otherwise.
-	 */
-	default public boolean nullOrEmpty(String string) {
-		return (string == null || string.trim().isEmpty()) ;
+public class Util {
+	public static boolean nullOrEmpty(String string) {
+		return (string == null || string.trim().isEmpty());
 	}
-	
-	default public boolean nullOrEmpty(Collection<?> list) {
-		return (list==null || list.isEmpty()); 
+
+	public static boolean nullOrEmpty(Collection<?> collection) {
+		return (collection == null || collection.isEmpty());
 	}
 }

@@ -88,16 +88,6 @@ public class ApplicationLayout extends ApplicationViewDesign implements ViewDisp
 		authenticationManager.addListener((AuthenticationListener) userAccountView);
 		this.loginView = new LoginView(navigator);
 		
-//		navigator.addView(FaqView.NAME, new FaqView());
-//		navigator.addView(AboutView.NAME, new AboutView());
-//		navigator.addView(ContactView.NAME, new ContactView());
-//		navigator.addView(LandingPageView.NAME, new LandingPageView());
-//		navigator.addView(LoginView.NAME, this.loginView);
-//		navigator.addView(UserAccountView.NAME, userAccountView);
-//		navigator.addView(CreateAccountView.NAME, new CreateAccountView(navigator));
-//		navigator.addView(RecoverAccountView.NAME, new RecoverAccountView());
-//		navigator.addView(PasswordResetView.NAME, new PasswordResetView());
-		
 		setCommonNavigationViews();
 		
 		showButtonsForLoggedIn(authenticationManager.isUserAuthenticated());

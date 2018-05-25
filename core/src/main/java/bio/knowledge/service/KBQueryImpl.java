@@ -52,7 +52,6 @@ import bio.knowledge.model.Statement;
  *
  */
 @Component
-@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class KBQueryImpl implements KBQuery {
 
 	private String userId = "";
@@ -62,16 +61,7 @@ public class KBQueryImpl implements KBQuery {
 	private Set<ConceptType> initialConceptTypes = new HashSet<>();
 	private Set<ConceptType> selectedConceptTypes = new HashSet<>();
 	private List<String> types = new ArrayList<>();
-
-//	private static final KBQuery INSTANCE = new KBQueryImpl();
 	
-	public KBQueryImpl() {
-
-	}
-	
-//	public static KBQuery get() {
-//		return INSTANCE;
-//	}
 
 	/*
 	 * (non-Javadoc)

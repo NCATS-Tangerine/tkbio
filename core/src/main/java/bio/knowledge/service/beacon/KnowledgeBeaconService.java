@@ -87,7 +87,7 @@ import bio.knowledge.model.util.Util;
  *
  */
 @Service
-public class KnowledgeBeaconService implements Util {
+public class KnowledgeBeaconService {
 	
 	private Logger _logger = LoggerFactory.getLogger(KnowledgeBeaconService.class);
 	
@@ -673,10 +673,10 @@ public class KnowledgeBeaconService implements Util {
 					 * require recoding of the code stack above this point.
 					 */
 					String relationIds = "" ;
-					if(!nullOrEmpty(relations)) {
+					if(!Util.nullOrEmpty(relations)) {
 						for(Predicate p : relations) {
 						List<PredicateBeacon> beacons = p.getPredicatesByBeacons();
-						if(!nullOrEmpty(beacons))
+						if(!Util.nullOrEmpty(beacons))
 							for(PredicateBeacon predicateByBeacon : beacons) {
 								if(!relationIds.isEmpty())
 									relationIds += " ";

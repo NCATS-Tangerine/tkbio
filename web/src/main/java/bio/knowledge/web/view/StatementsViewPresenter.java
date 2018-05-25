@@ -12,16 +12,24 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.vaadin.data.Container.Indexed;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
+import com.vaadin.event.SelectionEvent.SelectionListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.MultiSelectionModel;
 import com.vaadin.ui.Grid.SingleSelectionModel;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 
 import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconStatement;
@@ -46,10 +54,18 @@ import bio.knowledge.web.view.components.StatementsQueryListener;
  * @author Colin
  *
  */
+
+@Component
 public class StatementsViewPresenter {
 
 	private static final long serialVersionUID = -6383744406771442514L;
 
+	@Autowired
+	private KnowledgeBeaconService kbService;
+	
+	@Autowired
+	private KBQuery kbQuery;
+	
 	private final String SUBJECT_ID = "Subject";
 	private final String PREDICATE_ID = "Predicate";
 	private final String OBJECT_ID = "Object";
@@ -59,9 +75,6 @@ public class StatementsViewPresenter {
 	private Collection<Object> selectedItemIds;
 	private BeaconConcept currentConcept;
 	
-	private KnowledgeBeaconService kbService;
-	private KBQuery kbQuery;
-	
 	private List<BeaconConcept> cachedConcepts = new ArrayList<>();
 	private Map<BeaconConcept, List<BeaconStatement>> cachedStatements = new ConcurrentHashMap<>();
 	private List<QueryPollingListener> listeners = Collections.synchronizedList(new ArrayList<>());
@@ -69,18 +82,14 @@ public class StatementsViewPresenter {
 	private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 	private ScheduledFuture<?> job;
 	private boolean hasJobStarted = false;
-	private List<Integer> beacons;
 	
-	public StatementsViewPresenter(StatementsView statementsView, KnowledgeBeaconService kbService, KBQuery kbQuery) {
-		this.statementsView = statementsView;
-		this.kbService = kbService;
-		this.kbQuery = kbQuery;
-		
-		initConceptsSelect();
-		initStatementsSelect();
-		initAddToGraphButton();
-	}
+	private VerticalLayout statementsTab;
 
+	@PostConstruct
+	public void init() {
+		statementsTab = ((DesktopUI) UI.getCurrent()).getDesktopView().getStatementsTab();	
+	}
+	
 	public BeaconConcept getCurrentConcept() {
 		return currentConcept;
 	}
@@ -88,7 +97,7 @@ public class StatementsViewPresenter {
 	public void addStatements(BeaconConcept sourceConcept, List<BeaconStatement> statements) {
 		cachedStatements.put(sourceConcept, statements);
 		if (currentConcept.equals(sourceConcept)) {
-			statementsView.getUI().access(() -> {				
+			UI.getCurrent().access(() -> {				
 				setStatementsDataSource(statements);
 			});
 		}
@@ -96,72 +105,41 @@ public class StatementsViewPresenter {
 	
 	public void setConceptsDataSource(List<BeaconConcept> results) {
 		/**
-		 * Getting a potentially new results, so removed the old cached ones.
+		 * Getting a potentially new results, so removed the old cached data.
 		 */
+		clearCache();
+		BeanItemContainer<BeaconConcept> container = new BeanItemContainer<>(BeaconConcept.class, results);
+		statementsView = new StatementsView(container);
+		initGrid(statementsView);
+		replaceViewContent(statementsView);
+	}
+
+	private void replaceViewContent(VerticalLayout newContent) {
+		statementsTab.removeAllComponents();
+		statementsTab.addComponent(newContent);
+	}
+
+	private void clearCache() {
 		cachedConcepts.clear();
 		cachedStatements.clear();
 		listeners.clear();
-		
-		BeanItemContainer<BeaconConcept> container = new BeanItemContainer<>(BeaconConcept.class, results);
-		statementsView.getConceptsGrid().setContainerDataSource(container);
 	}
 	
 	public KnowledgeBeaconService getKbService() {
 		return kbService;
 	}
-	
-	/**
-	 * Initializes the selection logic for the statements grid
-	 */
-	private void initStatementsSelect() {
-		Grid statementsGrid = statementsView.getStatemtsGrid();
-		statementsGrid.addSelectionListener(e -> {
-			Button addToGraphBtn = statementsView.getAddToGraphButton();
-			Collection<Object> itemIds = statementsGrid.getSelectedRows();
-			if (itemIds.isEmpty()) {
-				addToGraphBtn.setEnabled(false);
-			} else {
-				selectedItemIds = itemIds;
-				addToGraphBtn.setEnabled(true);
-			}
-		});
-	}
-	
-	private void initAddToGraphButton() {
-		statementsView.getAddToGraphButton().addClickListener(e -> {
-			Grid statemtsGrid = statementsView.getStatemtsGrid();
-			Indexed container = statemtsGrid.getContainerDataSource();
-			for (Object itemId : selectedItemIds) {
-				IdentifiedConcept subject = (IdentifiedConcept) container.getContainerProperty(itemId, SUBJECT_ID).getValue();
-				IdentifiedConcept object = (IdentifiedConcept) container.getContainerProperty(itemId, OBJECT_ID).getValue();
-				Predicate predicate = (Predicate) container.getContainerProperty(itemId, PREDICATE_ID).getValue();
-				Statement statement = new GeneralStatement("", subject, predicate, object);
-				
-				DesktopUI ui = (DesktopUI) statementsView.getUI();
-				ui.addNodeToConceptMap(subject);
-				ui.addNodeToConceptMap(object);
-				ui.addEdgeToConceptMap(statement);
-			}
-			statemtsGrid.deselectAll();
-		});
-	}
 
-	/**
-	 * Initializes the selection logic for the search result grid
-	 */
-	private void initConceptsSelect() {
-		Grid conceptsGrid = statementsView.getConceptsGrid();
-		conceptsGrid.addSelectionListener(e -> {
-			SingleSelectionModel selectModel = (SingleSelectionModel) conceptsGrid.getSelectionModel();
-			BeaconConcept selectedConcept = (BeaconConcept) selectModel.getSelectedRow();
-			
-			/**
-			 * Only do something useful when a different concept is selected
-			 */
-			if (selectedConcept == null || selectedConcept == currentConcept) {
+	private void initGrid(StatementsView statementsView) {
+		statementsView.getConceptsGrid().addSelectionListener(e -> {
+			Set<Object> selected = e.getAdded();
+			System.out.println("selected is: " + selected);
+			if (selected == null) {
 				return;
 			}
-			
+			BeaconConcept selectedConcept = (BeaconConcept) selected.iterator().next();
+			if (selectedConcept == currentConcept) {
+				return;
+			}
 			currentConcept = selectedConcept;
 			/**
 			 * Check the cached concepts first; if one is found, then immediately use the cached statements
@@ -181,6 +159,9 @@ public class StatementsViewPresenter {
 				statementsView.showProgress();
 				cachedConcepts.add(currentConcept);
 				BeaconStatementsQuery statementsQuery = kbService.postStatementsQuery(currentConcept.getClique(), null, null, null, kbQuery.getTypes(), kbQuery.getCustomBeacons());
+				
+				System.out.println(statementsQuery);
+				
 				QueryPollingListener listener = new StatementsQueryListener(statementsQuery, kbQuery.getCustomBeacons(), this);
 				listeners.add(listener);
 				if (!hasJobStarted) {
@@ -188,6 +169,23 @@ public class StatementsViewPresenter {
 					initPolling();
 				}
 			}
+		});
+		
+		statementsView.getAddToGraphButton().addClickListener(e -> {
+			Grid statemtsGrid = statementsView.getStatemtsGrid();
+			Indexed container = statemtsGrid.getContainerDataSource();
+			for (Object itemId : selectedItemIds) {
+				IdentifiedConcept subject = (IdentifiedConcept) container.getContainerProperty(itemId, SUBJECT_ID).getValue();
+				IdentifiedConcept object = (IdentifiedConcept) container.getContainerProperty(itemId, OBJECT_ID).getValue();
+				Predicate predicate = (Predicate) container.getContainerProperty(itemId, PREDICATE_ID).getValue();
+				Statement statement = new GeneralStatement("", subject, predicate, object);
+				
+				DesktopUI ui = (DesktopUI) statementsView.getUI();
+				ui.addNodeToConceptMap(subject);
+				ui.addNodeToConceptMap(object);
+				ui.addEdgeToConceptMap(statement);
+			}
+			statemtsGrid.deselectAll();
 		});
 	}
 
@@ -224,18 +222,8 @@ public class StatementsViewPresenter {
 		
 		return container;
 	}
-
-	private IndexedContainer createStatementsContainer() {
-		IndexedContainer container = new IndexedContainer();
-		container.addContainerProperty("Subject", IdentifiedConcept.class, "");
-		container.addContainerProperty("Predicate", Predicate.class, "");
-		container.addContainerProperty("Object", IdentifiedConcept.class, "");
-		container.addContainerProperty("Beacon", Integer.class, "");
-		return container;
-	}
 	
 	private void initPolling() {
-		beacons = kbQuery.getCustomBeacons();
 		Runnable task = () -> {
 			update();
 		};

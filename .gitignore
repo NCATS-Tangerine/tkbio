@@ -7,13 +7,13 @@
 *.jar
 *.war
 *.ear
+*.settings/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
 /build/
 /.gradle/
-/.settings/
 /bin/
 .classpath
 .project
