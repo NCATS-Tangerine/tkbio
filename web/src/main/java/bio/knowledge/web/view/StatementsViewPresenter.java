@@ -55,15 +55,11 @@ import bio.knowledge.web.view.components.StatementsQueryListener;
  *
  */
 
-@Component
 public class StatementsViewPresenter {
 
 	private static final long serialVersionUID = -6383744406771442514L;
 
-	@Autowired
 	private KnowledgeBeaconService kbService;
-	
-	@Autowired
 	private KBQuery kbQuery;
 	
 	private final String SUBJECT_ID = "Subject";
@@ -85,9 +81,10 @@ public class StatementsViewPresenter {
 	
 	private VerticalLayout statementsTab;
 
-	@PostConstruct
-	public void init() {
-		statementsTab = ((DesktopUI) UI.getCurrent()).getDesktopView().getStatementsTab();	
+	public StatementsViewPresenter(VerticalLayout statementsTab, KnowledgeBeaconService kbService, KBQuery kbQuery) {
+		this.statementsTab = statementsTab;
+		this.kbService = kbService;
+		this.kbQuery = kbQuery;
 	}
 	
 	public BeaconConcept getCurrentConcept() {
@@ -110,8 +107,8 @@ public class StatementsViewPresenter {
 		clearCache();
 		BeanItemContainer<BeaconConcept> container = new BeanItemContainer<>(BeaconConcept.class, results);
 		statementsView = new StatementsView(container);
-		initGrid(statementsView);
 		replaceViewContent(statementsView);
+		initGrid();
 	}
 
 	private void replaceViewContent(VerticalLayout newContent) {
@@ -129,10 +126,9 @@ public class StatementsViewPresenter {
 		return kbService;
 	}
 
-	private void initGrid(StatementsView statementsView) {
+	private void initGrid() {
 		statementsView.getConceptsGrid().addSelectionListener(e -> {
 			Set<Object> selected = e.getAdded();
-			System.out.println("selected is: " + selected);
 			if (selected == null) {
 				return;
 			}
@@ -159,9 +155,6 @@ public class StatementsViewPresenter {
 				statementsView.showProgress();
 				cachedConcepts.add(currentConcept);
 				BeaconStatementsQuery statementsQuery = kbService.postStatementsQuery(currentConcept.getClique(), null, null, null, kbQuery.getTypes(), kbQuery.getCustomBeacons());
-				
-				System.out.println(statementsQuery);
-				
 				QueryPollingListener listener = new StatementsQueryListener(statementsQuery, kbQuery.getCustomBeacons(), this);
 				listeners.add(listener);
 				if (!hasJobStarted) {
@@ -190,7 +183,6 @@ public class StatementsViewPresenter {
 	}
 
 	private void setStatementsDataSource(List<BeaconStatement> results) {
-//		BeanItemContainer<BeaconStatement> container = new BeanItemContainer<>(BeaconStatement.class, results);
 		statementsView.getStatemtsGrid().setContainerDataSource(getStatementsContainer(results));
 		statementsView.hideProgress();
 	}
@@ -250,7 +242,9 @@ public class StatementsViewPresenter {
 	}	
 	
 	public void shutDown() {
-		job.cancel(true);
+		if (!job.isCancelled()) {			
+			job.cancel(true);
+		}
 		executor.shutdown();
 	}
 }

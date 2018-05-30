@@ -900,9 +900,8 @@ public class DesktopUI extends UI implements MessageService {
 
 		// Button to reinitialize the query and map
 		desktopView.getClearMapBtn().addClickListener(e -> newQueryConfirmation(e));
-		
-//		statementsPresenter = new StatementsViewPresenter(desktopView.getStatementsView(), kbService, query);
-		statementsPresenter = new StatementsViewPresenter();
+	
+		statementsPresenter = new StatementsViewPresenter(desktopView.getStatementsTab(), kbService, query);
 		
 		desktopView.getTabSheet().addSelectedTabChangeListener(e -> {
 			// // Find the tabsheet

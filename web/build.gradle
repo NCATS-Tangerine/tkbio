@@ -7,7 +7,6 @@ description       = 'NCATS Translator Knowledge.Bio (TKBio) Web Desktop Applicat
 apply plugin: 'war'
 
 evaluationDependsOn(':core')
-evaluationDependsOn(':beacon-ontology')
 
 buildscript {
     ext {
@@ -33,7 +32,6 @@ configurations {
 dependencies {
 
     compile project(':core')
-	compile project(':beacon-ontology')
     
     compile 'javax.portlet:portlet-api:2.0'
 

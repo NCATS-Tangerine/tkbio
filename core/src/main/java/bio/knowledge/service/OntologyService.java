@@ -1,4 +1,4 @@
-package bio.knowledge.web.ontology;
+package bio.knowledge.service;
 
 import java.util.List;
 

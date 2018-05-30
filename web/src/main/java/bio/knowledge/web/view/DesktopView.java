@@ -72,6 +72,10 @@ public class DesktopView extends DesktopDesign implements View {
 		historyBtn.setStyleName(ValoTheme.BUTTON_ICON_ONLY, true);
 		historyBtn.setStyleName(ValoTheme.BUTTON_BORDERLESS, true);
 		
+		statementsTab.setSizeFull();
+		evidencesTab.setSizeFull();
+		referencesTab.setSizeFull();
+		
 		dataTabSheet.addTab(statementsTab, "Statements");
 		dataTabSheet.addTab(evidencesTab, "Evidences");
 		dataTabSheet.addTab(referencesTab, "References");
@@ -245,7 +249,6 @@ public class DesktopView extends DesktopDesign implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		System.out.println("[parameters]: " + event.getParameters());
 		String eventParameter = event.getParameters();
 		if (!eventParameter.contains("/")) {
 			return;

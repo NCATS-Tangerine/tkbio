@@ -78,23 +78,6 @@ public class StatementsView extends VerticalLayout {
 				addToGraphBtn.setEnabled(true);
 			}
 		});
-		
-//		addToGraphBtn.addClickListener(e -> {
-//			Indexed container = statemtsGrid.getContainerDataSource();
-//			Collection<Object> selectedItemIds = statemtsGrid.getSelectedRows();
-//			for (Object itemId : selectedItemIds) {
-//				IdentifiedConcept subject = (IdentifiedConcept) container.getContainerProperty(itemId, SUBJECT_ID).getValue();
-//				IdentifiedConcept object = (IdentifiedConcept) container.getContainerProperty(itemId, OBJECT_ID).getValue();
-//				Predicate predicate = (Predicate) container.getContainerProperty(itemId, PREDICATE_ID).getValue();
-//				Statement statement = new GeneralStatement("", subject, predicate, object);
-//				
-//				DesktopUI ui = (DesktopUI) getUI();
-//				ui.addNodeToConceptMap(subject);
-//				ui.addNodeToConceptMap(object);
-//				ui.addEdgeToConceptMap(statement);
-//			}
-//			statemtsGrid.deselectAll();
-//		});
 	}
 
 	private CellDescriptionGenerator getCellDescriptionGenerator() {
