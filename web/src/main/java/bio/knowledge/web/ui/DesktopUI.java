@@ -1155,7 +1155,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * @return true if the pattern is matched; otherwise false.
 	 */
 	private boolean isCurie(String queryText) {
-		Matcher matcher = Pattern.compile("(\\S*):(\\S*)").matcher(queryText);
+		Matcher matcher = Pattern.compile("(\\S+):(\\S+)").matcher(queryText);
 		if (matcher.matches()) {
 			return true;
 		} else {

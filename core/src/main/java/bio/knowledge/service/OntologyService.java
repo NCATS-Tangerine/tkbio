@@ -6,8 +6,8 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Service;
 
+import bio.knowledge.ontology.BeaconBiolinkModel;
 import bio.knowledge.ontology.BiolinkClass;
-import bio.knowledge.ontology.BiolinkModel;
 import bio.knowledge.ontology.BiolinkSlot;
 import bio.knowledge.ontology.mapping.InheritanceLookup;
 import bio.knowledge.ontology.mapping.ModelLookup;
@@ -18,7 +18,7 @@ import bio.knowledge.ontology.mapping.ModelLookup;
 @Service
 public class OntologyService {
 	
-	BiolinkModel model;
+	BeaconBiolinkModel model;
 	
 	InheritanceLookup<BiolinkClass> classInheritanceLookup;
 	ModelLookup<BiolinkClass> classModelLookup;
@@ -28,7 +28,7 @@ public class OntologyService {
 	
 	@PostConstruct
 	public void init() {
-		model = BiolinkModel.get();
+		model = BeaconBiolinkModel.get();
 		
 		classInheritanceLookup = new InheritanceLookup<>(model.getClasses());
 		classModelLookup = new ModelLookup<>(model.getClasses(), classInheritanceLookup);
