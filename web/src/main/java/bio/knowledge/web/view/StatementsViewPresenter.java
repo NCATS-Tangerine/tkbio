@@ -196,14 +196,14 @@ public class StatementsViewPresenter {
 		
 		for (BeaconStatement beaconStatemt : results) {			
 			BeaconStatementSubject beaconSubject = beaconStatemt.getSubject();
-			IdentifiedConcept subject = new IdentifiedConceptImpl(beaconSubject.getClique(), beaconSubject.getName(), "");
+			IdentifiedConcept subject = new IdentifiedConceptImpl(beaconSubject.getClique(), beaconSubject.getName(), beaconSubject.getCategories());
 
 			
 			BeaconStatementPredicate beaconPredicate = beaconStatemt.getPredicate();
 			Predicate predicate = new PredicateImpl(beaconPredicate.getEdgeLabel());
 			
 			BeaconStatementObject beaconObject = beaconStatemt.getObject();
-			IdentifiedConcept object = new IdentifiedConceptImpl(beaconObject.getClique(), beaconObject.getName(), "");
+			IdentifiedConcept object = new IdentifiedConceptImpl(beaconObject.getClique(), beaconObject.getName(), beaconObject.getCategories());
 
 			Object itemId = container.addItem();
 			container.getContainerProperty(itemId, SUBJECT_ID).setValue(subject);

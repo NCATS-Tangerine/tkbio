@@ -291,7 +291,7 @@ public class ConceptMapPopupWindow {
 		} else {
 			VerticalLayout conceptdetails = detailshandler.getDetails(selectedConcept);
 			conceptdetails.setWidthUndefined();
-			basicSkeleton(name, selectedConcept.getType().getDescription(), x, y, conceptdetails);
+			basicSkeleton(name, selectedConcept.getCategories().get(0), x, y, conceptdetails);
 		}
 	}
 	
@@ -578,7 +578,7 @@ public class ConceptMapPopupWindow {
 
 		buttonsLayout.addComponents(okay, cancel);
 
-		basicSkeleton("Annotate Graph", selectedConcept.getType().getDescription(), x, y);
+		basicSkeleton("Annotate Graph", selectedConcept.getCategories().get(0), x, y);
 	};
 
 	private void annotationConceptSearchBox() {

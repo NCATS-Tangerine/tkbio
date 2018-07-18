@@ -467,7 +467,8 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 			IdentifiedConcept concept = conceptOpt.get();
 			nodeId    = concept.getCliqueId();
 			nodeName  = concept.getName();
-			nodeGroup = concept.getType().name();
+			//TODO: consider how to get more than one category
+			nodeGroup = concept.getCategories().get(0);
 		}
 		
 		if(!cmNodeCache.containsKey(nodeId))
@@ -605,7 +606,8 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 		String nodeId = concept.getCliqueId();
 	
 		// create the new node from the passed-in data
-		Node newNode = new Node( nodeId, concept.getName(), concept.getType().name(), "add" );
+		//TODO: consider how to add all categories
+		Node newNode = new Node( nodeId, concept.getName(), concept.getCategories().get(0), "add" );
 		
 		this.addNodeToConceptMap(newNode);
 	

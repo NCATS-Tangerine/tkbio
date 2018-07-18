@@ -1,5 +1,7 @@
 package bio.knowledge.model;
 
+import java.util.List;
+
 import bio.knowledge.model.core.IdentifiedEntity;
 
 public interface IdentifiedConcept extends IdentifiedEntity {
@@ -32,13 +34,13 @@ public interface IdentifiedConcept extends IdentifiedEntity {
 	 * @param the Concept Semantic Type 
 	 * Should generally be set at node creation, but sometimes not?
 	 */
-	void setType(ConceptType type);
+	void setCategories(List<String> type);
 
 	/**
 	 * 
 	 * @return the Concept Semantic Type 
 	 */
-	ConceptType getType();
+	List<String> getCategories();
 	
 	/**
 	 * 

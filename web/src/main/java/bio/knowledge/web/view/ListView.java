@@ -753,7 +753,7 @@ public class ListView extends BaseView {
 			public String getValue(Item item, Object itemId, Object propertyId) {
 				if (itemId instanceof IdentifiedConcept) {
 					IdentifiedConcept concept = (IdentifiedConcept) itemId;
-					return concept.getType().toString();
+					return String.join(", ", concept.getCategories());
 				} else {
 					return "";
 				}
@@ -1305,7 +1305,7 @@ public class ListView extends BaseView {
 			case BY_CONCEPT:
 				if (currentQueryConcept.isPresent()) {
 					IdentifiedConcept concept = currentQueryConcept.get();
-					target = concept.getName() + " [" + concept.getType().getDescription() + "]";
+					target = concept.getName() + " [" + concept.getCategories().get(0) + "]";
 					title += "for Concept";
 				} else
 					throw new RuntimeException(
@@ -1350,7 +1350,7 @@ public class ListView extends BaseView {
 				if (currentQueryConcept.isPresent()) {
 					IdentifiedConcept concept = currentQueryConcept.get();
 					dataTableLabel = formatDataTableLabel("Relations for Concept ",
-							concept.getName() + " (as " + concept.getType().getDescription() + ")");
+							concept.getName() + " (as " + concept.getCategories().get(0) + ")");
 				} // else
 					// dataTableLabel = formatDataTableLabel( "No Relations are
 					// (Yet) Available?" );
@@ -1891,7 +1891,7 @@ public class ListView extends BaseView {
 			concept = future.get(kbService.weightedTimeout(), KnowledgeBeaconService.BEACON_TIMEOUT_UNIT);
 		} catch (InterruptedException | ExecutionException | TimeoutException | IndexOutOfBoundsException exception) {
 			// should do something useful here
-			concept = new AnnotatedConceptImpl(concept.getCliqueId(), concept.getName(), concept.getType());
+			concept = new AnnotatedConceptImpl(concept.getCliqueId(), concept.getName(), concept.getCategories());
 			_logger.error("Error retrieving concept details from the search result table");
 		}
 

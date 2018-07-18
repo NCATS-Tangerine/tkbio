@@ -133,8 +133,8 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 	 * bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.
 	 * Object[])
 	 */
-
-	public Neo4jAnnotatedConcept createInstance(Object... args) {
+	//TODO: get rid? isn't actually used
+/*	public Neo4jAnnotatedConcept createInstance(Object... args) {
 		if (args.length == 4)
 			if (args[1] instanceof ConceptType) {
 				return new Neo4jAnnotatedConcept((String) args[0], // Concept Clique Identifier
@@ -147,7 +147,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 		else
 			throw new RuntimeException("Invalid number of ConceptService.createInstance() arguments?");
 	}
-
+*/
 	// @Autowired
 	// private GraphDatabaseService graphDb;
 	/*
@@ -543,6 +543,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 
 	}
 
+	//TODO: uncomment and fix
 	/**
 	 * This method needs to search the Equivalent Concept Cliques for a matching
 	 * clique, then return the associated concept. First iteration (flawed!), is to
@@ -554,8 +555,8 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 	 * @return Optional<Concept> of matching concept
 	 */
 	public Optional<IdentifiedConcept> findByIdentifier(String identifier) {
-
-		CompletableFuture<String> future = kbService.findByIdentifier(identifier);
+		return Optional.empty();
+		/**CompletableFuture<String> future = kbService.findByIdentifier(identifier);
 
 		IdentifiedConcept concept = null;
 
@@ -578,7 +579,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 			return Optional.empty();
 		} else {
 			return Optional.of(concept);
-		}
+		}*/
 	}
 
 	/**
@@ -725,6 +726,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 		runSimpleQuery(ds, input, handler);
 	}
 
+	//TODO: uncomment and fix
 	/**
 	 * This method retrieves the description ('summary') of the currently selected
 	 * concept, from a suitable data service
@@ -732,9 +734,9 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 	 * @param cst
 	 * @param handler
 	 */
-	public void getDescription(Function<ResultSet, Void> handler) throws Exception {
+	public void getDescription(Function<ResultSet, Void> handler) throws Exception {}
 
-		Optional<IdentifiedConcept> cscOpt = query.getCurrentSelectedConcept();
+		/*Optional<IdentifiedConcept> cscOpt = query.getCurrentSelectedConcept();
 
 		if (!cscOpt.isPresent())
 			return;
@@ -742,7 +744,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 		IdentifiedConcept concept = cscOpt.get();
 		String name = concept.getName();
 
-		ConceptType conceptType = concept.getType();
+		List<String> conceptType = concept.getCategories();
 
 		// Ready just in case I have a gene...
 		Object geneId = null;
@@ -800,11 +802,11 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 
 			getGeneData(args, handler);
 
-			/*
+			
 			 * Handler is now assumed to be able to "add" additional meta-data every time it
 			 * is called, so I fall through here to add the UMLS definition for a given gene
 			 * concept, if available
-			 */
+			 
 			// break;
 
 		default:
@@ -844,7 +846,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 
 			break;
 		}
-	}
+	}*/
 
 	/**
 	 * Method to return the details associated with currentCUI cached in the KBQuery
@@ -853,8 +855,8 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 	 * @param handler
 	 * @throws Exception
 	 */
-	public void getFullDetails(Function<ResultSet, Void> handler) throws Exception {
-
+	public void getFullDetails(Function<ResultSet, Void> handler) throws Exception {}
+/*
 		Optional<IdentifiedConcept> optCSC = query.getCurrentSelectedConcept();
 		if (!optCSC.isPresent())
 			return;
@@ -910,7 +912,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 
 		// reset the current selected concept
 		query.setCurrentSelectedConcept(null);
-	}
+	}*/
 
 	/**
 	 * @param concept
@@ -925,9 +927,9 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 	 * @param predicate
 	 * @return
 	 */
-	public IdentifiedConcept annotate(String id) {
+	public IdentifiedConcept annotate(String id) { return null;
 
-		if (id.isEmpty()) {
+		/*if (id.isEmpty()) {
 			_logger.warn("ConceptService.annotate() warning: cannot return "
 					+ "an annotated Concept without an Accession Id!?");
 			return null;
@@ -953,10 +955,10 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 				concept = databaseConceptOpt.get();
 			}
 
-			/*
+			
 			 * If the database concept is not found or if the concept lacks a semantic
 			 * group... then consult wikidata?
-			 */
+			 
 			if (concept == null || concept.getType() == null || concept.getType().equals(ConceptType.ANY)) {
 
 				// Assume that you need to retrieve the Concept description from WikiData
@@ -977,11 +979,11 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 					if (resultSet != null && !resultSet.isEmpty()) {
 
 						if (concept == null) {
-							/*
+							
 							 * If concept is not yet in the database, we are better to create one now,
 							 * albeit, with a default SemanticGroup "Concepts & Ideas" and an empty name
 							 * field
-							 */
+							 
 							concept = createInstance(id, ConceptType.CONC, "");
 						}
 
@@ -1006,17 +1008,17 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 							ConceptType type = ConceptType.lookUpByWikiClass(valueObjectId);
 							if (type != null) {
 								concept.setType(type);
-								/*
+								
 								 * mission accomplished? Heuristic is to take first recognized SemanticGroup...
 								 * don't to look any further?
-								 */
+								 
 								break;
 							}
 						}
 
-						/*
+						
 						 * Save whatever concept with a newly discovered name and semantic group
-						 */
+						 
 
 						// TODO: June 8 2017
 						// We no longer have a ConceptRepository, we may want to
@@ -1030,10 +1032,10 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 				}
 			}
 
-			/*
+			
 			 * ... then, cache the available non-null databased Concept into the user's
 			 * session, annotated as best as it may be at this point(?)
-			 */
+			 
 			if (concept != null)
 				cacheLocation.setEntity(concept);
 
@@ -1043,7 +1045,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 			concept = cachedConcept;
 		}
 
-		return concept;
+		return concept;*/
 	}
 
 }

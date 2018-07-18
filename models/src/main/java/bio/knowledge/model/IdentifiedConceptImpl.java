@@ -1,5 +1,8 @@
 package bio.knowledge.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import bio.knowledge.model.core.AbstractIdentifiedEntity;
 
 public class IdentifiedConceptImpl 
@@ -8,7 +11,7 @@ implements IdentifiedConcept {
 
 	private String clique = "";
 
-	private ConceptType conceptType = null;
+	private List<String> categories = new ArrayList<>();
 
 	private String taxon = "";
 
@@ -28,24 +31,13 @@ implements IdentifiedConcept {
 	 * 
 	 * @param clique
 	 * @param name
-	 * @param type
+	 * @param categories
 	 * @param taxon
 	 */
-	public IdentifiedConceptImpl(  String clique, String name, ConceptType type ) {
+	public IdentifiedConceptImpl(  String clique, String name, List<String> categories ) {
 		super( "", name, name );
 		this.clique = clique ;
-		this.conceptType = type;
-	}
-
-	/**
-	 * 
-	 * @param clique
-	 * @param name
-	 * @param type
-	 * @param taxon
-	 */
-	public IdentifiedConceptImpl(  String clique, String name, String type ) {
-		this( clique, "", name, type ) ;
+		this.categories = categories;
 	}
 
 	/**
@@ -56,15 +48,14 @@ implements IdentifiedConcept {
 	 * @param type
 	 * @param taxon
 	 */
-	public IdentifiedConceptImpl( String clique, String id, String name, String type ) {
+	public IdentifiedConceptImpl( String clique, String id, String name, List<String> categories ) {
 		super( id, name, name );
 
 		this.clique = clique ;
 
-		if( type==null || type.isEmpty() )
-			this.conceptType = ConceptType.OBJC;
-		else
-			this.conceptType = ConceptType.valueOf(type,ConceptType.OBJC) ;
+		if(categories !=null) {
+			this.categories = categories;
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -89,19 +80,16 @@ implements IdentifiedConcept {
 	 * @see bio.knowledge.model.IdentifiedConcept#setType(bio.knowledge.model.ConceptType)
 	 */
 	@Override
-	public void setType(ConceptType type) {
-		this.conceptType = type ;
+	public void setCategories(List<String> categories) {
+		this.categories = categories ;
 	}
 
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.IdentifiedConcept#getType()
 	 */
 	@Override
-	public ConceptType getType() {
-		if(conceptType==null) {
-			return ConceptType.OBJC;
-		}
-		return conceptType ;
+	public List<String> getCategories() {
+		return categories ;
 	}
 
 	/* (non-Javadoc)

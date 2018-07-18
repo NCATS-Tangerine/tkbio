@@ -29,9 +29,8 @@ import bio.knowledge.client.ApiException;
 import bio.knowledge.client.api.ConceptsApi;
 import bio.knowledge.client.api.MetadataApi;
 import bio.knowledge.client.api.StatementsApi;
-import bio.knowledge.client.model.BeaconAnnotation;
 import bio.knowledge.client.model.BeaconBeaconPredicate;
-import bio.knowledge.client.model.BeaconCliqueIdentifier;
+import bio.knowledge.client.model.BeaconCliquesQuery;
 import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconConceptDetail;
 import bio.knowledge.client.model.BeaconConceptWithDetails;
@@ -49,14 +48,11 @@ import bio.knowledge.client.model.BeaconStatementSubject;
 import bio.knowledge.client.model.BeaconStatementsQuery;
 import bio.knowledge.client.model.BeaconStatementsQueryBeaconStatus;
 import bio.knowledge.client.model.BeaconStatementsQueryResult;
-import bio.knowledge.client.model.BeaconStatementsQueryStatus;
 import bio.knowledge.model.AnnotatedConcept;
 import bio.knowledge.model.AnnotatedConcept.BeaconEntry;
 import bio.knowledge.model.AnnotatedConceptImpl;
 import bio.knowledge.model.Annotation;
-import bio.knowledge.model.AnnotationImpl;
 import bio.knowledge.model.ConceptDetailImpl;
-import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.GeneralStatement;
 import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.IdentifiedConceptImpl;
@@ -301,7 +297,6 @@ public class KnowledgeBeaconService {
 		try {
 			conceptsApi.postConceptsQueryAsync(keywords, types, beacons, callback);
 		} catch (ApiException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -310,7 +305,6 @@ public class KnowledgeBeaconService {
 		try {
 			conceptsApi.getConceptsAsync(queryId, beacons, pageNumber, pageSize, callback);
 		} catch (ApiException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -319,7 +313,6 @@ public class KnowledgeBeaconService {
 		try {
 			return conceptsApi.getConceptsQueryStatus(queryId, beacons).getStatus();
 		} catch (ApiException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -329,7 +322,6 @@ public class KnowledgeBeaconService {
 		try {
 			return statementsApi.postStatementsQuery(source, relations, target, keywords, categories, beacons);
 		} catch (ApiException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -339,7 +331,6 @@ public class KnowledgeBeaconService {
 		try {
 			return statementsApi.getStatementsQueryStatus(queryId, beacons).getStatus();
 		} catch (ApiException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -350,7 +341,6 @@ public class KnowledgeBeaconService {
 		try {
 			statementsApi.getStatementsQueryAsync(queryId, beacons, pageNumber, pageSize, callback);
 		} catch (ApiException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -402,25 +392,10 @@ public class KnowledgeBeaconService {
 		
 							for (BeaconConcept beaconConcept : response.getResults()) {
 								
-								ConceptType category;
-								try {
-									String type = beaconConcept.getCategory();
-									if (type.contains(":")) {
-										// type might be a string combined from multiple types separated by spaces
-										if (type.contains(" ")) {
-											type = type.split("\\s")[0];
-										}
-										type = type.split(":", 2)[1].toUpperCase();
-									}
-									category = ConceptType.valueOf(type);
-								} catch (IllegalArgumentException ex) {
-									category = null;
-								}
-								
 								IdentifiedConcept concept = new IdentifiedConceptImpl(
 										beaconConcept.getClique(),
 										beaconConcept.getName(),
-										category
+										beaconConcept.getCategories()
 								);
 								
 								concepts.add(concept);
@@ -451,7 +426,7 @@ public class KnowledgeBeaconService {
 	 * @return
 	 */
 	public CompletableFuture<String> findByIdentifier(String identifier) {
-		
+		//TODO: properly fix (if it is even being used)
 		CompletableFuture<String> future = 
 				CompletableFuture.supplyAsync( new Supplier<String>() {
 
@@ -459,11 +434,15 @@ public class KnowledgeBeaconService {
 			public String get() {
 				
 				try {
-					BeaconCliqueIdentifier response = 
-							getConceptsApi().getClique(identifier);
+					List<String> ids = new ArrayList<>();
+					ids.add(identifier);
+					BeaconCliquesQuery response = 
+							getConceptsApi().postCliquesQuery(ids);
 					
-					if(response != null) 
-						return response.getCliqueId();
+//					if(response != null) 
+//						return response.getCliqueId();
+					if (response != null) 
+						return response.getQueryId();
 
 				} catch (Exception e) {
 					_logger.warn("KnowledgeBeaconService.findByIdentifier() ERROR: "
@@ -507,27 +486,10 @@ public class KnowledgeBeaconService {
 					BeaconConceptWithDetails response = 
 							getConceptsApi().getConceptDetails( cliqueId, beacons );
 
-					ConceptType category;
-					try {
-						
-						String type = response.getType();
-						if (type.contains(":")) {
-							// type might be a string combined from multiple types separated by spaces
-							if (type.contains(" ")) {
-								type = type.split("\\s")[0];
-							}
-							type = type.split(":", 2)[1].toUpperCase();
-						}
-						category = ConceptType.valueOf(type);
-
-					} catch (IllegalArgumentException e) {
-						category = null;
-					}
-
 					concept = new AnnotatedConceptImpl(
 								response.getClique(),
 								response.getName(),
-								category
+								response.getCategories()
 							);
 
 					Set<String> xrefs = concept.getAliases() ;
@@ -710,7 +672,7 @@ public class KnowledgeBeaconService {
 								statementsSubject.getClique(), 
 								statementsSubject.getId(),
 								statementsSubject.getName(), 
-								statementsSubject.getCategory()
+								statementsSubject.getCategories()
 						);
 
 						PredicateImpl predicate = new PredicateImpl(statementsPredicate.getEdgeLabel());
@@ -719,7 +681,7 @@ public class KnowledgeBeaconService {
 								statementsObject.getClique(), 
 								statementsObject.getId(), 
 								statementsObject.getName(),
-								statementsObject.getCategory()
+								statementsObject.getCategories()
 						);
 						
 						Statement statement = new GeneralStatement(id, subject, predicate, object);
@@ -764,8 +726,8 @@ public class KnowledgeBeaconService {
 			@Override
 			public List<Annotation> get() {
 				List<Annotation> annotations = new ArrayList<Annotation>();
-				
-				String[] strings = statementId.split("\\|");
+				//TODO: uncomment and fix!
+				/*String[] strings = statementId.split("\\|");
 				final String evidenceId = strings.length >= 2 ? strings[2] : statementId;
 				
 				try {
@@ -798,7 +760,7 @@ public class KnowledgeBeaconService {
 										
 				} catch (Exception e) {
 					
-				}
+				}*/
 				
 				return annotations;
 			}

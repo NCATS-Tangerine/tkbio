@@ -1,5 +1,8 @@
 package bio.knowledge.model.neo4j;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.neo4j.ogm.annotation.NodeEntity;
 
 import bio.knowledge.model.ConceptType;
@@ -14,7 +17,7 @@ public class Neo4jIdentifiedConceptImpl
 
 	private String clique = "";
 	
-    private ConceptType conceptType = null;
+    private List<String> conceptCategories = new ArrayList<>();
 
 	private String taxon = "";
 
@@ -37,28 +40,13 @@ public class Neo4jIdentifiedConceptImpl
      * @param type
      * @param taxon
      */
-    public Neo4jIdentifiedConceptImpl(  String clique, String name, ConceptType type, String taxon ) {
-    		super(name);
-	    	this.clique = clique ;
-	    	this.conceptType = type;
-	    	this.taxon = taxon;
-    }
-    
-    /**
-     * 
-     * @param clique
-     * @param name
-     * @param type
-     * @param taxon
-     */
-    public Neo4jIdentifiedConceptImpl(  String clique, String name, String type, String taxon ) {
+    public Neo4jIdentifiedConceptImpl(  String clique, String name, List<String> categories, String taxon ) {
 		super(name);
-	    	this.clique = clique ;
-	    	if( type==null || type.isEmpty() )
-	    		this.conceptType = ConceptType.OBJC;
-	    	else
-	    		this.conceptType = ConceptType.valueOf(type,ConceptType.OBJC) ;
-	    	this.taxon = taxon;
+    	this.clique = clique ;
+    	if (categories != null) {
+    		this.conceptCategories = categories;
+    	}
+    	this.taxon = taxon;
     }
 
 	/* (non-Javadoc)
@@ -83,19 +71,16 @@ public class Neo4jIdentifiedConceptImpl
 	 * @see bio.knowledge.model.IdentifiedConcept#setType(bio.knowledge.model.ConceptType)
 	 */
     @Override
-	public void setType(ConceptType type) {
-    	this.conceptType = type ;
+	public void setCategories(List<String> categories) {
+    	this.conceptCategories = categories ;
     }
     
 	/* (non-Javadoc)
 	 * @see bio.knowledge.model.IdentifiedConcept#getType()
 	 */
     @Override
-	public ConceptType getType() {
-    	if(conceptType==null) {
-    		return ConceptType.OBJC;
-    	}
-    	return conceptType ;
+	public List<String> getCategories() {
+    	return conceptCategories ;
     }
 
 	/* (non-Javadoc)
