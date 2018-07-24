@@ -1,13 +1,11 @@
 package bio.knowledge.web.view;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import org.ocpsoft.prettytime.PrettyTime;
-import org.springframework.http.HttpStatus;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -20,23 +18,18 @@ import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import bio.knowledge.client.ApiCallback;
-import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.BeaconClique;
 import bio.knowledge.client.model.BeaconCliquesQuery;
-import bio.knowledge.client.model.BeaconCliquesQueryBeaconStatus;
 import bio.knowledge.client.model.BeaconCliquesQueryResult;
-import bio.knowledge.client.model.BeaconCliquesQueryStatus;
 import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconConceptsQuery;
-import bio.knowledge.client.model.BeaconConceptsQueryBeaconStatus;
 import bio.knowledge.client.model.BeaconConceptsQueryResult;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.web.ui.DesktopUI;
 import bio.knowledge.web.view.components.QueryPollingListener;
 
-public class SingleSearchHistoryView extends HorizontalLayout implements SearchHistoryView.Listener {
+public class SingleSearchHistoryView extends HorizontalLayout {
 
 	private static final long serialVersionUID = -2841062072954936319L;
 
@@ -55,15 +48,9 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 	private Date creationTime = new Date();
 	private PrettyTime p = new PrettyTime();
 	private String conceptName = "";
-	private boolean done = false;
 
-	private ApiCallback<BeaconConceptsQueryResult> resultCb;
-	private List<Integer> beacons;
-	private List<BeaconConceptsQueryBeaconStatus> beaconStatuses;
-	private BeaconConceptsQuery conceptQuery;
-	private BeaconConceptsQueryResult conceptQueryResult;
-	
-	private BeaconCliquesQuery cliquesQuery;
+	private List<BeaconConcept> queryResults = new ArrayList<>();
+	private QueryPollingListener listener;
 
 	public SingleSearchHistoryView(String conceptName) {
 		init(conceptName);
@@ -96,47 +83,45 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 		setComponentAlignment(buttonsLayout, Alignment.BOTTOM_RIGHT);
 		setExpandRatio(titleLayout, 1);
 
-		beacons = kbQuery.getCustomBeacons();
-
 		initButtons();
-		initCallbacks();
+//		initCallbacks();
 
 		postQuery();
 	}
 
-	private void initCallbacks() {
-		resultCb = new ApiCallback<BeaconConceptsQueryResult>() {
-
-			@Override
-			public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-				// TODO Auto-generated method stub
-				e.printStackTrace();
-
-			}
-
-			@Override
-			public void onSuccess(BeaconConceptsQueryResult result, int statusCode,
-					Map<String, List<String>> responseHeaders) {
-				getUI().access(() -> {
-					buttonsLayout.replaceComponent(progressBar, detailsButton);
-					conceptQueryResult = result;
-				});
-
-			}
-
-			@Override
-			public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
-				// TODO Auto-generated method stub
-
-			}
-		};
-	}
+//	private void initCallbacks() {
+//		resultCb = new ApiCallback<BeaconConceptsQueryResult>() {
+//
+//			@Override
+//			public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
+//				// TODO Auto-generated method stub
+//				e.printStackTrace();
+//
+//			}
+//
+//			@Override
+//			public void onSuccess(BeaconConceptsQueryResult result, int statusCode,
+//					Map<String, List<String>> responseHeaders) {
+//				getUI().access(() -> {
+//					buttonsLayout.replaceComponent(progressBar, detailsButton);
+//					conceptQueryResult = result;
+//				});
+//
+//			}
+//
+//			@Override
+//			public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
+//				// TODO Auto-generated method stub
+//
+//			}
+//
+//			@Override
+//			public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
+//				// TODO Auto-generated method stub
+//
+//			}
+//		};
+//	}
 
 	private void initButtons() {
 		detailsButton.setStyleName("page-button");
@@ -145,7 +130,7 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 			for (Window window : ui.getWindows()) {
 				window.close();
 			}
-			ui.getStatementsPresenter().setConceptsDataSource(conceptQueryResult.getResults());
+			ui.getStatementsPresenter().setConceptsDataSource(queryResults);
 		});
 
 		removeButton.setStyleName("page-button");
@@ -153,81 +138,6 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 			Layout parent = (Layout) this.getParent();
 			parent.removeComponent(this);
 		});
-	}
-
-	@Override
-	public void update() {
-		timeLabel.setValue(p.format(creationTime));
-		if (!done) {
-			boolean ready = checkConceptsStatus() && checkCliquesStatus();
-			if (ready) {
-				done = true;
-
-				if (conceptQuery != null) {
-					beacons = getResultBeacons(beaconStatuses);
-					kbService.getConceptsAsync(conceptQuery.getQueryId(), beacons, 1, 100, resultCb);
-				}
-				
-				if (cliquesQuery != null) {
-					List<BeaconClique> results = kbService.getCliques(cliquesQuery.getQueryId()).getResults();
-					addCliquesResults(results);
-					buttonsLayout.replaceComponent(progressBar, detailsButton);
-				}
-				
-			}
-		}
-	}
-
-	private void addCliquesResults(List<BeaconClique> results) {
-		if (conceptQueryResult == null) {
-			conceptQueryResult = new BeaconConceptsQueryResult();
-		}
-		for (BeaconClique result : results) {
-			BeaconConcept concept = new BeaconConcept(); 
-			concept.setClique(result.getCliqueId());
-			concept.setName(result.getId());
-			conceptQueryResult.addResultsItem(concept);
-		}
-	}
-
-	private boolean checkConceptsStatus() {
-		boolean ready = true;
-		
-		if (conceptQuery != null) {
-			beaconStatuses = kbService.getConceptsQueryStatus(conceptQuery.getQueryId(), beacons);
-			for (BeaconConceptsQueryBeaconStatus status : beaconStatuses) {
-				if (status.getStatus() == HttpStatus.PROCESSING.value()) {
-					ready = false;
-					break;
-				}
-			}
-		}
-		return ready;
-	}
-	
-	private boolean checkCliquesStatus() {
-		boolean ready = true;
-		
-		if (cliquesQuery != null) {
-			for (BeaconCliquesQueryBeaconStatus status : kbService.getCliquesQueryStatus(cliquesQuery.getQueryId())) {
-				if (status.getStatus() == HttpStatus.PROCESSING.value()) {
-					ready = false;
-					break;
-				}
-			}
-		}
-		return ready;
-	}
-
-	private List<Integer> getResultBeacons(List<BeaconConceptsQueryBeaconStatus> beaconStatuses) {
-		List<Integer> beacons = new ArrayList<>();
-		for (BeaconConceptsQueryBeaconStatus beaconStatus : beaconStatuses) {
-			int status = beaconStatus.getStatus();
-			if (status == HttpStatus.OK.value() || status == HttpStatus.CREATED.value()) {
-				beacons.add(beaconStatus.getBeacon());
-			}
-		}
-		return beacons;
 	}
 
 	public void setServices(KBQuery kbQuery, KnowledgeBeaconService kbService) {
@@ -248,12 +158,56 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 			}
 		}
 		
+		BeaconConceptsQuery conceptsQuery = null;
+		BeaconCliquesQuery cliquesQuery = null;
+		
 		if (!keywords.isEmpty()) {
-			conceptQuery = kbService.postConceptsQuery(keywords, kbQuery.getTypes(), kbQuery.getCustomBeacons());
+			conceptsQuery = kbService.postConceptsQuery(keywords, kbQuery.getTypes(), kbQuery.getCustomBeacons());
 		}
 		
 		if (!curies.isEmpty()) {
 			cliquesQuery = kbService.postCliquesQuery(curies);
 		}
+		
+		listener = new ConceptsQueryListener(conceptsQuery, cliquesQuery, kbQuery.getCustomBeacons(), this);
+		
 	}
+
+	public void setConcepts(Optional<BeaconConceptsQueryResult> results) {
+		if (results.isPresent()) {
+			buttonsLayout.replaceComponent(progressBar, detailsButton);
+			queryResults.addAll(results.get().getResults());
+		} else {
+			//TODO: some error pop-up?
+		}
+	}
+	
+
+	public void setConceptsFromCliques(Optional<BeaconCliquesQueryResult> results) {
+		if (results.isPresent()) {
+			if (buttonsLayout.getComponentIndex(progressBar) != -1) {
+				buttonsLayout.replaceComponent(progressBar, detailsButton);
+			}
+			
+			List<BeaconClique> cliqueResults = results.get().getResults();
+			for (BeaconClique result : cliqueResults) {
+				BeaconConcept concept = new BeaconConcept(); 
+				concept.setClique(result.getCliqueId());
+				concept.setName(result.getId());
+				queryResults.add(concept);
+			}
+			
+		} else {
+			//TODO: some error pop-up?
+		}
+	}
+
+	public KnowledgeBeaconService getKbService() {
+		return kbService;
+	}
+	
+	public QueryPollingListener listener() {
+		return listener;
+	}
+
 }

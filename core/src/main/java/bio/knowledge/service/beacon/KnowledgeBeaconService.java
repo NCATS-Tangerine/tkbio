@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
@@ -295,12 +296,13 @@ public class KnowledgeBeaconService {
 			return null;
 		}
 	}
-
-	public void postConceptsQueryAsync(List<String> keywords, List<String> types, List<Integer> beacons, ApiCallback<BeaconConceptsQuery> callback) {
+	
+	public Optional<BeaconConceptsQueryResult> getConcepts(String queryId, List<Integer> beacons, Integer pageNumber, Integer pageSize) {
 		try {
-			conceptsApi.postConceptsQueryAsync(keywords, types, beacons, callback);
+			return Optional.of(conceptsApi.getConcepts(queryId, beacons, pageNumber, pageSize));
 		} catch (ApiException e) {
 			e.printStackTrace();
+			return Optional.empty();
 		}
 	}
 	
@@ -339,12 +341,12 @@ public class KnowledgeBeaconService {
 		}
 	}
 	
-	public BeaconCliquesQueryResult getCliques(String queryId) {
+	public Optional<BeaconCliquesQueryResult> getCliques(String queryId) {
 		try {
-			return conceptsApi.getCliques(queryId);
+			return Optional.of(conceptsApi.getCliques(queryId));
 		} catch (ApiException e) {
 			e.printStackTrace();
-			return null;
+			return Optional.empty();
 		}
 	}
 	
@@ -367,6 +369,15 @@ public class KnowledgeBeaconService {
 		}
 	}
 	
+	
+	public Optional<BeaconStatementsQueryResult> getStatements(String queryId, List<Integer> beacons, Integer pageNumber, Integer pageSize) {
+		try {
+			return Optional.of(statementsApi.getStatementsQuery(queryId, beacons, pageNumber, pageSize));
+		} catch (ApiException e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
+	}
 	
 	public void getStatementsAsync(String queryId, List<Integer> beacons, Integer pageNumber, Integer pageSize, ApiCallback<BeaconStatementsQueryResult> callback) {
 		try {

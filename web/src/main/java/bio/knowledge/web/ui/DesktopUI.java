@@ -871,11 +871,12 @@ public class DesktopUI extends UI implements MessageService {
 		searchWindow.setContent(searchView);
 		searchWindow.addCloseListener(e -> {
 			desktopView.getHistoryButton().setEnabled(true);
+			searchView.stopPolling();
 		});
-
 		desktopView.getHistoryButton().setDisableOnClick(true);
 		desktopView.getHistoryButton().addClickListener(e -> {
 			getUI().addWindow(searchWindow);
+			searchView.startPolling();
 		});
 		
 		

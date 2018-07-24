@@ -3,6 +3,7 @@ package bio.knowledge.web.view.components;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,8 @@ public class StatementsQueryListener implements QueryPollingListener {
 	private BeaconStatementsQuery query;
 	private List<Integer> beacons;
 	
+	private AtomicBoolean isDone = new AtomicBoolean(false);
+	
 	public StatementsQueryListener(BeaconStatementsQuery query, List<Integer> beacons, StatementsViewPresenter presenter) {
 		this.presenter = presenter;
 		this.kbService = presenter.getKbService();
@@ -40,15 +43,17 @@ public class StatementsQueryListener implements QueryPollingListener {
 	
 	@Override
 	public void update() {
-		if (isInProgress.get()) {
+		if (isDone.get()) {
 			return;
 		}
 		List<BeaconStatementsQueryBeaconStatus> beaconStatuses =  kbService.getStatementsQueryStatus(query.getQueryId(), beacons);
 		boolean isDataReady = checkStatus(beaconStatuses);
 		if (isDataReady) {
 			List<Integer> beacons = getBeaconsWithResults(beaconStatuses);
-			isInProgress.compareAndSet(false, true);
-			kbService.getStatementsAsync(query.getQueryId(), beacons, 1, 100, createCallback());
+			Optional<BeaconStatementsQueryResult> results = kbService.getStatements(query.getQueryId(), beacons, 1, 100);
+			if (results.isPresent()) {
+				presenter.addStatements(sourceConcept, results.get().getResults());
+			}
 		}
 	}
 
@@ -74,38 +79,36 @@ public class StatementsQueryListener implements QueryPollingListener {
 		return beacons;
 	}
 	
-	private ApiCallback<BeaconStatementsQueryResult> createCallback() {
-		return new ApiCallback<BeaconStatementsQueryResult>() {
-
-			@Override
-			public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-				// TODO Auto-generated method stub
-				e.printStackTrace();
-				isDone.compareAndSet(false, true);
-				isInProgress.compareAndSet(true, false);
-				
-			}
-
-			@Override
-			public void onSuccess(BeaconStatementsQueryResult result, int statusCode,
-					Map<String, List<String>> responseHeaders) {
-				isDone.compareAndSet(false, true);
-				isInProgress.compareAndSet(true, false);
-				presenter.addStatements(sourceConcept, result.getResults());
-			}
-
-			@Override
-			public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
-				// TODO Auto-generated method stub
-				
-			}
-		};
-	}
+//	private ApiCallback<BeaconStatementsQueryResult> createCallback() {
+//		return new ApiCallback<BeaconStatementsQueryResult>() {
+//
+//			@Override
+//			public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
+//				// TODO Auto-generated method stub
+//				e.printStackTrace();
+//				isDone.compareAndSet(false, true);
+//				
+//			}
+//
+//			@Override
+//			public void onSuccess(BeaconStatementsQueryResult result, int statusCode,
+//					Map<String, List<String>> responseHeaders) {
+//				isDone.compareAndSet(false, true);
+//				presenter.addStatements(sourceConcept, result.getResults());
+//			}
+//
+//			@Override
+//			public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//
+//			@Override
+//			public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		};
+//	}
 	
 }
