@@ -31,6 +31,9 @@ import bio.knowledge.client.api.MetadataApi;
 import bio.knowledge.client.api.StatementsApi;
 import bio.knowledge.client.model.BeaconBeaconPredicate;
 import bio.knowledge.client.model.BeaconCliquesQuery;
+import bio.knowledge.client.model.BeaconCliquesQueryBeaconStatus;
+import bio.knowledge.client.model.BeaconCliquesQueryResult;
+import bio.knowledge.client.model.BeaconCliquesQueryStatus;
 import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconConceptDetail;
 import bio.knowledge.client.model.BeaconConceptWithDetails;
@@ -317,6 +320,34 @@ public class KnowledgeBeaconService {
 			return null;
 		}
 	}
+	
+	public BeaconCliquesQuery postCliquesQuery(List<String> ids) {
+		try {
+			return conceptsApi.postCliquesQuery(ids);
+		} catch (ApiException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public List<BeaconCliquesQueryBeaconStatus> getCliquesQueryStatus(String queryId) {
+		try {
+			return conceptsApi.getCliquesQueryStatus(queryId).getStatus();
+		} catch (ApiException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public BeaconCliquesQueryResult getCliques(String queryId) {
+		try {
+			return conceptsApi.getCliques(queryId);
+		} catch (ApiException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 
 	public BeaconStatementsQuery postStatementsQuery(String source, List<String> relations, String target, List<String> keywords, List<String> categories, List<Integer> beacons) {
 		try {
@@ -569,13 +600,15 @@ public class KnowledgeBeaconService {
 								
 								List<BeaconBeaconPredicate> beaconPredicates = pb.getPredicates();
 								
+								//TODO: add negated into the /predicates endpoint...?
 								for(BeaconBeaconPredicate entry : beaconPredicates) {
 									Predicate.PredicateBeacon predicateBeacon = 
 											predicate.new PredicateBeaconImpl(
 													pb.getBeacon(),
 													bp.getEdgeLabel(),
 													entry.getRelation(),
-													entry.getDescription()
+													entry.getDescription(),
+													false
 											) ;
 									
 									predicate.addPredicatesByBeacon(predicateBeacon);

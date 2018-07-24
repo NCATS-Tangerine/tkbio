@@ -22,12 +22,19 @@ import com.vaadin.ui.Window;
 
 import bio.knowledge.client.ApiCallback;
 import bio.knowledge.client.ApiException;
+import bio.knowledge.client.model.BeaconClique;
+import bio.knowledge.client.model.BeaconCliquesQuery;
+import bio.knowledge.client.model.BeaconCliquesQueryBeaconStatus;
+import bio.knowledge.client.model.BeaconCliquesQueryResult;
+import bio.knowledge.client.model.BeaconCliquesQueryStatus;
+import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconConceptsQuery;
 import bio.knowledge.client.model.BeaconConceptsQueryBeaconStatus;
 import bio.knowledge.client.model.BeaconConceptsQueryResult;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.web.ui.DesktopUI;
+import bio.knowledge.web.view.components.QueryPollingListener;
 
 public class SingleSearchHistoryView extends HorizontalLayout implements SearchHistoryView.Listener {
 
@@ -55,6 +62,8 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 	private List<BeaconConceptsQueryBeaconStatus> beaconStatuses;
 	private BeaconConceptsQuery conceptQuery;
 	private BeaconConceptsQueryResult conceptQueryResult;
+	
+	private BeaconCliquesQuery cliquesQuery;
 
 	public SingleSearchHistoryView(String conceptName) {
 		init(conceptName);
@@ -150,22 +159,61 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 	public void update() {
 		timeLabel.setValue(p.format(creationTime));
 		if (!done) {
-			boolean ready = checkStatus();
+			boolean ready = checkConceptsStatus() && checkCliquesStatus();
 			if (ready) {
-				beacons = getResultBeacons(beaconStatuses);
-				kbService.getConceptsAsync(conceptQuery.getQueryId(), beacons, 1, 100, resultCb);
 				done = true;
+
+				if (conceptQuery != null) {
+					beacons = getResultBeacons(beaconStatuses);
+					kbService.getConceptsAsync(conceptQuery.getQueryId(), beacons, 1, 100, resultCb);
+				}
+				
+				if (cliquesQuery != null) {
+					List<BeaconClique> results = kbService.getCliques(cliquesQuery.getQueryId()).getResults();
+					addCliquesResults(results);
+					buttonsLayout.replaceComponent(progressBar, detailsButton);
+				}
+				
 			}
 		}
 	}
 
-	private boolean checkStatus() {
-		beaconStatuses = kbService.getConceptsQueryStatus(conceptQuery.getQueryId(), beacons);
+	private void addCliquesResults(List<BeaconClique> results) {
+		if (conceptQueryResult == null) {
+			conceptQueryResult = new BeaconConceptsQueryResult();
+		}
+		for (BeaconClique result : results) {
+			BeaconConcept concept = new BeaconConcept(); 
+			concept.setClique(result.getCliqueId());
+			concept.setName(result.getId());
+			conceptQueryResult.addResultsItem(concept);
+		}
+	}
+
+	private boolean checkConceptsStatus() {
 		boolean ready = true;
-		for (BeaconConceptsQueryBeaconStatus status : beaconStatuses) {
-			if (status.getStatus() == HttpStatus.PROCESSING.value()) {
-				ready = false;
-				break;
+		
+		if (conceptQuery != null) {
+			beaconStatuses = kbService.getConceptsQueryStatus(conceptQuery.getQueryId(), beacons);
+			for (BeaconConceptsQueryBeaconStatus status : beaconStatuses) {
+				if (status.getStatus() == HttpStatus.PROCESSING.value()) {
+					ready = false;
+					break;
+				}
+			}
+		}
+		return ready;
+	}
+	
+	private boolean checkCliquesStatus() {
+		boolean ready = true;
+		
+		if (cliquesQuery != null) {
+			for (BeaconCliquesQueryBeaconStatus status : kbService.getCliquesQueryStatus(cliquesQuery.getQueryId())) {
+				if (status.getStatus() == HttpStatus.PROCESSING.value()) {
+					ready = false;
+					break;
+				}
 			}
 		}
 		return ready;
@@ -189,7 +237,23 @@ public class SingleSearchHistoryView extends HorizontalLayout implements SearchH
 
 	private void postQuery() {
 		String[] keywordArray = conceptName.replace(",", "").split("\\s+");
-		List<String> keywords = Arrays.asList(keywordArray);
-		conceptQuery = kbService.postConceptsQuery(keywords, kbQuery.getTypes(), kbQuery.getCustomBeacons());
+		List<String> keywords = new ArrayList<>();
+		List<String> curies = new ArrayList<>();
+		
+		for (String s : keywordArray) {
+			if (DesktopUI.isCurie(s)) {
+				curies.add(s);
+			} else {
+				keywords.add(s);
+			}
+		}
+		
+		if (!keywords.isEmpty()) {
+			conceptQuery = kbService.postConceptsQuery(keywords, kbQuery.getTypes(), kbQuery.getCustomBeacons());
+		}
+		
+		if (!curies.isEmpty()) {
+			cliquesQuery = kbService.postCliquesQuery(curies);
+		}
 	}
 }

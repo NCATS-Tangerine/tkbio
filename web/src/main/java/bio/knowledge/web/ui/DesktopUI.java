@@ -1115,7 +1115,7 @@ public class DesktopUI extends UI implements MessageService {
 
 			queryText = queryText.trim();
 			query.setCurrentQueryText(queryText);
-			if (isCurie(queryText)) {
+			if (false) {
 				/*
 				 * Matching by CURIE - resolve the matching concept then go directly to the
 				 * statements table
@@ -1154,7 +1154,7 @@ public class DesktopUI extends UI implements MessageService {
 	 * @param queryText
 	 * @return true if the pattern is matched; otherwise false.
 	 */
-	private boolean isCurie(String queryText) {
+	public static boolean isCurie(String queryText) {
 		Matcher matcher = Pattern.compile("(\\S+):(\\S+)").matcher(queryText);
 		if (matcher.matches()) {
 			return true;

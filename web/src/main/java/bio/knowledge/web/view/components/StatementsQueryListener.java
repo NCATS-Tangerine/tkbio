@@ -20,13 +20,10 @@ public class StatementsQueryListener implements QueryPollingListener {
 	
 	KnowledgeBeaconService kbService;
 	
-	private ApiCallback<BeaconStatementsQueryResult> cb;
 	private StatementsViewPresenter presenter;
 	private BeaconConcept sourceConcept;
 	private BeaconStatementsQuery query;
 	private List<Integer> beacons;
-	private AtomicBoolean isInProgress = new AtomicBoolean(false);
-	private AtomicBoolean isDone = new AtomicBoolean(false);
 	
 	public StatementsQueryListener(BeaconStatementsQuery query, List<Integer> beacons, StatementsViewPresenter presenter) {
 		this.presenter = presenter;
@@ -43,7 +40,7 @@ public class StatementsQueryListener implements QueryPollingListener {
 	
 	@Override
 	public void update() {
-		if (isInProgress.get() || isDone.get()) {
+		if (isInProgress.get()) {
 			return;
 		}
 		List<BeaconStatementsQueryBeaconStatus> beaconStatuses =  kbService.getStatementsQueryStatus(query.getQueryId(), beacons);

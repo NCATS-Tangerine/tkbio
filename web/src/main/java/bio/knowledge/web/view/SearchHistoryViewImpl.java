@@ -38,6 +38,7 @@ public class SearchHistoryViewImpl extends VerticalLayout implements SearchHisto
 	public void addResultView(SingleSearchHistoryView resultView) {
 		addComponentAsFirst(resultView);
 		addListener(resultView);
+//		jobStarted = false;
 		if (!jobStarted) {
 			jobStarted = true;
 			initPolling();

@@ -177,9 +177,9 @@ public class DesktopView extends DesktopDesign implements View {
 //		return relationsTab;
 //	}
 
-//	public VerticalLayout getEvidenceTab() {
-//		return evidenceTab;
-//	}
+	public VerticalLayout getEvidenceTab() {
+		return evidencesTab;
+	}
 //
 //	public VerticalLayout getReferenceTab() {
 //		return referenceTab;

@@ -51,7 +51,7 @@ public class SearchResultView extends VerticalLayout {
 		statementBtn.addClickListener(e -> {
 			BeaconConcept concept = (BeaconConcept) resultGrid.getSelectedRow();
 			System.out.println(concept);
-			getUI().getNavigator().navigateTo(DesktopView.NAME + "/" + "statements" + "/" + concept.getClique());
+			getUI().getNavigator().navigateTo(DesktopView.NAME + "/" + StatementsView.NAME + "/" + concept.getClique());
 		});
 	}
 

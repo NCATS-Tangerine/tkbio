@@ -231,14 +231,14 @@ public class StatementsViewPresenter {
 		synchronized(listeners) {
 			List<QueryPollingListener> completedListeners = new ArrayList<>();
 			for (QueryPollingListener listener : this.listeners) {
+				listener.update();
 				if (listener.isDone()) {
 					completedListeners.add(listener);
-				} else {
-					listener.update();
 				}
 			}
 			listeners.removeAll(completedListeners);
 		}
+		
 	}	
 	
 	public void shutDown() {

@@ -16,7 +16,7 @@ import com.vaadin.ui.VerticalLayout;
 
 public class StatementsView extends VerticalLayout {
 	
-	public final String NAME = "statements";
+	public static final String NAME = "statements";
 
 	private static final long serialVersionUID = -7988756397144422937L;
 	
