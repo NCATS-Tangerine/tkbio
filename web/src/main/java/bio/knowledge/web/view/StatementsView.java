@@ -4,24 +4,19 @@ import java.util.Collection;
 
 import com.vaadin.data.Container.Indexed;
 import com.vaadin.data.Item;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.CellDescriptionGenerator;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.renderers.ButtonRenderer;
 
-import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 

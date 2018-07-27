@@ -50,7 +50,6 @@ public class ConceptDetailsWindow extends Window {
 	private void showDetails(BeaconConceptWithDetails details) {
 		contents.removeAllComponents();
 		contents.addComponent(new Label("Clique: " + details.getClique()));
-		//contents.addComponent(new Label("<strong>Clique</strong>: " + details.getClique(), ContentMode.HTML));
 		contents.addComponent(new Label("Name: " + details.getName()));
 		contents.addComponent(new Label("Aliases: " + String.join(", ", details.getAliases())));
 		contents.addComponent(new Label("Categories: " + String.join(", ", details.getCategories())));
@@ -60,44 +59,22 @@ public class ConceptDetailsWindow extends Window {
 	}
 	
 	private void showEntriesTable(List<BeaconConceptWithDetailsBeaconEntry> entries) {
-
-		TreeTable table = new TreeTable("Additional Information");
-		table.addContainerProperty("Title", String.class, "");
-		table.addContainerProperty("Value", String.class, null);
+		
+		DetailsTreeTable table = new DetailsTreeTable("Additional Information");
 		
 		for (BeaconConceptWithDetailsBeaconEntry e : entries) {
-			Object title = table.addItem(new Object[]{"Beacon " + e.getBeacon() + ": " + e.getId(), "--"}, null);
-			
-			Object id = table.addItem(new Object[]{"Id", e.getId()}, null);
-			table.setChildrenAllowed(id, false);
-			
-			Object definition = table.addItem(new Object[] {"Definition", e.getDefinition()}, null);
-			table.setChildrenAllowed(definition, false);
-			
-			Object synonyms = table.addItem(new Object[] {"Synonyms", String.join(", ", e.getSynonyms())}, null);
-			table.setChildrenAllowed(synonyms, false);
-			
-			Object annotations = table.addItem(new Object[] {"Details", "--"}, null);
-			
-			table.setParent(id, title);
-			table.setParent(definition, title);
-			table.setParent(synonyms, title);
-			table.setParent(annotations, title);
+			Object title = table.addTitleRow("Beacon " + e.getBeacon() + ": " + e.getId());
+			table.addInfoRow("id", e.getId(), title);
+			table.addInfoRow("definition", e.getDefinition(), title);
+			table.addInfoRow("synonyms", String.join(", ", e.getSynonyms()), title);
+
+			Object annotations = table.addTitleRow("details", title);
 			
 			for (BeaconConceptDetail d : e.getDetails()) {
-				Object beaconDetail = table.addItem(new Object[] {d.getTag(), d.getValue()}, null);
-				table.setParent(beaconDetail, annotations);
-				table.setChildrenAllowed(beaconDetail, false);
+				table.addInfoRow(d.getTag(), d.getValue(), annotations);
 			}
-			
-			table.setCollapsed(title, false);
-			table.setCollapsed(annotations, false);
 		}
-		
-		table.setWidth(98, Unit.PERCENTAGE);
-		table.setSortEnabled(false);
 		contents.addComponent(table);
-		
 	}
 
 	private void showError(String msg) {

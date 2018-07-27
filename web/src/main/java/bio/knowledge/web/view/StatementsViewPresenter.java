@@ -12,23 +12,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.vaadin.data.Container.Indexed;
-import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.data.util.PropertyValueGenerator;
-import com.vaadin.event.SelectionEvent.SelectionListener;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.Grid.MultiSelectionModel;
-import com.vaadin.ui.Grid.SingleSelectionModel;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -60,15 +47,12 @@ import bio.knowledge.web.view.components.StatementsQueryListener;
 
 public class StatementsViewPresenter {
 
-	private static final long serialVersionUID = -6383744406771442514L;
-
 	private KnowledgeBeaconService kbService;
 	private KBQuery kbQuery;
 	
 	private static final String SUBJECT_ID = "Subject";
 	private static final String PREDICATE_ID = "Predicate";
 	private static final String OBJECT_ID = "Object";
-	private static final String BEACON_ID = "Beacon";
 	private static final Object STMT_ID = "Id";
 	
 	private StatementsView statementsView;
@@ -188,24 +172,6 @@ public class StatementsViewPresenter {
 
 	private void setStatementsDataSource(List<BeaconStatement> results) {
 		Grid grid = statementsView.getStatemtsGrid();
-//		IndexedContainer data = getStatementsContainer(results);
-//		grid.setContainerDataSource(statementsView.addDetailsColumn(data));
-		
-//		grid.setContainerDataSource(getStatementsContainer(results));
-//		grid.addSelectionListener(e -> {
-//			Window window = new StatementDetailsWindow(e, kbService, kbQuery);
-//			statementsView.getUI().addWindow(window);
-//		});
-//		grid.removeColumn(STMT_ID);
-//
-//		ButtonRenderer detailsButton = new ButtonRenderer(e -> {
-//			Window window = new StatementDetailsWindow(e, kbService, kbQuery);
-//			statementsView.getUI().addWindow(window);
-//		});
-//		
-//		grid.getColumn(StatementsView.DETAILS_ID).setWidth(90);
-//		grid.getColumn(STMT_ID).setHidden(true);
-//		grid.getColumn(StatementsView.DETAILS_ID).setRenderer(detailsButton);
 		grid.setContainerDataSource(getStatementsContainer(results));
 		
 		statementsView.hideProgress();
@@ -219,6 +185,7 @@ public class StatementsViewPresenter {
 			});
 		
 			grid.getColumn(StatementsView.DETAILS_ID).setRenderer(detailsButton);
+			grid.removeColumn(STMT_ID);
 		}
 		
 	}
@@ -229,7 +196,6 @@ public class StatementsViewPresenter {
 		container.addContainerProperty(SUBJECT_ID, IdentifiedConcept.class, "");
 		container.addContainerProperty(PREDICATE_ID, Predicate.class, "");
 		container.addContainerProperty(OBJECT_ID, IdentifiedConcept.class, "");
-		container.addContainerProperty(BEACON_ID, Integer.class, "");
 		container.addContainerProperty(StatementsView.DETAILS_ID, String.class, "more info");
 		
 		for (BeaconStatement beaconStatemt : results) {			
@@ -247,7 +213,6 @@ public class StatementsViewPresenter {
 			container.getContainerProperty(itemId, SUBJECT_ID).setValue(subject);
 			container.getContainerProperty(itemId, PREDICATE_ID).setValue(predicate);
 			container.getContainerProperty(itemId, OBJECT_ID).setValue(object);
-			container.getContainerProperty(itemId, BEACON_ID).setValue(beaconStatemt.getBeacon());
 		}
 		
 		return container;
