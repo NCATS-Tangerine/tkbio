@@ -3,6 +3,10 @@ package bio.knowledge.web.view;
 import java.util.Collection;
 
 import com.vaadin.data.Container.Indexed;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -11,12 +15,21 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.CellDescriptionGenerator;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.renderers.ButtonRenderer;
+
+import bio.knowledge.client.model.BeaconConcept;
+import bio.knowledge.service.KBQuery;
+import bio.knowledge.service.beacon.KnowledgeBeaconService;
+
 
 public class StatementsView extends VerticalLayout {
 	
 	public static final String NAME = "statements";
+	public static final String DETAILS_ID = "Details";
 
 	private static final long serialVersionUID = -7988756397144422937L;
 	
@@ -25,14 +38,36 @@ public class StatementsView extends VerticalLayout {
 	private Button addToGraphBtn = new Button();
 	private ProgressBar progressBar = new ProgressBar();
 	private VerticalLayout statemtsLayout = new VerticalLayout();
-	
-	public StatementsView() {
+
+	public StatementsView(Indexed conceptsContainer, KnowledgeBeaconService kbService, KBQuery kbQuery) {
 		init();
+		GeneratedPropertyContainer container = addDetailsColumn(conceptsContainer);
+		conceptsGrid.setContainerDataSource(container);
+		conceptsGrid.getColumn(DETAILS_ID).setWidth(90);
+		ButtonRenderer detailsButton = new ButtonRenderer(e -> {
+			Window window = new ConceptDetailsWindow(e, kbService, kbQuery);
+			this.getUI().addWindow(window);
+		});
+		conceptsGrid.getColumn(DETAILS_ID).setRenderer(detailsButton);
+		
 	}
-	
-	public StatementsView(Indexed conceptsContainer) {
-		init();
-		conceptsGrid.setContainerDataSource(conceptsContainer);
+
+	public GeneratedPropertyContainer addDetailsColumn(Indexed conceptsContainer) {
+		GeneratedPropertyContainer container = new GeneratedPropertyContainer(conceptsContainer);
+		container.addGeneratedProperty(DETAILS_ID, new PropertyValueGenerator<String>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+		    public String getValue(Item item, Object itemId, Object propertyId) {
+		        return "more info"; 
+		    }
+
+		    @Override
+		    public Class<String> getType() {
+		        return String.class;
+		    }
+		});
+		return container;
 	}
 
 	private void init() {

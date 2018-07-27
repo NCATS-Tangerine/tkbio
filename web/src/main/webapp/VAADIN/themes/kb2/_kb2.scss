@@ -33,7 +33,7 @@
 // Example variants can be copy/pasted from https://vaadin.com/wiki/-/wiki/Main/Valo+Examples
 
 // Overrides global variables for the Valo theme
-$v-font-size: 11px;
+$v-font-size: 12px;
 
 $v-border-radius: 2px;
 
@@ -68,7 +68,11 @@ $color-green: #5cb85c;
   		white-space: nowrap; 
   		overflow: hidden;
   		text-overflow: ellipsis;
-  	}
+	  }
+
+	.v-table-cell-wrapper {
+		white-space: normal;
+	}
   
   	//--Buttons--//
 	#aboutBtn, #helpBtn, #contactBtn {

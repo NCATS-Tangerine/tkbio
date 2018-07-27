@@ -46,6 +46,7 @@ import bio.knowledge.client.model.BeaconKnowledgeBeacon;
 import bio.knowledge.client.model.BeaconPredicate;
 import bio.knowledge.client.model.BeaconPredicatesByBeacon;
 import bio.knowledge.client.model.BeaconStatement;
+import bio.knowledge.client.model.BeaconStatementDetails;
 import bio.knowledge.client.model.BeaconStatementObject;
 import bio.knowledge.client.model.BeaconStatementPredicate;
 import bio.knowledge.client.model.BeaconStatementSubject;
@@ -382,6 +383,33 @@ public class KnowledgeBeaconService {
 	public void getStatementsAsync(String queryId, List<Integer> beacons, Integer pageNumber, Integer pageSize, ApiCallback<BeaconStatementsQueryResult> callback) {
 		try {
 			statementsApi.getStatementsQueryAsync(queryId, beacons, pageNumber, pageSize, callback);
+		} catch (ApiException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Optional<BeaconConceptWithDetails> getConceptDetails(String cliqueId, List<Integer> beacons) {
+		try {
+			return Optional.of(conceptsApi.getConceptDetails(cliqueId, beacons));
+		} catch (ApiException e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
+	}
+	
+	public void getConceptDetailsAsync(String cliqueId, List<Integer> beacons, ApiCallback<BeaconConceptWithDetails> callback) {
+		try {
+			conceptsApi.getApiClient().getHttpClient().setReadTimeout(3, TimeUnit.MINUTES);
+			conceptsApi.getConceptDetailsAsync(cliqueId, beacons, callback);
+		} catch (ApiException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void getStatementDetailsAsync(String statementId, List<String> keywords, Integer pageNumber, Integer pageSize, ApiCallback<BeaconStatementDetails> callback) {
+		try {
+			statementsApi.getApiClient().getHttpClient().setReadTimeout(100, TimeUnit.SECONDS);
+			statementsApi.getStatementDetailsAsync(statementId, keywords, pageNumber, pageSize, callback);
 		} catch (ApiException e) {
 			e.printStackTrace();
 		}

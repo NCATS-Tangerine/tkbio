@@ -28,8 +28,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.MultiSelectionModel;
 import com.vaadin.ui.Grid.SingleSelectionModel;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.renderers.ButtonRenderer;
 
 import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconStatement;
@@ -62,10 +65,11 @@ public class StatementsViewPresenter {
 	private KnowledgeBeaconService kbService;
 	private KBQuery kbQuery;
 	
-	private final String SUBJECT_ID = "Subject";
-	private final String PREDICATE_ID = "Predicate";
-	private final String OBJECT_ID = "Object";
-	private final String BEACON_ID = "Beacon";
+	private static final String SUBJECT_ID = "Subject";
+	private static final String PREDICATE_ID = "Predicate";
+	private static final String OBJECT_ID = "Object";
+	private static final String BEACON_ID = "Beacon";
+	private static final Object STMT_ID = "Id";
 	
 	private StatementsView statementsView;
 	private Collection<Object> selectedItemIds;
@@ -106,7 +110,7 @@ public class StatementsViewPresenter {
 		 */
 		clearCache();
 		BeanItemContainer<BeaconConcept> container = new BeanItemContainer<>(BeaconConcept.class, results);
-		statementsView = new StatementsView(container);
+		statementsView = new StatementsView(container, kbService, kbQuery);
 		replaceViewContent(statementsView);
 		initGrid();
 	}
@@ -183,22 +187,55 @@ public class StatementsViewPresenter {
 	}
 
 	private void setStatementsDataSource(List<BeaconStatement> results) {
-		statementsView.getStatemtsGrid().setContainerDataSource(getStatementsContainer(results));
+		Grid grid = statementsView.getStatemtsGrid();
+//		IndexedContainer data = getStatementsContainer(results);
+//		grid.setContainerDataSource(statementsView.addDetailsColumn(data));
+		
+//		grid.setContainerDataSource(getStatementsContainer(results));
+//		grid.addSelectionListener(e -> {
+//			Window window = new StatementDetailsWindow(e, kbService, kbQuery);
+//			statementsView.getUI().addWindow(window);
+//		});
+//		grid.removeColumn(STMT_ID);
+//
+//		ButtonRenderer detailsButton = new ButtonRenderer(e -> {
+//			Window window = new StatementDetailsWindow(e, kbService, kbQuery);
+//			statementsView.getUI().addWindow(window);
+//		});
+//		
+//		grid.getColumn(StatementsView.DETAILS_ID).setWidth(90);
+//		grid.getColumn(STMT_ID).setHidden(true);
+//		grid.getColumn(StatementsView.DETAILS_ID).setRenderer(detailsButton);
+		grid.setContainerDataSource(getStatementsContainer(results));
+		
 		statementsView.hideProgress();
+		if (!results.isEmpty()) {
+			
+			ButtonRenderer detailsButton = new ButtonRenderer(e -> {
+				Indexed container = grid.getContainerDataSource();
+				String id = (String) container.getContainerProperty(e.getItemId(), STMT_ID).getValue();
+				Window window = new StatementDetailsWindow(id, kbService, kbQuery);
+				statementsView.getUI().addWindow(window);
+			});
+		
+			grid.getColumn(StatementsView.DETAILS_ID).setRenderer(detailsButton);
+		}
+		
 	}
 
 	private IndexedContainer getStatementsContainer(List<BeaconStatement> results) {
 		IndexedContainer container = new IndexedContainer();
+		container.addContainerProperty(STMT_ID, String.class, "");
 		container.addContainerProperty(SUBJECT_ID, IdentifiedConcept.class, "");
 		container.addContainerProperty(PREDICATE_ID, Predicate.class, "");
 		container.addContainerProperty(OBJECT_ID, IdentifiedConcept.class, "");
 		container.addContainerProperty(BEACON_ID, Integer.class, "");
+		container.addContainerProperty(StatementsView.DETAILS_ID, String.class, "more info");
 		
 		for (BeaconStatement beaconStatemt : results) {			
 			BeaconStatementSubject beaconSubject = beaconStatemt.getSubject();
 			IdentifiedConcept subject = new IdentifiedConceptImpl(beaconSubject.getClique(), beaconSubject.getName(), beaconSubject.getCategories());
 
-			
 			BeaconStatementPredicate beaconPredicate = beaconStatemt.getPredicate();
 			Predicate predicate = new PredicateImpl(beaconPredicate.getEdgeLabel());
 			
@@ -206,6 +243,7 @@ public class StatementsViewPresenter {
 			IdentifiedConcept object = new IdentifiedConceptImpl(beaconObject.getClique(), beaconObject.getName(), beaconObject.getCategories());
 
 			Object itemId = container.addItem();
+			container.getContainerProperty(itemId, STMT_ID).setValue(beaconStatemt.getId());
 			container.getContainerProperty(itemId, SUBJECT_ID).setValue(subject);
 			container.getContainerProperty(itemId, PREDICATE_ID).setValue(predicate);
 			container.getContainerProperty(itemId, OBJECT_ID).setValue(object);

@@ -54,6 +54,7 @@ public class StatementsQueryListener implements QueryPollingListener {
 			if (results.isPresent()) {
 				presenter.addStatements(sourceConcept, results.get().getResults());
 			}
+			isDone.compareAndSet(false, true);
 		}
 	}
 
