@@ -23,8 +23,8 @@ import bio.knowledge.service.beacon.KnowledgeBeaconService;
 
 public class ConceptDetailsWindow extends Window {
 	
-	private static final float WIDTH = 80;
-	private static final float HEIGHT = 40;
+	private static final float WIDTH = 45;
+	private static final float HEIGHT = 50;
 	private static final String TITLE = "Concept Details: ";
 	
 	private ProgressBar progressBar = new ProgressBar();
@@ -46,6 +46,12 @@ public class ConceptDetailsWindow extends Window {
 		kbService.getConceptDetailsAsync(cliqueId, kbQuery.getCustomBeacons(), createCallback());
 	}
 
+	public ConceptDetailsWindow(String cliqueId, String name, KnowledgeBeaconService kbService, KBQuery kbQuery) {
+		init();
+		setCaption(TITLE + cliqueId + " (" + name + ")");
+		kbService.getConceptDetailsAsync(cliqueId, kbQuery.getCustomBeacons(), createCallback());
+	}
+
 	private void init() {
 		setHeight(HEIGHT, Unit.EM);
 		setWidth(WIDTH, Unit.EM);
@@ -60,7 +66,7 @@ public class ConceptDetailsWindow extends Window {
 		this.setContent(contents);
 	}
 
-	private void showDetails(BeaconConceptWithDetails details) {
+	public void showDetails(BeaconConceptWithDetails details) {
 		contents.removeAllComponents();
 		contents.addComponent(new Label("Clique: " + details.getClique()));
 		contents.addComponent(new Label("Name: " + details.getName()));
@@ -90,40 +96,14 @@ public class ConceptDetailsWindow extends Window {
 		contents.addComponent(table);
 	}
 
-	private void showError(String msg) {
+	public void showError(String msg) {
 		contents.removeAllComponents();
 		Label label = new Label("Error - Could not find details: " + msg);
 		contents.addComponent(label);
 	}
 	
 	private ApiCallback<BeaconConceptWithDetails> createCallback() {
-		return new ApiCallback<BeaconConceptWithDetails>() {
-	
-			@Override
-			public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-				getUI().access(() -> {
-					showError(e.toString());
-				});
-			}
-	
-			@Override
-			public void onSuccess(BeaconConceptWithDetails result, int statusCode,
-					Map<String, List<String>> responseHeaders) {
-				getUI().access(() -> {
-					showDetails(result);
-				});
-			}
-	
-			@Override
-			public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
-				// TODO Auto-generated method stub	
-			}
-	
-			@Override
-			public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
-				// TODO Auto-generated method stub
-			}
-		};
+		return new DetailsCallback().createConceptDetailsCallback(this);
 	}
 	
 }

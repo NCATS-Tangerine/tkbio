@@ -59,6 +59,7 @@ import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.BeanContainer;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -128,6 +129,7 @@ import bio.knowledge.web.view.LoginView;
 import bio.knowledge.web.view.PasswordResetView;
 import bio.knowledge.web.view.ReferenceView;
 import bio.knowledge.web.view.Registry;
+import bio.knowledge.web.view.Registry.Mapping;
 import bio.knowledge.web.view.RelationsView;
 import bio.knowledge.web.view.SearchHistoryViewImpl;
 import bio.knowledge.web.view.SingleSearchHistoryView;
@@ -323,7 +325,8 @@ public class DesktopUI extends UI implements MessageService {
 
 	public ConceptMapDisplay getConceptMap() {
 		if (cm == null)
-			cm = new ConceptMapDisplay(conceptService);
+//			cm = new ConceptMapDisplay(conceptService);
+			cm = new ConceptMapDisplay(kbService, query);
 		return cm;
 	}
 
@@ -335,7 +338,7 @@ public class DesktopUI extends UI implements MessageService {
 		return getConceptMap().isEmpty();
 	}
 
-	static final String DEFAULT_CM_LAYOUT = "Breadth First";
+	static final String DEFAULT_CM_LAYOUT = "Dagre";
 	static final String DEFAULT_CM_COLOR = "Dark";
 	public static final String MANUAL_CM_LAYOUT = "Manual";
 
@@ -810,9 +813,10 @@ public class DesktopUI extends UI implements MessageService {
 	private void newQueryButtonHandler(ConfirmDialog dialog) {
 		if (dialog.isConfirmed()) {
 
-			ConfirmDialog.show(this, "Save Concept Map?",
-					"<span style='text-align:center;'>Save work before reloading?</span>", "Yes", "No",
-					cd -> saveAndClearMapHandler(cd)).setContentMode(ConfirmDialog.ContentMode.HTML);
+//			ConfirmDialog.show(this, "Save Concept Map?",
+//					"<span style='text-align:center;'>Save work before reloading?</span>", "Yes", "No",
+//					cd -> saveAndClearMapHandler(cd)).setContentMode(ConfirmDialog.ContentMode.HTML);
+			clearMap();
 
 		} else if (dialog.isCanceled()) {
 			_logger.trace("User cancels 'New' operation");
@@ -970,7 +974,7 @@ public class DesktopUI extends UI implements MessageService {
 		KBUploader myUploader = new KBUploader();
 
 		// only to upload ".kb"
-		Page.getCurrent().getJavaScript()
+/*		Page.getCurrent().getJavaScript()
 				.execute("document.getElementsByClassName('gwt-FileUpload')[0].setAttribute('accept', '.kb')");
 		desktopView.getLoadMap().setImmediate(true);
 		desktopView.getLoadMap().setReceiver(myUploader);
@@ -985,7 +989,7 @@ public class DesktopUI extends UI implements MessageService {
 
 		// search map library names with search text
 		desktopView.getSearchMapLibraryBtn().addClickListener(e -> searchMapLibraryByText());
-
+*/
 		// align the map to center
 		desktopView.getCenterBtn().addClickListener(e -> {
 			getConceptMap().alignToCenter();
@@ -1009,7 +1013,7 @@ public class DesktopUI extends UI implements MessageService {
 				}
 			}
 		});
-
+/*
 		// display the legend in a pop up window
 		desktopView.getShowLegendBtn().addClickListener(e -> {
 			// if there is no legend pop up window already opened
@@ -1069,6 +1073,7 @@ public class DesktopUI extends UI implements MessageService {
 		// RMB: August 15, 2016
 		// New landing page doesn't need the old intro tooltip
 		// initIntroTooltip();
+*/
 
 		initConceptMap();
 	}

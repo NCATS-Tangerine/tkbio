@@ -399,7 +399,7 @@ public class KnowledgeBeaconService {
 	
 	public void getConceptDetailsAsync(String cliqueId, List<Integer> beacons, ApiCallback<BeaconConceptWithDetails> callback) {
 		try {
-			conceptsApi.getApiClient().getHttpClient().setReadTimeout(3, TimeUnit.MINUTES);
+			conceptsApi.getApiClient().getHttpClient().setReadTimeout(5, TimeUnit.MINUTES);
 			conceptsApi.getConceptDetailsAsync(cliqueId, beacons, callback);
 		} catch (ApiException e) {
 			e.printStackTrace();
@@ -495,8 +495,8 @@ public class KnowledgeBeaconService {
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public CompletableFuture<String> findByIdentifier(String identifier) {
-		//TODO: properly fix (if it is even being used)
 		CompletableFuture<String> future = 
 				CompletableFuture.supplyAsync( new Supplier<String>() {
 
@@ -613,6 +613,7 @@ public class KnowledgeBeaconService {
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public CompletableFuture<Set<Predicate>> getPredicates(List<Integer> beacons) {
 		
 		CompletableFuture<Set<Predicate>> future = 
@@ -639,7 +640,6 @@ public class KnowledgeBeaconService {
 								
 								List<BeaconBeaconPredicate> beaconPredicates = pb.getPredicates();
 								
-								//TODO: add negated into the /predicates endpoint...?
 								for(BeaconBeaconPredicate entry : beaconPredicates) {
 									Predicate.PredicateBeacon predicateBeacon = 
 											predicate.new PredicateBeaconImpl(
@@ -786,6 +786,7 @@ public class KnowledgeBeaconService {
 	/**
 	 * In our project, annotations really play this role of evidence.
 	 */
+	@Deprecated
 	public CompletableFuture<List<Annotation>> getEvidence(
 			String statementId,
 			List<String> keywords,
@@ -798,7 +799,7 @@ public class KnowledgeBeaconService {
 			@Override
 			public List<Annotation> get() {
 				List<Annotation> annotations = new ArrayList<Annotation>();
-				//TODO: uncomment and fix!
+				
 				/*String[] strings = statementId.split("\\|");
 				final String evidenceId = strings.length >= 2 ? strings[2] : statementId;
 				

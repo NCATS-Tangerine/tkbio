@@ -438,6 +438,7 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 
 	}
 
+	@Deprecated
 	private Void loadWikiDataResults(ResultSet rs, IdentifiedConcept subject, List<Statement> statements) {
 		/*rs.stream().forEach(r -> {
 
@@ -501,7 +502,6 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 				_logger.error("... parsing error: " + e.getMessage());
 			}
 		});*/
-		//TODO: uncomment and fix?
 		return (Void) null;
 	}
 
@@ -530,9 +530,9 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	}
 
 	@SuppressWarnings({ "unchecked" })
+	@Deprecated
 	private Page<Statement> findWikiDataByFilter(List<String> filter, Pageable pageable) {
 		return new PageImpl<Statement>(new ArrayList<>());
-		//TODO: uncomment and fix?
 		/*List<Statement> statements = new ArrayList<>();
 
 		IdentifiedConcept concept = getCurrentConcept();
@@ -604,9 +604,9 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	 *            String that WikiData property names should match
 	 * @return
 	 */
+	@Deprecated
 	private long countByWikiData(List<String> filter) {
 		return 0;
-		//TODO: uncomment and fix?
 /*
 		IdentifiedConcept concept = getCurrentConcept();
 

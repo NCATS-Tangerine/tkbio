@@ -76,9 +76,9 @@ public class DesktopView extends DesktopDesign implements View {
 		evidencesTab.setSizeFull();
 		referencesTab.setSizeFull();
 		
-		dataTabSheet.addTab(statementsTab, "Statements");
-		dataTabSheet.addTab(evidencesTab, "Evidences");
-		dataTabSheet.addTab(referencesTab, "References");
+		dataTabSheet.addTab(statementsTab, "Search Results");
+//		dataTabSheet.addTab(evidencesTab, "Evidences");
+//		dataTabSheet.addTab(referencesTab, "References");
 	}
 
 	/**
@@ -98,9 +98,9 @@ public class DesktopView extends DesktopDesign implements View {
 	/**
 	 * @return the demoMapBtn
 	 */
-	public Button getSearchMapLibraryBtn() {
-		return searchMapLibraryBtn;
-	}
+//	public Button getSearchMapLibraryBtn() {
+//		return searchMapLibraryBtn;
+//	}
 
 	/**
 	 * @return the map center button
@@ -126,9 +126,9 @@ public class DesktopView extends DesktopDesign implements View {
 	/**
 	 * @return the saveBtn
 	 */
-	public Button getSaveBtn() {
-		return saveBtn;
-	}
+//	public Button getSaveBtn() {
+//		return saveBtn;
+//	}
 
 	// /**
 	// * @param saveBtn the saveBtn to set
@@ -140,9 +140,9 @@ public class DesktopView extends DesktopDesign implements View {
 	/**
 	 * @return the loadMap
 	 */
-	public Upload getLoadMap() {
-		return loadMap;
-	}
+//	public Upload getLoadMap() {
+//		return loadMap;
+//	}
 
 	// /**
 	// * @param loadMap the loadMap to set
@@ -228,9 +228,9 @@ public class DesktopView extends DesktopDesign implements View {
 	/**
 	 * @return the legend
 	 */
-	public Button getShowLegendBtn() {
-		return showLegendBtn;
-	}
+//	public Button getShowLegendBtn() {
+//		return showLegendBtn;
+//	}
 	
 	public Button getHistoryButton() {
 		return historyBtn;

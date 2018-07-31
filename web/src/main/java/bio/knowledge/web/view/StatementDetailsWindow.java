@@ -50,7 +50,7 @@ public class StatementDetailsWindow extends Window {
 		this.setContent(contents);
 	}
 
-	private void showDetails(BeaconStatementDetails details) {
+	public void showDetails(BeaconStatementDetails details) {
 		contents.removeAllComponents();
 		contents.addComponent(new Label("Statement ID: " + details.getId()));
 		contents.addComponent(new Label("Defined by: " + details.getIsDefinedBy()));
@@ -86,38 +86,14 @@ public class StatementDetailsWindow extends Window {
 		contents.addComponent(table);
 	}
 
-	private void showError(String msg) {
+	public void showError(String msg) {
 		contents.removeAllComponents();
 		Label label = new Label("Error - Could not find details: " + msg);
 		contents.addComponent(label);
 	}
 	
 	private ApiCallback<BeaconStatementDetails> createCallback() {
-		return new ApiCallback<BeaconStatementDetails>() {
-	
-			@Override
-			public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-				getUI().access(() -> {
-					showError(e.toString());
-				});
-			}
-	
-			@Override
-			public void onSuccess(BeaconStatementDetails result, int statusCode,
-					Map<String, List<String>> responseHeaders) {
-				getUI().access(() -> {
-					showDetails(result);
-				});
-			}
-	
-			@Override
-			public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
-			}
-	
-			@Override
-			public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
-			}
-		};
+		return new DetailsCallback().createStatementDetailsCallback(this);
 	}
 	
 }

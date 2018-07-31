@@ -46,6 +46,8 @@ import com.vaadin.server.Page;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Slider;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 
 import bio.knowledge.graph.jsonmodels.Edge;
 import bio.knowledge.graph.jsonmodels.Edges;
@@ -57,7 +59,10 @@ import bio.knowledge.model.Annotation;
 import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.model.Statement;
 import bio.knowledge.service.ConceptService;
+import bio.knowledge.service.KBQuery;
+import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.web.ui.DesktopUI;
+import bio.knowledge.web.view.ConceptDetailsWindow;
 
 @JavaScript({
 		"https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js",
@@ -74,6 +79,9 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 	 * 
 	 */
 	private static final long serialVersionUID = -2713309497798105325L;
+	
+	KnowledgeBeaconService kbService;
+	KBQuery kbQuery;
 	
 	public interface ValueChangeListener extends Serializable {
 		void valueChange();
@@ -95,21 +103,30 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 		this.conceptService = conceptService;
 		initializeRPCFunctions();
 	}
+	
+	public ConceptMapDisplay(KnowledgeBeaconService kbService, KBQuery kbQuery) {
+		this.kbService = kbService;
+		this.kbQuery = kbQuery;
+		initializeRPCFunctions();
+	}
 
 	private void initializeRPCFunctions() {
 		// on node click
 		addFunction("makeNodePopup", arguments -> {
 			String id = arguments.get(0).asString();
 			String name = arguments.get(1).asString();
-			double x = arguments.get(2).asNumber();
-			double y = arguments.get(3).asNumber();
+//			double x = arguments.get(2).asNumber();
+//			double y = arguments.get(3).asNumber();
+//			System.out.println(id);
+//			System.out.println(name);
+//			System.out.println(x);
+//			System.out.println(y);
 
-			System.out.println(id);
-			System.out.println(name);
-			System.out.println(x);
-			System.out.println(y);
-
-			((DesktopUI) getUI()).getPredicatePopupWindow().conceptMapNodePopUp(id, name, (int) x, (int) y);
+//			((DesktopUI) getUI()).getPredicatePopupWindow().conceptMapNodePopUp(id, name, (int) x, (int) y);
+			
+			Window window = new ConceptDetailsWindow(id, name, kbService, kbQuery);
+			getUI().addWindow(window);
+			
 		});
 		// on edge click
 		addFunction("makeEdgePopup", arguments -> {
@@ -122,8 +139,8 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 			String uri = arguments.get(6).asString();
 			String statementId = arguments.get(7).asString();
 			
-			((DesktopUI) getUI()).getPredicatePopupWindow().conceptMapEdgePopUp(source, target, label, (int) x,
-					(int) y, description, uri, statementId);
+//			((DesktopUI) getUI()).getPredicatePopupWindow().conceptMapEdgePopUp(source, target, label, (int) x,
+//					(int) y, description, uri, statementId);
 		});
 		
 		
@@ -467,7 +484,6 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 			IdentifiedConcept concept = conceptOpt.get();
 			nodeId    = concept.getCliqueId();
 			nodeName  = concept.getName();
-			//TODO: consider how to get more than one category
 			nodeGroup = concept.getCategories().get(0);
 		}
 		
@@ -606,7 +622,6 @@ public class ConceptMapDisplay extends AbstractJavaScriptComponent implements Gr
 		String nodeId = concept.getCliqueId();
 	
 		// create the new node from the passed-in data
-		//TODO: consider how to add all categories
 		Node newNode = new Node( nodeId, concept.getName(), concept.getCategories().get(0), "add" );
 		
 		this.addNodeToConceptMap(newNode);

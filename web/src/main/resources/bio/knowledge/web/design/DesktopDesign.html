@@ -27,23 +27,24 @@
 				<vaadin-horizontal-layout width="200px" margin :middle :center >
 				<vaadin-horizontal-layout visible="false" _id="popUpLayout"></vaadin-horizontal-layout>
 				</vaadin-horizontal-layout>
-				<vaadin-horizontal-layout primary-style-name="v-cmbar" spacing responsive width="400px"  margin :middle :right _id="cmbar" > 
-				      <vaadin-upload description="Upload Concept Map" responsive immediate height="33px" _id="loadMap" :middle :expand=1.5></vaadin-upload> 
-				      <vaadin-button icon="fonticon://FontAwesome/f0c7" description="Save Concept Map" style-name="map-button" responsive height="33px"  plain-text _id="saveBtn" :middle :expand></vaadin-button> 
-				      <vaadin-button icon="fonticon://FontAwesome/f021" description="Clear Concept Map" style-name="map-button" responsive height="33px"  plain-text _id="clearMapBtn"  :middle :expand></vaadin-button> 
+				<vaadin-horizontal-layout primary-style-name="v-cmbar" spacing responsive width="200px"  margin :middle :right _id="cmbar" > 
+				      <!--<vaadin-upload description="Upload Concept Map" responsive immediate height="33px" _id="loadMap" :middle :expand=1.5></vaadin-upload> 
+				      <vaadin-button icon="fonticon://FontAwesome/f0c7" description="Save Concept Map" style-name="map-button" responsive height="33px"  plain-text _id="saveBtn" :middle :expand></vaadin-button>
 				      <vaadin-button icon="fonticon://FontAwesome/f02d" description="Concept Map Library" style-name="map-button" responsive height="33px"  plain-text _id="searchMapLibraryBtn"  :middle :expand></vaadin-button> 
-				      <vaadin-button icon="fonticon://FontAwesome/f140" description="Center Concept Map" style-name="map-button" responsive height="33px"  plain-text _id="centerMapBtn"  :middle :expand></vaadin-button> 
-			     </vaadin-horizontal-layout> 
+				      -->
+				      <vaadin-button icon="fonticon://FontAwesome/f140" description="Center Concept Map" style-name="map-button" responsive height="33px"  plain-text _id="centerMapBtn"  :middle :expand></vaadin-button>  
+				      <vaadin-button icon="fonticon://FontAwesome/f057" description="Clear Concept Map" style-name="map-button" responsive height="33px"  plain-text _id="clearMapBtn"  :middle :expand></vaadin-button> 
+				      </vaadin-horizontal-layout> 
 			</vaadin-horizontal-layout>
 		  	<vaadin-vertical-split-panel responsive split-position="55%" _id="desktopSplitPanel" :expand> 
 			    <vaadin-vertical-layout spacing responsive id="map-layout" size-full margin> 
 			     <vaadin-horizontal-layout responsive id="cm-panel-dark" width-full height="100%" _id="cmPanel" :expand></vaadin-horizontal-layout> 
 			     <vaadin-horizontal-layout width-full> 
-				      <vaadin-button icon="fonticon://FontAwesome/f0d8" style-name="borderless icon-align-right" responsive width="93px" height="22px" plain-text _id="showLegendBtn" :middle :expand="1.5">
+				      <!--<vaadin-button icon="fonticon://FontAwesome/f0d8" style-name="borderless icon-align-right" responsive width="93px" height="22px" plain-text _id="showLegendBtn" :middle :expand="1.5">
 				        Show Legend 
-				      </vaadin-button> 
+				      </vaadin-button>--> 
 				      <vaadin-label width="150px" _id=conceptMapNameLabel></vaadin-label>
-				      <vaadin-native-select description="Layout" responsive item-caption-mode="id" height="22px"  _id="cmLayoutSelect"  :middle :expand="2.0"> 
+				      <vaadin-native-select description="Layout" responsive item-caption-mode="id" height="30px"  _id="cmLayoutSelect"  :middle :expand="2.0"> 
 					       <option>Manual</option> 
 					       <option>Grid</option> 
 					       <option>Circle</option> 
@@ -52,7 +53,7 @@
 					       <option>Dagre</option> 
 					       <option>Spread</option> 
 				      </vaadin-native-select> 
-				      <vaadin-native-select description="Background Color" width="75px" responsive item-caption-mode="id" height="22px" _id="colorSelect" :middle :expand="1.5"> 
+				      <vaadin-native-select description="Background Color" width="75px" responsive item-caption-mode="id" height="30px" _id="colorSelect" :middle :expand="1.5"> 
 					       <option>Dark</option> 
 					       <option>Light</option> 
 				      </vaadin-native-select> 

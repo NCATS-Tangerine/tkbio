@@ -126,47 +126,6 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * bio.knowledge.service.core.IdentifiedEntityService#createInstance(java.lang.
-	 * Object[])
-	 */
-	//TODO: get rid? isn't actually used
-/*	public Neo4jAnnotatedConcept createInstance(Object... args) {
-		if (args.length == 4)
-			if (args[1] instanceof ConceptType) {
-				return new Neo4jAnnotatedConcept((String) args[0], // Concept Clique Identifier
-						(String) args[1], // Concept Name
-						(ConceptType) args[2], // Concept Type
-						(String) args[3] // Concept Taxon
-				);
-			} else
-				throw new RuntimeException("Invalid 2nd argument to ConceptService.createInstance() ?");
-		else
-			throw new RuntimeException("Invalid number of ConceptService.createInstance() arguments?");
-	}
-*/
-	// @Autowired
-	// private GraphDatabaseService graphDb;
-	/*
-	 * private Stream<Concept> getConceptStream() { List<Concept> Concepts = new
-	 * ArrayList<Concept>() ; for(Concept c : conceptRepository.getConcepts()) {
-	 * Concepts.add(c) ; } return Concepts.stream() ; }
-	 * 
-	 * public List<Concept> getConcepts() { if(Concepts.isEmpty()) { Concepts =
-	 * getConceptStream().sorted().collect(toList()) ; } return Concepts ; }
-	 */
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * Should never actually be called since the system has a non-null ListView
-	 * mapping to Concept data so I return an empty list for expediency
-	 * 
-	 * @see bio.knowledge.service.core.IdentifiedEntityService#getIdentifiers()
-	 */
 	@Override
 	public List<IdentifiedConcept> getIdentifiers() {
 		// return getConcepts();
@@ -543,7 +502,6 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 
 	}
 
-	//TODO: uncomment and fix
 	/**
 	 * This method needs to search the Equivalent Concept Cliques for a matching
 	 * clique, then return the associated concept. First iteration (flawed!), is to
@@ -554,6 +512,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 	 *            CURIE to be resolved to a concept
 	 * @return Optional<Concept> of matching concept
 	 */
+	@Deprecated
 	public Optional<IdentifiedConcept> findByIdentifier(String identifier) {
 		return Optional.empty();
 		/**CompletableFuture<String> future = kbService.findByIdentifier(identifier);
@@ -726,7 +685,6 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 		runSimpleQuery(ds, input, handler);
 	}
 
-	//TODO: uncomment and fix
 	/**
 	 * This method retrieves the description ('summary') of the currently selected
 	 * concept, from a suitable data service
@@ -734,6 +692,7 @@ public class ConceptService extends IdentifiedEntityServiceImpl<IdentifiedConcep
 	 * @param cst
 	 * @param handler
 	 */
+	@Deprecated
 	public void getDescription(Function<ResultSet, Void> handler) throws Exception {}
 
 		/*Optional<IdentifiedConcept> cscOpt = query.getCurrentSelectedConcept();

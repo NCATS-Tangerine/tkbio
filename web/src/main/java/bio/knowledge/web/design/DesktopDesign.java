@@ -38,15 +38,15 @@ public class DesktopDesign extends VerticalLayout {
 //	protected VerticalLayout evidenceTab;
 //	protected VerticalLayout referenceTab;
 	protected HorizontalLayout cmbar;
-	protected Upload loadMap;
-	protected Button saveBtn;
+//	protected Upload loadMap;
+//	protected Button saveBtn;
 	protected Button clearMapBtn;
-	protected Button searchMapLibraryBtn;
+//	protected Button searchMapLibraryBtn;
 	protected Button centerMapBtn;
 	protected NativeSelect cmLayoutSelect;
 	protected NativeSelect colorSelect;
 	protected HorizontalLayout cmPanel;
-	protected Button showLegendBtn;
+//	protected Button showLegendBtn;
 	protected Slider zoomSlider;
 	protected Label conceptMapNameLabel;
 
