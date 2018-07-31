@@ -25,6 +25,7 @@ public class StatementsView extends VerticalLayout {
 	
 	public static final String NAME = "statements";
 	public static final String DETAILS_ID = "Details";
+	public static final String STATEMENTS_ID = "Statements";
 
 	private static final long serialVersionUID = -7988756397144422937L;
 	
@@ -34,27 +35,28 @@ public class StatementsView extends VerticalLayout {
 	private ProgressBar progressBar = new ProgressBar();
 	private VerticalLayout statemtsLayout = new VerticalLayout();
 
-	public StatementsView(Indexed conceptsContainer, KnowledgeBeaconService kbService, KBQuery kbQuery) {
+	/**
+	 * Initializes side-by-side view of concepts and statements grids
+	 * @param conceptsContainer
+	 * @param kbService
+	 * @param kbQuery
+	 */
+	public StatementsView(Indexed conceptsContainer) {
 		init();
-		GeneratedPropertyContainer container = addDetailsColumn(conceptsContainer);
+		GeneratedPropertyContainer container = addDetailsAndStatementsColumns(conceptsContainer);
 		conceptsGrid.setContainerDataSource(container);
 		conceptsGrid.getColumn(DETAILS_ID).setWidth(90);
-		ButtonRenderer detailsButton = new ButtonRenderer(e -> {
-			Window window = new ConceptDetailsWindow(e, kbService, kbQuery);
-			this.getUI().addWindow(window);
-		});
-		conceptsGrid.getColumn(DETAILS_ID).setRenderer(detailsButton);
-		
+		conceptsGrid.getColumn(STATEMENTS_ID).setWidth(90);
 	}
-
-	public GeneratedPropertyContainer addDetailsColumn(Indexed conceptsContainer) {
+	
+	public GeneratedPropertyContainer addDetailsAndStatementsColumns(Indexed conceptsContainer) {
 		GeneratedPropertyContainer container = new GeneratedPropertyContainer(conceptsContainer);
 		container.addGeneratedProperty(DETAILS_ID, new PropertyValueGenerator<String>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 		    public String getValue(Item item, Object itemId, Object propertyId) {
-		        return "more info"; 
+		        return "details"; 
 		    }
 
 		    @Override
@@ -62,6 +64,21 @@ public class StatementsView extends VerticalLayout {
 		        return String.class;
 		    }
 		});
+		
+		container.addGeneratedProperty(STATEMENTS_ID, new PropertyValueGenerator<String>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+		    public String getValue(Item item, Object itemId, Object propertyId) {
+		        return "search"; 
+		    }
+
+		    @Override
+		    public Class<String> getType() {
+		        return String.class;
+		    }
+		});
+		
 		return container;
 	}
 
@@ -89,17 +106,17 @@ public class StatementsView extends VerticalLayout {
 		HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
 		splitPanel.setFirstComponent(conceptsGrid);
 		splitPanel.setSecondComponent(statemtsLayout);
-		splitPanel.setSplitPosition(50, Unit.PERCENTAGE);
+		splitPanel.setSplitPosition(55, Unit.PERCENTAGE);
 		
 		setSpacing(true);
 		setHeight(100, Unit.PERCENTAGE);
 		addComponents(splitPanel, addToGraphBtn);
 		setExpandRatio(splitPanel, 1);
 
-		initGrid();
+		initGraphBtnToggle();
 	}
 
-	private void initGrid() {
+	private void initGraphBtnToggle() {
 		statemtsGrid.addSelectionListener(e -> {
 			Collection<Object> itemIds = statemtsGrid.getSelectedRows();
 			if (itemIds.isEmpty()) {

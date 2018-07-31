@@ -9,14 +9,14 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.VerticalLayout;
 
 import bio.knowledge.client.model.BeaconConcept;
-
+@Deprecated
 public class SearchResultView extends VerticalLayout {
 
 	private static final long serialVersionUID = 1918173093105535900L;
 
 	private Grid resultGrid;
 	private Button statementBtn = new Button();
-
+	
 	public SearchResultView(List<BeaconConcept> results) {
 		initGrid(results);
 		initButton();

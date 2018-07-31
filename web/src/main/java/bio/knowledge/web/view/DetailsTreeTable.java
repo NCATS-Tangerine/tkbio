@@ -2,6 +2,10 @@ package bio.knowledge.web.view;
 
 import com.vaadin.ui.TreeTable;
 
+/**
+ * TreeTable implementation with a few common operations
+ * @author Imelda
+ */
 public class DetailsTreeTable extends TreeTable {
 	
 	private static final long serialVersionUID = -2510115575396479636L;
@@ -38,15 +42,18 @@ public class DetailsTreeTable extends TreeTable {
 	}
 	
 	/**
-	 * Adds row with no children with given title, value, and parent
+	 * If value exists, adds row with no children with given title, value, and parent.
 	 * @param title
 	 * @param value
 	 * @param parent
 	 */
 	public void addInfoRow(String title, String value, Object parent) {
-		Object newRow = addItem(new Object[] {title, value}, null);
-		this.setParent(newRow, parent);
-		this.setChildrenAllowed(newRow, false);
+		if (!(value == null || value.isEmpty())) {
+			Object newRow = addItem(new Object[] {title, value}, null);
+			this.setParent(newRow, parent);
+			this.setChildrenAllowed(newRow, false);
+		}
+		
 	}
 
 

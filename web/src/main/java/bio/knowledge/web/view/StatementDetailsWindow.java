@@ -19,6 +19,11 @@ import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 
 public class StatementDetailsWindow extends Window {
+	
+	private static final float WIDTH = 80;
+	private static final float HEIGHT = 40;
+	private static final String TITLE = "Statement Details: ";
+	
 	private ProgressBar progressBar = new ProgressBar();
 	private VerticalLayout contents;
 	
@@ -26,13 +31,13 @@ public class StatementDetailsWindow extends Window {
 
 	public StatementDetailsWindow(String statementId, KnowledgeBeaconService kbService, KBQuery kbQuery) {
 		init();
-		setCaption(statementId);
+		setCaption(TITLE + statementId);
 		kbService.getStatementDetailsAsync(statementId, null, 1, 1000, createCallback());
 	}
 
 	private void init() {
-		setHeight(40, Unit.EM);
-		setWidth(80, Unit.EM);
+		setHeight(HEIGHT, Unit.EM);
+		setWidth(WIDTH, Unit.EM);
 		center();
 		setResizable(true);
 		
@@ -61,9 +66,9 @@ public class StatementDetailsWindow extends Window {
 
 		Object citationsList = table.addTitleRow("Publications");
 		for (int i = 1; i < citations.size(); i++) {
-			BeaconStatementCitation c= citations.get(i);
+			BeaconStatementCitation c = citations.get(i);
 			
-			Object title = table.addTitleRow("evidence" + i, citationsList);
+			Object title = table.addTitleRow(String.valueOf(i), citationsList);
 			table.addInfoRow("id", c.getId(), title);
 			table.addInfoRow("name",c.getName(), title);
 			table.addInfoRow("uri", c.getUri(), title);

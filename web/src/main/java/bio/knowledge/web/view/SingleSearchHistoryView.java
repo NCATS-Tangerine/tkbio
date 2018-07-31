@@ -24,6 +24,8 @@ import bio.knowledge.client.model.BeaconCliquesQueryResult;
 import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconConceptsQuery;
 import bio.knowledge.client.model.BeaconConceptsQueryResult;
+import bio.knowledge.ontology.BiolinkModel;
+import bio.knowledge.ontology.BiolinkTerm;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 import bio.knowledge.web.ui.DesktopUI;
@@ -177,8 +179,6 @@ public class SingleSearchHistoryView extends HorizontalLayout {
 		if (results.isPresent()) {
 			buttonsLayout.replaceComponent(progressBar, detailsButton);
 			queryResults.addAll(results.get().getResults());
-		} else {
-			//TODO: some error pop-up?
 		}
 	}
 	
@@ -191,14 +191,16 @@ public class SingleSearchHistoryView extends HorizontalLayout {
 			
 			List<BeaconClique> cliqueResults = results.get().getResults();
 			for (BeaconClique result : cliqueResults) {
+				List<String> defaultCategories = new ArrayList<>();
+				defaultCategories.add(BiolinkTerm.NAMED_THING.getLabel());
+				
 				BeaconConcept concept = new BeaconConcept(); 
+				concept.setCategories(defaultCategories);
 				concept.setClique(result.getCliqueId());
 				concept.setName(result.getId());
+				
 				queryResults.add(concept);
 			}
-			
-		} else {
-			//TODO: some error pop-up?
 		}
 	}
 

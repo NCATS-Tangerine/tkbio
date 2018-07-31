@@ -17,10 +17,15 @@ import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconConceptDetail;
 import bio.knowledge.client.model.BeaconConceptWithDetails;
 import bio.knowledge.client.model.BeaconConceptWithDetailsBeaconEntry;
+import bio.knowledge.model.IdentifiedConcept;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;
 
 public class ConceptDetailsWindow extends Window {
+	
+	private static final float WIDTH = 80;
+	private static final float HEIGHT = 40;
+	private static final String TITLE = "Concept Details: ";
 	
 	private ProgressBar progressBar = new ProgressBar();
 	private VerticalLayout contents;
@@ -30,17 +35,25 @@ public class ConceptDetailsWindow extends Window {
 	public ConceptDetailsWindow(RendererClickEvent e, KnowledgeBeaconService kbService, KBQuery kbQuery) {
 		init();
 		BeaconConcept concept = (BeaconConcept) e.getItemId();
-		setCaption(concept.getClique());
+		setCaption(TITLE + concept.getClique());
 		kbService.getConceptDetailsAsync(concept.getClique(), kbQuery.getCustomBeacons(), createCallback());
+	}
+	
+	public ConceptDetailsWindow(IdentifiedConcept concept, KnowledgeBeaconService kbService, KBQuery kbQuery) {
+		init();
+		String cliqueId = concept.getCliqueId();
+		setCaption(TITLE + cliqueId + " (" + concept.getName() + ")");
+		kbService.getConceptDetailsAsync(cliqueId, kbQuery.getCustomBeacons(), createCallback());
 	}
 
 	private void init() {
-		setHeight(40, Unit.EM);
-		setWidth(80, Unit.EM);
+		setHeight(HEIGHT, Unit.EM);
+		setWidth(WIDTH, Unit.EM);
 		center();
 		setResizable(true);
 		
 		contents = new VerticalLayout();
+		
 		progressBar.setIndeterminate(true);
 		contents.addComponent(progressBar);
 		contents.setComponentAlignment(progressBar, Alignment.MIDDLE_CENTER);
@@ -114,108 +127,3 @@ public class ConceptDetailsWindow extends Window {
 	}
 	
 }
-
-//public class ConceptDetailsLayout extends VerticalLayout {
-//	
-//	private ProgressBar progressBar = new ProgressBar();
-//	
-//	private static final long serialVersionUID = -3816876107728223236L;
-//
-//	public ConceptDetailsLayout(RendererClickEvent e, KnowledgeBeaconService kbService, KBQuery kbQuery) {
-//		setMargin(true);
-//		showProgress();
-//		BeaconConcept concept = (BeaconConcept) e.getItemId();
-////		List<Integer> beacons = new ArrayList<>();
-////		beacons.add(1);
-////		Optional<BeaconConceptWithDetails> optional = kbService.getConceptDetails(concept.getClique(), kbQuery.getCustomBeacons());
-////		if (optional.isPresent()) {
-////			BeaconConceptWithDetails details = optional.get();
-////			removeProgress();
-////			showDetails(details);
-////		} else {
-////			removeProgress();
-////			showError(concept.getClique());
-////		}
-//		
-//		
-//		kbService.getConceptDetailsAsync(concept.getClique(), kbQuery.getCustomBeacons(), createCallback());
-//		
-//	}
-//
-//	private void showDetails(BeaconConceptWithDetails details) {
-//		addComponent(new Label(details.getClique()));
-//		addComponent(new Label(details.getName()));
-//		addComponent(new Label(String.join(", ", details.getAliases())));
-//		addComponent(new Label(String.join(", ", details.getCategories())));
-//		
-//		Grid grid = new Grid("Info");
-//		addComponent(grid);
-//		
-////		GeneratedPropertyContainer wrapperContainer = new GeneratedPropertyContainer(indexed);
-////        wrapperContainer.removeContainerProperty("id");
-////        setContainerDataSource(wrapperContainer);
-////        getColumns().stream().forEach(c -> c.setSortable(false));
-////		
-////		addComponent(infoGrid);
-////		infoGrid.setSizeFull();
-////		infoGrid.addColumn("Clique");
-////		infoGrid.addColumn("Name");
-////		infoGrid.addColumn("Aliases");
-////		infoGrid.addColumn("Categories");
-////		List<BeaconConceptWithDetailsBeaconEntry> entries = details.getEntries();
-////		for (BeaconConceptWithDetailsBeaconEntry e : entries) {
-////			infoGrid.addRow(e.getBeacon(), e.getId(), e.getDefinition(), e.getSynonyms());
-////		}
-////		
-//		
-//	}
-//	
-//	private void showError(String msg) {
-//		Label label = new Label("Error - Could not find details: " + msg);
-//		addComponent(label);
-//		this.markAsDirty();
-//	}
-//
-//	private void removeProgress() {
-//		removeComponent(progressBar);
-//	}
-//
-//	private void showProgress() {
-//		progressBar.setIndeterminate(true);
-//		addComponent(progressBar);
-//		setComponentAlignment(progressBar, Alignment.MIDDLE_CENTER);
-//	}
-//
-//	private void init() {
-//	}
-//	
-//	private ApiCallback<BeaconConceptWithDetails> createCallback() {
-//		return new ApiCallback<BeaconConceptWithDetails>() {
-//	
-//			@Override
-//			public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-//				// TODO Auto-generated method stub
-//				removeProgress();
-//				showError(e.toString());
-//			}
-//	
-//			@Override
-//			public void onSuccess(BeaconConceptWithDetails result, int statusCode,
-//					Map<String, List<String>> responseHeaders) {
-//				removeProgress();
-//				showDetails(result);
-//			}
-//	
-//			@Override
-//			public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
-//				// TODO Auto-generated method stub	
-//			}
-//	
-//			@Override
-//			public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
-//				// TODO Auto-generated method stub
-//			}
-//		};
-//	}
-//	
-//}

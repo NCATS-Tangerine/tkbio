@@ -80,36 +80,4 @@ public class StatementsQueryListener implements QueryPollingListener {
 		return beacons;
 	}
 	
-//	private ApiCallback<BeaconStatementsQueryResult> createCallback() {
-//		return new ApiCallback<BeaconStatementsQueryResult>() {
-//
-//			@Override
-//			public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-//				// TODO Auto-generated method stub
-//				e.printStackTrace();
-//				isDone.compareAndSet(false, true);
-//				
-//			}
-//
-//			@Override
-//			public void onSuccess(BeaconStatementsQueryResult result, int statusCode,
-//					Map<String, List<String>> responseHeaders) {
-//				isDone.compareAndSet(false, true);
-//				presenter.addStatements(sourceConcept, result.getResults());
-//			}
-//
-//			@Override
-//			public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//		};
-//	}
-	
 }

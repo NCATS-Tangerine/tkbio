@@ -85,6 +85,7 @@ import bio.knowledge.service.beacon.KnowledgeBeaconService;
  */
 @Component
 @Scope(value = "prototype", proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Deprecated
 public class ConceptMapPopupWindow {
 
 	private DesktopUI parentUi;

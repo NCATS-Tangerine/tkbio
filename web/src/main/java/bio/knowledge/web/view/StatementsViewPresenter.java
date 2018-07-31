@@ -94,9 +94,9 @@ public class StatementsViewPresenter {
 		 */
 		clearCache();
 		BeanItemContainer<BeaconConcept> container = new BeanItemContainer<>(BeaconConcept.class, results);
-		statementsView = new StatementsView(container, kbService, kbQuery);
+		statementsView = new StatementsView(container);
 		replaceViewContent(statementsView);
-		initGrid();
+		initGridListeners();
 	}
 
 	private void replaceViewContent(VerticalLayout newContent) {
@@ -114,13 +114,19 @@ public class StatementsViewPresenter {
 		return kbService;
 	}
 
-	private void initGrid() {
-		statementsView.getConceptsGrid().addSelectionListener(e -> {
-			Set<Object> selected = e.getAdded();
-			if (selected == null) {
-				return;
-			}
-			BeaconConcept selectedConcept = (BeaconConcept) selected.iterator().next();
+	/**
+	 * initializes click listeners for: concepts grid details and statements columns, and the statements grid add to graph button
+	 */
+	private void initGridListeners() {
+		initStatementsListener();
+		initDetailsListener();
+		initAddToGraphListener();
+	}
+
+	private void initStatementsListener() {
+		ButtonRenderer statementsButton = new ButtonRenderer(e -> {
+			Object selected = e.getItemId();
+			BeaconConcept selectedConcept = (BeaconConcept) selected;
 			if (selectedConcept == currentConcept) {
 				return;
 			}
@@ -152,8 +158,26 @@ public class StatementsViewPresenter {
 			}
 		});
 		
+		statementsView.getConceptsGrid().getColumn(StatementsView.STATEMENTS_ID).setRenderer(statementsButton);
+	}
+
+	private void initDetailsListener() {
+		Grid conceptsGrid = statementsView.getConceptsGrid();
+		ButtonRenderer detailsButton = new ButtonRenderer(e -> {
+			Window window = new ConceptDetailsWindow(e, kbService, kbQuery);
+			conceptsGrid.getUI().addWindow(window);
+		});
+
+		conceptsGrid.getColumn(StatementsView.DETAILS_ID).setRenderer(detailsButton);		
+	}
+	
+	private void initAddToGraphListener() {
+		Grid statemtsGrid = statementsView.getStatemtsGrid();
+		statemtsGrid.addSelectionListener(e -> {
+			selectedItemIds = statemtsGrid.getSelectedRows();
+		});
+		
 		statementsView.getAddToGraphButton().addClickListener(e -> {
-			Grid statemtsGrid = statementsView.getStatemtsGrid();
 			Indexed container = statemtsGrid.getContainerDataSource();
 			for (Object itemId : selectedItemIds) {
 				IdentifiedConcept subject = (IdentifiedConcept) container.getContainerProperty(itemId, SUBJECT_ID).getValue();
@@ -170,22 +194,47 @@ public class StatementsViewPresenter {
 		});
 	}
 
+	/**
+	 * Sets statements grid with given results, adding an additional column to initiate harvesting of 
+	 * statement details and details pop-up window
+	 * @param results
+	 */
 	private void setStatementsDataSource(List<BeaconStatement> results) {
 		Grid grid = statementsView.getStatemtsGrid();
 		grid.setContainerDataSource(getStatementsContainer(results));
 		
 		statementsView.hideProgress();
 		if (!results.isEmpty()) {
+
+			Indexed container = grid.getContainerDataSource();
 			
 			ButtonRenderer detailsButton = new ButtonRenderer(e -> {
-				Indexed container = grid.getContainerDataSource();
 				String id = (String) container.getContainerProperty(e.getItemId(), STMT_ID).getValue();
 				Window window = new StatementDetailsWindow(id, kbService, kbQuery);
 				statementsView.getUI().addWindow(window);
 			});
-		
 			grid.getColumn(StatementsView.DETAILS_ID).setRenderer(detailsButton);
-			grid.removeColumn(STMT_ID);
+			
+			IdentifiedConceptToStringConverter converter = new IdentifiedConceptToStringConverter();
+			
+			ButtonRenderer subjectButton = new ButtonRenderer(e -> {
+				IdentifiedConcept concept = (IdentifiedConcept) container.getContainerProperty(e.getItemId(), SUBJECT_ID).getValue();
+				Window window = new ConceptDetailsWindow(concept, kbService, kbQuery);
+				statementsView.getUI().addWindow(window);
+			});
+			grid.getColumn(SUBJECT_ID).setConverter(converter);
+			grid.getColumn(SUBJECT_ID).setRenderer(subjectButton);
+			
+			ButtonRenderer objectButton = new ButtonRenderer(e -> {
+				IdentifiedConcept concept = (IdentifiedConcept) container.getContainerProperty(e.getItemId(), OBJECT_ID).getValue();
+				Window window = new ConceptDetailsWindow(concept, kbService, kbQuery);
+				statementsView.getUI().addWindow(window);
+			});
+			grid.getColumn(OBJECT_ID).setConverter(converter);
+			grid.getColumn(OBJECT_ID).setRenderer(objectButton);
+			
+
+			grid.getColumn(STMT_ID).setHidden(true);
 		}
 		
 	}
@@ -196,7 +245,7 @@ public class StatementsViewPresenter {
 		container.addContainerProperty(SUBJECT_ID, IdentifiedConcept.class, "");
 		container.addContainerProperty(PREDICATE_ID, Predicate.class, "");
 		container.addContainerProperty(OBJECT_ID, IdentifiedConcept.class, "");
-		container.addContainerProperty(StatementsView.DETAILS_ID, String.class, "more info");
+		container.addContainerProperty(StatementsView.DETAILS_ID, String.class, "details");
 		
 		for (BeaconStatement beaconStatemt : results) {			
 			BeaconStatementSubject beaconSubject = beaconStatemt.getSubject();
@@ -249,5 +298,47 @@ public class StatementsViewPresenter {
 			job.cancel(true);
 		}
 		executor.shutdown();
+	}
+	
+	@SuppressWarnings("unused")
+	@Deprecated
+	// Old method for initializing statement harvest on click of whole row
+	private void initStatementsListenerOnRow() {
+		statementsView.getConceptsGrid().addSelectionListener(e -> {
+			Set<Object> selected = e.getAdded();
+			if (selected == null) {
+				return;
+			}
+			BeaconConcept selectedConcept = (BeaconConcept) selected.iterator().next();
+			if (selectedConcept == currentConcept) {
+				return;
+			}
+			currentConcept = selectedConcept;
+			/**
+			 * Check the cached concepts first; if one is found, then immediately use the cached statements
+			 * instead of making another http request.
+			 */
+			if (cachedConcepts.contains(currentConcept)) {
+				if (cachedStatements.containsKey(currentConcept)) {
+					List<BeaconStatement> statements = cachedStatements.get(currentConcept);
+					setStatementsDataSource(statements);
+				} else {					
+					statementsView.showProgress();
+				}
+			} else {
+				/**
+				 * Not found in cache, so make a new request.
+				 */
+				statementsView.showProgress();
+				cachedConcepts.add(currentConcept);
+				BeaconStatementsQuery statementsQuery = kbService.postStatementsQuery(currentConcept.getClique(), null, null, null, kbQuery.getTypes(), kbQuery.getCustomBeacons());
+				QueryPollingListener listener = new StatementsQueryListener(statementsQuery, kbQuery.getCustomBeacons(), this);
+				listeners.add(listener);
+				if (!hasJobStarted) {
+					hasJobStarted = true;
+					initPolling();
+				}
+			}
+		});
 	}
 }

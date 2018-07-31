@@ -138,6 +138,7 @@ import bio.knowledge.web.ui.PopupWindow;
  * @author Yinglun(Colin) Qiao
  *
  */
+@Deprecated
 @SpringView(name = ListView.NAME)
 public class ListView extends BaseView {
 
