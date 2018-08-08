@@ -31,6 +31,7 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
@@ -56,8 +57,8 @@ public class DesktopView extends DesktopDesign implements View {
 
 	public static final String NAME = "main";
 	
+	private VerticalLayout conceptsTab = new VerticalLayout();
 	private VerticalLayout statementsTab = new VerticalLayout();
-	private VerticalLayout evidencesTab = new VerticalLayout();
 	private VerticalLayout referencesTab = new VerticalLayout();
 
 	public DesktopView() {
@@ -72,12 +73,12 @@ public class DesktopView extends DesktopDesign implements View {
 		historyBtn.setStyleName(ValoTheme.BUTTON_ICON_ONLY, true);
 		historyBtn.setStyleName(ValoTheme.BUTTON_BORDERLESS, true);
 		
+		conceptsTab.setSizeFull();
 		statementsTab.setSizeFull();
-		evidencesTab.setSizeFull();
 		referencesTab.setSizeFull();
 		
-		dataTabSheet.addTab(statementsTab, "Search Results");
-//		dataTabSheet.addTab(evidencesTab, "Evidences");
+		dataTabSheet.addTab(conceptsTab, "Search Results");
+		dataTabSheet.addTab(statementsTab, "Statements");
 //		dataTabSheet.addTab(referencesTab, "References");
 	}
 
@@ -177,16 +178,16 @@ public class DesktopView extends DesktopDesign implements View {
 //		return relationsTab;
 //	}
 
-	public VerticalLayout getEvidenceTab() {
-		return evidencesTab;
+	public VerticalLayout getStatementsTab() {
+		return statementsTab;
 	}
 //
 //	public VerticalLayout getReferenceTab() {
 //		return referenceTab;
 //	}
 
-	public VerticalLayout getStatementsTab() {
-		return statementsTab;
+	public VerticalLayout getConceptsTab() {
+		return conceptsTab;
 	}
 	
 	public HorizontalLayout getCmPanel() {
@@ -296,6 +297,10 @@ public class DesktopView extends DesktopDesign implements View {
 		} else {
 			return "";
 		}
+	}
+	
+	public void setSelectedTab(Component c) {
+		dataTabSheet.setSelectedTab(c);
 	}
 
 }

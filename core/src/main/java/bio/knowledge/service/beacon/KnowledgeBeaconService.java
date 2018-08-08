@@ -399,7 +399,7 @@ public class KnowledgeBeaconService {
 	
 	public void getConceptDetailsAsync(String cliqueId, List<Integer> beacons, ApiCallback<BeaconConceptWithDetails> callback) {
 		try {
-			conceptsApi.getApiClient().getHttpClient().setReadTimeout(5, TimeUnit.MINUTES);
+			conceptsApi.getApiClient().getHttpClient().setReadTimeout(3, TimeUnit.MINUTES);
 			conceptsApi.getConceptDetailsAsync(cliqueId, beacons, callback);
 		} catch (ApiException e) {
 			e.printStackTrace();
