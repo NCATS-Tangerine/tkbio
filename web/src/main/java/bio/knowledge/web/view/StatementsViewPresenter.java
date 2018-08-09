@@ -116,11 +116,6 @@ public class StatementsViewPresenter {
 		conceptsTab.removeAllComponents();
 		conceptsTab.addComponent(newContent);
 	}
-	
-	private void replaceStatementsGrid(Grid newContent) {
-		statementsTab.removeAllComponents();
-		statementsTab.addComponent(newContent);
-	}
 
 	private void clearCache() {
 		cachedConcepts.clear();
@@ -176,6 +171,7 @@ public class StatementsViewPresenter {
 					initPolling();
 				}
 			}
+			statementsView.setStatementsTitle(currentConcept.getClique());
 		});
 		
 		statementsView.getConceptsGrid().getColumn(StatementsView.STATEMENTS_ID).setRenderer(statementsButton);

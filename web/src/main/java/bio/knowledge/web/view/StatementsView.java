@@ -14,6 +14,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.CellDescriptionGenerator;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -37,6 +38,7 @@ public class StatementsView extends VerticalLayout {
 	private Button addToGraphBtn = new Button();
 	private ProgressBar progressBar = new ProgressBar();
 	private VerticalLayout statemtsLayout = new VerticalLayout();
+	private Label statemtsTitle = new Label();
 
 	/**
 	 * Initializes concepts and statements tab views
@@ -95,6 +97,8 @@ public class StatementsView extends VerticalLayout {
 		statemtsGrid.setSelectionMode(SelectionMode.MULTI);
 		statemtsGrid.setCellDescriptionGenerator(getCellDescriptionGenerator());		
 		statemtsGrid.setSizeFull();
+				
+		statemtsTitle.setCaptionAsHtml(true);
 		
 		addToGraphBtn.setCaption("<strong style = \"font-size: 120%;\">Add to Graph</strong>");
 		addToGraphBtn.setCaptionAsHtml(true);
@@ -103,13 +107,15 @@ public class StatementsView extends VerticalLayout {
 		addToGraphBtn.setWidth(100, Unit.PERCENTAGE);
 		
 		progressBar.setIndeterminate(true);
-		
+				
+		statemtsLayout.addComponent(statemtsTitle);
 		statemtsLayout.addComponent(statemtsGrid);
 		statemtsLayout.setComponentAlignment(statemtsGrid, Alignment.MIDDLE_CENTER);
-		statemtsLayout.setSizeFull();
 		
 		statemtsLayout.addComponent(addToGraphBtn);
+		statemtsLayout.setExpandRatio(statemtsTitle, 0.1f);
 		statemtsLayout.setExpandRatio(statemtsGrid, 1);
+		statemtsLayout.setSizeFull();
 
 		setSpacing(true);
 		setHeight(100, Unit.PERCENTAGE);
@@ -163,9 +169,21 @@ public class StatementsView extends VerticalLayout {
 			statemtsLayout.replaceComponent(statemtsGrid, progressBar);
 			statemtsLayout.setComponentAlignment(progressBar, Alignment.MIDDLE_CENTER);
 		}
+		
+//		statemtsLayout.removeAllComponents();
+//		statemtsLayout.addComponent(statemtsTitle);
+//		statemtsLayout.addComponent(progressBar);
+//		statemtsLayout.setComponentAlignment(progressBar, Alignment.MIDDLE_CENTER);
+//		statemtsLayout.addComponent(addToGraphBtn);
 	}
 	
 	public void hideProgress() {
-		statemtsLayout.replaceComponent(progressBar, statemtsGrid);		
+		if (statemtsLayout.getComponentIndex(progressBar) != -1) {
+			statemtsLayout.replaceComponent(progressBar, statemtsGrid);		
+		}
+	}
+
+	public void setStatementsTitle(String title) {
+		statemtsTitle.setCaption("Statements for: <strong style = \"font-size: 120%\">" + title + "</strong>");
 	}
 }
