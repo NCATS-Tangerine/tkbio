@@ -49,6 +49,7 @@ public class DesktopDesign extends VerticalLayout {
 //	protected Button showLegendBtn;
 	protected Slider zoomSlider;
 	protected Label conceptMapNameLabel;
+	protected VerticalLayout dataResults;
 
 	public DesktopDesign() {
 		Design.read(this);

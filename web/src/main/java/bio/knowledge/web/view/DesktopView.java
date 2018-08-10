@@ -73,13 +73,15 @@ public class DesktopView extends DesktopDesign implements View {
 		historyBtn.setStyleName(ValoTheme.BUTTON_ICON_ONLY, true);
 		historyBtn.setStyleName(ValoTheme.BUTTON_BORDERLESS, true);
 		
-		conceptsTab.setSizeFull();
-		statementsTab.setSizeFull();
-		referencesTab.setSizeFull();
+//		conceptsTab.setSizeFull();
+//		statementsTab.setSizeFull();
+//		referencesTab.setSizeFull();
 		
 		dataTabSheet.addTab(conceptsTab, "Search Results");
 		dataTabSheet.addTab(statementsTab, "Statements");
 //		dataTabSheet.addTab(referencesTab, "References");
+		dataResults.setSizeFull();
+
 	}
 
 	/**
@@ -301,6 +303,10 @@ public class DesktopView extends DesktopDesign implements View {
 	
 	public void setSelectedTab(Component c) {
 		dataTabSheet.setSelectedTab(c);
+	}
+	
+	public VerticalLayout getDataResults() {
+		return dataResults;
 	}
 
 }

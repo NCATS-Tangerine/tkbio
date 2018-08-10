@@ -8,6 +8,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
@@ -39,7 +40,8 @@ public class StatementsView extends VerticalLayout {
 	private ProgressBar progressBar = new ProgressBar();
 	private VerticalLayout statemtsLayout = new VerticalLayout();
 	private Label statemtsTitle = new Label();
-
+	private HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
+	
 	/**
 	 * Initializes concepts and statements tab views
 	 * @param conceptsContainer
@@ -121,13 +123,13 @@ public class StatementsView extends VerticalLayout {
 		setHeight(100, Unit.PERCENTAGE);
 		
 		initGraphBtnToggle();
-//		HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
-//		splitPanel.setFirstComponent(conceptsGrid);
-//		splitPanel.setSecondComponent(statemtsLayout);
-//		splitPanel.setSplitPosition(55, Unit.PERCENTAGE);
 		
-//		addComponents(splitPanel, addToGraphBtn);
-//		setExpandRatio(splitPanel, 1);
+		splitPanel.setFirstComponent(conceptsGrid);
+		splitPanel.setSecondComponent(statemtsLayout);
+		showConceptsResults();
+		splitPanel.setLocked(true);
+		
+		addComponent(splitPanel);
 	}
 
 	private void initGraphBtnToggle() {
@@ -169,12 +171,6 @@ public class StatementsView extends VerticalLayout {
 			statemtsLayout.replaceComponent(statemtsGrid, progressBar);
 			statemtsLayout.setComponentAlignment(progressBar, Alignment.MIDDLE_CENTER);
 		}
-		
-//		statemtsLayout.removeAllComponents();
-//		statemtsLayout.addComponent(statemtsTitle);
-//		statemtsLayout.addComponent(progressBar);
-//		statemtsLayout.setComponentAlignment(progressBar, Alignment.MIDDLE_CENTER);
-//		statemtsLayout.addComponent(addToGraphBtn);
 	}
 	
 	public void hideProgress() {
@@ -185,5 +181,17 @@ public class StatementsView extends VerticalLayout {
 
 	public void setStatementsTitle(String title) {
 		statemtsTitle.setCaption("Statements for: <strong style = \"font-size: 120%\">" + title + "</strong>");
+	}
+	
+	public HorizontalSplitPanel getSplitPanel() {
+		return splitPanel;
+	}
+	
+	public void showConceptsResults() {
+		splitPanel.setSplitPosition(100, Unit.PERCENTAGE);
+	}
+	
+	public void showStatementsResults() {
+		splitPanel.setSplitPosition(0, Unit.PERCENTAGE);
 	}
 }
