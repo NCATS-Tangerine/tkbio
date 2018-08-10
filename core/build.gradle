@@ -5,6 +5,7 @@ evaluationDependsOn(':services')
 
 dependencies {
 	compile project(':services')
+	compile project(':beacon-ontology')
 	compile 'com.opencsv:opencsv:3.9'
 	compile 'org.springframework.boot:spring-boot-starter-security'
 	//compile 'org.springframework.security:spring-security-config'

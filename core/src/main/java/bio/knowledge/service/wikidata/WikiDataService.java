@@ -26,6 +26,7 @@
 
 package bio.knowledge.service.wikidata;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -151,8 +152,9 @@ public class WikiDataService
 		return retrievedUrl ;
     }
 	
+	//TODO: figure out if wikiData actually used
 	public Neo4jAnnotatedConcept createWikiDataItem(ResultSet resultSet) {
 		dumpResults(resultSet) ;
-		return new Neo4jAnnotatedConcept("wd:testconcept","dummyConcept",ConceptType.PHEN,"dummyTaxon") ;
+		return new Neo4jAnnotatedConcept("wd:testconcept","dummyConcept",new ArrayList<>(),"dummyTaxon") ;
 	}
 }

@@ -19,12 +19,8 @@ public class AnnotatedConceptImpl extends IdentifiedConceptImpl implements Annot
 
 	protected AnnotatedConceptImpl() { }
 	
-	public AnnotatedConceptImpl( String clique, String name, ConceptType type ) {
-		super( clique, name, type ) ;
-	}
-
-	public AnnotatedConceptImpl( String clique, String name, String type ) {
-		super( clique, name, type) ;
+	public AnnotatedConceptImpl( String clique, String name, List<String> categories ) {
+		super( clique, name, categories ) ;
 	}
 
 	/*

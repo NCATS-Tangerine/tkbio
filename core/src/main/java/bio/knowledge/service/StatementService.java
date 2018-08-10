@@ -438,8 +438,9 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 
 	}
 
+	@Deprecated
 	private Void loadWikiDataResults(ResultSet rs, IdentifiedConcept subject, List<Statement> statements) {
-		rs.stream().forEach(r -> {
+		/*rs.stream().forEach(r -> {
 
 			_logger.debug("loadWikiDataResults() item: " + r.toString());
 
@@ -500,7 +501,7 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 			} catch (Exception e) {
 				_logger.error("... parsing error: " + e.getMessage());
 			}
-		});
+		});*/
 		return (Void) null;
 	}
 
@@ -529,9 +530,10 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	}
 
 	@SuppressWarnings({ "unchecked" })
+	@Deprecated
 	private Page<Statement> findWikiDataByFilter(List<String> filter, Pageable pageable) {
-
-		List<Statement> statements = new ArrayList<>();
+		return new PageImpl<Statement>(new ArrayList<>());
+		/*List<Statement> statements = new ArrayList<>();
 
 		IdentifiedConcept concept = getCurrentConcept();
 
@@ -594,7 +596,7 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 		} else // no concept currently selected?
 			statements = new ArrayList<>(); // send back empty Statement List...
 
-		return new PageImpl<Statement>(statements, pageable, statements.size());
+		return new PageImpl<Statement>(statements, pageable, statements.size());*/
 	}
 
 	/**
@@ -602,8 +604,10 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 	 *            String that WikiData property names should match
 	 * @return
 	 */
+	@Deprecated
 	private long countByWikiData(List<String> filter) {
-
+		return 0;
+/*
 		IdentifiedConcept concept = getCurrentConcept();
 
 		// Access WikiData here and count properties matched by filter
@@ -643,7 +647,7 @@ public class StatementService extends IdentifiedEntityServiceImpl<Statement> imp
 		// cache.getCountCache().put(cacheKey, count[0]);
 		cacheLocation.setCounter(count[0]);
 
-		return count[0];
+		return count[0];*/
 	}
 
 	/**

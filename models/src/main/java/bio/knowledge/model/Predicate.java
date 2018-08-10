@@ -16,6 +16,8 @@ public interface Predicate extends IdentifiedEntity {
 		
 		public String getDescription();
 		
+		public Boolean getNegated();
+		
 	}
 	
 	/**

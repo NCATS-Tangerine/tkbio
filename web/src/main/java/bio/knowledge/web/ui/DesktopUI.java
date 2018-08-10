@@ -37,15 +37,10 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
 import javax.servlet.http.Cookie;
 
 import org.slf4j.Logger;
@@ -64,11 +59,11 @@ import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.BeanContainer;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.Navigator;
-import com.vaadin.navigator.View;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
@@ -123,7 +118,6 @@ import bio.knowledge.service.user.UserService;
 import bio.knowledge.web.KBUploader;
 import bio.knowledge.web.view.AboutView;
 import bio.knowledge.web.view.ApplicationLayout;
-//import bio.knowledge.web.view.ConceptSearchResults;
 import bio.knowledge.web.view.ContactView;
 import bio.knowledge.web.view.DesktopView;
 import bio.knowledge.web.view.EvidenceView;
@@ -135,9 +129,11 @@ import bio.knowledge.web.view.LoginView;
 import bio.knowledge.web.view.PasswordResetView;
 import bio.knowledge.web.view.ReferenceView;
 import bio.knowledge.web.view.Registry;
+import bio.knowledge.web.view.Registry.Mapping;
 import bio.knowledge.web.view.RelationsView;
 import bio.knowledge.web.view.SearchHistoryViewImpl;
 import bio.knowledge.web.view.SingleSearchHistoryView;
+import bio.knowledge.web.view.StatementsViewPresenter;
 import bio.knowledge.web.view.ViewName;
 import bio.knowledge.web.view.components.KnowledgeBeaconWindow;
 import bio.knowledge.web.view.components.LibraryDetails;
@@ -163,7 +159,7 @@ import bio.knowledge.web.view.components.UserDetails;
 @PreserveOnRefresh
 @Widgetset("bio.knowledge.renderer.ButtonRendererWidgetset")
 @Push
-public class DesktopUI extends UI implements MessageService, Util {
+public class DesktopUI extends UI implements MessageService {
 
 	// private static final int DAY_IN_SECOND = 86400;
 
@@ -250,7 +246,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 */
 	public String getMessage(String id) {
 
-		if (nullOrEmpty(id))
+		if (Util.nullOrEmpty(id))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage id?");
 
 		Locale locale = this.getLocale();
@@ -272,10 +268,10 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 */
 	public String getMessage(String id, String tag) {
 
-		if (nullOrEmpty(id))
+		if (Util.nullOrEmpty(id))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage id?");
 
-		if (nullOrEmpty(tag))
+		if (Util.nullOrEmpty(tag))
 			throw new NoSuchMessageException("ERROR: Null or empty getMessage tag?");
 
 		Locale locale = getLocale();
@@ -309,7 +305,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 * 
 	 * @return
 	 */
-	public DesktopView getDesktop() {
+	public DesktopView getDesktopView() {
 		return desktopView;
 	}
 
@@ -329,7 +325,8 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 	public ConceptMapDisplay getConceptMap() {
 		if (cm == null)
-			cm = new ConceptMapDisplay(conceptService);
+//			cm = new ConceptMapDisplay(conceptService);
+			cm = new ConceptMapDisplay(kbService, query);
 		return cm;
 	}
 
@@ -341,7 +338,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		return getConceptMap().isEmpty();
 	}
 
-	static final String DEFAULT_CM_LAYOUT = "Breadth First";
+	static final String DEFAULT_CM_LAYOUT = "Dagre";
 	static final String DEFAULT_CM_COLOR = "Dark";
 	public static final String MANUAL_CM_LAYOUT = "Manual";
 
@@ -615,7 +612,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	public void displayReference(Annotation annotation) {
 		query.setCurrentAnnotation(annotation);
 		String id = annotation.getId();
-		if (!nullOrEmpty(id))
+		if (!Util.nullOrEmpty(id))
 			displayReference(id);
 		else
 			ConfirmDialog.show(this, "<span style='text-align:center;'>No evidence reference available.</span>", cd -> {
@@ -641,9 +638,9 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 		UI.getCurrent().getNavigator().navigateTo(ReferenceView.NAME + "/" + encodedId);
 
-		VerticalLayout referenceTab = desktopView.getReferenceTab();
-		TabSheet tabsheet = desktopView.getTabSheet();
-		tabsheet.setSelectedTab(referenceTab);
+//		VerticalLayout referenceTab = desktopView.getReferenceTab();
+//		TabSheet tabsheet = desktopView.getTabSheet();
+//		tabsheet.setSelectedTab(referenceTab);
 	}
 
 	/**
@@ -697,7 +694,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 */
 	private void setConceptLabelDescription(IdentifiedConcept concept) {
 
-		HorizontalLayout popupLayout = getDesktop().getPopUpLayout();
+		HorizontalLayout popupLayout = getDesktopView().getPopUpLayout();
 
 		if (concept == null) {
 			popupLayout.setVisible(false);
@@ -816,9 +813,10 @@ public class DesktopUI extends UI implements MessageService, Util {
 	private void newQueryButtonHandler(ConfirmDialog dialog) {
 		if (dialog.isConfirmed()) {
 
-			ConfirmDialog.show(this, "Save Concept Map?",
-					"<span style='text-align:center;'>Save work before reloading?</span>", "Yes", "No",
-					cd -> saveAndClearMapHandler(cd)).setContentMode(ConfirmDialog.ContentMode.HTML);
+//			ConfirmDialog.show(this, "Save Concept Map?",
+//					"<span style='text-align:center;'>Save work before reloading?</span>", "Yes", "No",
+//					cd -> saveAndClearMapHandler(cd)).setContentMode(ConfirmDialog.ContentMode.HTML);
+			clearMap();
 
 		} else if (dialog.isCanceled()) {
 			_logger.trace("User cancels 'New' operation");
@@ -848,11 +846,11 @@ public class DesktopUI extends UI implements MessageService, Util {
 		}
 	}
 
-	// Terrible hacks. Should restructure the code to not use
-	// this many navigators.
-	// private Navigator relationsTabNavigator;
-	// private Navigator evidenceTabNavigator;
-	// private Navigator pubmedTabNavigator;
+//	 Terrible hacks. Should restructure the code to not use
+//	 this many navigators.
+//	 private Navigator relationsTabNavigator;
+//	 private Navigator evidenceTabNavigator;
+//	 private Navigator pubmedTabNavigator;
 	private Window legend = null;
 
 	@Value("${application.hostname:'none'}")
@@ -877,11 +875,12 @@ public class DesktopUI extends UI implements MessageService, Util {
 		searchWindow.setContent(searchView);
 		searchWindow.addCloseListener(e -> {
 			desktopView.getHistoryButton().setEnabled(true);
+			searchView.stopPolling();
 		});
-
 		desktopView.getHistoryButton().setDisableOnClick(true);
 		desktopView.getHistoryButton().addClickListener(e -> {
 			getUI().addWindow(searchWindow);
+			searchView.startPolling();
 		});
 		
 		
@@ -906,7 +905,9 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 		// Button to reinitialize the query and map
 		desktopView.getClearMapBtn().addClickListener(e -> newQueryConfirmation(e));
-
+	
+		statementsPresenter = new StatementsViewPresenter(desktopView.getStatementsTab(), kbService, query);
+		
 		desktopView.getTabSheet().addSelectedTabChangeListener(e -> {
 			// // Find the tabsheet
 			// TabSheet tabsheet = e.getTabSheet();
@@ -973,7 +974,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		KBUploader myUploader = new KBUploader();
 
 		// only to upload ".kb"
-		Page.getCurrent().getJavaScript()
+/*		Page.getCurrent().getJavaScript()
 				.execute("document.getElementsByClassName('gwt-FileUpload')[0].setAttribute('accept', '.kb')");
 		desktopView.getLoadMap().setImmediate(true);
 		desktopView.getLoadMap().setReceiver(myUploader);
@@ -988,7 +989,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 		// search map library names with search text
 		desktopView.getSearchMapLibraryBtn().addClickListener(e -> searchMapLibraryByText());
-
+*/
 		// align the map to center
 		desktopView.getCenterBtn().addClickListener(e -> {
 			getConceptMap().alignToCenter();
@@ -1012,7 +1013,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 				}
 			}
 		});
-
+/*
 		// display the legend in a pop up window
 		desktopView.getShowLegendBtn().addClickListener(e -> {
 			// if there is no legend pop up window already opened
@@ -1072,6 +1073,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		// RMB: August 15, 2016
 		// New landing page doesn't need the old intro tooltip
 		// initIntroTooltip();
+*/
 
 		initConceptMap();
 	}
@@ -1080,54 +1082,26 @@ public class DesktopUI extends UI implements MessageService, Util {
 		this.zoomEnabled = zoomEnabled;
 	}
 
-	/**
-	 * 
-	 * @param tab
-	 * @param caption
-	 */
-	private void setTabNavigators(VerticalLayout tab, String caption) {
-		// if (relationsTabNavigator == null) {
-		// if (caption.equals(ViewName.RELATIONS_TAB)) {
-		// relationsTabNavigator = new Navigator(UI.getCurrent(), tab);
-		// relationsTabNavigator.addProvider(viewProvider);
-		// }
-		// }
-		//
-		// if (evidenceTabNavigator == null) {
-		// if (caption.equals(ViewName.EVIDENCE_TAB)) {
-		// evidenceTabNavigator = new Navigator(UI.getCurrent(), tab);
-		// evidenceTabNavigator.addProvider(viewProvider);
-		// }
-		// }
-		//
-		// if (pubmedTabNavigator == null) {
-		// if (caption.equals(ViewName.REFERENCE_TAB)) {
-		// pubmedTabNavigator = new Navigator(UI.getCurrent(), tab);
-		// pubmedTabNavigator.addProvider(viewProvider);
-		// }
-		// }
-	}
-
-	public void showView(View view) {
-		if (view instanceof Component) {
-			VerticalLayout selectedTab = null;
-			if (view instanceof RelationsView) {
-				selectedTab = desktopView.getRelationsTab();
-			} else if (view instanceof EvidenceView) {
-				selectedTab = desktopView.getEvidenceTab();
-			} else if (view instanceof ReferenceView) {
-				selectedTab = desktopView.getReferenceTab();
-			}
-
-			if (selectedTab != null) {
-				selectedTab.removeAllComponents();
-				selectedTab.addComponent((Component) view);
-				desktopView.getTabSheet().setSelectedTab(selectedTab);
-			}
-		} else {
-			throw new IllegalArgumentException("View is not a component: " + view);
-		}
-	}
+//	public void showView(View view) {
+//		if (view instanceof Component) {
+//			VerticalLayout selectedTab = null;
+//			if (view instanceof RelationsView) {
+//				selectedTab = desktopView.getRelationsTab();
+//			} else if (view instanceof EvidenceView) {
+//				selectedTab = desktopView.getEvidenceTab();
+//			} else if (view instanceof ReferenceView) {
+//				selectedTab = desktopView.getReferenceTab();
+//			}
+//
+//			if (selectedTab != null) {
+//				selectedTab.removeAllComponents();
+//				selectedTab.addComponent((Component) view);
+//				desktopView.getTabSheet().setSelectedTab(selectedTab);
+//			}
+//		} else {
+//			throw new IllegalArgumentException("View is not a component: " + view);
+//		}
+//	}
 
 	private SearchHistoryViewImpl searchView = new SearchHistoryViewImpl();
 
@@ -1141,13 +1115,13 @@ public class DesktopUI extends UI implements MessageService, Util {
 			Button searchBtn = e.getButton();
 			String queryText = desktopView.getSearchField().getValue();
 			// do nothing if query is null or empty
-			if (nullOrEmpty(queryText)) {
+			if (Util.nullOrEmpty(queryText)) {
 				return;
 			}
 
 			queryText = queryText.trim();
 			query.setCurrentQueryText(queryText);
-			if (isCurie(queryText)) {
+			if (false) {
 				/*
 				 * Matching by CURIE - resolve the matching concept then go directly to the
 				 * statements table
@@ -1180,96 +1154,14 @@ public class DesktopUI extends UI implements MessageService, Util {
 	}
 
 	/**
-	 * 
-	 * @param searchField
-	 * @param e
-	 */
-	private void searchBtnClickListener(TextField searchField, ClickEvent e) {
-		// Button searchBtn = e.getButton();
-		// searchBtn.setEnabled(false);
-		//
-		// String queryText = desktopView.getSearchField().getValue();
-		// queryText = queryText.trim();
-		//
-		// // RMB: March 1, 2017 - empty queries seem too problematic now
-		// // so we ignore them again!
-		//
-		// if (nullOrEmpty(queryText)) {
-		// ConfirmDialog.show(this,
-		// "<span style='text-align:center;'>Please type in a non-empty query string in
-		// the search box</span>",
-		// cd -> {
-		// }).setContentMode(ConfirmDialog.ContentMode.HTML);
-		//
-		// searchBtn.setEnabled(true);
-		// return;
-		// }
-		//
-		// query.setCurrentQueryText(queryText);
-		//
-		// if (matchByCurie(queryText)) {
-		// /*
-		// * Matching by CURIE - resolve the matching concept then go directly to the
-		// * statements table
-		// */
-		// Optional<IdentifiedConcept> conceptOpt =
-		// conceptService.findByIdentifier(queryText);
-		//
-		// if (!conceptOpt.isPresent()) {
-		// ConfirmDialog.show(this, "<span style='text-align:center;'>Concept identified
-		// by '" + queryText
-		// + "' could not be resolved.<br/>"
-		// + "Please check if you have a valid CURIE identifier for your concept of
-		// interest!</span>",
-		// cd -> {
-		// }).setContentMode(ConfirmDialog.ContentMode.HTML);
-		// searchBtn.setEnabled(true);
-		// return;
-		// }
-		//
-		// IdentifiedConcept concept = conceptOpt.get();
-		// processConceptSearch(concept);
-		//
-		// searchBtn.setEnabled(true);
-		//
-		// showRelationsTab();
-		//
-		// } else { // Classical Keyword search
-		//
-		// // Semantic type constraint in Concept-by-text results listing should initial
-		// be
-		// // empty
-		//// query.setInitialConceptTypes(new HashSet<ConceptType>());
-		//
-		// ConceptSearchResults currentSearchResults = new
-		// ConceptSearchResults(viewProvider, ViewName.CONCEPTS_VIEW);
-		// conceptSearchWindow = new Window();
-		// conceptSearchWindow.setCaption("Concepts Matched by Key Words");
-		// conceptSearchWindow.addStyleName("concept-search-window");
-		// conceptSearchWindow.center();
-		// conceptSearchWindow.setModal(true);
-		// conceptSearchWindow.setResizable(true);
-		// conceptSearchWindow.setWidth(75.0f, Unit.EM);
-		// conceptSearchWindow.setContent(currentSearchResults);
-		//
-		// conceptSearchWindow.addCloseListener(event -> {
-		// searchBtn.setEnabled(true);
-		// showRelationsTab();
-		// });
-		//
-		// UI.getCurrent().addWindow(conceptSearchWindow);
-		// }
-	}
-
-	/**
 	 * Match the query against the form of A:B where A and B can be of any
 	 * non-whitespace characters.
 	 * 
 	 * @param queryText
 	 * @return true if the pattern is matched; otherwise false.
 	 */
-	private boolean isCurie(String queryText) {
-		Matcher matcher = Pattern.compile("(\\S*):(\\S*)").matcher(queryText);
+	public static boolean isCurie(String queryText) {
+		Matcher matcher = Pattern.compile("(\\S+):(\\S+)").matcher(queryText);
 		if (matcher.matches()) {
 			return true;
 		} else {
@@ -1529,7 +1421,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 		DesktopUI ui = (DesktopUI) UI.getCurrent();
 
 		// only allows the user to click once
-		Button searchBtn = ui.getDesktop().getSearchBtn();
+		Button searchBtn = ui.getDesktopView().getSearchBtn();
 		searchBtn.setEnabled(false);
 
 		// String queryText = desktop.getSearch().getValue();
@@ -1640,7 +1532,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 			conceptMapLibraryWindow.addCloseListener(event -> {
 				DesktopUI ui = (DesktopUI) UI.getCurrent();
-				Button searchBtn = ui.getDesktop().getSearchBtn();
+				Button searchBtn = ui.getDesktopView().getSearchBtn();
 				searchBtn.setEnabled(true);
 				ui.closeLibraryWindow();
 				ui.closeConceptSearchWindow();
@@ -1666,27 +1558,12 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 */
 	private Navigator applicationNavigator;
 
-	private Navigator tabsheetNavigator;
-	// private Navigator evidenceTabNavigator;
-	// private Navigator referenceTabNavigator;
-	// private Navigator relationsTabNavigator;
-
 	/**
 	 * @return The navigator for navigating through the application.
 	 */
 	public Navigator getApplicationNavigator() {
 		return applicationNavigator;
 	}
-
-	// public Navigator getRelationsNavigator() {
-	// return this.relationsTabNavigator;
-	// }
-	// public Navigator getEvidenceNavigator() {
-	// return this.evidenceTabNavigator;
-	// }
-	// public Navigator getReferenceNavigator() {
-	// return this.referenceTabNavigator;
-	// }
 
 	@Override
 	/*
@@ -1715,13 +1592,6 @@ public class DesktopUI extends UI implements MessageService, Util {
 				desktopView.getHistoryButton().setEnabled(false);
 			}
 		});
-		/*
-		 * attach the Google Analytics tracker to the Navigator to automatically track
-		 * all views
-		 *
-		 * To use the tracker without the Navigator, just call the
-		 * tracker.trackPageview(pageId) separately when tracking is needed.
-		 */
 
 		getPage().addUriFragmentChangedListener(event -> handleURL(event.getUriFragment()));
 
@@ -1733,28 +1603,12 @@ public class DesktopUI extends UI implements MessageService, Util {
 		applicationNavigator.addView(DesktopView.NAME, desktopView);
 		applicationNavigator.addProvider(viewProvider);
 		applicationNavigator.addViewChangeListener(ga_tracker);
-		// tabsheetNavigator = new Navigator(this, (ViewDisplay)this);
-		// tabsheetNavigator.addProvider(viewProvider);
 		this.loginView = applicationLayout.getLoginView();
 		setContent(applicationLayout);
 		// Navigates to the landing page view if the URI fragment is empty
 		if (applicationNavigator.getState().isEmpty()) {
 			applicationNavigator.navigateTo(LandingPageView.NAME);
 		}
-	}
-
-	private void setUpNavigator() {
-		// relationsTabNavigator = new Navigator(UI.getCurrent(),
-		// desktopView.getRelationsTab());
-		// relationsTabNavigator.addProvider(viewProvider);
-		// evidenceTabNavigator = new Navigator(UI.getCurrent(),
-		// desktopView.getEvidenceTab());
-		// evidenceTabNavigator.addProvider(viewProvider);
-		// referenceTabNavigator = new Navigator(UI.getCurrent(),
-		// desktopView.getReferenceTab());
-		// referenceTabNavigator.addProvider(viewProvider);
-		// tabsheetNavigator = new Navigator(this, (ViewDisplay) this);
-		// tabsheetNavigator.addProvider(viewProvider);
 	}
 
 	private void handleURL(String fragment) {
@@ -1790,7 +1644,7 @@ public class DesktopUI extends UI implements MessageService, Util {
 				conceptMapLibraryWindow.setWidth(45.0f, Unit.EM);
 				conceptMapLibraryWindow.setHeight(56.0f, Unit.EM);
 				conceptMapLibraryWindow.addCloseListener(e -> {
-					Button searchBtn = getDesktop().getSearchBtn();
+					Button searchBtn = getDesktopView().getSearchBtn();
 					searchBtn.setEnabled(true);
 					closeLibraryWindow();
 					closeConceptSearchWindow();
@@ -1821,6 +1675,12 @@ public class DesktopUI extends UI implements MessageService, Util {
 		return this.loginView;
 	}
 
+	private StatementsViewPresenter statementsPresenter;
+	
+	public StatementsViewPresenter getStatementsPresenter() {
+		return statementsPresenter;
+	}
+	
 	private String currentConceptMapName = "";
 
 	/**
@@ -1833,7 +1693,9 @@ public class DesktopUI extends UI implements MessageService, Util {
 
 	@Override
 	public void detach() {
+		System.out.println("UI detached!");
 		searchView.stopService();
+		statementsPresenter.shutDown();
 		super.detach();
 	}
 	/**
@@ -1842,26 +1704,5 @@ public class DesktopUI extends UI implements MessageService, Util {
 	 */
 	public String getCurrentConceptMapName() {
 		return this.currentConceptMapName;
-	}
-	
-	@WebListener
-	public class ThreadPool implements ServletContextListener {
-
-		private ExecutorService executorService;
-		
-		@Override
-		public void contextInitialized(ServletContextEvent sce) {
-			executorService = Executors.newScheduledThreadPool(10);
-		}
-
-		@Override
-		public void contextDestroyed(ServletContextEvent sce) {
-			executorService.shutdown();
-		}
-		
-		public ExecutorService service() {
-			return executorService;
-		}
-		
 	}
 }

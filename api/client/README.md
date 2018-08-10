@@ -71,12 +71,12 @@ public class ConceptsApiExample {
     public static void main(String[] args) {
         
         ConceptsApi apiInstance = new ConceptsApi();
-        String identifier = "identifier_example"; // String | a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of interest to be resolved to a concept clique
+        String queryId = "queryId_example"; // String | the query identifier of a concepts query previously posted by the /cliques endpoint
         try {
-            BeaconCliqueIdentifier result = apiInstance.getClique(identifier);
+            BeaconCliquesQueryResult result = apiInstance.getCliques(queryId);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling ConceptsApi#getClique");
+            System.err.println("Exception when calling ConceptsApi#getCliques");
             e.printStackTrace();
         }
     }
@@ -90,17 +90,19 @@ All URIs are relative to *https://kba.ncats.io/*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*ConceptsApi* | [**getClique**](docs/ConceptsApi.md#getClique) | **GET** /clique/{identifier} | 
+*ConceptsApi* | [**getCliques**](docs/ConceptsApi.md#getCliques) | **GET** /cliques/data/{queryId} | 
+*ConceptsApi* | [**getCliquesQueryStatus**](docs/ConceptsApi.md#getCliquesQueryStatus) | **GET** /cliques/status/{queryId} | 
 *ConceptsApi* | [**getConceptDetails**](docs/ConceptsApi.md#getConceptDetails) | **GET** /concepts/details/{cliqueId} | 
 *ConceptsApi* | [**getConcepts**](docs/ConceptsApi.md#getConcepts) | **GET** /concepts/data/{queryId} | 
 *ConceptsApi* | [**getConceptsQueryStatus**](docs/ConceptsApi.md#getConceptsQueryStatus) | **GET** /concepts/status/{queryId} | 
+*ConceptsApi* | [**postCliquesQuery**](docs/ConceptsApi.md#postCliquesQuery) | **POST** /cliques | 
 *ConceptsApi* | [**postConceptsQuery**](docs/ConceptsApi.md#postConceptsQuery) | **POST** /concepts | 
 *MetadataApi* | [**getBeacons**](docs/MetadataApi.md#getBeacons) | **GET** /beacons | 
-*MetadataApi* | [**getConceptTypes**](docs/MetadataApi.md#getConceptTypes) | **GET** /types | 
+*MetadataApi* | [**getConceptCategories**](docs/MetadataApi.md#getConceptCategories) | **GET** /categories | 
 *MetadataApi* | [**getErrors**](docs/MetadataApi.md#getErrors) | **GET** /errorlog | 
 *MetadataApi* | [**getKnowledgeMap**](docs/MetadataApi.md#getKnowledgeMap) | **GET** /kmap | 
 *MetadataApi* | [**getPredicates**](docs/MetadataApi.md#getPredicates) | **GET** /predicates | 
-*StatementsApi* | [**getEvidence**](docs/StatementsApi.md#getEvidence) | **GET** /evidence/{statementId} | 
+*StatementsApi* | [**getStatementDetails**](docs/StatementsApi.md#getStatementDetails) | **GET** /statements/details/{statementId} | 
 *StatementsApi* | [**getStatementsQuery**](docs/StatementsApi.md#getStatementsQuery) | **GET** /statements/data/{queryId} | 
 *StatementsApi* | [**getStatementsQueryStatus**](docs/StatementsApi.md#getStatementsQueryStatus) | **GET** /statements/status/{queryId} | 
 *StatementsApi* | [**postStatementsQuery**](docs/StatementsApi.md#postStatementsQuery) | **POST** /statements | 
@@ -108,14 +110,17 @@ Class | Method | HTTP request | Description
 
 ## Documentation for Models
 
- - [BeaconAnnotation](docs/BeaconAnnotation.md)
- - [BeaconBeaconConceptType](docs/BeaconBeaconConceptType.md)
+ - [BeaconBeaconConceptCategory](docs/BeaconBeaconConceptCategory.md)
  - [BeaconBeaconPredicate](docs/BeaconBeaconPredicate.md)
- - [BeaconCliqueIdentifier](docs/BeaconCliqueIdentifier.md)
+ - [BeaconClique](docs/BeaconClique.md)
+ - [BeaconCliquesQuery](docs/BeaconCliquesQuery.md)
+ - [BeaconCliquesQueryBeaconStatus](docs/BeaconCliquesQueryBeaconStatus.md)
+ - [BeaconCliquesQueryResult](docs/BeaconCliquesQueryResult.md)
+ - [BeaconCliquesQueryStatus](docs/BeaconCliquesQueryStatus.md)
  - [BeaconConcept](docs/BeaconConcept.md)
+ - [BeaconConceptCategoriesByBeacon](docs/BeaconConceptCategoriesByBeacon.md)
+ - [BeaconConceptCategory](docs/BeaconConceptCategory.md)
  - [BeaconConceptDetail](docs/BeaconConceptDetail.md)
- - [BeaconConceptTypes](docs/BeaconConceptTypes.md)
- - [BeaconConceptTypesByBeacon](docs/BeaconConceptTypesByBeacon.md)
  - [BeaconConceptWithDetails](docs/BeaconConceptWithDetails.md)
  - [BeaconConceptWithDetailsBeaconEntry](docs/BeaconConceptWithDetailsBeaconEntry.md)
  - [BeaconConceptsQuery](docs/BeaconConceptsQuery.md)
@@ -129,9 +134,12 @@ Class | Method | HTTP request | Description
  - [BeaconKnowledgeMapStatement](docs/BeaconKnowledgeMapStatement.md)
  - [BeaconKnowledgeMapSubject](docs/BeaconKnowledgeMapSubject.md)
  - [BeaconLogEntry](docs/BeaconLogEntry.md)
- - [BeaconPredicates](docs/BeaconPredicates.md)
+ - [BeaconPredicate](docs/BeaconPredicate.md)
  - [BeaconPredicatesByBeacon](docs/BeaconPredicatesByBeacon.md)
  - [BeaconStatement](docs/BeaconStatement.md)
+ - [BeaconStatementAnnotation](docs/BeaconStatementAnnotation.md)
+ - [BeaconStatementCitation](docs/BeaconStatementCitation.md)
+ - [BeaconStatementDetails](docs/BeaconStatementDetails.md)
  - [BeaconStatementObject](docs/BeaconStatementObject.md)
  - [BeaconStatementPredicate](docs/BeaconStatementPredicate.md)
  - [BeaconStatementSubject](docs/BeaconStatementSubject.md)

@@ -113,7 +113,7 @@ public class ConceptDetailsHandler {
 		
 		// set up type label
 		Label typeLabel = new Label();
-		typeLabel.setCaption("Semantic Group:");
+		typeLabel.setCaption("Semantic Categories:");
 
 		// set up taxon label
 		Label taxonLabel = new Label();
@@ -156,7 +156,7 @@ public class ConceptDetailsHandler {
 		cliqueLabel.setValue(annotatedConcept.getCliqueId());
 		accessionLabel.setValue(annotatedConcept.getId());
 		nameLabel.setValue(annotatedConcept.getName());
-		typeLabel.setValue(annotatedConcept.getType().toString());
+		typeLabel.setValue(String.join(", ", annotatedConcept.getCategories()));
 		taxonLabel.setValue(annotatedConcept.getTaxon());
 		
 		// fill in aliases

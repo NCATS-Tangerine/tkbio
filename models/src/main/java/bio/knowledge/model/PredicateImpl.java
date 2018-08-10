@@ -56,17 +56,20 @@ public class PredicateImpl extends AbstractIdentifiedEntity implements Predicate
 		private String edgeLabel;
 		private String relation;
 		private String description;
+		private Boolean negated;
 		
 		public PredicateBeaconImpl(
 				Integer beaconId,
 				String edgeLabel,
 				String relation,
-				String description
+				String description,
+				Boolean negated
 			) {
 			this.beaconId    = beaconId;
 			this.edgeLabel   = edgeLabel;
 			this.relation    = relation;
 			this.description = description;
+			this.negated = negated;
 		}
 		
 		@Override
@@ -87,6 +90,11 @@ public class PredicateImpl extends AbstractIdentifiedEntity implements Predicate
 		@Override
 		public String getDescription() {
 			return description;
+		}
+
+		@Override
+		public Boolean getNegated() {
+			return negated;
 		}
 	}
 
@@ -123,5 +131,10 @@ public class PredicateImpl extends AbstractIdentifiedEntity implements Predicate
 
         PredicateImpl p = (PredicateImpl) obj;
         return getName().equals(p.getName());
+    }
+    
+    @Override
+    public String toString() {
+    	return getName();
     }
 }

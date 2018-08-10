@@ -4,20 +4,22 @@ All URIs are relative to *https://kba.ncats.io/*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getClique**](ConceptsApi.md#getClique) | **GET** /clique/{identifier} | 
+[**getCliques**](ConceptsApi.md#getCliques) | **GET** /cliques/data/{queryId} | 
+[**getCliquesQueryStatus**](ConceptsApi.md#getCliquesQueryStatus) | **GET** /cliques/status/{queryId} | 
 [**getConceptDetails**](ConceptsApi.md#getConceptDetails) | **GET** /concepts/details/{cliqueId} | 
 [**getConcepts**](ConceptsApi.md#getConcepts) | **GET** /concepts/data/{queryId} | 
 [**getConceptsQueryStatus**](ConceptsApi.md#getConceptsQueryStatus) | **GET** /concepts/status/{queryId} | 
+[**postCliquesQuery**](ConceptsApi.md#postCliquesQuery) | **POST** /cliques | 
 [**postConceptsQuery**](ConceptsApi.md#postConceptsQuery) | **POST** /concepts | 
 
 
-<a name="getClique"></a>
-# **getClique**
-> BeaconCliqueIdentifier getClique(identifier)
+<a name="getCliques"></a>
+# **getCliques**
+> BeaconCliquesQueryResult getCliques(queryId)
 
 
 
-Retrieves the beacon aggregator assigned clique of equivalent concepts that includes the specified (url-encoded) CURIE identifier. Note that the clique to which a given concept CURIE belongs may change over time as the aggregator progressively discovers the members of the clique. 
+Retrieves a list of concept cliques based on  &#39;data ready&#39; from a previously /cliques posted query parameter submission 
 
 ### Example
 ```java
@@ -27,12 +29,12 @@ Retrieves the beacon aggregator assigned clique of equivalent concepts that incl
 
 
 ConceptsApi apiInstance = new ConceptsApi();
-String identifier = "identifier_example"; // String | a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of interest to be resolved to a concept clique
+String queryId = "queryId_example"; // String | the query identifier of a concepts query previously posted by the /cliques endpoint
 try {
-    BeaconCliqueIdentifier result = apiInstance.getClique(identifier);
+    BeaconCliquesQueryResult result = apiInstance.getCliques(queryId);
     System.out.println(result);
 } catch (ApiException e) {
-    System.err.println("Exception when calling ConceptsApi#getClique");
+    System.err.println("Exception when calling ConceptsApi#getCliques");
     e.printStackTrace();
 }
 ```
@@ -41,11 +43,56 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **identifier** | **String**| a [CURIE-encoded](https://www.w3.org/TR/curie/) identifier of interest to be resolved to a concept clique |
+ **queryId** | **String**| the query identifier of a concepts query previously posted by the /cliques endpoint |
 
 ### Return type
 
-[**BeaconCliqueIdentifier**](BeaconCliqueIdentifier.md)
+[**BeaconCliquesQueryResult**](BeaconCliquesQueryResult.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+<a name="getCliquesQueryStatus"></a>
+# **getCliquesQueryStatus**
+> BeaconCliquesQueryStatus getCliquesQueryStatus(queryId)
+
+
+
+Retrieves the status of a given query about the cliques in the system 
+
+### Example
+```java
+// Import classes:
+//import bio.knowledge.client.ApiException;
+//import bio.knowledge.client.api.ConceptsApi;
+
+
+ConceptsApi apiInstance = new ConceptsApi();
+String queryId = "queryId_example"; // String | an active query identifier as returned by a POST of clique query parameters.
+try {
+    BeaconCliquesQueryStatus result = apiInstance.getCliquesQueryStatus(queryId);
+    System.out.println(result);
+} catch (ApiException e) {
+    System.err.println("Exception when calling ConceptsApi#getCliquesQueryStatus");
+    e.printStackTrace();
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **queryId** | **String**| an active query identifier as returned by a POST of clique query parameters. |
+
+### Return type
+
+[**BeaconCliquesQueryStatus**](BeaconCliquesQueryStatus.md)
 
 ### Authorization
 
@@ -109,7 +156,7 @@ No authorization required
 
 
 
-Retrieves a (paged) simple list of concepts from beacons with status &#39;data ready&#39; from a previously /concepts posted query parameter submission 
+Retrieves a (paged) list of basic equivalent concept clique data from beacons &#39;data ready&#39; from a previously /concepts posted query parameter submission 
 
 ### Example
 ```java
@@ -121,8 +168,8 @@ Retrieves a (paged) simple list of concepts from beacons with status &#39;data r
 ConceptsApi apiInstance = new ConceptsApi();
 String queryId = "queryId_example"; // String | the query identifier of a concepts query previously posted by the /concepts endpoint
 List<Integer> beacons = Arrays.asList(56); // List<Integer> | set of aggregator indices of beacons whose data are to be retrieved 
-Integer pageNumber = 56; // Integer | (1-based) number of the page to be returned in a paged set of query results 
-Integer pageSize = 56; // Integer | number of concepts per page to be returned in a paged set of query results 
+Integer pageNumber = 56; // Integer | (1-based) number of the page to be returned in a paged set of query results. Defaults to '1'. 
+Integer pageSize = 56; // Integer | number of concepts per page to be returned in a paged set of query results. Defaults to '10'. 
 try {
     BeaconConceptsQueryResult result = apiInstance.getConcepts(queryId, beacons, pageNumber, pageSize);
     System.out.println(result);
@@ -138,8 +185,8 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **queryId** | **String**| the query identifier of a concepts query previously posted by the /concepts endpoint |
  **beacons** | [**List&lt;Integer&gt;**](Integer.md)| set of aggregator indices of beacons whose data are to be retrieved  | [optional]
- **pageNumber** | **Integer**| (1-based) number of the page to be returned in a paged set of query results  | [optional]
- **pageSize** | **Integer**| number of concepts per page to be returned in a paged set of query results  | [optional]
+ **pageNumber** | **Integer**| (1-based) number of the page to be returned in a paged set of query results. Defaults to &#39;1&#39;.  | [optional]
+ **pageSize** | **Integer**| number of concepts per page to be returned in a paged set of query results. Defaults to &#39;10&#39;.  | [optional]
 
 ### Return type
 
@@ -160,7 +207,7 @@ No authorization required
 
 
 
-Retrieves the status of a given query about the concepts in the system 
+Retrieves the status of a given keyword search query about the concepts in the system 
 
 ### Example
 ```java
@@ -201,13 +248,58 @@ No authorization required
  - **Content-Type**: Not defined
  - **Accept**: application/json
 
+<a name="postCliquesQuery"></a>
+# **postCliquesQuery**
+> BeaconCliquesQuery postCliquesQuery(ids)
+
+
+
+Retrieves the beacon aggregator assigned cliques of equivalent concepts that includes the specified (url-encoded) CURIE identifiers. Note that the clique to which a given concept CURIE belongs may change over time as the aggregator progressively discovers the members of the clique. Any unmatched identifiers will be ignored (e.g. the id couldn&#39;t be found in any of the beacons)  
+
+### Example
+```java
+// Import classes:
+//import bio.knowledge.client.ApiException;
+//import bio.knowledge.client.api.ConceptsApi;
+
+
+ConceptsApi apiInstance = new ConceptsApi();
+List<String> ids = Arrays.asList("ids_example"); // List<String> | an array of [CURIE-encoded](https://www.w3.org/TR/curie/)  identifiers of interest to be resolved to a list of concept cliques
+try {
+    BeaconCliquesQuery result = apiInstance.postCliquesQuery(ids);
+    System.out.println(result);
+} catch (ApiException e) {
+    System.err.println("Exception when calling ConceptsApi#postCliquesQuery");
+    e.printStackTrace();
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ids** | [**List&lt;String&gt;**](String.md)| an array of [CURIE-encoded](https://www.w3.org/TR/curie/)  identifiers of interest to be resolved to a list of concept cliques |
+
+### Return type
+
+[**BeaconCliquesQuery**](BeaconCliquesQuery.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
 <a name="postConceptsQuery"></a>
 # **postConceptsQuery**
 > BeaconConceptsQuery postConceptsQuery(keywords, categories, beacons)
 
 
 
-Posts the query parameters to retrieves a (paged) list of  concepts from the system 
+Posts the query parameters to retrieves a list of  concepts from the system 
 
 ### Example
 ```java

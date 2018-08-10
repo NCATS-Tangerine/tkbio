@@ -12,15 +12,17 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 
+import bio.knowledge.web.view.components.QueryPollingListener;
+
 /**
  * 
  * @author Colin
  *
  */
-public class SearchHistoryViewImpl extends VerticalLayout implements SearchHistoryView {
+public class SearchHistoryViewImpl extends VerticalLayout {
 
 	private static final long serialVersionUID = -5689671079554344415L;
-	private List<SearchHistoryView.Listener> listeners = Collections.synchronizedList(new ArrayList<>());
+	private List<QueryPollingListener> listeners = Collections.synchronizedList(new ArrayList<>());
 	private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 	private ScheduledFuture<?> job;
 	private boolean jobStarted = false;
@@ -31,38 +33,55 @@ public class SearchHistoryViewImpl extends VerticalLayout implements SearchHisto
 		
 		addComponentDetachListener(e -> {
 			Component component = e.getDetachedComponent();
-			removeListener((SearchHistoryView.Listener) component);
+			removeListener((SingleSearchHistoryView) component);
 		});
 	}
 
 	public void addResultView(SingleSearchHistoryView resultView) {
 		addComponentAsFirst(resultView);
-		addListener(resultView);
+		addListener(resultView.listener());
 		if (!jobStarted) {
 			jobStarted = true;
 			initPolling();
 		}
 	}
+	
+	public void startPolling() {
+		if (!jobStarted && !listeners.isEmpty()) {
+			jobStarted = true;
+			initPolling();
+		}
+	}
+	
+	/**
+	 * Method to explicitly stop polling - to be called when the window is closed. 
+	 * If this method is not called, jobStarted will continue to be true, but the job will not
+	 * be running properly when the window is closed
+	 */
+	public void stopPolling() {
+		if (!job.isCancelled()) {
+			job.cancel(false);
+			jobStarted = false;
+		}
+	}
 
-	@Override
-	public void addListener(SearchHistoryView.Listener listener) {
+	public void addListener(QueryPollingListener listener) {
 		listeners.add(listener);
 	}
 	
-	private void removeListener(SearchHistoryView.Listener listener) {
-		listeners.remove(listener);
+	private void removeListener(SingleSearchHistoryView component) {
+		listeners.remove(component.listener());
 		if (listeners.isEmpty()) {
 			if (!job.isCancelled()) {
-				job.cancel(true);
+				job.cancel(false);
 				jobStarted = false;
 			}
 		}
 	}
 	
 	private void update() {
-		System.out.println("[updating all listeners]");
 		synchronized (listeners) {
-			for (SearchHistoryView.Listener listener : listeners) {
+			for (QueryPollingListener listener : listeners) {
 				listener.update();
 			}
 		}

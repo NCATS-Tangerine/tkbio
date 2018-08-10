@@ -53,6 +53,7 @@ import bio.knowledge.service.core.TableSorter;
  *
  */
 @Service
+@Deprecated
 public class AnnotationService extends IdentifiedEntityServiceImpl<Annotation> {
 	
 	@Autowired

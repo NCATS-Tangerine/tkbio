@@ -61,19 +61,8 @@ public class Neo4jAnnotatedConcept extends Neo4jIdentifiedConceptImpl implements
 	 * @param type
 	 * @param taxon
 	 */
-	public Neo4jAnnotatedConcept(  String clique, String name, ConceptType type, String taxon ) {
-		super(clique, name, type, taxon);
-	}
-
-	/**
-	 * 
-	 * @param clique
-	 * @param name
-	 * @param type
-	 * @param taxon
-	 */
-	public Neo4jAnnotatedConcept(  String clique, String name, String type, String taxon ) {
-		super(clique, name, type, taxon);
+	public Neo4jAnnotatedConcept(  String clique, String name, List<String> categories, String taxon ) {
+		super(clique, name, categories, taxon);
 	}
 
 	/*

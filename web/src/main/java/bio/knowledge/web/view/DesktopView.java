@@ -55,16 +55,30 @@ public class DesktopView extends DesktopDesign implements View {
 	private static final long serialVersionUID = -3941787763184092605L;
 
 	public static final String NAME = "main";
+	
+	private VerticalLayout statementsTab = new VerticalLayout();
+	private VerticalLayout evidencesTab = new VerticalLayout();
+	private VerticalLayout referencesTab = new VerticalLayout();
 
 	public DesktopView() {
 		viewingConcepts.setSpacing(false);
+		
 		searchLayout.setSpacing(true);
 		searchLayout.setMargin(new MarginInfo(true, false, false, true));
 		search.addStyleName("concept-search-field");
+		
 		historyBtn.setIcon(FontAwesome.HISTORY);
 		historyBtn.setStyleName(ValoTheme.BUTTON_HUGE);
 		historyBtn.setStyleName(ValoTheme.BUTTON_ICON_ONLY, true);
 		historyBtn.setStyleName(ValoTheme.BUTTON_BORDERLESS, true);
+		
+		statementsTab.setSizeFull();
+		evidencesTab.setSizeFull();
+		referencesTab.setSizeFull();
+		
+		dataTabSheet.addTab(statementsTab, "Search Results");
+//		dataTabSheet.addTab(evidencesTab, "Evidences");
+//		dataTabSheet.addTab(referencesTab, "References");
 	}
 
 	/**
@@ -84,9 +98,9 @@ public class DesktopView extends DesktopDesign implements View {
 	/**
 	 * @return the demoMapBtn
 	 */
-	public Button getSearchMapLibraryBtn() {
-		return searchMapLibraryBtn;
-	}
+//	public Button getSearchMapLibraryBtn() {
+//		return searchMapLibraryBtn;
+//	}
 
 	/**
 	 * @return the map center button
@@ -112,9 +126,9 @@ public class DesktopView extends DesktopDesign implements View {
 	/**
 	 * @return the saveBtn
 	 */
-	public Button getSaveBtn() {
-		return saveBtn;
-	}
+//	public Button getSaveBtn() {
+//		return saveBtn;
+//	}
 
 	// /**
 	// * @param saveBtn the saveBtn to set
@@ -126,9 +140,9 @@ public class DesktopView extends DesktopDesign implements View {
 	/**
 	 * @return the loadMap
 	 */
-	public Upload getLoadMap() {
-		return loadMap;
-	}
+//	public Upload getLoadMap() {
+//		return loadMap;
+//	}
 
 	// /**
 	// * @param loadMap the loadMap to set
@@ -159,36 +173,22 @@ public class DesktopView extends DesktopDesign implements View {
 	/**
 	 * @return the relationsTab
 	 */
-	public VerticalLayout getRelationsTab() {
-		return relationsTab;
-	}
-
-	/**
-	 * Implicitome disabled for now...
-	 * 
-	 * @return the implicitRelationsTab
-	 * 
-	 *         public VerticalLayout getImplicitRelationsTab() { return
-	 *         implicitRelationsTab; }
-	 */
-
-	/**
-	 * April 21, Implicitome removed for now
-	 * 
-	 * @return the cooccurrencesTab
-	 * 
-	 *         public VerticalLayout getCooccurrencesTab() { return
-	 *         cooccurrencesTab; }
-	 */
+//	public VerticalLayout getRelationsTab() {
+//		return relationsTab;
+//	}
 
 	public VerticalLayout getEvidenceTab() {
-		return evidenceTab;
+		return evidencesTab;
 	}
+//
+//	public VerticalLayout getReferenceTab() {
+//		return referenceTab;
+//	}
 
-	public VerticalLayout getReferenceTab() {
-		return referenceTab;
+	public VerticalLayout getStatementsTab() {
+		return statementsTab;
 	}
-
+	
 	public HorizontalLayout getCmPanel() {
 		return cmPanel;
 	}
@@ -228,9 +228,9 @@ public class DesktopView extends DesktopDesign implements View {
 	/**
 	 * @return the legend
 	 */
-	public Button getShowLegendBtn() {
-		return showLegendBtn;
-	}
+//	public Button getShowLegendBtn() {
+//		return showLegendBtn;
+//	}
 	
 	public Button getHistoryButton() {
 		return historyBtn;
@@ -249,7 +249,6 @@ public class DesktopView extends DesktopDesign implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		System.out.println("[parameters]: " + event.getParameters());
 		String eventParameter = event.getParameters();
 		if (!eventParameter.contains("/")) {
 			return;
