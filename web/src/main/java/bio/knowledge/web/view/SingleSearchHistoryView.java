@@ -39,7 +39,7 @@ public class SingleSearchHistoryView extends HorizontalLayout {
 	private KBQuery kbQuery;
 
 	private Label conceptLabel = new Label("Concept Placeholder");
-	private Label timeLabel = new Label("time ago");
+//	private Label timeLabel = new Label("time ago");
 	private Button detailsButton = new Button(FontAwesome.CHECK);
 	private Button removeButton = new Button(FontAwesome.TIMES);
 	private ProgressBar progressBar = new ProgressBar();
@@ -47,8 +47,8 @@ public class SingleSearchHistoryView extends HorizontalLayout {
 	private VerticalLayout titleLayout = new VerticalLayout();
 	private HorizontalLayout buttonsLayout = new HorizontalLayout();
 
-	private Date creationTime = new Date();
-	private PrettyTime p = new PrettyTime();
+//	private Date creationTime = new Date();
+//	private PrettyTime p = new PrettyTime();
 	private String conceptName = "";
 
 	private List<BeaconConcept> queryResults = new ArrayList<>();
@@ -70,13 +70,14 @@ public class SingleSearchHistoryView extends HorizontalLayout {
 		conceptLabel.setStyleName("text-overflow");
 		conceptLabel.setContentMode(ContentMode.HTML);
 
-		timeLabel.setValue(p.format(creationTime));
+//		timeLabel.setValue(p.format(creationTime));
 		progressBar.setIndeterminate(true);
 
 		setSpacing(true);
 		setSizeFull();
 
-		titleLayout.addComponents(timeLabel, conceptLabel);
+//		titleLayout.addComponents(timeLabel, conceptLabel);
+		titleLayout.addComponent(conceptLabel);
 		titleLayout.setSizeFull();
 		buttonsLayout.setSpacing(true);
 		buttonsLayout.addComponents(progressBar, removeButton);
@@ -91,48 +92,19 @@ public class SingleSearchHistoryView extends HorizontalLayout {
 		postQuery();
 	}
 
-//	private void initCallbacks() {
-//		resultCb = new ApiCallback<BeaconConceptsQueryResult>() {
-//
-//			@Override
-//			public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-//				// TODO Auto-generated method stub
-//				e.printStackTrace();
-//
-//			}
-//
-//			@Override
-//			public void onSuccess(BeaconConceptsQueryResult result, int statusCode,
-//					Map<String, List<String>> responseHeaders) {
-//				getUI().access(() -> {
-//					buttonsLayout.replaceComponent(progressBar, detailsButton);
-//					conceptQueryResult = result;
-//				});
-//
-//			}
-//
-//			@Override
-//			public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//
-//			@Override
-//			public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//		};
-//	}
-
 	private void initButtons() {
 		detailsButton.setStyleName("page-button");
 		detailsButton.addClickListener(e -> {
 			DesktopUI ui = (DesktopUI) getUI();
-			for (Window window : ui.getWindows()) {
-				window.close();
-			}
+			Window window = (Window) this.getParent().getParent();
+			window.close();
 			ui.getStatementsPresenter().setConceptsDataSource(queryResults);
+			
+
+			// this causes a concurrency exception 
+//			for (Window window : ui.getWindows()) {
+//				window.close();
+//			}
 		});
 
 		removeButton.setStyleName("page-button");
@@ -211,5 +183,39 @@ public class SingleSearchHistoryView extends HorizontalLayout {
 	public QueryPollingListener listener() {
 		return listener;
 	}
+
+//	private void initCallbacks() {
+//	resultCb = new ApiCallback<BeaconConceptsQueryResult>() {
+//
+//		@Override
+//		public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
+//			// TODO Auto-generated method stub
+//			e.printStackTrace();
+//
+//		}
+//
+//		@Override
+//		public void onSuccess(BeaconConceptsQueryResult result, int statusCode,
+//				Map<String, List<String>> responseHeaders) {
+//			getUI().access(() -> {
+//				buttonsLayout.replaceComponent(progressBar, detailsButton);
+//				conceptQueryResult = result;
+//			});
+//
+//		}
+//
+//		@Override
+//		public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
+//			// TODO Auto-generated method stub
+//
+//		}
+//
+//		@Override
+//		public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
+//			// TODO Auto-generated method stub
+//
+//		}
+//	};
+//}
 
 }

@@ -8,7 +8,6 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
@@ -18,19 +17,15 @@ import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.renderers.ButtonRenderer;
 
 import bio.knowledge.client.model.BeaconConcept;
-import bio.knowledge.service.KBQuery;
-import bio.knowledge.service.beacon.KnowledgeBeaconService;
 
 
 public class StatementsView extends VerticalLayout {
 	
 	public static final String NAME = "statements";
-	public static final String DETAILS_ID = "Details";
 	public static final String STATEMENTS_ID = "Statements";
+	public static final String CONCEPTS_NAME_ID = "name"; // based on field name in BeaconConcept
 
 	private static final long serialVersionUID = -7988756397144422937L;
 	
@@ -39,7 +34,7 @@ public class StatementsView extends VerticalLayout {
 	private Button addToGraphBtn = new Button();
 	private ProgressBar progressBar = new ProgressBar();
 	private VerticalLayout statemtsLayout = new VerticalLayout();
-	private Label statemtsTitle = new Label();
+	private Label statemtsTitle = new Label("Statements for: ");
 	private HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
 	
 	/**
@@ -50,38 +45,31 @@ public class StatementsView extends VerticalLayout {
 	 */
 	public StatementsView(List<BeaconConcept> results) {
 		init();
-		GeneratedPropertyContainer container = addDetailsAndStatementsColumns
-				(new BeanItemContainer<>(BeaconConcept.class, results));
-		conceptsGrid.setContainerDataSource(container);
-		conceptsGrid.getColumn(DETAILS_ID).setWidth(90);
-		conceptsGrid.getColumn(STATEMENTS_ID).setWidth(90);
-		conceptsGrid.setColumnOrder(DETAILS_ID, STATEMENTS_ID, "clique", "name", "categories");
+		setConceptsGridColumns(results); 
 	}
 
-	public GeneratedPropertyContainer addDetailsAndStatementsColumns(Indexed conceptsContainer) {
-		GeneratedPropertyContainer container = new GeneratedPropertyContainer(conceptsContainer);
-		container.addGeneratedProperty(DETAILS_ID, new PropertyValueGenerator<String>() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-		    public String getValue(Item item, Object itemId, Object propertyId) {
-		        return "details"; 
-		    }
-
-		    @Override
-		    public Class<String> getType() {
-		        return String.class;
-		    }
-		});
+	private void setConceptsGridColumns(List<BeaconConcept> results) {
+		GeneratedPropertyContainer container = addStatementsColumn
+				(new BeanItemContainer<>(BeaconConcept.class, results));
+		conceptsGrid.setContainerDataSource(container);
 		
+		conceptsGrid.getColumn(STATEMENTS_ID).setWidth(80);
+		conceptsGrid.getColumn(STATEMENTS_ID).setHeaderCaption("Statements");
+		conceptsGrid.setColumnOrder(STATEMENTS_ID, CONCEPTS_NAME_ID, "categories");
+		conceptsGrid.getColumn(CONCEPTS_NAME_ID).setExpandRatio(1);
+		conceptsGrid.getColumn("clique").setHidden(true);
+	}
+
+	public GeneratedPropertyContainer addStatementsColumn(Indexed conceptsContainer) {
+		GeneratedPropertyContainer container = new GeneratedPropertyContainer(conceptsContainer);
 		container.addGeneratedProperty(STATEMENTS_ID, new PropertyValueGenerator<String>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 		    public String getValue(Item item, Object itemId, Object propertyId) {
-		        return "search"; 
+		        return "show";
 		    }
-
+;
 		    @Override
 		    public Class<String> getType() {
 		        return String.class;
@@ -127,7 +115,7 @@ public class StatementsView extends VerticalLayout {
 		splitPanel.setFirstComponent(conceptsGrid);
 		splitPanel.setSecondComponent(statemtsLayout);
 		showConceptsResults();
-		splitPanel.setLocked(true);
+//		splitPanel.setLocked(true);
 		
 		addComponent(splitPanel);
 	}
@@ -179,8 +167,8 @@ public class StatementsView extends VerticalLayout {
 		}
 	}
 
-	public void setStatementsTitle(String title) {
-		statemtsTitle.setCaption("Statements for: <strong style = \"font-size: 120%\">" + title + "</strong>");
+	public void setStatementsTitle(BeaconConcept concept) {
+		statemtsTitle.setCaption("Statements for: <strong style = \"font-size: 120%\">" + concept.getName() + " (" + concept.getClique() + ") </strong>");	
 	}
 	
 	public HorizontalSplitPanel getSplitPanel() {
@@ -188,10 +176,10 @@ public class StatementsView extends VerticalLayout {
 	}
 	
 	public void showConceptsResults() {
-		splitPanel.setSplitPosition(100, Unit.PERCENTAGE);
+		splitPanel.setSplitPosition(70, Unit.PERCENTAGE);
 	}
 	
 	public void showStatementsResults() {
-		splitPanel.setSplitPosition(0, Unit.PERCENTAGE);
+		splitPanel.setSplitPosition(30, Unit.PERCENTAGE);
 	}
 }
