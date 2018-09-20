@@ -14,10 +14,15 @@
 package bio.knowledge.client.api;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.squareup.okhttp.OkHttpClient;
+
+import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.BeaconStatementDetails;
 import bio.knowledge.client.model.BeaconStatementsQuery;
@@ -30,8 +35,16 @@ import bio.knowledge.client.model.BeaconStatementsQueryStatus;
 @Ignore
 public class StatementsApiTest {
 
-    private final StatementsApi api = new StatementsApi();
-
+    private static StatementsApi api = new StatementsApi();
+	private static ApiClient apiClient = new ApiClient();
+    
+	@BeforeClass
+	public static void setup() {
+		// Adjust ApiClient read timeout
+		OkHttpClient httpClient = apiClient.getHttpClient();
+		httpClient.setReadTimeout( 5, TimeUnit.MINUTES );
+		api = new StatementsApi(apiClient);
+	}
     
     /**
      * 

@@ -14,10 +14,15 @@
 package bio.knowledge.client.api;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.squareup.okhttp.OkHttpClient;
+
+import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.BeaconCliquesQuery;
 import bio.knowledge.client.model.BeaconCliquesQueryResult;
@@ -33,8 +38,16 @@ import bio.knowledge.client.model.BeaconConceptsQueryStatus;
 @Ignore
 public class ConceptsApiTest {
 
-    private final ConceptsApi api = new ConceptsApi();
-
+    private static ConceptsApi api = new ConceptsApi();
+	private static ApiClient apiClient = new ApiClient();
+    
+	@BeforeClass
+	public static void setup() {
+		// Adjust ApiClient read timeout
+		OkHttpClient httpClient = apiClient.getHttpClient();
+		httpClient.setReadTimeout( 5, TimeUnit.MINUTES );
+		api = new ConceptsApi(apiClient);
+	}
     
     /**
      * 
