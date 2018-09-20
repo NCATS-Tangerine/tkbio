@@ -1,9 +1,11 @@
 package bio.knowledge.web.view;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.vaadin.data.Container.Indexed;
 import com.vaadin.data.Item;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.ui.Alignment;
@@ -12,20 +14,18 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.CellDescriptionGenerator;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.renderers.ButtonRenderer;
 
-import bio.knowledge.service.KBQuery;
-import bio.knowledge.service.beacon.KnowledgeBeaconService;
+import bio.knowledge.client.model.BeaconConcept;
 
 
 public class StatementsView extends VerticalLayout {
 	
 	public static final String NAME = "statements";
-	public static final String DETAILS_ID = "Details";
 	public static final String STATEMENTS_ID = "Statements";
+	public static final String CONCEPTS_NAME_ID = "name"; // based on field name in BeaconConcept
 
 	private static final long serialVersionUID = -7988756397144422937L;
 	
@@ -34,45 +34,42 @@ public class StatementsView extends VerticalLayout {
 	private Button addToGraphBtn = new Button();
 	private ProgressBar progressBar = new ProgressBar();
 	private VerticalLayout statemtsLayout = new VerticalLayout();
-
+	private Label statemtsTitle = new Label("Statements for: ");
+	private HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
+	
 	/**
-	 * Initializes side-by-side view of concepts and statements grids
+	 * Initializes concepts and statements tab views
 	 * @param conceptsContainer
 	 * @param kbService
 	 * @param kbQuery
 	 */
-	public StatementsView(Indexed conceptsContainer) {
+	public StatementsView(List<BeaconConcept> results) {
 		init();
-		GeneratedPropertyContainer container = addDetailsAndStatementsColumns(conceptsContainer);
-		conceptsGrid.setContainerDataSource(container);
-		conceptsGrid.getColumn(DETAILS_ID).setWidth(90);
-		conceptsGrid.getColumn(STATEMENTS_ID).setWidth(90);
+		setConceptsGridColumns(results); 
 	}
-	
-	public GeneratedPropertyContainer addDetailsAndStatementsColumns(Indexed conceptsContainer) {
-		GeneratedPropertyContainer container = new GeneratedPropertyContainer(conceptsContainer);
-		container.addGeneratedProperty(DETAILS_ID, new PropertyValueGenerator<String>() {
-			private static final long serialVersionUID = 1L;
 
-			@Override
-		    public String getValue(Item item, Object itemId, Object propertyId) {
-		        return "details"; 
-		    }
-
-		    @Override
-		    public Class<String> getType() {
-		        return String.class;
-		    }
-		});
+	private void setConceptsGridColumns(List<BeaconConcept> results) {
+		GeneratedPropertyContainer container = addStatementsColumn
+				(new BeanItemContainer<>(BeaconConcept.class, results));
+		conceptsGrid.setContainerDataSource(container);
 		
+		conceptsGrid.getColumn(STATEMENTS_ID).setWidth(80);
+		conceptsGrid.getColumn(STATEMENTS_ID).setHeaderCaption("Statements");
+		conceptsGrid.setColumnOrder(STATEMENTS_ID, CONCEPTS_NAME_ID, "categories");
+		conceptsGrid.getColumn(CONCEPTS_NAME_ID).setExpandRatio(1);
+		conceptsGrid.getColumn("clique").setHidden(true);
+	}
+
+	public GeneratedPropertyContainer addStatementsColumn(Indexed conceptsContainer) {
+		GeneratedPropertyContainer container = new GeneratedPropertyContainer(conceptsContainer);
 		container.addGeneratedProperty(STATEMENTS_ID, new PropertyValueGenerator<String>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 		    public String getValue(Item item, Object itemId, Object propertyId) {
-		        return "search"; 
+		        return "show";
 		    }
-
+;
 		    @Override
 		    public Class<String> getType() {
 		        return String.class;
@@ -90,6 +87,8 @@ public class StatementsView extends VerticalLayout {
 		statemtsGrid.setSelectionMode(SelectionMode.MULTI);
 		statemtsGrid.setCellDescriptionGenerator(getCellDescriptionGenerator());		
 		statemtsGrid.setSizeFull();
+				
+		statemtsTitle.setCaptionAsHtml(true);
 		
 		addToGraphBtn.setCaption("<strong style = \"font-size: 120%;\">Add to Graph</strong>");
 		addToGraphBtn.setCaptionAsHtml(true);
@@ -98,22 +97,27 @@ public class StatementsView extends VerticalLayout {
 		addToGraphBtn.setWidth(100, Unit.PERCENTAGE);
 		
 		progressBar.setIndeterminate(true);
-		
+				
+		statemtsLayout.addComponent(statemtsTitle);
 		statemtsLayout.addComponent(statemtsGrid);
 		statemtsLayout.setComponentAlignment(statemtsGrid, Alignment.MIDDLE_CENTER);
+		
+		statemtsLayout.addComponent(addToGraphBtn);
+		statemtsLayout.setExpandRatio(statemtsTitle, 0.1f);
+		statemtsLayout.setExpandRatio(statemtsGrid, 1);
 		statemtsLayout.setSizeFull();
-		
-		HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
-		splitPanel.setFirstComponent(conceptsGrid);
-		splitPanel.setSecondComponent(statemtsLayout);
-		splitPanel.setSplitPosition(55, Unit.PERCENTAGE);
-		
+
 		setSpacing(true);
 		setHeight(100, Unit.PERCENTAGE);
-		addComponents(splitPanel, addToGraphBtn);
-		setExpandRatio(splitPanel, 1);
-
+		
 		initGraphBtnToggle();
+		
+		splitPanel.setFirstComponent(conceptsGrid);
+		splitPanel.setSecondComponent(statemtsLayout);
+		showConceptsResults();
+//		splitPanel.setLocked(true);
+		
+		addComponent(splitPanel);
 	}
 
 	private void initGraphBtnToggle() {
@@ -146,12 +150,36 @@ public class StatementsView extends VerticalLayout {
 		return addToGraphBtn;
 	}
 	
+	public VerticalLayout getStatementsLayout() {
+		return statemtsLayout;
+	}
+	
 	public void showProgress() {
-		statemtsLayout.replaceComponent(statemtsGrid, progressBar);
-		statemtsLayout.setComponentAlignment(progressBar, Alignment.MIDDLE_CENTER);
+		if (statemtsLayout.getComponentIndex(statemtsGrid) != -1) {
+			statemtsLayout.replaceComponent(statemtsGrid, progressBar);
+			statemtsLayout.setComponentAlignment(progressBar, Alignment.MIDDLE_CENTER);
+		}
 	}
 	
 	public void hideProgress() {
-		statemtsLayout.replaceComponent(progressBar, statemtsGrid);		
+		if (statemtsLayout.getComponentIndex(progressBar) != -1) {
+			statemtsLayout.replaceComponent(progressBar, statemtsGrid);		
+		}
+	}
+
+	public void setStatementsTitle(BeaconConcept concept) {
+		statemtsTitle.setCaption("Statements for: <strong style = \"font-size: 120%\">" + concept.getName() + " (" + concept.getClique() + ") </strong>");	
+	}
+	
+	public HorizontalSplitPanel getSplitPanel() {
+		return splitPanel;
+	}
+	
+	public void showConceptsResults() {
+		splitPanel.setSplitPosition(70, Unit.PERCENTAGE);
+	}
+	
+	public void showStatementsResults() {
+		splitPanel.setSplitPosition(30, Unit.PERCENTAGE);
 	}
 }

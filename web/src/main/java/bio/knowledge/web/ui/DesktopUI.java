@@ -59,7 +59,6 @@ import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.BeanContainer;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -83,7 +82,6 @@ import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.PopupView.Content;
 import com.vaadin.ui.Slider;
-import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -118,9 +116,9 @@ import bio.knowledge.service.user.UserService;
 import bio.knowledge.web.KBUploader;
 import bio.knowledge.web.view.AboutView;
 import bio.knowledge.web.view.ApplicationLayout;
+import bio.knowledge.web.view.StatementsViewPresenter;
 import bio.knowledge.web.view.ContactView;
 import bio.knowledge.web.view.DesktopView;
-import bio.knowledge.web.view.EvidenceView;
 import bio.knowledge.web.view.FaqView;
 import bio.knowledge.web.view.LandingPageView;
 import bio.knowledge.web.view.LibrarySearchResults;
@@ -129,11 +127,8 @@ import bio.knowledge.web.view.LoginView;
 import bio.knowledge.web.view.PasswordResetView;
 import bio.knowledge.web.view.ReferenceView;
 import bio.knowledge.web.view.Registry;
-import bio.knowledge.web.view.Registry.Mapping;
-import bio.knowledge.web.view.RelationsView;
 import bio.knowledge.web.view.SearchHistoryViewImpl;
 import bio.knowledge.web.view.SingleSearchHistoryView;
-import bio.knowledge.web.view.StatementsViewPresenter;
 import bio.knowledge.web.view.ViewName;
 import bio.knowledge.web.view.components.KnowledgeBeaconWindow;
 import bio.knowledge.web.view.components.LibraryDetails;
@@ -906,7 +901,8 @@ public class DesktopUI extends UI implements MessageService {
 		// Button to reinitialize the query and map
 		desktopView.getClearMapBtn().addClickListener(e -> newQueryConfirmation(e));
 	
-		statementsPresenter = new StatementsViewPresenter(desktopView.getStatementsTab(), kbService, query);
+		statementsPresenter = new StatementsViewPresenter(desktopView, kbService, query);		
+		
 		
 		desktopView.getTabSheet().addSelectedTabChangeListener(e -> {
 			// // Find the tabsheet
