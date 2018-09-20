@@ -1,4 +1,0 @@
-#
-# This parameter is duplicated here for good measure...
-#
-stormpath.application.href = https://api.stormpath.com/v1/applications/<your Stormpath application id>

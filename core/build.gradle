@@ -1,12 +1,13 @@
 archivesBaseName  = 'tkbio-core'
 description       = 'NCATS Translator Knowledge.Bio (TKBio) Core Spring Service Layer Middleware'
 
+evaluationDependsOn(':ontology')
 evaluationDependsOn(':services')
 
 dependencies {
+	compile project(':ontology')
 	compile project(':services')
-	compile project(':beacon-ontology')
+	
 	compile 'com.opencsv:opencsv:3.9'
 	compile 'org.springframework.boot:spring-boot-starter-security'
-	//compile 'org.springframework.security:spring-security-config'
 }

@@ -1,6 +1,7 @@
 // NCATS Translator Knowledge.Bio (TKBio) Main Meta-Project Root Build File
 
 ext {
+	gradleVersion            = '4.7'
 	apacheHTTPClientVersion  = '4.5.2'
 	springCoreVersion        = '4.3.2.RELEASE'
 	jacksonXmlVersion        = '2.8.1'
@@ -177,13 +178,8 @@ eclipse {
     }
 }
 
-springBoot {
-    mainClass = "bio.knowledge.server.Swagger2SpringBoot"
-}
-
-
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.5'
+    gradleVersion = "$gradleVersion"
 }
 
 springBoot {

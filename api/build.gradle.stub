@@ -1,8 +1,0 @@
-archivesBaseName  = 'tkbio-api'
-description       = 'NCATS Translator Knowledge.Bio (TKBio) API Middleware'
-
-//evaluationDependsOn(':services')
-
-dependencies {
-//	compile project(':services')
-}

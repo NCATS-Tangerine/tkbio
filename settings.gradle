@@ -1,1 +1,1 @@
-include "models", "database", "core", "services", "dataloader", "api:client", "web", "selenium", "beacon-ontology"
+include "ontology", "models", "client", "database", "core", "services", "dataloader", "web", "selenium"
