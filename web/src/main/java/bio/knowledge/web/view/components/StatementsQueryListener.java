@@ -2,14 +2,11 @@ package bio.knowledge.web.view.components;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.springframework.http.HttpStatus;
 
-import bio.knowledge.client.ApiCallback;
-import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconStatementsQuery;
 import bio.knowledge.client.model.BeaconStatementsQueryBeaconStatus;

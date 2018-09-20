@@ -13,14 +13,10 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import com.vaadin.data.Container.Indexed;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.renderers.ButtonRenderer;
 

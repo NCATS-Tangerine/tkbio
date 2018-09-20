@@ -46,7 +46,6 @@ import com.vaadin.server.Page;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Slider;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
 import bio.knowledge.graph.jsonmodels.Edge;

@@ -34,7 +34,6 @@ import bio.knowledge.client.model.BeaconBeaconPredicate;
 import bio.knowledge.client.model.BeaconCliquesQuery;
 import bio.knowledge.client.model.BeaconCliquesQueryBeaconStatus;
 import bio.knowledge.client.model.BeaconCliquesQueryResult;
-import bio.knowledge.client.model.BeaconCliquesQueryStatus;
 import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconConceptDetail;
 import bio.knowledge.client.model.BeaconConceptWithDetails;

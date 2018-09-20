@@ -1,11 +1,8 @@
 package bio.knowledge.web.view;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import org.ocpsoft.prettytime.PrettyTime;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -24,7 +21,6 @@ import bio.knowledge.client.model.BeaconCliquesQueryResult;
 import bio.knowledge.client.model.BeaconConcept;
 import bio.knowledge.client.model.BeaconConceptsQuery;
 import bio.knowledge.client.model.BeaconConceptsQueryResult;
-import bio.knowledge.ontology.BiolinkModel;
 import bio.knowledge.ontology.BiolinkTerm;
 import bio.knowledge.service.KBQuery;
 import bio.knowledge.service.beacon.KnowledgeBeaconService;

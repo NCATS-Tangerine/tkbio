@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 
 import com.vaadin.ui.Label;
 
-import bio.knowledge.client.model.BeaconClique;
 import bio.knowledge.client.model.BeaconCliquesQuery;
 import bio.knowledge.client.model.BeaconCliquesQueryBeaconStatus;
 import bio.knowledge.client.model.BeaconCliquesQueryResult;

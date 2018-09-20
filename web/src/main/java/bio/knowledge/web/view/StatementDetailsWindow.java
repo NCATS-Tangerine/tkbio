@@ -2,7 +2,6 @@ package bio.knowledge.web.view;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
@@ -11,7 +10,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import bio.knowledge.client.ApiCallback;
-import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.BeaconStatementAnnotation;
 import bio.knowledge.client.model.BeaconStatementCitation;
 import bio.knowledge.client.model.BeaconStatementDetails;

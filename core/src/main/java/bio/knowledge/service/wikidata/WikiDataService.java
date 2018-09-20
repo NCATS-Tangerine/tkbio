@@ -41,7 +41,6 @@ import bio.knowledge.datasource.DataSourceRegistry;
 import bio.knowledge.datasource.SimpleDataService;
 import bio.knowledge.datasource.wikidata.ConceptDescriptor;
 import bio.knowledge.datasource.wikidata.WikiDataDataSource;
-import bio.knowledge.model.ConceptType;
 import bio.knowledge.model.datasource.Result;
 import bio.knowledge.model.datasource.ResultSet;
 import bio.knowledge.model.neo4j.Neo4jAnnotatedConcept;

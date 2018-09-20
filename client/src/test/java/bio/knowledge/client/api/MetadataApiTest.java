@@ -13,29 +13,40 @@
 
 package bio.knowledge.client.api;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import com.squareup.okhttp.OkHttpClient;
+
+import bio.knowledge.client.ApiClient;
 import bio.knowledge.client.ApiException;
 import bio.knowledge.client.model.BeaconConceptCategory;
 import bio.knowledge.client.model.BeaconKnowledgeBeacon;
 import bio.knowledge.client.model.BeaconKnowledgeMap;
 import bio.knowledge.client.model.BeaconLogEntry;
 import bio.knowledge.client.model.BeaconPredicate;
-import org.junit.Test;
-import org.junit.Ignore;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * API tests for MetadataApi
  */
-@Ignore
+//@Ignore
 public class MetadataApiTest {
-
-    private final MetadataApi api = new MetadataApi();
-
+	
+	private static ApiClient apiClient = new ApiClient();
+    private static MetadataApi api = new MetadataApi();
     
+	@BeforeClass
+	public static void setup() {
+		// Adjust ApiClient read timeout
+		OkHttpClient httpClient = apiClient.getHttpClient();
+		httpClient.setReadTimeout( 5, TimeUnit.MINUTES );
+		api = new MetadataApi(apiClient);
+	}
+
     /**
      * 
      *
@@ -46,9 +57,11 @@ public class MetadataApiTest {
      */
     @Test
     public void getBeaconsTest() throws ApiException {
+    	System.err.println("\n######### Running getBeaconsTest #########\n");
         List<BeaconKnowledgeBeacon> response = api.getBeacons();
-
-        // TODO: test validations
+        for(BeaconKnowledgeBeacon beacon : response) {
+        	System.err.println(beacon.toString());
+        }
     }
     
     /**
@@ -61,10 +74,12 @@ public class MetadataApiTest {
      */
     @Test
     public void getConceptCategoriesTest() throws ApiException {
+    	System.err.println("\n######### Running getConceptCategoriesTest #########\n");
         List<Integer> beacons = null;
         List<BeaconConceptCategory> response = api.getConceptCategories(beacons);
-
-        // TODO: test validations
+        for(BeaconConceptCategory category : response) {
+        	System.err.println(category.toString());
+        }
     }
     
     /**
@@ -75,12 +90,14 @@ public class MetadataApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-    @Test
+    @Ignore @Test
     public void getErrorsTest() throws ApiException {
+    	System.err.println("\n######### Running getErrorsTest #########\n");
         String queryId = null;
         List<BeaconLogEntry> response = api.getErrors(queryId);
-
-        // TODO: test validations
+        for(BeaconLogEntry error : response) {
+        	System.err.println(error.toString());
+        }
     }
     
     /**
@@ -93,10 +110,17 @@ public class MetadataApiTest {
      */
     @Test
     public void getKnowledgeMapTest() throws ApiException {
+    	System.err.println("\n######### Running getKnowledgeMapTest #########\n");
         List<Integer> beacons = null;
-        List<BeaconKnowledgeMap> response = api.getKnowledgeMap(beacons);
-
-        // TODO: test validations
+        try {
+	        List<BeaconKnowledgeMap> response = api.getKnowledgeMap(beacons);
+	        for(BeaconKnowledgeMap kmap : response) {
+	        	System.err.println(kmap.toString());
+	        }
+        } catch (ApiException ae) {
+        	System.err.println(ae.getMessage());
+        	ae.printStackTrace();
+        }
     }
     
     /**
@@ -109,10 +133,12 @@ public class MetadataApiTest {
      */
     @Test
     public void getPredicatesTest() throws ApiException {
+    	System.err.println("\n######### Running getPredicatesTest #########\n");
         List<Integer> beacons = null;
         List<BeaconPredicate> response = api.getPredicates(beacons);
-
-        // TODO: test validations
+        for(BeaconPredicate predicate : response) {
+        	System.err.println(predicate.toString());
+        }
     }
     
 }
