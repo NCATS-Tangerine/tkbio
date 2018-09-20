@@ -30,3 +30,4 @@ knowledge-sources.csv
 *~
 /.metadata/
 api/client/.settings
+/.codegen/

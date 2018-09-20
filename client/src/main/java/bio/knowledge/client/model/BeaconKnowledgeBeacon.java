@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * BeaconKnowledgeBeacon
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-07-18T18:21:45.192Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-09-20T12:33:58.705-07:00")
 public class BeaconKnowledgeBeacon {
   @SerializedName("beacon")
   private Integer beacon = null;
