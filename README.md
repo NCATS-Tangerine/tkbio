@@ -2,7 +2,7 @@
 
 ![Knowledge Graph for Sepiapterin Reductase](https://tkbio.ncats.io/VAADIN/themes/kb2/images/usecase.png)
 
-This is Knowledge.Bio, a Java-based web application for discovering, navigating, harvesting and organizing conceptual maps of (biomedical) research knowledge. Try it out at [https://tkbio.ncats.io](https://tkbio.ncats.io).
+This is Knowledge.Bio, a Java-based web application for discovering, navigating, harvesting and organizing conceptual maps of (biomedical) research knowledge.
 
 The software project is a US [National Institute of Health](https://www.nih.gov/) funded initiative, begun in 2015, within the scope of the Heart BD2K program as a collaboration between...
 
